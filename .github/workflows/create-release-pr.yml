@@ -1,0 +1,48 @@
+# Copyright (c) 2021-2023 Koji Hasegawa.
+# This software is released under the MIT License.
+
+name: Create release pull request
+# Must manually add the label `skip-changelog` to the repository before running this workflow.
+
+on:
+  workflow_dispatch:
+
+permissions: write-all
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get draft release version
+        uses: cardinalby/git-get-release-action@v1
+        with:
+          latest: true
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: get-draft-release
+        # Fail this step if not found draft release
+
+      - name: Generate next version number (remove prefix)
+        run: |
+          tag_with_prefix=${{ steps.get-draft-release.outputs.tag_name }}
+          without_prefix=${tag_with_prefix:1}
+          echo "version=$without_prefix" >> "$GITHUB_OUTPUT"
+        id: next-version
+
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Bump version and create pull-request
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b release/${{ steps.next-version.outputs.version }}
+          npm version --no-git-tag-version ${{ steps.next-version.outputs.version }}
+          git add .
+          git commit -m"Bump version to v${{ steps.next-version.outputs.version }}"
+          git push origin HEAD
+          gh pr create --title "Release v${{ steps.next-version.outputs.version }}" --body-file ".github/release-pr-template.md" --reviewer ${{ github.actor }} --label "skip-changelog"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

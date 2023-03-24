@@ -1,0 +1,54 @@
+# Copyright (c) 2021-2023 Koji Hasegawa.
+# This software is released under the MIT License.
+
+name: Release if bump version number
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - package.json
+
+permissions: write-all
+jobs:
+  check-bump-version:
+    runs-on: ubuntu-latest
+    outputs:
+      new-version: ${{ steps.diff.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 100
+
+      - name: Get version number diff
+        run: |
+          version="$(git diff ${{ github.event.before }}..${{ github.event.after }} package.json | sed -nr '/^\+ +\"version\":/p' | sed -r 's/^.*\"([0-9a-z\.\-\+]+)\"*.$/\1/')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+        id: diff
+
+  release:
+    needs: check-bump-version
+    if: ${{ needs.check-bump-version.outputs.new-version }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter.yml
+          version: v${{ needs.check-bump-version.outputs.new-version }}
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # After tagged, openupm.com gets the tag and automatically publishes the UPM package.
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,job,pullRequest
+          mention: here
+          if_mention: failure
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

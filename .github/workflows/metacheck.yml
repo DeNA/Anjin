@@ -1,0 +1,35 @@
+# Copyright (c) 2021-2023 Koji Hasegawa.
+# This software is released under the MIT License.
+
+name: Meta file check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [ opened, synchronize, reopened ]  # Same as default
+
+permissions: write-all
+jobs:
+  meta-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
+          lfs: false
+
+      - uses: DeNA/unity-meta-check@v3
+
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,job,pullRequest
+          mention: here
+          if_mention: failure
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: failure() && github.repository_owner == 'DeNA' # Skip public fork, because can not read secrets.
