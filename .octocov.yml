@@ -1,0 +1,33 @@
+# see https://github.com/k1LoW/octocov
+coverage:
+  if: true
+  paths:
+    - ./Logs/Report/lcov.info # Warning: This path is replace by regex in test.yml
+codeToTestRatio:
+  code:
+    - 'Editor/**/*.cs'
+    - 'Runtime/**/*.cs'
+    - 'Samples~/**/*.cs'
+    - '!Samples~/**/Tests/**/*.cs'
+  test:
+    - 'Tests/**/*.cs'
+    - 'Samples~/**/Tests/**/*.cs'
+testExecutionTime:
+  if: true
+diff:
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}
+
+# Comment report to pull request
+comment:
+  if: is_pull_request
+
+# Add report to job summary page
+summary:
+  if: true
+
+# Store report to artifact
+report:
+  if: is_default_branch
+  datastores:
+    - artifact://${GITHUB_REPOSITORY}
