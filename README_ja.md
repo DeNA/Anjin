@@ -1,5 +1,8 @@
 # Anjin
 
+[![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
+[![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)
+
 Unity製ゲームのオートパイロットツールです。
 次の2つの要素で構成されています。
 
