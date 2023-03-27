@@ -1,0 +1,279 @@
+# Copyright (c) 2023 DeNA Co., Ltd.
+# This software is released under the MIT License.
+#
+# Package UI Localization is available in 2020.2
+# https://forum.unity.com/threads/package-ui-localization-is-available-in-2020-2.957173/
+#
+# GNU gettext
+# https://www.gnu.org/software/gettext/
+
+# 先頭にはemptyなエントリが必要
+msgid ""
+msgstr ""
+"Language: ja\n"
+
+
+#: Editor/UI/Settings/AutopilotSettingsEditor.cs
+
+# description
+msgid "Description"
+msgstr "説明"
+
+# description tooltip
+msgid "Description about this setting instance"
+msgstr "このAutopilotSettingsインスタンスの説明"
+
+# Header: Agent Assignment
+msgid "Agent Assignment"
+msgstr "Agent割り当て設定"
+
+# sceneAgentMapping
+msgid "Scene Agent Mapping"
+msgstr "SceneとAgentのマッピング"
+
+# sceneAgentMaps tooltip
+msgid "Scene to Agent assign mapping"
+msgstr "Sceneの自動実行を担当するAgentの割り当て"
+
+# fallbackAgent
+msgid "Fallback Agent"
+msgstr "フォールバックAgent"
+
+# fallbackAgent tooltip
+msgid "Agent for when not assigned"
+msgstr "割り当てのないSceneのときに使われるAgent"
+
+# observerAgent
+msgid "Observer Agent"
+msgstr "オブザーバーAgent"
+
+# observerAgent tooltip
+msgid "Parallel running agent using on every scene, for using observer (e.g., EmergencyExitAgent)"
+msgstr "Sceneに関わらず並列実行されるAgent。一般的にはEmergencyExitAgentを割り当てます"
+
+# Header: Autopilot Run Settings
+msgid "Autopilot Run Settings"
+msgstr "オートパイロット実行設定"
+
+# lifespanSec
+msgid "Lifespan Sec"
+msgstr "実行時間［秒］"
+
+# lifespanSec tooltip
+msgid "Autopilot running lifespan [sec]. When specified zero, so unlimited running"
+msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
+
+# randomSeed
+msgid "Random Seed"
+msgstr "擬似乱数シード"
+
+# randomSeed tooltip
+msgid "Random using the specified seed value"
+msgstr "擬似乱数発生器に与えるシードを固定したいときに指定します。省略時は毎回ランダムになります"
+
+# timeScale
+msgid "Time Scale"
+msgstr "タイムスケール"
+
+# timeScale tooltip
+msgid "Time.timeScale on running Autopilot"
+msgstr "Time.timeScaleを指定します"
+
+# junitReportPath
+msgid "JUnit Report Path"
+msgstr "JUnitレポート出力パス"
+
+# junitReportPath tooltip
+msgid "JUnit report output path"
+msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
+
+# slackToken
+msgid "Slack Token"
+msgstr "Slackトークン"
+
+# slackToken tooltip
+msgid "Slack API token"
+msgstr "Slack通知に使用するWeb APIトークン（省略時は通知されない）"
+
+# slackChannels
+msgid "Slack Channels"
+msgstr "Slackチャンネル"
+
+# slackChannels tooltip
+msgid "Slack channels to send notification"
+msgstr "Slack通知を送るチャンネル（省略時は通知されない。現時点では1チャンネルのみ有効ですが、将来的にはカンマ区切りで複数指定対応予定）"
+
+# Header: Slack Mention Settings
+msgid "Slack Mention Settings"
+msgstr "Slackメンション設定"
+
+# mentionSubTeamIDs
+msgid "Mention Sub Team IDs"
+msgstr "メンション宛先"
+
+# mentionSubTeamIDs tooltip
+msgid "Mention to sub team ID (comma separates)"
+msgstr "Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します"
+
+# addHereInSlackMessage
+msgid "Add @here Into Slack Message"
+msgstr "@hereをメッセージにつける"
+
+# addHereInSlackMessage tooltip
+msgid "Add @here into Slack message"
+msgstr "Slack通知メッセージに@hereを付けます"
+
+# Header: Error Handling Settings
+msgid "Error Handling Settings"
+msgstr "エラーハンドリング設定"
+
+# handleException
+msgid "Handle Exception"
+msgstr "例外を報告する"
+
+# handleException tooltip
+msgid "Notify when Exception detected in log"
+msgstr "例外ログを検知したらSlack通知します"
+
+# handleError
+msgid "Handle Error"
+msgstr "エラーを報告する"
+
+# handleError tooltip
+msgid "Notify when Error detected in log"
+msgstr "エラーログを検知したらSlack通知します"
+
+# handleAssert
+msgid "Handle Assert"
+msgstr "アサートを報告する"
+
+# handleAssert tooltip
+msgid "Notify when Assert detected in log"
+msgstr "アサートログを検知したらSlack通知します"
+
+# handleWarning
+msgid "Handle Warning"
+msgstr "警告を報告する"
+
+# handleWarning tooltip
+msgid "Notify when Warning detected in log"
+msgstr "警告ログを検知したらSlack通知します"
+
+# ignoreMessages
+msgid "Ignore Messages"
+msgstr "無視するメッセージ"
+
+# ignoreMessages tooltip
+msgid "Do not send notifications when log messages contain this string"
+msgstr "ログメッセージの中にこの文字列が含まれていたらSlack通知を行ないません"
+
+# Autopilot実行ボタン
+msgid "Run"
+msgstr "実行"
+
+# Autopilot停止ボタン
+msgid "Stop"
+msgstr "停止"
+
+
+#: Editor/UI/Settings/AutopilotStateEditor.cs
+
+# リセットボタン
+msgid "Reset"
+msgstr "リセット"
+
+
+#: Editor/UI/Agents/ 共通
+
+# description (same as AutopilotSettingsEditor.cs)
+msgid "Description"
+msgstr "説明"
+
+# description tooltip
+msgid "Description about this agent instance"
+msgstr "このAgentインスタンスの説明"
+
+
+#: Editor/UI/Agents/DoNothingAgentEditor.cs
+
+# lifespanSec (same as AutopilotSettingsEditor.cs)
+msgid "Lifespan Sec"
+msgstr "実行時間［秒］"
+
+# lifespanSec tooltip
+msgid "Agent running lifespan [sec]. When specified zero, so unlimited running"
+msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
+
+
+#: Editor/UI/Agents/OneTimeAgentEditor.cs
+
+# agent
+msgid "Agent"
+msgstr "Agent"
+
+# agent tooltip
+msgid "Agent will only run once for the entire autopilot run period"
+msgstr "Autopilot実行期間を通じて1回だけ実行できるAgentを指定します"
+
+
+#: Editor/UI/Agents/RepeatAgentEditor.cs
+
+# agent (same as OneTimeAgentEditor.cs)
+msgid "Agent"
+msgstr "Agent"
+
+# agent tooltip
+msgid "Agent to repeat execution"
+msgstr "リピート実行するAgentを指定します"
+
+
+#: Editor/UI/Agents/ParallelCompositeAgentEditor.cs
+
+# agents
+msgid "Agents"
+msgstr "Agents"
+
+# agents tooltip
+msgid "Agents to parallel execution"
+msgstr "並列実行するAgentを指定します"
+
+
+#: Editor/UI/Agents/SerialCompositeAgentEditor.cs
+
+# agents
+msgid "Agents"
+msgstr "Agents"
+
+# agents tooltip
+msgid "Agents to serial execution"
+msgstr "連続実行するAgentを指定します"
+
+
+#: Editor/UI/Agents/UGUIMonkeyAgentEditor.cs
+
+# lifespanSec (same as DoNothingAgentEditor.cs)
+msgid "Lifespan Sec"
+msgstr "実行時間［秒］"
+
+# lifespanSec tooltip (same as DoNothingAgentEditor.cs)
+msgid "Agent running lifespan [sec]. When specified zero, so unlimited running"
+msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
+
+# delayMillis
+msgid "Delay Millis"
+msgstr "操作間隔［ミリ秒］"
+
+# delayMillis tooltip
+msgid "Delay time between random operations [ms]"
+msgstr "ランダム操作ごとの遅延時間［ミリ秒］"
+
+
+#: Editor/UI/Agents/UGUIPlaybackAgentEditor.cs
+
+# recordedJson
+msgid "Recorded JSON file"
+msgstr "操作を記録したJSONファイル"
+
+# recordedJson tooltip
+msgid "JSON file recorded by AutomatedQA package"
+msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したjsonファイルを設定します"

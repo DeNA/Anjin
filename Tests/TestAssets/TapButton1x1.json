@@ -1,0 +1,64 @@
+{
+  "entryScene": "Buttons",
+  "recordingType": 0,
+  "recordings": [],
+  "touchData": [
+    {
+      "pointerId": -1,
+      "eventType": 1,
+      "timeDelta": 0.0,
+      "position": {
+        "x": 0.32699620723724368,
+        "y": 0.4652777910232544
+      },
+      "positional": false,
+      "waitSignal": "",
+      "emitSignal": "",
+      "objectName": "Button 1",
+      "objectTag": "Untagged",
+      "objectHierarchy": "Canvas",
+      "objectOffset": {
+        "x": -0.15714286267757417,
+        "y": -0.1785714328289032
+      }
+    },
+    {
+      "pointerId": -1,
+      "eventType": 2,
+      "timeDelta": 0.1,
+      "position": {
+        "x": 0.32699620723724368,
+        "y": 0.4444444477558136
+      },
+      "positional": false,
+      "waitSignal": "",
+      "emitSignal": "",
+      "objectName": "Button 1",
+      "objectTag": "Untagged",
+      "objectHierarchy": "Canvas",
+      "objectOffset": {
+        "x": -0.15714286267757417,
+        "y": -0.2857142984867096
+      }
+    },
+    {
+      "pointerId": 0,
+      "eventType": 0,
+      "timeDelta": 1.0,
+      "position": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "positional": false,
+      "waitSignal": "",
+      "emitSignal": "playbackComplete",
+      "objectName": "",
+      "objectTag": "",
+      "objectHierarchy": "",
+      "objectOffset": {
+        "x": 0.0,
+        "y": 0.0
+      }
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "com.dena.anjin",
+  "description": "Autopilot framework for Unity",
+  "version": "1.0.0",
+  "author": "DeNA Co., Ltd.",
+  "changelogUrl": "https://github.com/DeNA/Anjin/releases",
+  "dependencies": {
+    "com.cysharp.unitask": "2.3.3",
+    "com.nowsprinting.test-helper.monkey": "0.1.2",
+    "com.unity.automated-testing": "0.8.1-preview.2"
+  },
+  "displayName": "Anjin",
+  "documentationUrl": "https://github.com/DeNA/Anjin/blob/master/README.md",
+  "files": [
+    "Annotations*",
+    "Editor*",
+    "Runtime*",
+    "Tests*",
+    "package.json*",
+    "LICENSE*",
+    "README*"
+  ],
+  "keywords": [
+    "integration testing",
+    "monkey testing",
+    "test"
+  ],
+  "license": "MIT",
+  "licensesUrl": "https://github.com/DeNA/Anjin/blob/master/LICENSE",
+  "unity": "2019.4",
+  "unityRelease": "0f1"
+}

@@ -1,0 +1,21 @@
+{
+    "name": "DeNA.Anjin",
+    "rootNamespace": "DeNA.Anjin",
+    "references": [
+        "DeNA.Anjin.Annotations",
+        "Unity.AutomatedQA",
+        "UniTask",
+        "TestHelper.Monkey"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_EDITOR || DENA_AUTOPILOT_ENABLE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

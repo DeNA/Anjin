@@ -1,0 +1,27 @@
+{
+    "name": "DeNA.Anjin.Editor.Tests",
+    "rootNamespace": "DeNA.Anjin",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "DeNA.Anjin",
+        "DeNA.Anjin.Annotations",
+        "DeNA.Anjin.Editor",
+        "UniTask"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

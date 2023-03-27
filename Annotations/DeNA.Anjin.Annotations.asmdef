@@ -1,0 +1,16 @@
+{
+    "name": "DeNA.Anjin.Annotations",
+    "rootNamespace": "DeNA.Anjin",
+    "references": [
+        "TestHelper.Monkey.Annotations"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
