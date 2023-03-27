@@ -177,3 +177,6 @@ fabric.properties
 /[Aa]ssets/[Rr]ider[Ff]low.[Uu]ser[Dd]ata*
 /[Aa]ssets/[Ss]tompy[Rr]obot*
 /[Aa]ssets/[Tt]ayx*
+
+# Temporary project for run tests
+UnityProject~

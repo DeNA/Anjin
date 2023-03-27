@@ -1,7 +1,7 @@
 # Copyright (c) 2023 DeNA Co., Ltd.
 # This software is released under the MIT License.
 
-PACKAGE_HOME?=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+PACKAGE_HOME?=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_HOME?=$(PACKAGE_HOME)/UnityProject~
 BUILD_DIR?=$(PROJECT_HOME)/Build
 LOG_DIR?=$(PROJECT_HOME)/Logs
@@ -13,39 +13,61 @@ PACKAGE_NAME?=$(shell grep -o -E '"name": "(.+)"' $(PACKAGE_HOME)/package.json |
 PACKAGE_ASSEMBLIES?=$(shell echo $(shell find $(PACKAGE_HOME) -name "*.asmdef" -maxdepth 3 | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//) | sed -e s/\ /,/g)
 COVERAGE_ASSEMBLY_FILTERS?=$(PACKAGE_ASSEMBLIES),+<assets>,-*.Tests
 
-# macOS
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
 UNITY_HOME=/Applications/Unity/HUB/Editor/$(UNITY_VERSION)/Unity.app/Contents
 UNITY?=$(UNITY_HOME)/MacOS/Unity
 UNITY_YAML_MERGE?=$(UNITY_HOME)/Tools/UnityYAMLMerge
 STANDALONE_PLAYER=StandaloneOSX
+endif
+
+define ARGUMENTS_FOR_ARGUMENT_CAPTURE_TESTS
+  -STR_ARG STRING_BY_ARGUMENT \
+  -BOOL_ARG_TRUE TRUE \
+  -BOOL_ARG_FALSE FALSE \
+  -BOOL_ARG_NO_VALUE \
+  -INT_ARG_1 1 \
+  -LONG_ARG_MAX 9223372036854775807 \
+  -FLOAT_ARG_2_3 2.3 \
+  -DOUBLE_ARG_4_5 4.5
+endef
+
+define ENVIRONMENT_VARIABLES_FOR_ARGUMENT_CAPTURE_TESTS
+  STR_ENV=STRING_BY_ENVIRONMENT_VARIABLE
+endef
+
+define base_arguments
+  -projectPath $(PROJECT_HOME) \
+  -logFile $(LOG_DIR)/test_$(TEST_PLATFORM).log \
+  $(ARGUMENTS_FOR_ARGUMENT_CAPTURE_TESTS)
+endef
 
 define test_arguments
-  -projectPath $(PROJECT_HOME) \
   -batchmode \
-  -nographics \
   -silent-crashes \
   -stackTraceLogType Full \
   -runTests \
   -testCategory "!IgnoreCI" \
   -testPlatform $(TEST_PLATFORM) \
-  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml \
-  -logFile $(LOG_DIR)/test_$(TEST_PLATFORM).log
+  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml
 endef
 
 define test
   $(eval TEST_PLATFORM=$1)
-  $(eval TEST_ARGUMENTS=$(call test_arguments))
   mkdir -p $(LOG_DIR)
+  $(ENVIRONMENT_VARIABLES_FOR_ARGUMENT_CAPTURE_TESTS) \
   $(UNITY) \
-    $(TEST_ARGUMENTS)
+    $(call base_arguments) \
+    $(call test_arguments)
 endef
 
 define cover
   $(eval TEST_PLATFORM=$1)
-  $(eval TEST_ARGUMENTS=$(call test_arguments))
   mkdir -p $(LOG_DIR)
+  $(ENVIRONMENT_VARIABLES_FOR_ARGUMENT_CAPTURE_TESTS) \
   $(UNITY) \
-    $(TEST_ARGUMENTS) \
+    $(call base_arguments) \
+    $(call test_arguments) \
     -burst-disable-compilation \
     -debugCodeOptimization \
     -enableCodeCoverage \
@@ -56,7 +78,7 @@ endef
 define cover_report
   mkdir -p $(LOG_DIR)
   $(UNITY) \
-    -projectPath $(PROJECT_HOME) \
+    $(call base_arguments) \
     -batchmode \
     -quit \
     -enableCodeCoverage \
@@ -109,7 +131,9 @@ setup_unityyamlmerge:
 
 .PHONY: open
 open:
-	$(UNITY) -projectPath $(PROJECT_HOME) -logFile $(LOG_DIR)/editor.log &
+	mkdir -p $(LOG_DIR)
+	$(ENVIRONMENT_VARIABLES_FOR_ARGUMENT_CAPTURE_TESTS) \
+	$(UNITY) $(call base_arguments) &
 
 .PHONY: test_editmode
 test_editmode:
@@ -128,4 +152,3 @@ cover_report:
 # it will run through to Html report generation and return an exit code indicating an error.
 .PHONY: test
 test: test_editmode test_playmode cover_report
-
