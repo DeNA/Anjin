@@ -83,7 +83,7 @@ Anjinを起動すると、次のファイルが自動生成されます。
 ### オートパイロット設定ファイル（.asset）の生成
 
 UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
-**Create | Anjin | Autopilot Settings**
+**Create > Anjin > Autopilot Settings**
 を選択すると生成できます。
 ファイル名は任意で、プロジェクト内に複数作成して使い分けできます。
 
@@ -114,7 +114,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 この項目は、コマンドラインから上書きもできます（後述）。
 
 <dl>
-  <dt>Lifespan [sec]</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
+  <dt>Lifespan</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
@@ -149,7 +149,7 @@ Slack通知に付与するメンションを設定します。
 ビルトインのAgentを使用する場合でも、タイトル独自Agentを実装した場合でも、Unityエディタでそのインスタンス（.assetファイル）を生成する必要があります。
 
 インスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
-**Create | Anjin | Agent名**
+**Create > Anjin > Agent名**
 を選択すると生成できます。ファイル名は任意です。
 
 生成したファイルを選択すると、インスペクタにAgent固有の設定項目が表示され、カスタマイズが可能です。
@@ -215,8 +215,8 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>ランダム操作の実行時間 [秒]。0を指定するとほぼ無制限（TimeSpan.MaxValue）に動作します。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
-  <dt>Delay Millis</dt><dd>ランダム操作間のウェイト間隔 [ミリ秒]</dd>
+  <dt>Lifespan Sec</dt><dd>ランダム操作の実行時間を秒で指定します。0を指定するとほぼ無制限（TimeSpan.MaxValue）に動作します。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
+  <dt>Delay Millis</dt><dd>ランダム操作間のウェイト間隔をミリ秒で指定します</dd>
 </dl>
 
 `UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、
@@ -237,7 +237,9 @@ uGUIのコンポーネントをランダムに操作するAgentです。
   <dt>Recorded Json</dt><dd>再生するレコーディングファイル (.json) を指定します</dd>
 </dl>
 
-Automated QAによる操作のレコーディングは、Unityエディターのメニューから**Automated QA | Automated QA Hub | Recorded Playback**で開くウィンドウから行ないます。
+Automated QAによる操作のレコーディングは、Unityエディターのメニューから
+**Automated QA > Automated QA Hub > Recorded Playback**
+で開くウィンドウから行ないます。
 レコーディングファイル（.json）は Assets/Recordings/ フォルダ下に保存されますが、移動・リネームは自由です。
 
 なお、Automated QAのRecorded Playback機能ではScene遷移をまたがって操作を記録ができますが、AnjinではSceneが切り替わったところでAgentも強制的に切り替わるため、再生も中断されてしまいます。
@@ -256,7 +258,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>なにもしない時間 [秒]。0を指定すると無制限になにもしません。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
+  <dt>Lifespan Sec</dt><dd>なにもしない時間を秒で指定します。0を指定すると無制限になにもしません。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
 </dl>
 
 
@@ -325,7 +327,9 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 ゲームタイトル固有のAgent等を実装する場合、リリースビルドへの混入を避けるため、専用のアセンブリに分けることをおすすめします。
 Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドからは除外できます。
 
-このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き **Create | Anjin | Title Own Assembly Folder** を選択することで生成できます。
+このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き
+**Create > Anjin > Title Own Assembly Folder**
+を選択することで生成できます。
 
 
 ### タイトル独自Agent
