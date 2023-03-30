@@ -18,47 +18,48 @@ Click [English](./README.md) for English page if you need.
 
 ## インストール方法
 
-[openupm-cli](https://github.com/openupm/openupm-cli) をインストール済みであれば、次のコマンドでインストールできます。
+主に2通りの方法でインストールできます。
+
+### Package Manager ウィンドウを使用する場合
+
+1. Player Settings ウィンドウ（**Editor > Player Settings**）にある、**Package Manager** タブを開きます
+2. **Scoped Registries** の下にある **+** ボタンをクリックし、次の項目を設定します（図 1）
+   1. **Name:** `package.openupm.com`
+   2. **URL:** `https://package.openupm.com`
+   3. **Scope(s):** `dom.dena`, `com.cysharp`, and `com.nowsprinting`
+3. Package Managerウィンドウを開き（**Window > Package Manager**）、レジストリ選択ドロップダウンで **My Registries** を選択します（図 2）
+4. `com.dena.anjin` パッケージの **Install** ボタンをクリックします
+
+**図 1.** Player Settings ウィンドウの Package Manager タブ
+
+![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
+![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+
+**図 2.** Package Manager ウィンドウのレジストリ選択ドロップダウン
+
+![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
+![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
+
+> **Note**  
+> scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
+
+> **Note**  
+> Anjinパッケージ内のテストを実行する場合（package.jsonの `testables` に追加するとき）は、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
+
+### openupm-cli を使用する場合
+
+[openupm-cli](https://github.com/openupm/openupm-cli) がインストールされている状態で、ターミナルから次のコマンドを実行します。
 
 ```bash
-$ openupm add com.dena.anjin
+openupm add com.dena.anjin
 ```
-
-もしくはPackages/manifest.jsonを任意のエディタで開き、"com.dena.anjin"をdependenciesおよびscopedRegistriesに追加します。
-
-```json
-{
-  "dependencies": {
-    (snip)
-    "com.dena.anjin": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "package.openupm.com",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.cysharp",
-        "com.dena",
-        "com.nowsprinting"
-      ]
-    }
-  ]
-}
-```
-
-> **Note**  
-> scopesに"com.cysharp"と"com.nowsprinting"を忘れず追加してください。Anjin内で使用しています。
-
-> **Note**  
-> Anjinパッケージ内のテストを実行する場合（package.jsonのtestablesに追加するとき）は、Unity Test Framework v1.3以上が必要です。
 
 Assembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
-
 
 ### 推奨.gitignore
 
 Anjinを起動すると、次のファイルが自動生成されます。
-トラッキングする必要はありませんので、プロジェクトの.gitignoreに追加することを推奨します。
+トラッキングする必要はありませんので、プロジェクトの.gitignoreファイルに追加することを推奨します。
 
 ```
 /Assets/AutopilotState.asset*
@@ -385,12 +386,11 @@ Anjinの実行状態を永続化している `AutopilotState.asset` が不正な
 MIT License
 
 
-
 ## コントリビュート
 
-IssueやPull Requestを歓迎します。
+IssueやPull requestを歓迎します。
 
-Pull Requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
+Pull requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
 ブランチ名から自動的にラベルを付ける設定もあります。[PR Labeler settings](.github/pr-labeler.yml) を参照してください。
 
 
@@ -398,18 +398,19 @@ Pull Requestには `enhancement`, `bug`, `chore`, `documentation` といった�
 
 本リポジトリをUnityプロジェクトのサブモジュールとして Packages/ ディレクトリ下に置いてください。
 
-例えば、次のコマンドを実行します。
+ターミナルから次のコマンドを実行します。
 
 ```bash
 git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 ```
 
-また、テストの実行には [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以降のインストールが必要です。
+> **Note**  
+> Anjinパッケージ内のテストを実行するために、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
 
 
 ## リリースワークフロー
 
-**Actions > Create release pull request > Run workflow** を実行し、作られたPull Requestをデフォルトブランチにマージすることでリリース処理が実行されます。
+**Actions > Create release pull request > Run workflow** を実行し、作られたpull requestをデフォルトブランチにマージすることでリリース処理が実行されます。
 （もしくは、デフォルトブランチのpackage.json内のバージョン番号を書き換えます）
 
 リリース処理は、[Release](.github/workflows/release.yml)ワークフローで自動的に行われます。
