@@ -394,9 +394,22 @@ Pull Requestには `enhancement`, `bug`, `chore`, `documentation` といった�
 ブランチ名から自動的にラベルを付ける設定もあります。[PR Labeler settings](.github/pr-labeler.yml) を参照してください。
 
 
+## 開発方法
+
+本リポジトリをUnityプロジェクトのサブモジュールとして Packages/ ディレクトリ下に置いてください。
+
+例えば、次のコマンドを実行します。
+
+```bash
+git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
+```
+
+また、テストの実行には [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以降のインストールが必要です。
+
+
 ## リリースワークフロー
 
-`Actions | Create release pull request | Run workflow`を実行し、作られたPRをデフォルトブランチにマージすることでリリース処理が実行されます。
+**Actions > Create release pull request > Run workflow** を実行し、作られたPull Requestをデフォルトブランチにマージすることでリリース処理が実行されます。
 （もしくは、デフォルトブランチのpackage.json内のバージョン番号を書き換えます）
 
 リリース処理は、[Release](.github/workflows/release.yml)ワークフローで自動的に行われます。

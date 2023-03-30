@@ -391,6 +391,20 @@ Be grateful if you could label the PR as `enhancement`, `bug`, `chore`, and `doc
 
 
 
+## How to development
+
+Add this repository as a submodule to the Packages/ directory in your project.
+
+Examples:
+
+```bash
+git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
+```
+
+And required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests.
+
+
+
 ## Release workflow
 
 Run `Actions | Create release pull request | Run workflow` and merge created PR.
