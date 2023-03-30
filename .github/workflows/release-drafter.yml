@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2023 Koji Hasegawa.
+# Copyright (c) 2023 DeNA Co., Ltd.
 # This software is released under the MIT License.
 
 name: Update draft release
@@ -7,6 +7,11 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions: write-all
 jobs:
