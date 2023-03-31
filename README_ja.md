@@ -18,47 +18,48 @@ Click [English](./README.md) for English page if you need.
 
 ## インストール方法
 
-[openupm-cli](https://github.com/openupm/openupm-cli) をインストール済みであれば、次のコマンドでインストールできます。
+主に2通りの方法でインストールできます。
+
+### Package Manager ウィンドウを使用する場合
+
+1. Player Settings ウィンドウ（**Editor > Player Settings**）にある、**Package Manager** タブを開きます
+2. **Scoped Registries** の下にある **+** ボタンをクリックし、次の項目を設定します（図 1）
+   1. **Name:** `package.openupm.com`
+   2. **URL:** `https://package.openupm.com`
+   3. **Scope(s):** `dom.dena`, `com.cysharp`, and `com.nowsprinting`
+3. Package Managerウィンドウを開き（**Window > Package Manager**）、レジストリ選択ドロップダウンで **My Registries** を選択します（図 2）
+4. `com.dena.anjin` パッケージの **Install** ボタンをクリックします
+
+**図 1.** Player Settings ウィンドウの Package Manager タブ
+
+![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
+![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+
+**図 2.** Package Manager ウィンドウのレジストリ選択ドロップダウン
+
+![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
+![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
+
+> **Note**  
+> scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
+
+> **Note**  
+> Anjinパッケージ内のテストを実行する場合（package.jsonの `testables` に追加するとき）は、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
+
+### openupm-cli を使用する場合
+
+[openupm-cli](https://github.com/openupm/openupm-cli) がインストールされている状態で、ターミナルから次のコマンドを実行します。
 
 ```bash
-$ openupm add com.dena.anjin
+openupm add com.dena.anjin
 ```
-
-もしくはPackages/manifest.jsonを任意のエディタで開き、"com.dena.anjin"をdependenciesおよびscopedRegistriesに追加します。
-
-```json
-{
-  "dependencies": {
-    (snip)
-    "com.dena.anjin": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "package.openupm.com",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.cysharp",
-        "com.dena",
-        "com.nowsprinting"
-      ]
-    }
-  ]
-}
-```
-
-> **Note**  
-> scopesに"com.cysharp"と"com.nowsprinting"を忘れず追加してください。Anjin内で使用しています。
-
-> **Note**  
-> Anjinパッケージ内のテストを実行する場合（package.jsonのtestablesに追加するとき）は、Unity Test Framework v1.3以上が必要です。
 
 Assembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
-
 
 ### 推奨.gitignore
 
 Anjinを起動すると、次のファイルが自動生成されます。
-トラッキングする必要はありませんので、プロジェクトの.gitignoreに追加することを推奨します。
+トラッキングする必要はありませんので、プロジェクトの.gitignoreファイルに追加することを推奨します。
 
 ```
 /Assets/AutopilotState.asset*
@@ -82,7 +83,7 @@ Anjinを起動すると、次のファイルが自動生成されます。
 ### オートパイロット設定ファイル（.asset）の生成
 
 UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
-**Create | Anjin | Autopilot Settings**
+**Create > Anjin > Autopilot Settings**
 を選択すると生成できます。
 ファイル名は任意で、プロジェクト内に複数作成して使い分けできます。
 
@@ -113,7 +114,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 この項目は、コマンドラインから上書きもできます（後述）。
 
 <dl>
-  <dt>Lifespan [sec]</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
+  <dt>Lifespan</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
@@ -148,7 +149,7 @@ Slack通知に付与するメンションを設定します。
 ビルトインのAgentを使用する場合でも、タイトル独自Agentを実装した場合でも、Unityエディタでそのインスタンス（.assetファイル）を生成する必要があります。
 
 インスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
-**Create | Anjin | Agent名**
+**Create > Anjin > Agent名**
 を選択すると生成できます。ファイル名は任意です。
 
 生成したファイルを選択すると、インスペクタにAgent固有の設定項目が表示され、カスタマイズが可能です。
@@ -214,8 +215,8 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>ランダム操作の実行時間 [秒]。0を指定するとほぼ無制限（TimeSpan.MaxValue）に動作します。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
-  <dt>Delay Millis</dt><dd>ランダム操作間のウェイト間隔 [ミリ秒]</dd>
+  <dt>Lifespan Sec</dt><dd>ランダム操作の実行時間を秒で指定します。0を指定するとほぼ無制限（TimeSpan.MaxValue）に動作します。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
+  <dt>Delay Millis</dt><dd>ランダム操作間のウェイト間隔をミリ秒で指定します</dd>
 </dl>
 
 `UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、
@@ -236,7 +237,9 @@ uGUIのコンポーネントをランダムに操作するAgentです。
   <dt>Recorded Json</dt><dd>再生するレコーディングファイル (.json) を指定します</dd>
 </dl>
 
-Automated QAによる操作のレコーディングは、Unityエディターのメニューから**Automated QA | Automated QA Hub | Recorded Playback**で開くウィンドウから行ないます。
+Automated QAによる操作のレコーディングは、Unityエディターのメニューから
+**Automated QA > Automated QA Hub > Recorded Playback**
+で開くウィンドウから行ないます。
 レコーディングファイル（.json）は Assets/Recordings/ フォルダ下に保存されますが、移動・リネームは自由です。
 
 なお、Automated QAのRecorded Playback機能ではScene遷移をまたがって操作を記録ができますが、AnjinではSceneが切り替わったところでAgentも強制的に切り替わるため、再生も中断されてしまいます。
@@ -255,7 +258,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>なにもしない時間 [秒]。0を指定すると無制限になにもしません。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
+  <dt>Lifespan Sec</dt><dd>なにもしない時間を秒で指定します。0を指定すると無制限になにもしません。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
 </dl>
 
 
@@ -324,7 +327,9 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 ゲームタイトル固有のAgent等を実装する場合、リリースビルドへの混入を避けるため、専用のアセンブリに分けることをおすすめします。
 Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドからは除外できます。
 
-このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き **Create | Anjin | Title Own Assembly Folder** を選択することで生成できます。
+このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き
+**Create > Anjin > Title Own Assembly Folder**
+を選択することで生成できます。
 
 
 ### タイトル独自Agent
@@ -385,18 +390,31 @@ Anjinの実行状態を永続化している `AutopilotState.asset` が不正な
 MIT License
 
 
-
 ## コントリビュート
 
-IssueやPull Requestを歓迎します。
+IssueやPull requestを歓迎します。
 
-Pull Requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
+Pull requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
 ブランチ名から自動的にラベルを付ける設定もあります。[PR Labeler settings](.github/pr-labeler.yml) を参照してください。
+
+
+## 開発方法
+
+本リポジトリをUnityプロジェクトのサブモジュールとして Packages/ ディレクトリ下に置いてください。
+
+ターミナルから次のコマンドを実行します。
+
+```bash
+git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
+```
+
+> **Note**  
+> Anjinパッケージ内のテストを実行するために、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
 
 
 ## リリースワークフロー
 
-`Actions | Create release pull request | Run workflow`を実行し、作られたPRをデフォルトブランチにマージすることでリリース処理が実行されます。
+**Actions > Create release pull request > Run workflow** を実行し、作られたpull requestをデフォルトブランチにマージすることでリリース処理が実行されます。
 （もしくは、デフォルトブランチのpackage.json内のバージョン番号を書き換えます）
 
 リリース処理は、[Release](.github/workflows/release.yml)ワークフローで自動的に行われます。

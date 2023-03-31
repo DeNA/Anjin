@@ -18,39 +18,41 @@ Click [日本語](./README_ja.md) for the Japanese page if you need.
 
 ## Installation
 
+You can choose from two typical installation methods.
+
+### Install via Package Manager window
+
+1. Open the **Package Manager** tab in Player Settings window (**Editor > Player Settings**)
+2. Click **+** button under the **Scoped Registries** and enter the following settings (figure 1.):
+   1. **Name:** `package.openupm.com`
+   2. **URL:** `https://package.openupm.com`
+   3. **Scope(s):** `dom.dena`, `com.cysharp`, and `com.nowsprinting`
+3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
+4. Click **Install** button on the `com.dena.anjin` package
+
+**Figure 1.** Package Manager tab in Player Settings window.
+
+![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
+![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
+
+**Figure 2.** Select registries drop-down list in Package Manager window.
+
+![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
+![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
+
+> **Note**  
+> Do not forget to add `com.cysharp` and `com.nowsprinting` into scopes. These are used within Anjin.
+
+> **Note**  
+> Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests (when adding to the `testables` in package.json).
+
+### Install via OpenUPM-CLI
+
 If you installed [openupm-cli](https://github.com/openupm/openupm-cli), run the command below:
 
 ```bash
-$ openupm add com.dena.anjin
+openupm add com.dena.anjin
 ```
-
-Or edit Packages/manifest.json, and add "com.dena.anjin" element into dependencies and scopedRegistries.
-
-```json
-{
-  "dependencies": {
-    (snip)
-    "com.dena.anjin": "1.0.0"
-  },
-  "scopedRegistries": [
-    {
-      "name": "package.openupm.com",
-      "url": "https://package.openupm.com",
-      "scopes": [
-        "com.cysharp",
-        "com.dena",
-        "com.nowsprinting"
-      ]
-    }
-  ]
-}
-```
-
-> **Note**  
-> Do not forget to add "com.cysharp" and "com.nowsprinting" into scopes. These are used within Anjin.
-
-> **Note**  
-> Require Unity Test Framework v1.3 or higher to run the tests in the Anjin package (when adding to the testables in package.json).
 
 `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` is set in the Define Constraints of the Assembly Definition File, So excluded from the release build in principle.
 
@@ -58,7 +60,7 @@ Or edit Packages/manifest.json, and add "com.dena.anjin" element into dependenci
 ### Recommended .gitignore
 
 The following files are automatically generated when you start Anjin.
-There is no need to track it, so we recommend adding it to your project's .gitignore.
+There is no need to track it, so we recommend adding it to your project's .gitignore file.
 
 ```
 /Assets/AutopilotState.asset*
@@ -82,7 +84,7 @@ After installing the UPM package in the game title project, configure and implem
 ### Generate and configure the AutopilotSettings.asset file
 
 Right-click in the Unity Editor's Project window to open the context menu, then select
-**Create | Anjin | Autopilot Settings**
+**Create > Anjin > Autopilot Settings**
 to create the file.
 The file name is arbitrary, and multiple files can be created and used within a project.
 
@@ -115,7 +117,7 @@ It is **NOT** set to `DontDestroyOnLoad`.
 This item can also be overridden from the command line (see below).
 
 <dl>
-  <dt>Lifespan [sec]</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation</dd>
+  <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation</dd>
   <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. </dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
   <dt>JUnit Report Path</dt><dd>Specifies the JUnit format report file output path (optional). If there are zero errors and zero failures, the autopilot run is considered to have completed successfully. </dd>
@@ -150,7 +152,7 @@ Set up a filter to catch abnormal log messages and notify Slack.
 Whether you use the built-in Agent or implement custom Agent, you must create an instance (.asset file) of it in the Unity editor.
 
 Instances are created by right-clicking in the Project window of the Unity editor to open the context menu, then selecting
-**Create | Anjin | Agent name**.
+**Create > Anjin > Agent name**.
 
 Select the generated file, Agent-specific settings are displayed in the inspector and can be customized.
 You can prepare multiple Agents with different settings for the same Agent and use them in different Scenes.
@@ -212,7 +214,7 @@ This agent implementation uses open source [test-helper.monkey](https://github.c
 An instance of this Agent (.asset file) can contain the following.
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>Duration of random operation execution [sec]; if 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
+  <dt>Lifespan Sec</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
   <dt>Delay Millis</dt><dd>Wait interval [milliseconds] between random operations</dd>
 </dl>
 
@@ -234,7 +236,8 @@ The following can be set in an instance (.asset file) of this Agent.
   <dt>Recorded Json</dt><dd>Specify the recording file (.json) to play</dd>
 </dl>
 
-Use the Recorded Playback window for recording operations with Automated QA. The window is opened via the Unity editor menu **Automated QA | Automated QA Hub | Recorded Playback**.
+Use the Recorded Playback window for recording operations with Automated QA. The window is opened via the Unity editor menu
+**Automated QA > Automated QA Hub > Recorded Playback**.
 The recording file (.json) is saved under the Assets/Recordings/ folder and can be freely moved or renamed.
 
 Note that the Recorded Playback function in Automated QA can record operations across Scene transitions, but in Anjin, when the Scene is switched, the Agent is also forcibly switched, so playback is also interrupted.
@@ -252,7 +255,7 @@ An Agent that does nothing.
 The following settings can be configured for this Agent instance (.asset file).
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>Do Nothing Duration [sec]. 0 means unlimited time to do nothing. If 0 is specified, an unlimited amount of time for no action is taken. It will not do anything until the next Scene is switched.</dd>
+  <dt>Lifespan Sec</dt><dd>Specifies the do nothing time in seconds. 0 means unlimited time to do nothing. If 0 is specified, an unlimited amount of time for no action is taken. It will not do anything until the next Scene is switched.</dd>
 </dl>
 
 
@@ -321,7 +324,8 @@ This can be accomplished with `ParallelCompositeAgent`, but it is easier to set 
 Game title specific Agents and initialization code must be avoided in the release build.
 Create a unique assembly and turn off "Auto Referenced", and set the "Define Constraints" to `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE`.
 
-This asmdef and its storage folder can be created by opening the context menu anywhere in the Project window and selecting **Create | Anjin | Title Own Assembly Folder**.
+This asmdef and its storage folder can be created by opening the context menu anywhere in the Project window and selecting
+**Create > Anjin > Title Own Assembly Folder**.
 
 
 ### Custom Agent
@@ -382,18 +386,30 @@ If this does not solve the problem, try deleting `AutopilotState.asset`.
 MIT License
 
 
-
 ## How to contribute
 
 Open an issue or create a pull request.
 
-Be grateful if you could label the PR as `enhancement`, `bug`, `chore`, and `documentation`. See [PR Labeler settings](.github/pr-labeler.yml) for automatically labeling from the branch name.
+Be grateful if you could label the pull request as `enhancement`, `bug`, `chore`, and `documentation`. See [PR Labeler settings](.github/pr-labeler.yml) for automatically labeling from the branch name.
 
+
+## How to development
+
+Add this repository as a submodule to the Packages/ directory in your project.
+
+Run the command below:
+
+```bash
+git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
+```
+
+> **Note**  
+> Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests.
 
 
 ## Release workflow
 
-Run `Actions | Create release pull request | Run workflow` and merge created PR.
+Run **Actions > Create release pull request > Run workflow** and merge created pull request.
 (Or bump version in package.json on default branch)
 
 Then, Will do the release process automatically by [Release](.github/workflows/release.yml) workflow.
