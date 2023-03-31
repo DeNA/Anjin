@@ -30,12 +30,12 @@ You can choose from two typical installation methods.
 3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
 4. Click **Install** button on the `com.dena.anjin` package
 
-**Fugure 1.** Package Manager tab in Player Settings window.
+**Figure 1.** Package Manager tab in Player Settings window.
 
 ![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
 ![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
 
-**Fugure 2.** Select registries drop-down list in Package Manager window.
+**Figure 2.** Select registries drop-down list in Package Manager window.
 
 ![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
