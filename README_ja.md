@@ -26,7 +26,7 @@ Click [English](./README.md) for English page if you need.
 2. **Scoped Registries** の下にある **+** ボタンをクリックし、次の項目を設定します（図 1）
    1. **Name:** `package.openupm.com`
    2. **URL:** `https://package.openupm.com`
-   3. **Scope(s):** `dom.dena`, `com.cysharp`, and `com.nowsprinting`
+   3. **Scope(s):** `com.dena`, `com.cysharp`, and `com.nowsprinting`
 3. Package Managerウィンドウを開き（**Window > Package Manager**）、レジストリ選択ドロップダウンで **My Registries** を選択します（図 2）
 4. `com.dena.anjin` パッケージの **Install** ボタンをクリックします
 
