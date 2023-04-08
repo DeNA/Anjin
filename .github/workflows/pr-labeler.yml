@@ -4,10 +4,14 @@
 name: PR Labeler
 
 on:
-  pull_request:
+  pull_request_target:
     types: [ opened ]
+    # Do NOT check out, build, or run untrusted code from the pull request with this event.
 
-permissions: write-all
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   pr-labeler:
     runs-on: ubuntu-latest
