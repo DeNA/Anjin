@@ -56,10 +56,7 @@ namespace DeNA.Anjin
 
         private static void CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
         {
-            foreach (var methodInfo in AppDomain.CurrentDomain.GetAssemblies()
-                         .SelectMany(x => x.GetTypes())
-                         .SelectMany(x => x.GetMethods())
-                         .Where(x => x.GetCustomAttributes(typeof(InitializeOnLaunchAutopilotAttribute), false).Any()))
+            foreach (var methodInfo in TypeCache.GetMethodsWithAttribute<InitializeOnLaunchAutopilotAttribute>())
             {
                 methodInfo.Invoke(null, null); // static method only
             }
