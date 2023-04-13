@@ -26,7 +26,7 @@ You can choose from two typical installation methods.
 2. Click **+** button under the **Scoped Registries** and enter the following settings (figure 1.):
    1. **Name:** `package.openupm.com`
    2. **URL:** `https://package.openupm.com`
-   3. **Scope(s):** `dom.dena`, `com.cysharp`, and `com.nowsprinting`
+   3. **Scope(s):** `com.dena`, `com.cysharp`, and `com.nowsprinting`
 3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
 4. Click **Install** button on the `com.dena.anjin` package
 
