@@ -69,6 +69,7 @@ namespace DeNA.Anjin.Reporters
                     var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
                     var withoutAlpha = new Texture2D(screenshot.width, screenshot.height, TextureFormat.RGB24, false);
                     withoutAlpha.SetPixels(screenshot.GetPixels());
+                    withoutAlpha.Apply();
 
                     var postScreenshotTask = await _slackAPI.Post(_settings.slackToken, channel,
                         withoutAlpha.EncodeToPNG(), postTitleTask.Ts);
