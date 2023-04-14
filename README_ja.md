@@ -384,6 +384,24 @@ Anjinの実行状態を永続化している `AutopilotState.asset` が不正な
 それでも解決しない場合、 `AutopilotState.asset` を削除してみてください。
 
 
+### [CompilerError] Argument 1: Cannot convert to 'System.Threading.CancellationToken'
+
+次のコンパイルエラーが発生するケースが報告されています。
+
+```
+[CompilerError] Argument 1:.
+Cannot convert from 'DeNA.Anjin.Reporters.SlackReporter.CoroutineRunner' to 'System.Threading.CancellationToken'
+Compiler Error at Library\PackageCache\com.dena.anjin@1.0.1\Runtime\Reporters\SlackReporter.cs:66 column 53
+```
+
+これは、プロジェクトにインストールされているUniTaskがv2.3.0未満のときに発生します。
+この箇所で使用している `UniTask.WaitForEndOfFrame(MonoBehaviour)` は、UniTask v2.3.1で追加されたAPIです。
+
+通常、インストール方法に従っていれば適正なバージョンのUniTaskがインストールされます。
+しかし、プロジェクトに埋め込みパッケージとしてUniTaskが配置されていたりすればそちらが優先されてしまいます。
+Unityエディターが生成するPackages/packages-lock.jsonの中身を確認するか、お使いのIDEのコード定義ジャンプ機能で `UniTask.WaitForEndOfFrame()` のソースファイルがどこにあるかを確認するなどして、古いUniTaskがインストールされている原因を突き止められます。
+
+
 
 ## ライセンス
 
