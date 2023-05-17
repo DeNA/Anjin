@@ -22,7 +22,7 @@ You can choose from two typical installation methods.
 
 ### Install via Package Manager window
 
-1. Open the **Package Manager** tab in Player Settings window (**Editor > Player Settings**)
+1. Open the **Package Manager** tab in Project Settings window (**Editor > Project Settings**)
 2. Click **+** button under the **Scoped Registries** and enter the following settings (figure 1.):
    1. **Name:** `package.openupm.com`
    2. **URL:** `https://package.openupm.com`
@@ -30,7 +30,7 @@ You can choose from two typical installation methods.
 3. Open the Package Manager window (**Window > Package Manager**) and select **My Registries** in registries drop-down list (figure 2.)
 4. Click **Install** button on the `com.dena.anjin` package
 
-**Figure 1.** Package Manager tab in Player Settings window.
+**Figure 1.** Package Manager tab in Project Settings window.
 
 ![](Documentation~/ProjectSettings_Dark.png#gh-dark-mode-only)
 ![](Documentation~/ProjectSettings_Light.png#gh-light-mode-only)
