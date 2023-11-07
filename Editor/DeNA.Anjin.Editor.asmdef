@@ -2,7 +2,9 @@
     "name": "DeNA.Anjin.Editor",
     "rootNamespace": "DeNA.Anjin",
     "references": [
-        "DeNA.Anjin"
+        "DeNA.Anjin",
+        "TestHelper.Monkey.Annotations",
+        "TestHelper.Monkey"
     ],
     "includePlatforms": [
         "Editor"
