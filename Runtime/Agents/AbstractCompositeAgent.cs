@@ -25,7 +25,7 @@ namespace DeNA.Anjin.Agents
         /// <inheritdoc />
         public override IRandom Random
         {
-            internal set
+            set
             {
                 base.Random = value;
                 RandomFactory = new RandomFactory(base.Random.Next());
