@@ -23,12 +23,12 @@ namespace DeNA.Anjin.Agents
         /// <summary>
         /// Logger instance used by this agent
         /// </summary>
-        public ILogger Logger { get; internal set; }
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// Random instance used by this agent
         /// </summary>
-        public virtual IRandom Random { get; internal set; }
+        public virtual IRandom Random { get; set; }
 
         /// <summary>
         /// Run agent
