@@ -87,6 +87,18 @@ msgstr "JUnitレポート出力パス"
 msgid "JUnit report output path"
 msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
 
+# reporter
+msgid "Reporter"
+msgstr "レポータ"
+
+# reporter tooltip
+msgid "Reporter that called when some errors occurred in target application"
+msgstr "対象のアプリケーションで発生したエラーを通知するレポータ"
+
+# obsolete slack settings
+msgid "Slack settings will be moved to SlackReporter"
+msgstr "Slack 設定は SlackReporter へ移動しました"
+
 # slackToken
 msgid "Slack Token"
 msgstr "Slackトークン"
@@ -108,11 +120,11 @@ msgid "Slack Mention Settings"
 msgstr "Slackメンション設定"
 
 # mentionSubTeamIDs
-msgid "Mention Sub Team IDs"
+msgid "Sub Team IDs to Mention"
 msgstr "メンション宛先"
 
 # mentionSubTeamIDs tooltip
-msgid "Mention to sub team ID (comma separates)"
+msgid "Sub team IDs to mention (comma separates)"
 msgstr "Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します"
 
 # addHereInSlackMessage
@@ -120,7 +132,7 @@ msgid "Add @here Into Slack Message"
 msgstr "@hereをメッセージにつける"
 
 # addHereInSlackMessage tooltip
-msgid "Add @here into Slack message"
+msgid "Whether adding @here into Slack messages or not"
 msgstr "Slack通知メッセージに@hereを付けます"
 
 # Header: Error Handling Settings
@@ -320,3 +332,7 @@ msgstr "操作を記録したJSONファイル"
 # recordedJson tooltip
 msgid "JSON file recorded by AutomatedQA package"
 msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したjsonファイルを設定します"
+
+# composite reporters
+msgid "Reporters"
+msgstr "レポータ"
