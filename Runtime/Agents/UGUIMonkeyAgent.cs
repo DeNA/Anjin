@@ -56,6 +56,33 @@ namespace DeNA.Anjin.Agents
         public List<RandomStringParametersEntry> randomStringParametersMap =
             new List<RandomStringParametersEntry>();
 
+        /// <summary>
+        /// Whether screenshot is enabled
+        /// </summary>
+        public bool screenshotEnabled;
+
+        /// <summary>
+        /// Whether using a default directory or specifying manually
+        /// </summary>
+        public bool defaultScreenshotDirectory = true;
+
+        /// <inheritdoc cref="ScreenshotOptions.Directory" />
+        public string screenshotDirectory;
+
+        /// <summary>
+        /// Whether using a default file name prefix or specifying manually
+        /// </summary>
+        public bool defaultScreenshotFilenamePrefix = true;
+
+        /// <inheritdoc cref="ScreenshotOptions.FilenamePrefix" />
+        public string screenshotFilenamePrefix;
+
+        /// <inheritdoc cref="ScreenshotOptions.SuperSize" />
+        public int screenshotSuperSize = 1;
+
+        /// <inheritdoc cref="ScreenshotOptions.StereoCaptureMode" />
+        public ScreenCapture.StereoScreenCaptureMode screenshotStereoCaptureMode =
+            ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
@@ -72,7 +99,16 @@ namespace DeNA.Anjin.Agents
                 RandomStringParametersStrategy = GetRandomStringParameters,
                 SecondsToErrorForNoInteractiveComponent = secondsToErrorForNoInteractiveComponent,
                 TouchAndHoldDelayMillis = touchAndHoldDelayMillis,
-                Gizmos = gizmos
+                Gizmos = gizmos,
+                Screenshots = screenshotEnabled
+                    ? new ScreenshotOptions
+                    {
+                        Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
+                        FilenamePrefix = defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix,
+                        SuperSize = screenshotSuperSize,
+                        StereoCaptureMode = screenshotStereoCaptureMode
+                    }
+                    : null
             };
             await Monkey.Run(config, token);
 
