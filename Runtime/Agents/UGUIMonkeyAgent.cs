@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
 using TestHelper.Monkey.Random;
+using TestHelper.Monkey.ScreenshotFilenameStrategies;
 using TestHelper.Random;
 using UnityEngine;
 
@@ -66,7 +67,11 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public bool defaultScreenshotDirectory = true;
 
-        /// <inheritdoc cref="ScreenshotOptions.Directory" />
+        /// <summary>
+        /// Directory path for screenshot images. Create a new directory if directory not exists.
+        /// If the value is null or empty,
+        /// <c>Path.Combine(Application.persistentDataPath, "TestHelper.Monkey", "Screenshots")</c> will be used
+        /// </summary>
         public string screenshotDirectory;
 
         /// <summary>
@@ -74,7 +79,11 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public bool defaultScreenshotFilenamePrefix = true;
 
-        /// <inheritdoc cref="ScreenshotOptions.FilenamePrefix" />
+        /// <summary>
+        /// File name prefix for screenshot images. If the value is null or empty, a default value will be used.
+        /// The default value is the current test name if the agent is running on tests. Otherwise, be a caller method
+        /// name
+        /// </summary>
         public string screenshotFilenamePrefix;
 
         /// <inheritdoc cref="ScreenshotOptions.SuperSize" />
@@ -103,8 +112,11 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
-                        Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
-                        FilenamePrefix = defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix,
+                        FilePathStrategy = CounterBasedStrategy.Create(
+                            Counter.Global,
+                            defaultScreenshotDirectory ? null : screenshotDirectory,
+                            defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix
+                        ),
                         SuperSize = screenshotSuperSize,
                         StereoCaptureMode = screenshotStereoCaptureMode
                     }
@@ -149,6 +161,7 @@ namespace DeNA.Anjin.Agents
 
             /// <inheritdoc cref="RandomStringParameters.CharactersKind" />
             public CharactersKind CharactersKind;
+
 
             /// <summary>
             /// Returns a <c cref="RandomStringParameters" />
