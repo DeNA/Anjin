@@ -117,7 +117,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
             {
                 drawHeaderCallback = rect => EditorGUI.LabelField(rect, s_randomStringParams),
                 elementHeightCallback = _ => s_elementHeight,
-                drawElementCallback = (rect, index, _, _) =>
+                // XXX: Discarding parameters cannot be used on Unity 2019.x .
+                // ReSharper disable UnusedParameter.Local
+                drawElementCallback = (rect, index, isActive, isFocused) =>
+                // ReSharper enable UnusedParameter.Local
                 {
                     var elemProp = _randomStringParametersMapProp.GetArrayElementAtIndex(index);
                     var rect1 = new Rect(rect) { y = rect.y + Padding, height = EditorGUIUtility.singleLineHeight };
