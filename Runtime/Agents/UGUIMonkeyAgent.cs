@@ -162,7 +162,6 @@ namespace DeNA.Anjin.Agents
             /// <inheritdoc cref="RandomStringParameters.CharactersKind" />
             public CharactersKind CharactersKind;
 
-
             /// <summary>
             /// Returns a <c cref="RandomStringParameters" />
             /// </summary>
