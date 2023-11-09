@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
@@ -62,14 +64,17 @@ namespace DeNA.Anjin
 
             _randomFactory = new RandomFactory(seed);
             _logger.Log($"Random seed is {seed}");
+            
+            // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
+            //       Because some agent can throw an error immediately, so reporter can miss the error if
+            //       registering logMessageReceived is placed after DispatchByScene.
+            _reporter = new SlackReporter(_settings, new SlackAPI());
+            _logMessageHandler = new LogMessageHandler(_settings, _reporter);
+            Application.logMessageReceived += _logMessageHandler.HandleLog;
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
             SceneManager.activeSceneChanged += _dispatcher.DispatchByScene;
-
-            _reporter = new SlackReporter(_settings, new SlackAPI());
-            _logMessageHandler = new LogMessageHandler(_settings, _reporter);
-            Application.logMessageReceived += _logMessageHandler.HandleLog;
 
             if (_settings.lifespanSec > 0)
             {
@@ -92,7 +97,7 @@ namespace DeNA.Anjin
         private IEnumerator Lifespan(int timeoutSec)
         {
             yield return new WaitForSecondsRealtime(timeoutSec);
-            Terminate(ExitCode.Normally);
+            yield return UniTask.ToCoroutine(() => TerminateAsync(ExitCode.Normally));
         }
 
         /// <summary>
@@ -101,7 +106,8 @@ namespace DeNA.Anjin
         /// <param name="exitCode">Exit code for Unity Editor</param>
         /// <param name="logString">Log message string when terminate by the log message</param>
         /// <param name="stackTrace">Stack trace when terminate by the log message</param>
-        public void Terminate(ExitCode exitCode, string logString = null, string stackTrace = null)
+        /// <returns>A task awaits termination get completed</returns>
+        public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null, CancellationToken token = default)
         {
             if (_dispatcher != null)
             {
@@ -132,12 +138,29 @@ namespace DeNA.Anjin
             // Terminate when ran specified time.
             _logger.Log("Stop playing by autopilot");
             _state.exitCode = exitCode;
+            // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
+            // SEE: https://github.com/DeNA/Anjin/issues/20
+            await UniTask.DelayFrame(1, cancellationToken: token);
             UnityEditor.EditorApplication.isPlaying = false;
             // Call Launcher.OnChangePlayModeState() so terminates Unity editor, when launch from CLI.
 #else
             _logger.Log($"Exit Unity-editor by autopilot, exit code={exitCode}");
             Application.Quit((int)exitCode);
+            await UniTask.CompletedTask;
 #endif
+        }
+
+
+        /// <summary>
+        /// Terminate autopilot
+        /// </summary>
+        /// <param name="exitCode">Exit code for Unity Editor</param>
+        /// <param name="logString">Log message string when terminate by the log message</param>
+        /// <param name="stackTrace">Stack trace when terminate by the log message</param>
+        [Obsolete("Use " + nameof(TerminateAsync))]
+        public void Terminate(ExitCode exitCode, string logString = null, string stackTrace = null)
+        {
+            TerminateAsync(exitCode, logString, stackTrace).Forget();
         }
     }
 }

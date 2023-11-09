@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
@@ -106,9 +107,17 @@ namespace DeNA.Anjin
 
             agent.Logger = _logger;
             agent.Random = _randomFactory.CreateRandom();
-            agent.Run(token).Forget();
-
-            _logger.Log($"Agent {agentName} dispatched!");
+            
+            try
+            {
+                agent.Run(token).Forget();
+                _logger.Log($"Agent {agentName} dispatched!");
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                _logger.Log($"Agent {agentName} dispatched but immediately threw an error!");
+            }
         }
     }
 }

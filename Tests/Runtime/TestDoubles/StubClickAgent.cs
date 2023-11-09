@@ -9,10 +9,18 @@ using UnityEngine.EventSystems;
 
 namespace DeNA.Anjin.TestDoubles
 {
+    /// <summary>
+    /// A test double for agent. This agent immediately click game objects that have the name specified
+    /// </summary>
     public class StubClickAgent : AbstractAgent
     {
+        /// <summary>
+        /// A name of game objects to click
+        /// </summary>
         [SerializeField] public string targetName;
 
+
+        /// <inheritdoc />
         public override UniTask Run(CancellationToken token)
         {
             foreach (var obj in FindObjectsByType<GameObject>(FindObjectsSortMode.None))
@@ -33,6 +41,7 @@ namespace DeNA.Anjin.TestDoubles
 
                 handler.OnPointerClick(new PointerEventData(EventSystem.current));
             }
+
             return UniTask.CompletedTask;
         }
     }
