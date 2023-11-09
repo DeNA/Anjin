@@ -49,7 +49,6 @@ namespace DeNA.Anjin
         private AutopilotSettings _settings;
         private float _startTime;
 
-
         private void Start()
         {
             _state = AutopilotState.Instance;
@@ -90,7 +89,6 @@ namespace DeNA.Anjin
             _startTime = Time.realtimeSinceStartup;
         }
 
-
         /// <summary>
         /// Terminate when ran specified time.
         /// </summary>
@@ -101,7 +99,6 @@ namespace DeNA.Anjin
             yield return new WaitForSecondsRealtime(timeoutSec);
             yield return UniTask.ToCoroutine(() => TerminateAsync(ExitCode.Normally));
         }
-
 
         /// <summary>
         /// Terminate autopilot
@@ -152,7 +149,6 @@ namespace DeNA.Anjin
             await UniTask.CompletedTask;
 #endif
         }
-
 
         /// <summary>
         /// Terminate autopilot
