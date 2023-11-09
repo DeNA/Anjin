@@ -71,7 +71,7 @@ namespace DeNA.Anjin
             //       registering logMessageReceived is placed after DispatchByScene.
             _reporter = new SlackReporter(_settings, new SlackAPI());
             _logMessageHandler = new LogMessageHandler(_settings, _reporter);
-            Application.logMessageReceived += _logMessageHandler.HandleLog;
+            Application.logMessageReceivedThreaded += _logMessageHandler.HandleLog;
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
@@ -119,7 +119,7 @@ namespace DeNA.Anjin
 
             if (_logMessageHandler != null)
             {
-                Application.logMessageReceived -= _logMessageHandler.HandleLog;
+                Application.logMessageReceivedThreaded -= _logMessageHandler.HandleLog;
             }
 
             if (_state.settings != null && !string.IsNullOrEmpty(_state.settings.junitReportPath))
