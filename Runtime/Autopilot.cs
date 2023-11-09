@@ -49,6 +49,7 @@ namespace DeNA.Anjin
         private AutopilotSettings _settings;
         private float _startTime;
 
+
         private void Start()
         {
             _state = AutopilotState.Instance;
@@ -64,7 +65,7 @@ namespace DeNA.Anjin
 
             _randomFactory = new RandomFactory(seed);
             _logger.Log($"Random seed is {seed}");
-            
+
             // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
             //       Because some agent can throw an error immediately, so reporter can miss the error if
             //       registering logMessageReceived is placed after DispatchByScene.
@@ -89,6 +90,7 @@ namespace DeNA.Anjin
             _startTime = Time.realtimeSinceStartup;
         }
 
+
         /// <summary>
         /// Terminate when ran specified time.
         /// </summary>
@@ -99,6 +101,7 @@ namespace DeNA.Anjin
             yield return new WaitForSecondsRealtime(timeoutSec);
             yield return UniTask.ToCoroutine(() => TerminateAsync(ExitCode.Normally));
         }
+
 
         /// <summary>
         /// Terminate autopilot

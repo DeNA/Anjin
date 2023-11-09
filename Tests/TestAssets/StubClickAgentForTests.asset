@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: StubClickAgentForTests
   m_EditorClassIdentifier: 
   description: 
-  targetName: ThrowErrorFromMainThreadOnClick
+  targetName: ThrowErrorFromNotMainThreadOnClick
