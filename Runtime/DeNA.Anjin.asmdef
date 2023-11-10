@@ -5,7 +5,9 @@
         "DeNA.Anjin.Annotations",
         "Unity.AutomatedQA",
         "UniTask",
-        "TestHelper.Monkey"
+        "TestHelper.Monkey",
+        "TestHelper.Monkey.Annotations",
+        "TestHelper.Random"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -267,6 +267,49 @@ msgstr "操作間隔［ミリ秒］"
 msgid "Delay time between random operations [ms]"
 msgstr "ランダム操作ごとの遅延時間［ミリ秒］"
 
+# timeout
+msgid "Secs Searching Components"
+msgstr "コンポーネント探索時間［秒］"
+
+# timeout tooltip
+msgid "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
+msgstr "インタラクティブな要素を探索する秒数を指定します。探索時間がこれを超えるとエラーを発生させます"
+
+# touchAndHoldDelayMillis
+msgid "Touch and Hold Millis"
+msgstr "タッチ&ホールド時間［ミリ秒］"
+
+# touchAndHoldDelayMillis tooltip
+msgid "Delay time for touch-and-hold [ms]"
+msgstr "タッチ&ホールドの継続時間［ミリ秒］"
+
+# gizmos
+msgid "Enable Gizmos"
+msgstr "Gizmos を有効"
+
+# gizmos tooltip
+msgid "Show Gizmos on GameView during running monkey test if true"
+msgstr "もし有効ならモンキー操作中の GameView に Gizmo を表示します。もし無効なら GameView に Gizmo を表示しません"
+
+# random string parameters table
+msgid "Random String Parameters Table"
+msgstr "ランダム文字列パラメータ表"
+
+# random string parameters table game object name
+msgid "Game Object Name"
+msgstr "Game Object の名前"
+
+# random string parameters table characters kind
+msgid "Characters Kind"
+msgstr "文字種"
+
+# random string parameters table minimum length
+msgid "Minimum Length"
+msgstr "最小文字列長"
+
+# random string parameters table maximum length
+msgid "Maximum Length"
+msgstr "最大文字列長"
 
 #: Editor/UI/Agents/UGUIPlaybackAgentEditor.cs
 
