@@ -64,13 +64,13 @@ namespace DeNA.Anjin
 
             _randomFactory = new RandomFactory(seed);
             _logger.Log($"Random seed is {seed}");
-            
+
             // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
             //       Because some agent can throw an error immediately, so reporter can miss the error if
             //       registering logMessageReceived is placed after DispatchByScene.
             _reporter = new SlackReporter(_settings, new SlackAPI());
             _logMessageHandler = new LogMessageHandler(_settings, _reporter);
-            Application.logMessageReceived += _logMessageHandler.HandleLog;
+            Application.logMessageReceivedThreaded += _logMessageHandler.HandleLog;
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
@@ -116,7 +116,7 @@ namespace DeNA.Anjin
 
             if (_logMessageHandler != null)
             {
-                Application.logMessageReceived -= _logMessageHandler.HandleLog;
+                Application.logMessageReceivedThreaded -= _logMessageHandler.HandleLog;
             }
 
             if (_state.settings != null && !string.IsNullOrEmpty(_state.settings.junitReportPath))
@@ -149,7 +149,6 @@ namespace DeNA.Anjin
             await UniTask.CompletedTask;
 #endif
         }
-
 
         /// <summary>
         /// Terminate autopilot

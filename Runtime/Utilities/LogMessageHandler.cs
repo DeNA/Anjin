@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using UnityEngine;
@@ -39,6 +40,8 @@ namespace DeNA.Anjin.Utilities
                 return;
             }
 
+            // NOTE: HandleLog may called by non-main thread because it subscribe Application.logMessageReceivedThreaded
+            await UniTask.SwitchToMainThread();
             await _reporter.PostReportAsync(logString, stackTrace, type, true);
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
