@@ -2,6 +2,7 @@
     "name": "DeNA.Anjin.Editor",
     "rootNamespace": "DeNA.Anjin",
     "references": [
+        "UniTask",
         "DeNA.Anjin",
         "TestHelper.Monkey.Annotations",
         "TestHelper.Monkey"

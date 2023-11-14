@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using UnityEditor;
 using UnityEngine;
@@ -137,7 +138,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             {
                 if (GUILayout.Button(s_stopButton))
                 {
-                    Stop();
+                    Stop().Forget();
                 }
             }
             else
@@ -157,10 +158,10 @@ namespace DeNA.Anjin.Editor.UI.Settings
         }
 
         [SuppressMessage("ApiDesign", "RS0030")]
-        internal void Stop()
+        internal async UniTask Stop()
         {
             var autopilot = FindObjectOfType<Autopilot>();
-            autopilot.Terminate(Autopilot.ExitCode.Normally);
+            await autopilot.TerminateAsync(Autopilot.ExitCode.Normally);
         }
 
         internal void Launch(AutopilotState state)

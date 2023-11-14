@@ -39,7 +39,7 @@ namespace DeNA.Anjin
             var autopilot = Object.FindObjectOfType<Autopilot>();
             Assert.That((bool)autopilot, Is.True, "Autopilot object is alive");
 
-            autopilot.Terminate(Autopilot.ExitCode.Normally);
+            await autopilot.TerminateAsync(Autopilot.ExitCode.Normally);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace DeNA.Anjin
             var state = AutopilotState.Instance;
             editor.Launch(state);
             await Task.Delay(2000);
-            editor.Stop(); // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
+            await editor.Stop(); // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
 
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
