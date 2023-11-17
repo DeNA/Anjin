@@ -14,14 +14,14 @@ namespace DeNA.Anjin.Utilities
     public class LogMessageHandler
     {
         private readonly AutopilotSettings _settings;
-        private readonly IReporter _reporter;
+        private readonly AbstractReporter _reporter;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
         /// <param name="reporter">Reporter implementation</param>
-        public LogMessageHandler(AutopilotSettings settings, IReporter reporter)
+        public LogMessageHandler(AutopilotSettings settings, AbstractReporter reporter)
         {
             _settings = settings;
             _reporter = reporter;
@@ -42,7 +42,11 @@ namespace DeNA.Anjin.Utilities
 
             // NOTE: HandleLog may called by non-main thread because it subscribe Application.logMessageReceivedThreaded
             await UniTask.SwitchToMainThread();
-            await _reporter.PostReportAsync(logString, stackTrace, type, true);
+
+            if (_reporter != null)
+            {
+                await _reporter.PostReportAsync(_settings, logString, stackTrace, type, true);
+            }
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
             if (autopilot != null)

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using DeNA.Anjin.Agents;
+using DeNA.Anjin.Reporters;
 using UnityEngine;
 
 namespace DeNA.Anjin.Settings
@@ -78,21 +79,25 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Slack API token
         /// </summary>
+        [Obsolete("this option moved to SlackReporter")]
         public string slackToken;
 
         /// <summary>
         /// Slack channels to send notification
         /// </summary>
+        [Obsolete("this option moved to SlackReporter")]
         public string slackChannels;
 
         /// <summary>
         /// Mention to sub team ID (comma separates)
         /// </summary>
+        [Obsolete("this option moved to SlackReporter")]
         public string mentionSubTeamIDs;
 
         /// <summary>
         /// Add @here
         /// </summary>
+        [Obsolete("this option moved to SlackReporter")]
         public bool addHereInSlackMessage;
 
         /// <summary>
@@ -121,6 +126,11 @@ namespace DeNA.Anjin.Settings
         public string[] ignoreMessages;
 
         /// <summary>
+        /// Reporter that called when some errors occurred
+        /// </summary>
+        public AbstractReporter reporter;
+        
+        /// <summary>
         /// Overwrites specified values in the command line arguments
         /// </summary>
         public void OverrideByCommandLineArguments(Arguments args)
@@ -147,12 +157,16 @@ namespace DeNA.Anjin.Settings
 
             if (args.SlackToken.IsCaptured())
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 slackToken = args.SlackToken.Value();
+#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             if (args.SlackChannels.IsCaptured())
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 slackChannels = args.SlackChannels.Value();
+#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
     }

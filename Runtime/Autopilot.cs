@@ -43,7 +43,6 @@ namespace DeNA.Anjin
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
-        private IReporter _reporter;
         private LogMessageHandler _logMessageHandler;
         private AutopilotState _state;
         private AutopilotSettings _settings;
@@ -55,7 +54,7 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            _logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            _logger = CreateLogger();
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -68,8 +67,7 @@ namespace DeNA.Anjin
             // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
             //       Because some agent can throw an error immediately, so reporter can miss the error if
             //       registering logMessageReceived is placed after DispatchByScene.
-            _reporter = new SlackReporter(_settings, new SlackAPI());
-            _logMessageHandler = new LogMessageHandler(_settings, _reporter);
+            _logMessageHandler = new LogMessageHandler(_settings, _settings.reporter);
             Application.logMessageReceivedThreaded += _logMessageHandler.HandleLog;
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
@@ -87,6 +85,15 @@ namespace DeNA.Anjin
             }
 
             _startTime = Time.realtimeSinceStartup;
+        }
+
+        /// <summary>
+        /// Returns an agent dispatcher that autopilot uses. You can change a logger by overriding this method
+        /// </summary>
+        /// <returns>A new logger</returns>
+        protected virtual ILogger CreateLogger()
+        {
+            return new ConsoleLogger(Debug.unityLogger.logHandler);
         }
 
         /// <summary>

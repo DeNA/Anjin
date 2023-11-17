@@ -7,7 +7,8 @@
         "DeNA.Anjin",
         "DeNA.Anjin.Annotations",
         "DeNA.Anjin.Editor",
-        "UniTask"
+        "UniTask",
+        "DeNA.Anjin.Tests"
     ],
     "includePlatforms": [
         "Editor"
