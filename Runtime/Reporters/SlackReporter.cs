@@ -49,7 +49,7 @@ namespace DeNA.Anjin.Reporters
             // NOTE: In _sender.send, switch the execution thread to the main thread, so UniTask.WhenAll is meaningless.
             foreach (var slackChannel in (string.IsNullOrEmpty(settings.slackChannels)
                          ? slackChannels
-                         : settings.slackChannels).Split(","))
+                         : settings.slackChannels).Split(','))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -59,7 +59,7 @@ namespace DeNA.Anjin.Reporters
                 await _sender.Send(
                     string.IsNullOrEmpty(settings.slackToken) ? slackToken : settings.slackToken,
                     slackChannel,
-                    mentionSubTeamIDs.Split(","),
+                    mentionSubTeamIDs.Split(','),
                     addHereInSlackMessage,
                     logString,
                     stackTrace,
