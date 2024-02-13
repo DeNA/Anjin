@@ -145,7 +145,7 @@ dotnet_naming_symbols.all_members.applicable_kinds = *
 
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-file_header_template = Copyright (c) $CURRENT_YEAR$ DeNA Co., Ltd.\nThis software is released under the MIT License.
+file_header_template = Copyright (c) ${CurrentDate.Year} DeNA Co., Ltd.\nThis software is released under the MIT License.
 
 # RS0016: Only enable if API files are present
 dotnet_public_api_analyzer.require_api_files = true
