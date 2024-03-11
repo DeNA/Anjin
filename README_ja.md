@@ -175,6 +175,7 @@ Slack通知に付与するメンションを設定します。
 ```bash
 $(UNITY) \
   -projectPath $(PROJECT_HOME) \
+  -batchmode \
   -executeMethod DeNA.Anjin.Editor.Commandline.Bootstrap \
   -AUTOPILOT_SETTINGS Assets/Path/To/AutopilotSettings.asset
 ```
@@ -184,7 +185,7 @@ $(UNITY) \
 - `UNITY`にはUnityエディタへのパス、`PROJECT_HOME`には自動実行対象プロジェクトのルートを指定します
 - `-AUTOPILOT_SETTINGS` には、実行したい設定ファイル（AutopilotSettings）のパスを指定します
 - `-quit` は指定しないでください（Play modeに入らず終了してしまいます）
-- `-batchmode` ではuGUIを使用しているゲームでは、PlaybackAgentおよびMonkeyAgentが動作しません
+- `-nographics` は指定しないでください（GameViewウィンドウを表示できません）
 
 また、以下の引数を追加することで一部の設定を上書きできます。
 各引数の詳細は前述の「オートパイロット設定ファイル」の同名項目を参照してください。
@@ -429,8 +430,17 @@ Pull requestには `enhancement`, `bug`, `chore`, `documentation` といった�
 git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 ```
 
-> **Note**  
-> Anjinパッケージ内のテストを実行するために、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
+> [!WARNING]  
+> Anjinパッケージ内のテストを実行するためには、次のパッケージのインストールが必要です。
+> - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.4.2 or later
+
+テスト専用のUnityプロジェクトを生成し、Unityバージョンを指定してテストを実行するには、次のコマンドを実行します。
+
+```bash
+make create_project
+UNITY_VERSION=2019.4.40f1 make -k test
+```
 
 
 ## リリースワークフロー
