@@ -170,7 +170,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         internal async UniTask Stop()
         {
             var autopilot = FindObjectOfType<Autopilot>();
-            await autopilot.TerminateAsync(Autopilot.ExitCode.Normally);
+            await autopilot.TerminateAsync(ExitCode.Normally);
         }
 
         internal void Launch(AutopilotState state)
@@ -178,12 +178,12 @@ namespace DeNA.Anjin.Editor.UI.Settings
             state.settings = _settings;
             if (EditorApplication.isPlaying)
             {
-                state.launchFrom = AutopilotState.LaunchType.EditorPlayMode;
+                state.launchFrom = LaunchType.EditorPlayMode;
                 Launcher.Run();
             }
             else
             {
-                state.launchFrom = AutopilotState.LaunchType.EditorEditMode;
+                state.launchFrom = LaunchType.EditorEditMode;
                 EditorApplication.isPlaying = true;
             }
         }

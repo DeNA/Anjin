@@ -19,27 +19,6 @@ namespace DeNA.Anjin
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
-        /// <summary>
-        /// Exit code for autopilot running
-        /// </summary>
-        public enum ExitCode
-        {
-            /// <summary>
-            /// Normally exit
-            /// </summary>
-            Normally = 0,
-
-            /// <summary>
-            /// Exit by un catch Exceptions
-            /// </summary>
-            UnCatchExceptions = 1,
-
-            /// <summary>
-            /// Exit by fault in log message
-            /// </summary>
-            AutopilotFailed = 2
-        }
-
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
@@ -134,7 +113,7 @@ namespace DeNA.Anjin
 
             Destroy(this.gameObject);
 
-            if (_state.launchFrom == AutopilotState.LaunchType.EditorPlayMode)
+            if (_state.launchFrom == LaunchType.EditorPlayMode)
             {
                 _logger.Log("Terminate autopilot");
                 _state.Reset();

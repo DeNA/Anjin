@@ -41,7 +41,7 @@ namespace DeNA.Anjin
                 return; // Normally play mode (not run autopilot)
             }
 
-            if (state.launchFrom != AutopilotState.LaunchType.EditorPlayMode)
+            if (state.launchFrom != LaunchType.EditorPlayMode)
             {
                 EditorApplication.playModeStateChanged += OnChangePlayModeState;
             }
@@ -83,12 +83,12 @@ namespace DeNA.Anjin
             var state = AutopilotState.Instance;
             switch (state.launchFrom)
             {
-                case AutopilotState.LaunchType.EditorEditMode:
+                case LaunchType.EditorEditMode:
                     Debug.Log("Exit play mode");
                     state.Reset();
                     break;
 
-                case AutopilotState.LaunchType.Commandline:
+                case LaunchType.Commandline:
                     // Exit Unity when returning from play mode to edit mode.
                     // Because it may freeze when exiting without going through edit mode.
                     var exitCode = (int)state.exitCode;
