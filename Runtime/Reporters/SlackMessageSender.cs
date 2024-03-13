@@ -92,7 +92,7 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            if (withScreenshot && !Application.isBatchMode)
+            if (withScreenshot)
             {
                 var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
                 await UniTask.WaitForEndOfFrame(coroutineRunner);

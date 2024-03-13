@@ -114,7 +114,7 @@ It is **NOT** set to `DontDestroyOnLoad`.
 
 #### Autopilot Run Settings
 
-This item can also be overridden from the command line (see below).
+This item can also be overridden from the commandline (see below).
 
 <dl>
   <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation</dd>
@@ -176,6 +176,7 @@ To execute from the commandline, specify the following arguments.
 ```bash
 $(UNITY) \
   -projectPath $(PROJECT_HOME) \
+  -batchmode \
   -executeMethod DeNA.Anjin.Editor.Commandline.Bootstrap \
   -AUTOPILOT_SETTINGS Assets/Path/To/AutopilotSettings.asset
 ```
@@ -183,7 +184,7 @@ $(UNITY) \
 - `UNITY` is the path to the Unity editor, and `PROJECT_HOME` is the root of the project to be autorun.
 - `-AUTOPILOT_SETTINGS` is the path to the settings file (AutopilotSettings) you want to run.
 - Do not specify `-quit` (it will exit without entering play mode).
-- `-batchmode` will not work with the PlaybackAgent and MonkeyAgent in games that use uGUI.
+- Do not specify `-nographics` (do not show GameView window).
 
 In addition, some settings can be overridden by adding the following arguments.
 For details on each argument, see the entry of the same name in the "Generate and configure the AutopilotSettings.asset file" mentioned above.
@@ -425,8 +426,17 @@ Run the command below:
 git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 ```
 
-> **Note**  
-> Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests.
+> [!WARNING]  
+> Required install packages for running tests (when adding to the `testables` in package.json), as follows:
+> - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.4.2 or later
+
+Generate a temporary project and run tests on each Unity version from the command line.
+
+```bash
+make create_project
+UNITY_VERSION=2019.4.40f1 make -k test
+```
 
 
 ## Release workflow

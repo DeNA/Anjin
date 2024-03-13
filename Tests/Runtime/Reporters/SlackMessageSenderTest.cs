@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
+using TestHelper.Attributes;
 
 namespace DeNA.Anjin.Reporters
 {
@@ -83,6 +84,7 @@ namespace DeNA.Anjin.Reporters
         }
         
         [Test]
+        [FocusGameView]
         public async Task WithScreenshot()
         {
             var spySlackAPI = new SpySlackAPI();
