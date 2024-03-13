@@ -75,6 +75,66 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private GUIContent _randomStringParamsEntryMinLengthGUIContent;
         private GUIContent _randomStringParamsEntryMaxLengthGUIContent;
 
+        private static readonly string s_screenshotOptions = L10n.Tr("Screenshot Options");
+        private static readonly string s_screenshotEnabled = L10n.Tr("Enabled");
+        private static readonly string s_screenshotEnabledTooltip = L10n.Tr("Whether screenshot is enabled or not");
+        private SerializedProperty _screenshotEnabledProp;
+        private GUIContent _screenshotEnabledGUIContent;
+
+        private static readonly string s_screenshotDirectory = L10n.Tr("Directory");
+        private static readonly string s_screenshotDefaultDirectory = L10n.Tr("Use Default");
+
+        private static readonly string s_screenshotDefaultDirectoryTooltip = L10n.Tr(
+            @"Whether using a default directory path to save screenshots or specifying it manually. Default value is Application.persistentDataPath + ""/TestHelper.Monkey/Screenshots/"""
+        );
+
+        private static readonly string s_screenshotDirectoryPath = L10n.Tr("Path");
+        private static readonly string s_screenshotDirectoryPathTooltip = L10n.Tr("Directory path to save screenshots");
+        private SerializedProperty _screenshotDefaultDirectoryProp;
+        private GUIContent _screenshotDefaultDirectoryGUIContent;
+        private SerializedProperty _screenshotDirectoryProp;
+        private GUIContent _screenshotDirectoryGUIContent;
+
+        private static readonly string s_screenshotFilename = L10n.Tr("Filename");
+        private static readonly string s_screenshotDefaultFilenamePrefix = L10n.Tr("Use Default");
+
+        private static readonly string s_screenshotDefaultFilenamePrefixTooltip = L10n.Tr(
+            "Whether using a default prefix of screenshots filename or specifying it manually. Default value is CurrentTest.Name if run in test-framework context. Otherwise, a caller method name"
+        );
+
+        private static readonly string s_screenshotFilenamePrefix = L10n.Tr("Prefix");
+        private static readonly string s_screenshotFilenamePrefixTooltip = L10n.Tr("Prefix of screenshots filename");
+        private SerializedProperty _screenshotDefaultFilenamePrefixProp;
+        private GUIContent _screenshotDefaultFilenamePrefixGUIContent;
+        private SerializedProperty _screenshotFilenamePrefixProp;
+        private GUIContent _screenshotFilenamePrefixGUIContent;
+
+        private static readonly string s_screenshotSuperSize = L10n.Tr("Super Size");
+
+        private static readonly string s_screenshotSuperSizeTooltip = L10n.Tr(
+            "The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified"
+        );
+
+        private SerializedProperty _screenshotSuperSizeProp;
+        private GUIContent _screenshotSuperSizeGUIContent;
+        private GUIContent _screenshotSuperSizeGUIContentDisabled;
+
+        private static readonly string s_screenshotStereoCaptureMode = L10n.Tr("Stereo Capture Mode");
+
+        private static readonly string s_screenshotStereoCaptureModeTooltip =
+            L10n.Tr(
+                "The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified"
+            );
+
+        private SerializedProperty _screenshotStereoCaptureModeProp;
+        private GUIContent _screenshotStereoCaptureModeGUIContent;
+        private GUIContent _screenshotStereoCaptureModeGUIContentDisabled;
+
+        private const int DefaultSuperSize = 1;
+
+        private const ScreenCapture.StereoScreenCaptureMode DefaultStereoScreenCaptureMode =
+            ScreenCapture.StereoScreenCaptureMode.LeftEye;
+
 
         private void OnEnable()
         {
@@ -162,6 +222,49 @@ namespace DeNA.Anjin.Editor.UI.Agents
                     );
                 }
             };
+
+            _screenshotEnabledProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotEnabled));
+            _screenshotEnabledGUIContent = new GUIContent(s_screenshotEnabled, s_screenshotEnabledTooltip);
+
+            _screenshotDefaultDirectoryProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.defaultScreenshotDirectory));
+            _screenshotDefaultDirectoryGUIContent = new GUIContent(
+                s_screenshotDefaultDirectory,
+                s_screenshotDefaultDirectoryTooltip
+            );
+            _screenshotDirectoryProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotDirectory));
+            _screenshotDirectoryGUIContent = new GUIContent(
+                s_screenshotDirectoryPath,
+                s_screenshotDirectoryPathTooltip
+            );
+
+            _screenshotDefaultFilenamePrefixProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.defaultScreenshotFilenamePrefix));
+            _screenshotDefaultFilenamePrefixGUIContent = new GUIContent(
+                s_screenshotDefaultFilenamePrefix,
+                s_screenshotDefaultFilenamePrefixTooltip
+            );
+            _screenshotFilenamePrefixProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotFilenamePrefix));
+            _screenshotFilenamePrefixGUIContent = new GUIContent(
+                s_screenshotFilenamePrefix,
+                s_screenshotFilenamePrefixTooltip
+            );
+
+            _screenshotSuperSizeProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotSuperSize));
+            _screenshotSuperSizeGUIContent = new GUIContent(s_screenshotSuperSize, s_screenshotSuperSizeTooltip);
+            _screenshotSuperSizeGUIContentDisabled = new GUIContent(DefaultSuperSize.ToString());
+
+            _screenshotStereoCaptureModeProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotStereoCaptureMode));
+            _screenshotStereoCaptureModeGUIContent = new GUIContent(
+                s_screenshotStereoCaptureMode,
+                s_screenshotStereoCaptureModeTooltip
+            );
+            _screenshotStereoCaptureModeGUIContentDisabled = new GUIContent(
+                DefaultStereoScreenCaptureMode.ToString(),
+                s_screenshotStereoCaptureModeTooltip
+            );
         }
 
 
@@ -177,8 +280,89 @@ namespace DeNA.Anjin.Editor.UI.Agents
             EditorGUILayout.PropertyField(_touchAndHoldDelayMillisProp, _touchAndHoldDelayMillisGUIContent);
             EditorGUILayout.PropertyField(_gizmosProp, _gizmosGUIContent);
             _randomStringParamsMapList.DoLayoutList();
+            EditorGUILayout.LabelField(s_screenshotOptions, EditorStyles.boldLabel);
+            using (new EditorGUI.IndentLevelScope())
+            {
+                EditorGUILayout.PropertyField(_screenshotEnabledProp, _screenshotEnabledGUIContent);
+                if (_screenshotEnabledProp.boolValue)
+                {
+                    EditorGUILayout.LabelField(s_screenshotDirectory, EditorStyles.boldLabel);
+                    using (new EditorGUI.IndentLevelScope())
+                    {
+                        EditorGUILayout.PropertyField(
+                            _screenshotDefaultDirectoryProp,
+                            _screenshotDefaultDirectoryGUIContent
+                        );
+                        if (!_screenshotDefaultDirectoryProp.boolValue)
+                        {
+                            EditorGUILayout.PropertyField(_screenshotDirectoryProp, _screenshotDirectoryGUIContent);
+                        }
+                    }
+
+                    EditorGUILayout.LabelField(s_screenshotFilename, EditorStyles.boldLabel);
+                    using (new EditorGUI.IndentLevelScope())
+                    {
+                        EditorGUILayout.PropertyField(
+                            _screenshotDefaultFilenamePrefixProp,
+                            _screenshotDefaultFilenamePrefixGUIContent
+                        );
+                        if (!_screenshotDefaultFilenamePrefixProp.boolValue)
+                        {
+                            EditorGUILayout.PropertyField(
+                                _screenshotFilenamePrefixProp,
+                                _screenshotFilenamePrefixGUIContent
+                            );
+                        }
+                    }
+
+                    var screenCaptureMode =
+                        (ScreenCapture.StereoScreenCaptureMode)_screenshotStereoCaptureModeProp.enumValueIndex;
+                    if (screenCaptureMode == DefaultStereoScreenCaptureMode)
+                    {
+                        _screenshotSuperSizeProp.intValue = EditorGUILayout.IntSlider(
+                            _screenshotSuperSizeGUIContent,
+                            _screenshotSuperSizeProp.intValue,
+                            1,
+                            100
+                        );
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField(
+                            _screenshotSuperSizeGUIContent,
+                            _screenshotSuperSizeGUIContentDisabled
+                        );
+                    }
+
+                    if (_screenshotSuperSizeProp.intValue == DefaultSuperSize)
+                    {
+                        var screenshotStereoCaptureMode =
+                            (ScreenCapture.StereoScreenCaptureMode)EditorGUILayout.EnumPopup(
+                                _screenshotStereoCaptureModeGUIContent,
+                                (ScreenCapture.StereoScreenCaptureMode)_screenshotStereoCaptureModeProp
+                                    .enumValueIndex
+                            );
+                        _screenshotStereoCaptureModeProp.enumValueIndex = Clamp(
+                            (int)screenshotStereoCaptureMode,
+                            1,
+                            3
+                        );
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField(
+                            _screenshotStereoCaptureModeGUIContent,
+                            _screenshotStereoCaptureModeGUIContentDisabled
+                        );
+                    }
+                }
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
+
+
+        // XXX: Fallback for Unity 2019.x
+        private static int Clamp(int value, int min, int max) => value < min ? min : max < value ? max : value;
     }
 }
