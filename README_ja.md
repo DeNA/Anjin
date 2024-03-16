@@ -168,7 +168,27 @@ Slack通知に付与するメンションを設定します。
 設定された実行時間が経過するか、通常の再生モードと同じく再生ボタンクリックで停止します。
 
 
-### 2. コマンドラインから実行
+### 2. Play Modeテストから実行
+
+非同期メソッド `LauncherFromTest.AutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+引数には `AutopilotSettings` ファイルパスを指定します。
+
+```
+[Test]
+public async Task LaunchAutopilotFromTest()
+{
+  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!NOTE]  
+> 実行中にエラーを検知すると `LogError` が出力されるため、そのテストは失敗と判定されます。
+
+> [!WARNING]  
+> テストのデフォルトタイムアウトは3分です。オートパイロットの実行時間が3分を超える場合は `Timeout` 属性でタイムアウト時間を指定してください。
+
+
+### 3. コマンドラインから実行
 
 コマンドラインから実行する場合、以下の引数を指定します。
 

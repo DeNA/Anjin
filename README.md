@@ -169,7 +169,27 @@ Open the AutopilotSettings file you wish to run in the inspector and click the *
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
 
-### 2. Run from commandline
+### 2. Run from Play Mode test
+
+Autopilot works within your test code using the async method `LauncherFromTest.AutopilotAsync(string)`.
+Specify the `AutopilotSettings` file path as the argument.
+
+```
+[Test]
+public async Task LaunchAutopilotFromTest()
+{
+  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!NOTE]  
+> If an error is detected in running, it will be output to `LogError` and the test will fail.
+
+> [!WARNING]  
+> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
+
+
+### 3. Run from commandline
 
 To execute from the commandline, specify the following arguments.
 
