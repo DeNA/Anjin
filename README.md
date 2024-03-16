@@ -40,10 +40,10 @@ You can choose from two typical installation methods.
 ![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
 
-> **Note**  
+> [!NOTE]  
 > Do not forget to add `com.cysharp` and `com.nowsprinting` into scopes. These are used within Anjin.
 
-> **Note**  
+> [!NOTE]  
 > Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests (when adding to the `testables` in package.json).
 
 ### Install via OpenUPM-CLI
@@ -77,7 +77,7 @@ After installing the UPM package in the game title project, configure and implem
 - Implement a custom Agent if necessary
 - Implement initialization process as needed
 
-> **Note**  
+> [!NOTE]  
 > Set `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` in the Define Constraints of the Assembly Definition File to which they belong to exclude them from release builds.
 
 
@@ -251,7 +251,7 @@ See **Anjin Annotations** below for more information.
 
 This is an Agent that playback uGUI operations with the Recorded Playback feature of the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package.
 
-> **Note**  
+> [!NOTE]  
 > The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 The following can be set in an instance (.asset file) of this Agent.

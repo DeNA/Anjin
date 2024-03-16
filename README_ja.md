@@ -40,10 +40,10 @@ Click [English](./README.md) for English page if you need.
 ![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
 
-> **Note**  
+> [!NOTE]  
 > scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
 
-> **Note**  
+> [!NOTE]  
 > Anjinパッケージ内のテストを実行する場合（package.jsonの `testables` に追加するとき）は、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
 
 ### openupm-cli を使用する場合
@@ -76,7 +76,7 @@ Anjinを起動すると、次のファイルが自動生成されます。
 - 必要に応じて専用Agentの実装
 - 必要に応じて初期化処理の実装
 
-> **Note**  
+> [!NOTE]  
 > ゲームタイトル固有のオートパイロット向けコードは、属するAssembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドから除外できます
 
 
@@ -252,7 +252,7 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 
 [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest)パッケージのRecorded Playback機能でレコーディングしたuGUI操作を再生するAgentです。
 
-> **Note**  
+> [!NOTE]  
 > Automated QAパッケージはプレビュー段階のため、破壊的変更や、パッケージ自体の開発中止・廃止もありえる点、ご注意ください。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
