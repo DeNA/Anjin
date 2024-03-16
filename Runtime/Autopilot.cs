@@ -93,7 +93,8 @@ namespace DeNA.Anjin
         /// <param name="logString">Log message string when terminate by the log message</param>
         /// <param name="stackTrace">Stack trace when terminate by the log message</param>
         /// <returns>A task awaits termination get completed</returns>
-        public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null, CancellationToken token = default)
+        public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null,
+            CancellationToken token = default)
         {
             if (_dispatcher != null)
             {
@@ -113,10 +114,11 @@ namespace DeNA.Anjin
 
             Destroy(this.gameObject);
 
-            if (_state.launchFrom == LaunchType.EditorPlayMode)
+            if (_state.IsLaunchFromPlayMode)
             {
                 _logger.Log("Terminate autopilot");
-                _state.Reset();
+                _state.settings = null;
+                _state.exitCode = exitCode;
                 return; // Only terminate autopilot run if starting from play mode.
             }
 

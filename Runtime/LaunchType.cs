@@ -24,6 +24,11 @@ namespace DeNA.Anjin
         EditorPlayMode,
 
         /// <summary>
+        /// Launch via Play mode tests
+        /// </summary>
+        PlayModeTests,
+
+        /// <summary>
         /// Launch from commandline interface
         /// When autopilot is finished, Unity editor is also exit.
         /// </summary>

@@ -41,7 +41,7 @@ namespace DeNA.Anjin
                 return; // Normally play mode (not run autopilot)
             }
 
-            if (state.launchFrom != LaunchType.EditorPlayMode)
+            if (!state.IsLaunchFromPlayMode)
             {
                 EditorApplication.playModeStateChanged += OnChangePlayModeState;
             }

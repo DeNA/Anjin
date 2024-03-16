@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -53,6 +53,17 @@ namespace DeNA.Anjin.Settings
             get
             {
                 return this.settings;
+            }
+        }
+
+        /// <summary>
+        /// Is launch from play mode (Editor play mode or Play Mode tests)
+        /// </summary>
+        public bool IsLaunchFromPlayMode
+        {
+            get
+            {
+                return launchFrom == LaunchType.EditorPlayMode || launchFrom == LaunchType.PlayModeTests;
             }
         }
 
