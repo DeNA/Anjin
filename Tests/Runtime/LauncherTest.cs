@@ -33,13 +33,13 @@ namespace DeNA.Anjin
 
             await Task.Delay(200);
 
-            Assert.That(state.launchFrom, Is.EqualTo(AutopilotState.LaunchType.EditorPlayMode));
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorPlayMode));
             Assert.That(state.IsRunning, Is.True, "AutopilotState is running");
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
             Assert.That((bool)autopilot, Is.True, "Autopilot object is alive");
 
-            await autopilot.TerminateAsync(Autopilot.ExitCode.Normally);
+            await autopilot.TerminateAsync(ExitCode.Normally);
         }
 
         [Test]

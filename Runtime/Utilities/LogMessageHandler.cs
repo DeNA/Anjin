@@ -51,7 +51,7 @@ namespace DeNA.Anjin.Utilities
             var autopilot = Object.FindObjectOfType<Autopilot>();
             if (autopilot != null)
             {
-                await autopilot.TerminateAsync(Autopilot.ExitCode.AutopilotFailed, logString, stackTrace);
+                await autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
             }
         }
 
