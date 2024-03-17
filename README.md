@@ -269,7 +269,7 @@ An Agent that executes multiple Agents in parallel.
 
 The instance of this Agent (.asset file) can have the following settings.
 
-<dl><dt>Agents
+<dl>
   <dt>Agents</dt><dd>A list of Agents to be executed in parallel, which can be nested by specifying a CompositeAgent</dd>
 </dl>
 
@@ -294,7 +294,7 @@ For example, in a game where the title scene leads to a different path only for 
 
 The Agent instance (.asset file) can contain the following settings.
 
-<dl> <dt>Agent
+<dl>
   <dt>Agent</dt><dd>Agent that can be executed only once, which can be nested by specifying a CompositeAgent</dd>
 </dl>
 
@@ -310,6 +310,23 @@ This Agent instance (.asset file) can contain the following.
 
 <dl>
   <dt>Agent</dt><dd>Agent to be executed repeatedly, which can be nested by specifying a CompositeAgent</dd>
+</dl>
+
+
+### TimeBombAgent
+
+An Agent that will fail if a defuse message is not received before the inner agent exits.
+
+For example, pass the out-game tutorial (Things that can be completed with tap operations on uGUI, such as smartphone games).
+
+1. Set `UGUIMonkeyAgent` as the `Agent`. It should not be able to operate except for the advancing button. Set the `Lifespan Sec` with a little margin.
+2. Set the log message to be output when the tutorial is completed as the `Defuse Message`.
+
+This Agent instance (.asset file) can contain the following.
+
+<dl>
+  <dt>Agent</dt><dd>Working Agent. If this Agent exits first, the TimeBombAgent will fail.</dd>
+  <dt>Defuse Message</dt><dd>Defuse the time bomb when this message comes to the log first. Can specify regex.</dd>
 </dl>
 
 
