@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -63,18 +63,6 @@ namespace DeNA.Anjin.Agents
         public bool screenshotEnabled;
 
         /// <summary>
-        /// Whether using a default directory or specifying manually
-        /// </summary>
-        public bool defaultScreenshotDirectory = true;
-
-        /// <summary>
-        /// Directory path for screenshot images. Create a new directory if directory not exists.
-        /// If the value is null or empty,
-        /// <c>Path.Combine(Application.persistentDataPath, "TestHelper.Monkey", "Screenshots")</c> will be used
-        /// </summary>
-        public string screenshotDirectory;
-
-        /// <summary>
         /// Whether using a default file name prefix or specifying manually
         /// </summary>
         public bool defaultScreenshotFilenamePrefix = true;
@@ -112,9 +100,7 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
-                        FilePathStrategy = CounterBasedStrategy.Create(
-                            Counter.Global,
-                            defaultScreenshotDirectory ? null : screenshotDirectory,
+                        FilenameStrategy = new CounterBasedStrategy(
                             defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix
                         ),
                         SuperSize = screenshotSuperSize,
