@@ -4,12 +4,16 @@
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace DeNA.Anjin.TestComponents
 {
     [RequireComponent(typeof(Button))]
     [AddComponentMenu("")] // Hide from "Add Component" picker
     public class OutGameTutorialButton : MonoBehaviour
     {
+        private static bool s_tutorialCompleted;
+
         private void Awake()
         {
             var button = GetComponent<Button>();
@@ -19,7 +23,12 @@ namespace DeNA.Anjin.TestComponents
         private void OnClick()
         {
             Debug.Log($"{gameObject.name} Clicked!");
+            if (s_tutorialCompleted)
+            {
+                return;
+            }
 
+            // Tutorial mode
             var button = GetComponent<Button>();
             button.interactable = false;
 
@@ -32,6 +41,11 @@ namespace DeNA.Anjin.TestComponents
             else
             {
                 Debug.Log("Tutorial Completed!");
+                s_tutorialCompleted = true;
+                foreach (var x in FindObjectsOfType<Button>())
+                {
+                    x.interactable = true;
+                }
             }
         }
     }
