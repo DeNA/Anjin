@@ -101,7 +101,7 @@ namespace DeNA.Anjin.Agents
                     ? new ScreenshotOptions
                     {
                         FilenameStrategy = new CounterBasedStrategy(
-                            defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix
+                            defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),
                         SuperSize = screenshotSuperSize,
                         StereoCaptureMode = screenshotStereoCaptureMode

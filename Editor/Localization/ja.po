@@ -352,8 +352,8 @@ msgid "Use Default"
 msgstr "デフォルト値を使用"
 
 # screenshot filename prefix use default tooltip
-msgid "Whether using a default prefix of screenshots filename or specifying it manually. Default value is CurrentTest.Name if run in test-framework context. Otherwise, a caller method name"
-msgstr "スクリーンショットのファイル名のプレフィックスにデフォルト値を使うかどうか。デフォルト値はもしテストフレームワークのからの実行であれば CurrentTest.Name、そうでなければ呼び出し元の関数名"
+msgid "Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name"
+msgstr "スクリーンショットのファイル名のプレフィックスにデフォルト値を使うかどうか。デフォルト値はAgentの名前"
 
 # screenshot super size
 msgid "Super Size"

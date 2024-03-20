@@ -85,7 +85,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private static readonly string s_screenshotDefaultFilenamePrefix = L10n.Tr("Use Default");
 
         private static readonly string s_screenshotDefaultFilenamePrefixTooltip = L10n.Tr(
-            "Whether using a default prefix of screenshots filename or specifying it manually. Default value is CurrentTest.Name if run in test-framework context. Otherwise, a caller method name"
+            "Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name"
         );
 
         private static readonly string s_screenshotFilenamePrefix = L10n.Tr("Prefix");
