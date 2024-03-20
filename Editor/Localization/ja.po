@@ -333,7 +333,7 @@ msgstr "有効"
 
 # screenshot options enabled tooltip
 msgid "Whether screenshot is enabled or not"
-msgstr "スクリーンショットが有効かどうか"
+msgstr "スクリーンショット撮影を有効にします"
 
 # screenshot filename
 msgid "Filename"
@@ -345,7 +345,7 @@ msgstr "プレフィックス"
 
 # screenshot filename prefix tooltip
 msgid "Prefix of screenshots filename"
-msgstr "スクリーンショットのファイル名のプレフィックス"
+msgstr "スクリーンショットのファイル名のプレフィックスを指定します"
 
 # screenshot filename prefix use default
 msgid "Use Default"
@@ -353,7 +353,7 @@ msgstr "デフォルト値を使用"
 
 # screenshot filename prefix use default tooltip
 msgid "Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name"
-msgstr "スクリーンショットのファイル名のプレフィックスにデフォルト値を使うかどうか。デフォルト値はAgentの名前"
+msgstr "スクリーンショットのファイル名のプレフィックスにデフォルト値を使用します。デフォルト値はAgentの名前です"
 
 # screenshot super size
 msgid "Super Size"
@@ -367,7 +367,7 @@ msgid "Stereo Capture Mode"
 msgstr "ステレオキャプチャモード"
 
 msgid "The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified"
-msgstr "ステレオレンダリングが有効な場合は指定した眼のテクスチャ。拡大係数と同時には設定できません"
+msgstr "ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません"
 
 #: Editor/UI/Agents/UGUIPlaybackAgentEditor.cs
 
