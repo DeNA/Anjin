@@ -85,7 +85,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private static readonly string s_screenshotDefaultDirectory = L10n.Tr("Use Default");
 
         private static readonly string s_screenshotDefaultDirectoryTooltip = L10n.Tr(
-            @"Whether using a default directory path to save screenshots or specifying it manually. Default value is Application.persistentDataPath + ""/TestHelper.Monkey/Screenshots/"""
+            @"Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument ""-testHelperScreenshotDirectory"". If the command line argument is also omitted, Application.persistentDataPath + ""/TestHelper/Screenshots/"" is used."
         );
 
         private static readonly string s_screenshotDirectoryPath = L10n.Tr("Path");

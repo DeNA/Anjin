@@ -226,6 +226,7 @@ An instance of this Agent (.asset file) can contain the following.
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
+  <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, Application.persistentDataPath + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
   <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
   <dt>Super Size</dt><dd>The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified</dd>
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>

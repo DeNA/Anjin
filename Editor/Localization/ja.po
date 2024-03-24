@@ -352,8 +352,8 @@ msgid "Use Default"
 msgstr "デフォルト値を使用"
 
 # screenshot directory use default tooltip
-msgid "Whether using a default directory path to save screenshots or specifying it manually. Default value is Application.persistentDataPath + \"/TestHelper.Monkey/Screenshots/\""
-msgstr "スクリーンショットの保存先のディレクトリ名にデフォルト値を使うかどうか。デフォルト値は Application.persistentDataPath + \"/TestHelper.Monkey/Screenshots/\""
+msgid "Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument \"-testHelperScreenshotDirectory\". If the command line argument is also omitted, Application.persistentDataPath + \"/TestHelper/Screenshots/\" is used."
+msgstr "スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 \"-testHelperScreenshotDirectory\" で指定します。コマンドライン引数も省略した場合は、Application.persistentDataPath + \"/TestHelper/Screenshots/\" が使用されます。"
 
 # screenshot filename
 msgid "Filename"
