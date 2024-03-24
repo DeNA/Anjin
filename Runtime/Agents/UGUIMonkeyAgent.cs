@@ -63,6 +63,18 @@ namespace DeNA.Anjin.Agents
         public bool screenshotEnabled;
 
         /// <summary>
+        /// Whether using a default directory or specifying manually
+        /// </summary>
+        public bool defaultScreenshotDirectory = true;
+
+        /// <summary>
+        /// Directory path for screenshot images. Create a new directory if directory not exists.
+        /// If the value is null or empty,
+        /// <c>Path.Combine(Application.persistentDataPath, "TestHelper.Monkey", "Screenshots")</c> will be used
+        /// </summary>
+        public string screenshotDirectory;
+
+        /// <summary>
         /// Whether using a default file name prefix or specifying manually
         /// </summary>
         public bool defaultScreenshotFilenamePrefix = true;
@@ -100,8 +112,9 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
+                        Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
                         FilenameStrategy = new CounterBasedStrategy(
-                            defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
+                            defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix
                         ),
                         SuperSize = screenshotSuperSize,
                         StereoCaptureMode = screenshotStereoCaptureMode
