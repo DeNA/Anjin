@@ -49,7 +49,8 @@ define test_arguments
   -runTests \
   -testCategory "!IgnoreCI" \
   -testPlatform $(TEST_PLATFORM) \
-  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml
+  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml \
+  -testHelperScreenshotDirectory $(LOG_DIR)/Screenshots
 endef
 
 define test
