@@ -117,8 +117,13 @@ namespace DeNA.Anjin
             if (_state.IsLaunchFromPlayMode)
             {
                 _logger.Log("Terminate autopilot");
-                _state.settings = null;
-                _state.exitCode = exitCode;
+                _state.Reset();
+#if UNITY_INCLUDE_TESTS
+                if (_state.launchFrom == LaunchType.PlayModeTests && exitCode != ExitCode.Normally)
+                {
+                    throw new NUnit.Framework.AssertionException($"Autopilot failed with exit code {exitCode}");
+                }
+#endif
                 return; // Only terminate autopilot run if starting from play mode.
             }
 

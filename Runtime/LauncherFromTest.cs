@@ -34,17 +34,11 @@ namespace DeNA.Anjin
                 throw new AssertionException("Autopilot is already running");
             }
 
-            state.Reset();
             state.launchFrom = LaunchType.PlayModeTests;
             state.settings = settings;
             Launcher.Run();
 
             await UniTask.WaitUntil(() => !state.IsRunning);
-
-            if (state.exitCode != ExitCode.Normally)
-            {
-                throw new AssertionException($"Autopilot failed with exit code {state.exitCode}");
-            }
         }
 
         /// <summary>

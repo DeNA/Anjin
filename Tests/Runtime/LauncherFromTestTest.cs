@@ -33,8 +33,8 @@ namespace DeNA.Anjin
 
             var state = AutopilotState.Instance;
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
-            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.PlayModeTests), "Launch from");
-            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code");
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
+            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
         }
 
@@ -51,8 +51,8 @@ namespace DeNA.Anjin
 
             var state = AutopilotState.Instance;
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
-            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.PlayModeTests), "Launch from");
-            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code");
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
+            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
         }
     }
