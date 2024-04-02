@@ -342,6 +342,72 @@ msgstr "最小文字列長"
 msgid "Maximum Length"
 msgstr "最大文字列長"
 
+# screenshot options
+msgid "Screenshot Options"
+msgstr "スクリーンショット設定"
+
+# screenshot options enabled
+msgid "Enabled"
+msgstr "有効"
+
+# screenshot options enabled tooltip
+msgid "Whether screenshot is enabled or not"
+msgstr "スクリーンショット撮影を有効にします"
+
+# screenshot directory
+msgid "Directory"
+msgstr "ディレクトリ"
+
+# screenshot directory path
+msgid "Path"
+msgstr "パス"
+
+# screenshot directory path tooltip
+msgid "Directory path to save screenshots"
+msgstr "スクリーンショットの保存先ディレクトリのパス"
+
+# screenshot directory use default
+msgid "Use Default"
+msgstr "デフォルト値を使用"
+
+# screenshot directory use default tooltip
+msgid "Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument \"-testHelperScreenshotDirectory\". If the command line argument is also omitted, Application.persistentDataPath + \"/TestHelper/Screenshots/\" is used."
+msgstr "スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 \"-testHelperScreenshotDirectory\" で指定します。コマンドライン引数も省略した場合は、Application.persistentDataPath + \"/TestHelper/Screenshots/\" が使用されます。"
+
+# screenshot filename
+msgid "Filename"
+msgstr "ファイル名"
+
+# screenshot filename prefix
+msgid "Prefix"
+msgstr "プレフィックス"
+
+# screenshot filename prefix tooltip
+msgid "Prefix of screenshots filename"
+msgstr "スクリーンショットのファイル名のプレフィックスを指定します"
+
+# screenshot filename prefix use default
+msgid "Use Default"
+msgstr "デフォルト値を使用"
+
+# screenshot filename prefix use default tooltip
+msgid "Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name"
+msgstr "スクリーンショットのファイル名のプレフィックスにデフォルト値を使用します。デフォルト値はAgentの名前です"
+
+# screenshot super size
+msgid "Super Size"
+msgstr "拡大係数"
+
+msgid "The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified"
+msgstr "解像度をあげるための係数。ステレオキャプチャモードと同時には設定できません"
+
+# screenshot stereo capture mode
+msgid "Stereo Capture Mode"
+msgstr "ステレオキャプチャモード"
+
+msgid "The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified"
+msgstr "ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません"
+
 #: Editor/UI/Agents/UGUIPlaybackAgentEditor.cs
 
 # recordedJson
