@@ -316,6 +316,23 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 </dl>
 
 
+### TimeBombAgent
+
+内包するAgentが終了する前に解除メッセージを受信しないと失敗するAgent。
+
+例えば、アウトゲームのチュートリアル（スマホゲームなどuGUIのタップ操作で完遂できるもの）を突破するには、次のように設定します。
+
+1. `UGUIMonkeyAgent` を `Agent` に設定します。進行するボタン以外は操作できないはずです。`実行時間` は少し余裕をもって設定してください
+2. チュートリアル完遂時にログに出力されるメッセージを `解除メッセージ` に設定します
+
+このAgentのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>Agent</dt><dd>実際に動作するAgent。このAgentが先に終了すると、TimeBombAgentは失敗します。</dd>
+  <dt>解除メッセージ</dt><dd>このメッセージが先にログに出力されたら、TimeBombAgentは正常終了します。正規表現でも指定できます。</dd>
+</dl>
+
+
 ### EmergencyExitAgent
 
 `DeNA.Anjin.Annotations` アセンブリに含まれる `EmergencyExit` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。

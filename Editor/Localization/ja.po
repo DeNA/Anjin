@@ -1,4 +1,4 @@
-# Copyright (c) 2023 DeNA Co., Ltd.
+# Copyright (c) 2023-2024 DeNA Co., Ltd.
 # This software is released under the MIT License.
 #
 # Package UI Localization is available in 2020.2
@@ -237,6 +237,25 @@ msgstr "Agent"
 # agent tooltip
 msgid "Agent to repeat execution"
 msgstr "リピート実行するAgentを指定します"
+
+
+#: Editor/UI/Agents/TimeBombAgentEditor.cs
+
+# agent (same as OneTimeAgentEditor.cs)
+msgid "Agent"
+msgstr "Agent"
+
+# agent tooltip
+msgid "Working Agent. If this Agent exits first, the TimeBombAgent will fail."
+msgstr "実際に動作するAgent。このAgentが先に終了すると、TimeBombAgentは失敗します"
+
+# defuse message
+msgid "Defuse Message"
+msgstr "解除メッセージ"
+
+# defuse message tooltip
+msgid "Defuse the time bomb when this message comes to the log first. Can specify regex."
+msgstr "このメッセージが先にログに出力されたら、TimeBombAgentは正常終了します。正規表現を指定できます。"
 
 
 #: Editor/UI/Agents/ParallelCompositeAgentEditor.cs
