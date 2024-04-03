@@ -19,27 +19,6 @@ namespace DeNA.Anjin
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
-        /// <summary>
-        /// Exit code for autopilot running
-        /// </summary>
-        public enum ExitCode
-        {
-            /// <summary>
-            /// Normally exit
-            /// </summary>
-            Normally = 0,
-
-            /// <summary>
-            /// Exit by un catch Exceptions
-            /// </summary>
-            UnCatchExceptions = 1,
-
-            /// <summary>
-            /// Exit by fault in log message
-            /// </summary>
-            AutopilotFailed = 2
-        }
-
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
@@ -114,7 +93,8 @@ namespace DeNA.Anjin
         /// <param name="logString">Log message string when terminate by the log message</param>
         /// <param name="stackTrace">Stack trace when terminate by the log message</param>
         /// <returns>A task awaits termination get completed</returns>
-        public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null, CancellationToken token = default)
+        public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null,
+            CancellationToken token = default)
         {
             if (_dispatcher != null)
             {
@@ -134,10 +114,16 @@ namespace DeNA.Anjin
 
             Destroy(this.gameObject);
 
-            if (_state.launchFrom == AutopilotState.LaunchType.EditorPlayMode)
+            if (_state.IsLaunchFromPlayMode)
             {
                 _logger.Log("Terminate autopilot");
                 _state.Reset();
+#if UNITY_INCLUDE_TESTS
+                if (_state.launchFrom == LaunchType.PlayModeTests && exitCode != ExitCode.Normally)
+                {
+                    throw new NUnit.Framework.AssertionException($"Autopilot failed with exit code {exitCode}");
+                }
+#endif
                 return; // Only terminate autopilot run if starting from play mode.
             }
 

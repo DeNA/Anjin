@@ -61,7 +61,7 @@ namespace DeNA.Anjin.Editor
 
             // Activate autopilot and enter play mode
             var state = AutopilotState.Instance;
-            state.launchFrom = AutopilotState.LaunchType.Commandline;
+            state.launchFrom = LaunchType.Commandline;
             state.settings = settings;
             EditorApplication.isPlaying = true;
 

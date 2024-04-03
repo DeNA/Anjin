@@ -40,10 +40,10 @@ Click [English](./README.md) for English page if you need.
 ![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
 
-> **Note**  
+> [!NOTE]  
 > scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
 
-> **Note**  
+> [!NOTE]  
 > Anjinパッケージ内のテストを実行する場合（package.jsonの `testables` に追加するとき）は、[Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) パッケージ v1.3以上が必要です。
 
 ### openupm-cli を使用する場合
@@ -76,7 +76,7 @@ Anjinを起動すると、次のファイルが自動生成されます。
 - 必要に応じて専用Agentの実装
 - 必要に応じて初期化処理の実装
 
-> **Note**  
+> [!NOTE]  
 > ゲームタイトル固有のオートパイロット向けコードは、属するAssembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドから除外できます
 
 
@@ -168,7 +168,27 @@ Slack通知に付与するメンションを設定します。
 設定された実行時間が経過するか、通常の再生モードと同じく再生ボタンクリックで停止します。
 
 
-### 2. コマンドラインから実行
+### 2. Play Modeテストから実行
+
+非同期メソッド `LauncherFromTest.AutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+引数には `AutopilotSettings` ファイルパスを指定します。
+
+```
+[Test]
+public async Task LaunchAutopilotFromTest()
+{
+  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!NOTE]  
+> 実行中にエラーを検知すると `LogError` が出力されるため、そのテストは失敗と判定されます。
+
+> [!WARNING]  
+> テストのデフォルトタイムアウトは3分です。オートパイロットの実行時間が3分を超える場合は `Timeout` 属性でタイムアウト時間を指定してください。
+
+
+### 3. コマンドラインから実行
 
 コマンドラインから実行する場合、以下の引数を指定します。
 
@@ -242,7 +262,7 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 
 [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest)パッケージのRecorded Playback機能でレコーディングしたuGUI操作を再生するAgentです。
 
-> **Note**  
+> [!NOTE]  
 > Automated QAパッケージはプレビュー段階のため、破壊的変更や、パッケージ自体の開発中止・廃止もありえる点、ご注意ください。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。

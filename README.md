@@ -40,10 +40,10 @@ You can choose from two typical installation methods.
 ![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
 ![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
 
-> **Note**  
+> [!NOTE]  
 > Do not forget to add `com.cysharp` and `com.nowsprinting` into scopes. These are used within Anjin.
 
-> **Note**  
+> [!NOTE]  
 > Required install [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3 or later for running tests (when adding to the `testables` in package.json).
 
 ### Install via OpenUPM-CLI
@@ -77,7 +77,7 @@ After installing the UPM package in the game title project, configure and implem
 - Implement a custom Agent if necessary
 - Implement initialization process as needed
 
-> **Note**  
+> [!NOTE]  
 > Set `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` in the Define Constraints of the Assembly Definition File to which they belong to exclude them from release builds.
 
 
@@ -169,7 +169,27 @@ Open the AutopilotSettings file you wish to run in the inspector and click the *
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
 
-### 2. Run from commandline
+### 2. Run from Play Mode test
+
+Autopilot works within your test code using the async method `LauncherFromTest.AutopilotAsync(string)`.
+Specify the `AutopilotSettings` file path as the argument.
+
+```
+[Test]
+public async Task LaunchAutopilotFromTest()
+{
+  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!NOTE]  
+> If an error is detected in running, it will be output to `LogError` and the test will fail.
+
+> [!WARNING]  
+> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
+
+
+### 3. Run from commandline
 
 To execute from the commandline, specify the following arguments.
 
@@ -241,7 +261,7 @@ See **Anjin Annotations** below for more information.
 
 This is an Agent that playback uGUI operations with the Recorded Playback feature of the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package.
 
-> **Note**  
+> [!NOTE]  
 > The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 The following can be set in an instance (.asset file) of this Agent.

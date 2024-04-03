@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -17,38 +17,6 @@ namespace DeNA.Anjin.Settings
     public class AutopilotState : ScriptableObject
     {
         /// <summary>
-        /// Define of what autopilot was launched by
-        /// </summary>
-        public enum LaunchType
-        {
-            /// <summary>
-            /// Not launch yet
-            /// </summary>
-            NotSet = 0,
-
-            /// <summary>
-            /// Launch via Edit mode
-            /// </summary>
-            EditorEditMode,
-
-            /// <summary>
-            /// Launch via Play mode
-            /// </summary>
-            EditorPlayMode,
-
-            /// <summary>
-            /// Launch from commandline interface
-            /// When autopilot is finished, Unity editor is also exit.
-            /// </summary>
-            Commandline,
-
-            /// <summary>
-            /// Launch on standalone platform player build (not support yet)
-            /// </summary>
-            Runtime,
-        }
-
-        /// <summary>
         /// Launch type
         /// </summary>
         [HideInInspector] public LaunchType launchFrom = LaunchType.NotSet;
@@ -61,7 +29,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Exit code when terminate autopilot from commandline interface
         /// </summary>
-        [HideInInspector] public Autopilot.ExitCode exitCode;
+        [HideInInspector] public ExitCode exitCode;
 
         /// <summary>
         /// Reset run state
@@ -70,7 +38,7 @@ namespace DeNA.Anjin.Settings
         {
             launchFrom = LaunchType.NotSet;
             settings = null;
-            exitCode = Autopilot.ExitCode.Normally;
+            exitCode = ExitCode.Normally;
         }
 
         /// <summary>
@@ -85,6 +53,17 @@ namespace DeNA.Anjin.Settings
             get
             {
                 return this.settings;
+            }
+        }
+
+        /// <summary>
+        /// Is launch from play mode (Editor play mode or Play Mode tests)
+        /// </summary>
+        public bool IsLaunchFromPlayMode
+        {
+            get
+            {
+                return launchFrom == LaunchType.EditorPlayMode || launchFrom == LaunchType.PlayModeTests;
             }
         }
 
