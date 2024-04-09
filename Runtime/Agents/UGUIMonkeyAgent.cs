@@ -8,6 +8,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
+using TestHelper.Monkey.Operators;
 using TestHelper.Monkey.Random;
 using TestHelper.Monkey.ScreenshotFilenameStrategies;
 using TestHelper.Random;
@@ -98,16 +99,13 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            var random = new RandomImpl(this.Random.Next());
+            var random = new RandomWrapper(this.Random.Next());
             var config = new MonkeyConfig
             {
                 Lifetime = lifespanSec > 0 ? TimeSpan.FromSeconds(lifespanSec) : TimeSpan.MaxValue,
                 DelayMillis = delayMillis,
                 Random = random,
-                RandomString = new RandomStringImpl(random),
-                RandomStringParametersStrategy = GetRandomStringParameters,
                 SecondsToErrorForNoInteractiveComponent = secondsToErrorForNoInteractiveComponent,
-                TouchAndHoldDelayMillis = touchAndHoldDelayMillis,
                 Gizmos = gizmos,
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
@@ -119,7 +117,15 @@ namespace DeNA.Anjin.Agents
                         SuperSize = screenshotSuperSize,
                         StereoCaptureMode = screenshotStereoCaptureMode
                     }
-                    : null
+                    : null,
+                Operators = new IOperator[]
+                {
+                    new UGUIClickOperator(), //
+                    new UGUIClickAndHoldOperator(holdMillis: touchAndHoldDelayMillis), //
+                    new UGUITextInputOperator(
+                        randomStringParams: GetRandomStringParameters,
+                        randomString: new RandomStringImpl(random)),
+                },
             };
             await Monkey.Run(config, token);
 

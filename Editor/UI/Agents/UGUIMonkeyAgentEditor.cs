@@ -44,11 +44,6 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private SerializedProperty _timeoutProp;
         private GUIContent _timeoutGUIContent;
 
-        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Touch and Hold Millis");
-        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for touch-and-hold [ms]");
-        private SerializedProperty _touchAndHoldDelayMillisProp;
-        private GUIContent _touchAndHoldDelayMillisGUIContent;
-
         private static readonly string s_gizmos = L10n.Tr("Enable Gizmos");
 
         private static readonly string s_gizmosTooltip =
@@ -57,24 +52,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private SerializedProperty _gizmosProp;
         private GUIContent _gizmosGUIContent;
 
-        private static readonly string s_randomStringParams = L10n.Tr("Random String Parameters Table");
-        private static readonly string s_randomStringParamsEntryKey = L10n.Tr("Game Object Name");
-        private static readonly string s_randomStringParamsEntryKind = L10n.Tr("Characters Kind");
-        private static readonly string s_randomStringParamsEntryMinLength = L10n.Tr("Minimum Length");
-        private static readonly string s_randomStringParamsEntryMaxLength = L10n.Tr("Maximum Length");
-        private SerializedProperty _randomStringParametersMapProp;
-        private ReorderableList _randomStringParamsMapList;
-        private const float Padding = 2f;
-        private const int NumberOfLines = 4;
-
-        private static readonly float s_elementHeight =
-            EditorGUIUtility.singleLineHeight * NumberOfLines + Padding * (NumberOfLines + 1);
-
-        private GUIContent _randomStringParamsEntryKeyGUIContent;
-        private GUIContent _randomStringParamsEntryKindGUIContent;
-        private GUIContent _randomStringParamsEntryMinLengthGUIContent;
-        private GUIContent _randomStringParamsEntryMaxLengthGUIContent;
-
+        // Screenshot options
         private static readonly string s_screenshotOptions = L10n.Tr("Screenshot Options");
         private static readonly string s_screenshotEnabled = L10n.Tr("Enabled");
         private static readonly string s_screenshotEnabledTooltip = L10n.Tr("Whether screenshot is enabled or not");
@@ -135,6 +113,35 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private const ScreenCapture.StereoScreenCaptureMode DefaultStereoScreenCaptureMode =
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
+        // uGUI click and hold operator options
+        private static readonly string s_uGUIClickAndHoldOperatorOptions = L10n.Tr("Touch and Hold Operator Options");
+        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Touch and Hold Millis");
+        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for touch-and-hold [ms]");
+        private SerializedProperty _touchAndHoldDelayMillisProp;
+        private GUIContent _touchAndHoldDelayMillisGUIContent;
+
+        // uGUI text input operator options
+        private static readonly string s_uGUITextInputOperatorOptions = L10n.Tr("Text Input Operator Options");
+        private static readonly string s_randomStringParams = L10n.Tr("Random String Parameters Table");
+        private static readonly string s_randomStringParamsEntryKey = L10n.Tr("Game Object Name");
+        private static readonly string s_randomStringParamsEntryKind = L10n.Tr("Characters Kind");
+        private static readonly string s_randomStringParamsEntryMinLength = L10n.Tr("Minimum Length");
+        private static readonly string s_randomStringParamsEntryMaxLength = L10n.Tr("Maximum Length");
+        private SerializedProperty _randomStringParametersMapProp;
+        private ReorderableList _randomStringParamsMapList;
+        private const float Padding = 2f;
+        private const int NumberOfLines = 4;
+
+        private static readonly float s_elementHeight =
+            EditorGUIUtility.singleLineHeight * NumberOfLines + Padding * (NumberOfLines + 1);
+
+        private GUIContent _randomStringParamsEntryKeyGUIContent;
+        private GUIContent _randomStringParamsEntryKindGUIContent;
+        private GUIContent _randomStringParamsEntryMinLengthGUIContent;
+        private GUIContent _randomStringParamsEntryMaxLengthGUIContent;
+
+        private const float SpacerPixels = 10f;
+        private const float SpacerPixelsUnderHeader = 4f;
 
         private void OnEnable()
         {
@@ -157,72 +164,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
                 serializedObject.FindProperty(nameof(UGUIMonkeyAgent.secondsToErrorForNoInteractiveComponent));
             _timeoutGUIContent = new GUIContent(s_timeout, s_timeoutToolTip);
 
-            _touchAndHoldDelayMillisProp =
-                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.touchAndHoldDelayMillis));
-            _touchAndHoldDelayMillisGUIContent = new GUIContent(
-                s_touchAndHoldDelayMillis,
-                s_touchAndHoldDelayMillisTooltip
-            );
-
             _gizmosProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.gizmos));
             _gizmosGUIContent = new GUIContent(s_gizmos, s_gizmosTooltip);
 
-            _randomStringParamsEntryKeyGUIContent = new GUIContent(s_randomStringParamsEntryKey);
-            _randomStringParamsEntryKindGUIContent = new GUIContent(s_randomStringParamsEntryKind);
-            _randomStringParamsEntryMinLengthGUIContent = new GUIContent(s_randomStringParamsEntryMinLength);
-            _randomStringParamsEntryMaxLengthGUIContent = new GUIContent(s_randomStringParamsEntryMaxLength);
-            _randomStringParametersMapProp =
-                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.randomStringParametersMap));
-            _randomStringParamsMapList = new ReorderableList(serializedObject, _randomStringParametersMapProp)
-            {
-                drawHeaderCallback = rect => EditorGUI.LabelField(rect, s_randomStringParams),
-                elementHeightCallback = _ => s_elementHeight,
-                // XXX: Discarding parameters cannot be used on Unity 2019.x .
-                // ReSharper disable UnusedParameter.Local
-                drawElementCallback = (rect, index, isActive, isFocused) =>
-                // ReSharper enable UnusedParameter.Local
-                {
-                    var elemProp = _randomStringParametersMapProp.GetArrayElementAtIndex(index);
-                    var rect1 = new Rect(rect) { y = rect.y + Padding, height = EditorGUIUtility.singleLineHeight };
-                    EditorGUI.PropertyField(
-                        rect1,
-                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry.GameObjectName)),
-                        _randomStringParamsEntryKeyGUIContent
-                    );
-
-                    var rect2 = new Rect(rect)
-                    {
-                        y = rect1.y + EditorGUIUtility.singleLineHeight + Padding,
-                        height = EditorGUIUtility.singleLineHeight
-                    };
-                    EditorGUI.PropertyField(
-                        rect2,
-                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry.CharactersKind)),
-                        _randomStringParamsEntryKindGUIContent
-                    );
-                    var rect3 = new Rect(rect)
-                    {
-                        y = rect2.y + EditorGUIUtility.singleLineHeight + Padding,
-                        height = EditorGUIUtility.singleLineHeight
-                    };
-                    EditorGUI.PropertyField(
-                        rect3,
-                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry.MinimumLength)),
-                        _randomStringParamsEntryMinLengthGUIContent
-                    );
-                    var rect4 = new Rect(rect)
-                    {
-                        y = rect3.y + EditorGUIUtility.singleLineHeight + Padding,
-                        height = EditorGUIUtility.singleLineHeight
-                    };
-                    EditorGUI.PropertyField(
-                        rect4,
-                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry.MaximumLength)),
-                        _randomStringParamsEntryMaxLengthGUIContent
-                    );
-                }
-            };
-
+            // Screenshot options
             _screenshotEnabledProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotEnabled));
             _screenshotEnabledGUIContent = new GUIContent(s_screenshotEnabled, s_screenshotEnabledTooltip);
 
@@ -265,6 +210,75 @@ namespace DeNA.Anjin.Editor.UI.Agents
                 DefaultStereoScreenCaptureMode.ToString(),
                 s_screenshotStereoCaptureModeTooltip
             );
+
+            // uGUI click and hold operator options
+            _touchAndHoldDelayMillisProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.touchAndHoldDelayMillis));
+            _touchAndHoldDelayMillisGUIContent = new GUIContent(
+                s_touchAndHoldDelayMillis,
+                s_touchAndHoldDelayMillisTooltip
+            );
+
+            // uGUI text input operator options
+            _randomStringParamsEntryKeyGUIContent = new GUIContent(s_randomStringParamsEntryKey);
+            _randomStringParamsEntryKindGUIContent = new GUIContent(s_randomStringParamsEntryKind);
+            _randomStringParamsEntryMinLengthGUIContent = new GUIContent(s_randomStringParamsEntryMinLength);
+            _randomStringParamsEntryMaxLengthGUIContent = new GUIContent(s_randomStringParamsEntryMaxLength);
+            _randomStringParametersMapProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.randomStringParametersMap));
+            _randomStringParamsMapList = new ReorderableList(serializedObject, _randomStringParametersMapProp)
+            {
+                drawHeaderCallback = rect => EditorGUI.LabelField(rect, s_randomStringParams),
+                elementHeightCallback = _ => s_elementHeight,
+                // XXX: Discarding parameters cannot be used on Unity 2019.x .
+                // ReSharper disable UnusedParameter.Local
+                drawElementCallback = (rect, index, isActive, isFocused) =>
+                    // ReSharper enable UnusedParameter.Local
+                {
+                    var elemProp = _randomStringParametersMapProp.GetArrayElementAtIndex(index);
+                    var rect1 = new Rect(rect) { y = rect.y + Padding, height = EditorGUIUtility.singleLineHeight };
+                    EditorGUI.PropertyField(
+                        rect1,
+                        elemProp.FindPropertyRelative(
+                            nameof(UGUIMonkeyAgent.RandomStringParametersEntry.GameObjectName)),
+                        _randomStringParamsEntryKeyGUIContent
+                    );
+
+                    var rect2 = new Rect(rect)
+                    {
+                        y = rect1.y + EditorGUIUtility.singleLineHeight + Padding,
+                        height = EditorGUIUtility.singleLineHeight
+                    };
+                    EditorGUI.PropertyField(
+                        rect2,
+                        elemProp.FindPropertyRelative(
+                            nameof(UGUIMonkeyAgent.RandomStringParametersEntry.CharactersKind)),
+                        _randomStringParamsEntryKindGUIContent
+                    );
+                    var rect3 = new Rect(rect)
+                    {
+                        y = rect2.y + EditorGUIUtility.singleLineHeight + Padding,
+                        height = EditorGUIUtility.singleLineHeight
+                    };
+                    EditorGUI.PropertyField(
+                        rect3,
+                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry
+                            .MinimumLength)),
+                        _randomStringParamsEntryMinLengthGUIContent
+                    );
+                    var rect4 = new Rect(rect)
+                    {
+                        y = rect3.y + EditorGUIUtility.singleLineHeight + Padding,
+                        height = EditorGUIUtility.singleLineHeight
+                    };
+                    EditorGUI.PropertyField(
+                        rect4,
+                        elemProp.FindPropertyRelative(nameof(UGUIMonkeyAgent.RandomStringParametersEntry
+                            .MaximumLength)),
+                        _randomStringParamsEntryMaxLengthGUIContent
+                    );
+                }
+            };
         }
 
 
@@ -277,10 +291,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
             EditorGUILayout.PropertyField(_lifespanProp, _lifespanGUIContent);
             EditorGUILayout.PropertyField(_delayMillisProp, _delayMillisGUIContent);
             EditorGUILayout.PropertyField(_timeoutProp, _timeoutGUIContent);
-            EditorGUILayout.PropertyField(_touchAndHoldDelayMillisProp, _touchAndHoldDelayMillisGUIContent);
             EditorGUILayout.PropertyField(_gizmosProp, _gizmosGUIContent);
-            _randomStringParamsMapList.DoLayoutList();
-            EditorGUILayout.LabelField(s_screenshotOptions, EditorStyles.boldLabel);
+
+            // Screenshot options
+            DrawHeader(s_screenshotOptions);
             using (new EditorGUI.IndentLevelScope())
             {
                 EditorGUILayout.PropertyField(_screenshotEnabledProp, _screenshotEnabledGUIContent);
@@ -358,9 +372,23 @@ namespace DeNA.Anjin.Editor.UI.Agents
                 }
             }
 
+            // uGUI click and hold operator options
+            DrawHeader(s_uGUIClickAndHoldOperatorOptions);
+            EditorGUILayout.PropertyField(_touchAndHoldDelayMillisProp, _touchAndHoldDelayMillisGUIContent);
+
+            // uGUI text input operator options
+            DrawHeader(s_uGUITextInputOperatorOptions);
+            _randomStringParamsMapList.DoLayoutList();
+
             serializedObject.ApplyModifiedProperties();
         }
 
+        private static void DrawHeader(string label)
+        {
+            GUILayout.Space(SpacerPixels);
+            GUILayout.Label(label, EditorStyles.boldLabel);
+            GUILayout.Space(SpacerPixelsUnderHeader);
+        }
 
         // XXX: Fallback for Unity 2019.x
         private static int Clamp(int value, int min, int max) => value < min ? min : max < value ? max : value;
