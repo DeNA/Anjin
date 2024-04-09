@@ -306,6 +306,10 @@ msgstr "コンポーネント探索時間［秒］"
 msgid "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
 msgstr "インタラクティブな要素を探索する秒数を指定します。探索時間がこれを超えるとエラーを発生させます"
 
+# uGUI click and hold operator options
+msgid "Touch and Hold Operator Options"
+msgstr "タッチ&ホールド・オペレーター設定"
+
 # touchAndHoldDelayMillis
 msgid "Touch and Hold Millis"
 msgstr "タッチ&ホールド時間［ミリ秒］"
@@ -321,6 +325,10 @@ msgstr "Gizmos を有効"
 # gizmos tooltip
 msgid "Show Gizmos on GameView during running monkey test if true"
 msgstr "もし有効ならモンキー操作中の GameView に Gizmo を表示します。もし無効なら GameView に Gizmo を表示しません"
+
+# uGUI text input operator options
+msgid "Text Input Operator Options"
+msgstr "テキスト入力オペレーター設定"
 
 # random string parameters table
 msgid "Random String Parameters Table"
