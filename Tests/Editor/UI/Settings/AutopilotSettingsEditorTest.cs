@@ -57,6 +57,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             editor.Launch(state); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
 
             yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
+            Assume.That(EditorApplication.isPlaying, Is.True, "Switched to play mode");
 
             state = AutopilotState.Instance; // Reacquire because lost in domain reloading
             Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorEditMode));
