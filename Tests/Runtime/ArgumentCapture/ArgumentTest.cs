@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using NUnit.Framework;
+using TestHelper.Attributes;
 using UnityEngine.TestTools.Utils;
 
 namespace DeNA.Anjin.ArgumentCapture
@@ -12,7 +13,7 @@ namespace DeNA.Anjin.ArgumentCapture
     /// This is actually a test of <c>ArgumentCapture</c>.
     /// </summary>
     [TestFixture]
-    [Category("IgnoreGUI")]
+    [IgnoreWindowMode("Need command line arguments")]
     public class ArgumentTest
     {
         [Test]
