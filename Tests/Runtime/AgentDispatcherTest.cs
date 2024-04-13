@@ -8,7 +8,6 @@ using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,11 +40,9 @@ namespace DeNA.Anjin
             return testSettings;
         }
 
-        private const string TestAgentPath = "Packages/com.dena.anjin/Tests/TestAssets/DoNothingAgentForTests.asset";
-
-        private static DoNothingAgent LoadTestAgent(string name = nameof(DoNothingAgent))
+        private static DoNothingAgent CreateDoNothingAgent(string name = nameof(DoNothingAgent))
         {
-            var doNothingAgent = AssetDatabase.LoadAssetAtPath<DoNothingAgent>(TestAgentPath);
+            var doNothingAgent = ScriptableObject.CreateInstance<DoNothingAgent>();
             doNothingAgent.name = name;
             return doNothingAgent;
         }
@@ -65,7 +62,10 @@ namespace DeNA.Anjin
             const string ActualAgentName = nameof(DoNothingAgent);
 
             var settings = CreateAutopilotSettings();
-            settings.sceneAgentMaps.Add(new SceneAgentMap { scenePath = TestScenePath, agent = LoadTestAgent() });
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, agent = CreateDoNothingAgent()
+            });
 
             var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
             var randomFactory = new RandomFactory(0);
@@ -82,7 +82,7 @@ namespace DeNA.Anjin
             const string ActualAgentName = "Fallback";
 
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = LoadTestAgent(ActualAgentName);
+            settings.fallbackAgent = CreateDoNothingAgent(ActualAgentName);
 
             var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
             var randomFactory = new RandomFactory(0);
@@ -111,8 +111,8 @@ namespace DeNA.Anjin
             const string ActualAgentName = "Observer";
 
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = LoadTestAgent();
-            settings.observerAgent = LoadTestAgent(ActualAgentName);
+            settings.fallbackAgent = CreateDoNothingAgent();
+            settings.observerAgent = CreateDoNothingAgent(ActualAgentName);
 
             var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
             var randomFactory = new RandomFactory(0);
