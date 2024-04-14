@@ -58,7 +58,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
             EditorJsonUtility.FromJsonOverwrite(asmdefFile.ToString(), asmdef);
             Assert.That(asmdef.name, Is.EqualTo(AssemblyName));
             Assert.That(asmdef.autoReferenced, Is.False);
-            Assert.That(asmdef.defineConstraints, Does.Contain("UNITY_EDITOR || DENA_AUTOPILOT_ENABLE"));
+            Assert.That(asmdef.defineConstraints, Does.Contain("UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE"));
             Assert.That(asmdef.includePlatforms, Is.Empty);
             Assert.That(asmdef.references, Does.Contain("DeNA.Anjin"));
             Assert.That(asmdef.references, Does.Contain("UniTask"));

@@ -16,7 +16,7 @@
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [
-        "UNITY_EDITOR || DENA_AUTOPILOT_ENABLE"
+        "UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE"
     ],
     "versionDefines": [],
     "noEngineReferences": false
