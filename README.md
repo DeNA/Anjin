@@ -408,6 +408,11 @@ Annotations are defined to control Anjin operations.
 Use the `DeNA.Anjin.Annotations` assembly by adding it to the Assembly Definition References.
 Please note that this will be included in the release build due to the way it works.
 
+> [!NOTE]  
+> Even if the annotations assembly is removed from the release build, the link to the annotation component will remain Scenes and Prefabs in the asset bundle built.
+> Therefore, a warning log will be output during instantiate.
+> To avoid this, annotations assembly are included in release builds.
+
 
 ### IgnoreAnnotation
 
