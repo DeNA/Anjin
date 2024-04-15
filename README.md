@@ -54,7 +54,7 @@ If you installed [openupm-cli](https://github.com/openupm/openupm-cli), run the 
 openupm add com.dena.anjin
 ```
 
-`UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` is set in the Define Constraints of the Assembly Definition File, So excluded from the release build in principle.
+`UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` is set in the Define Constraints of the Assembly Definition File, So excluded from the release build in principle.
 
 
 ### Recommended .gitignore
@@ -78,7 +78,7 @@ After installing the UPM package in the game title project, configure and implem
 - Implement initialization process as needed
 
 > [!NOTE]  
-> Set `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` in the Define Constraints of the Assembly Definition File to which they belong to exclude them from release builds.
+> Set `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` in the Define Constraints of the Assembly Definition File to which they belong to exclude them from release builds.
 
 
 ### Generate and configure the AutopilotSettings.asset file
@@ -373,7 +373,7 @@ This can be accomplished with `ParallelCompositeAgent`, but it is easier to set 
 ## Implementation of game title-specific code
 
 Game title specific Agents and initialization code must be avoided in the release build.
-Create a unique assembly and turn off "Auto Referenced", and set the "Define Constraints" to `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE`.
+Create a unique assembly and turn off "Auto Referenced", and set the "Define Constraints" to `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE`.
 
 This asmdef and its storage folder can be created by opening the context menu anywhere in the Project window and selecting
 **Create > Anjin > Title Own Assembly Folder**.
@@ -407,6 +407,11 @@ Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistra
 Annotations are defined to control Anjin operations.
 Use the `DeNA.Anjin.Annotations` assembly by adding it to the Assembly Definition References.
 Please note that this will be included in the release build due to the way it works.
+
+> [!NOTE]  
+> Even if the annotations assembly is removed from the release build, the link to the annotation component will remain Scenes and Prefabs in the asset bundle built.
+> Therefore, a warning log will be output during instantiate.
+> To avoid this, annotations assembly are included in release builds.
 
 
 ### IgnoreAnnotation

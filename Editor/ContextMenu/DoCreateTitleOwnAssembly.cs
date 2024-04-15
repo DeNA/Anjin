@@ -28,7 +28,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
             {
                 name = assemblyName,
                 autoReferenced = false,
-                defineConstraints = new[] { "UNITY_EDITOR || DENA_AUTOPILOT_ENABLE" },
+                defineConstraints = new[] { "UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE" },
                 references = new[] { "DeNA.Anjin", "UniTask" }
             };
 

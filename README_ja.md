@@ -54,7 +54,7 @@ Click [English](./README.md) for English page if you need.
 openupm add com.dena.anjin
 ```
 
-Assembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
+Assembly Definition FileのDefine Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` が設定されていますので、原則リリースビルドからは除外されます。
 
 ### 推奨.gitignore
 
@@ -77,7 +77,7 @@ Anjinを起動すると、次のファイルが自動生成されます。
 - 必要に応じて初期化処理の実装
 
 > [!NOTE]  
-> ゲームタイトル固有のオートパイロット向けコードは、属するAssembly Definition FileのDefine Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドから除外できます
+> ゲームタイトル固有のオートパイロット向けコードは、属するAssembly Definition FileのDefine Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドから除外できます
 
 
 ### オートパイロット設定ファイル（.asset）の生成
@@ -376,7 +376,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 ## ゲームタイトル独自処理の実装
 
 ゲームタイトル固有のAgent等を実装する場合、リリースビルドへの混入を避けるため、専用のアセンブリに分けることをおすすめします。
-Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraintsに `UNITY_EDITOR || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドからは除外できます。
+Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドからは除外できます。
 
 このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き
 **Create > Anjin > Title Own Assembly Folder**
@@ -411,6 +411,11 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 Anjinの操作を制御するためのアノテーションを定義しています。
 `DeNA.Anjin.Annotations` アセンブリをAssembly Definition Referencesに追加して使用してください。
 仕組み上、リリースビルドに含まれることになりますのでご注意ください。
+
+> [!NOTE]  
+> アノテーションアセンブリをリリースビルドから除いても、アセットバンドルビルドされたSceneやPrefabにはアノテーションコンポーネントへのリンクが残ります。
+> そのため、インスタンス化の際に警告ログが出力されてしまいます。
+> これを回避するため、リリースビルドにアノテーションアセンブリを含めるようにしています。
 
 
 ### IgnoreAnnotation
