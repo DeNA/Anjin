@@ -3,6 +3,7 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Attributes;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,8 +23,8 @@ namespace DeNA.Anjin.Agents
 
         [SerializeField] [HideInInspector] internal bool wasExecuted;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void ResetExecutedFlag()
+        [InitializeOnLaunchAutopilot]
+        public static void ResetExecutedFlag()
         {
             foreach (var guid in AssetDatabase.FindAssets("t:OneTimeAgent"))
             {
