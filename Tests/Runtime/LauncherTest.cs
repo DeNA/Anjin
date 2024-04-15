@@ -12,7 +12,7 @@ using UnityEngine.TestTools;
 
 namespace DeNA.Anjin
 {
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor)] // Fail on Unity 2019 Linux editor
     [SuppressMessage("ApiDesign", "RS0030")]
     public class LauncherTest
     {
@@ -66,7 +66,8 @@ namespace DeNA.Anjin
             var state = AutopilotState.Instance;
             editor.Launch(state);
             await Task.Delay(2000);
-            await editor.Stop(); // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
+            await editor.Stop();
+            // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
 
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");

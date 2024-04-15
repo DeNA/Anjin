@@ -48,7 +48,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         }
 
         [UnityTest]
-        public IEnumerator Launch_RunAutopilotOnPlayMode()
+        public IEnumerator Launch_OnEditMode_RunAutopilotOnPlayMode()
         {
             var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
                 "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
@@ -57,17 +57,18 @@ namespace DeNA.Anjin.Editor.UI.Settings
             editor.Launch(state); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
 
             yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
+            Assume.That(EditorApplication.isPlaying, Is.True, "Switched to play mode");
 
             state = AutopilotState.Instance; // Reacquire because lost in domain reloading
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.EditorEditMode));
             Assert.That(state.IsRunning, Is.True, "AutopilotState is running");
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
-            Assert.That((bool)autopilot, Is.True, "Autopilot object is alive");
+            Assert.That((bool)autopilot.gameObject, Is.True, "Autopilot object is alive");
         }
 
         [UnityTest]
-        public IEnumerator Launch_RunAutopilot_CallMethodWithInitializeOnLaunchAutopilotAttribute()
-            // Note: This test about InitializeOnLaunchAutopilotAttribute
+        public IEnumerator Launch_CallMethodWithInitializeOnLaunchAutopilotAttribute()
         {
             FakeInitializeOnLaunchAutopilot.Reset();
 
