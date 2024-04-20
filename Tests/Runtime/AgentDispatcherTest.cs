@@ -1,10 +1,11 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
@@ -26,6 +27,15 @@ namespace DeNA.Anjin
     public class AgentDispatcherTest
     {
         private IAgentDispatcher _dispatcher;
+
+        [SetUp]
+        public void SetUp()
+        {
+            foreach (var agent in Object.FindObjectsOfType<AbstractAgent>())
+            {
+                Object.Destroy(agent);
+            }
+        }
 
         [TearDown]
         public void TearDown()
@@ -56,13 +66,19 @@ namespace DeNA.Anjin
         }
 
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
 
-        private static async Task LoadTestSceneAsync(string path)
+        private static async UniTask<Scene> LoadTestSceneAsync(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
+            Scene scene = default;
 #if UNITY_EDITOR
-            await EditorSceneManager.LoadSceneAsyncInPlayMode(path,
-                new LoadSceneParameters(LoadSceneMode.Single));
+            scene = EditorSceneManager.LoadSceneInPlayMode(path, new LoadSceneParameters(mode));
+            while (!scene.isLoaded)
+            {
+                await Task.Yield();
+            }
 #endif
+            return scene;
         }
 
         [Test]
@@ -118,6 +134,31 @@ namespace DeNA.Anjin
             SetUpDispatcher(settings);
 
             await LoadTestSceneAsync(TestScenePath);
+
+            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
+        }
+
+        [Test]
+        public async Task DispatchByScene_ReActivateScene_NotCreateDuplicateAgents()
+        {
+            const string AgentName = "Mapped Agent";
+            var settings = CreateAutopilotSettings();
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, agent = CreateDoNothingAgent(AgentName)
+            });
+            SetUpDispatcher(settings);
+
+            var scene = await LoadTestSceneAsync(TestScenePath);
+
+            var agents = Object.FindObjectsOfType<AbstractAgent>().Select(x => x.name);
+            Assume.That(agents, Is.EquivalentTo(new[] { AgentName }));
+
+            var additiveScene = await LoadTestSceneAsync(TestScenePath2, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(additiveScene);
+
+            SceneManager.SetActiveScene(scene); // Re-activate
 
             var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
             Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));

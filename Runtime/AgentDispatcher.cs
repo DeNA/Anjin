@@ -19,9 +19,9 @@ namespace DeNA.Anjin
         /// <summary>
         /// Agent dispatch by next scene
         /// </summary>
-        /// <param name="current">Current scene</param>
-        /// <param name="next">Next transition scene</param>
-        void DispatchByScene(Scene current, Scene next);
+        /// <param name="next"></param>
+        /// <param name="mode"></param>
+        void DispatchByScene(Scene next, LoadSceneMode mode);
 
         /// <summary>
         /// Agent dispatch by current scene
@@ -48,28 +48,21 @@ namespace DeNA.Anjin
             _settings = settings;
             _logger = logger;
             _randomFactory = randomFactory;
-            SceneManager.activeSceneChanged += this.DispatchByScene;
+            SceneManager.sceneLoaded += this.DispatchByScene;
         }
 
         public void Dispose()
         {
-            SceneManager.activeSceneChanged -= this.DispatchByScene;
+            SceneManager.sceneLoaded -= this.DispatchByScene;
         }
 
-        /// <summary>
-        /// Dispatch agent mapped to Scene `next`
-        /// </summary>
-        /// <param name="current"></param>
-        /// <param name="next"></param>
-        public void DispatchByScene(Scene current, Scene next)
+        /// <inheritdoc/>
+        public void DispatchByScene(Scene next, LoadSceneMode mode)
         {
             DispatchByScene(next);
         }
 
-        /// <summary>
-        /// Dispatch agent mapped to Scene
-        /// </summary>
-        /// <param name="scene"></param>
+        /// <inheritdoc/>
         public void DispatchByScene(Scene scene)
         {
             AbstractAgent agent = null;
