@@ -30,7 +30,7 @@ namespace DeNA.Anjin
         [TearDown]
         public void TearDown()
         {
-            SceneManager.activeSceneChanged -= _dispatcher.DispatchByScene;
+            _dispatcher?.Dispose();
         }
 
         private static AutopilotSettings CreateAutopilotSettings()
@@ -53,7 +53,6 @@ namespace DeNA.Anjin
             var randomFactory = new RandomFactory(0);
 
             _dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            SceneManager.activeSceneChanged += _dispatcher.DispatchByScene;
         }
 
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";

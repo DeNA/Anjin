@@ -14,7 +14,7 @@ namespace DeNA.Anjin
     /// <summary>
     /// Agent dispatcher interface
     /// </summary>
-    public interface IAgentDispatcher
+    public interface IAgentDispatcher : IDisposable
     {
         /// <summary>
         /// Agent dispatch by next scene
@@ -30,7 +30,7 @@ namespace DeNA.Anjin
         void DispatchByScene(Scene scene);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public class AgentDispatcher : IAgentDispatcher
     {
         private readonly AutopilotSettings _settings;
@@ -48,6 +48,12 @@ namespace DeNA.Anjin
             _settings = settings;
             _logger = logger;
             _randomFactory = randomFactory;
+            SceneManager.activeSceneChanged += this.DispatchByScene;
+        }
+
+        public void Dispose()
+        {
+            SceneManager.activeSceneChanged -= this.DispatchByScene;
         }
 
         /// <summary>
@@ -107,7 +113,7 @@ namespace DeNA.Anjin
 
             agent.Logger = _logger;
             agent.Random = _randomFactory.CreateRandom();
-            
+
             try
             {
                 agent.Run(token).Forget();
