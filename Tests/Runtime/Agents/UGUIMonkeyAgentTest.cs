@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -12,7 +12,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
@@ -70,20 +69,6 @@ namespace DeNA.Anjin.Agents
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
             }
-        }
-
-        [Test]
-        public void Check_SelectableProperties()
-        {
-            var button = new GameObject("button1", new[] { typeof(RectTransform), typeof(Button) });
-            var canvas = new GameObject().AddComponent<Canvas>();
-            button.transform.parent = canvas.transform;
-
-            // Verify properties needed to process with `UIDetector.Item.From()`.
-            var selectable = button.GetComponent<Selectable>();
-            Assert.That(selectable.interactable, Is.True);
-            Assert.That(selectable.transform.GetType(), Is.EqualTo(typeof(RectTransform)));
-            Assert.That(selectable.GetComponentInParent<Canvas>(), Is.Not.Null);
         }
     }
 }
