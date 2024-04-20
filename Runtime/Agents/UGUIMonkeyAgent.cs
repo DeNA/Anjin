@@ -112,7 +112,7 @@ namespace DeNA.Anjin.Agents
                     {
                         Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
                         FilenameStrategy = new CounterBasedStrategy(
-                            defaultScreenshotFilenamePrefix ? null : screenshotFilenamePrefix
+                            defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),
                         SuperSize = screenshotSuperSize,
                         StereoCaptureMode = screenshotStereoCaptureMode
