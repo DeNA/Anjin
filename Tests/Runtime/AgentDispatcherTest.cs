@@ -3,15 +3,21 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace DeNA.Anjin
 {
@@ -19,18 +25,12 @@ namespace DeNA.Anjin
     [SuppressMessage("ApiDesign", "RS0030")]
     public class AgentDispatcherTest
     {
-        [SetUp]
-        public void SetUp()
-        {
-            Assume.That(GameObject.Find(nameof(DoNothingAgent)), Is.Null);
-        }
+        private IAgentDispatcher _dispatcher;
 
         [TearDown]
-        public async Task TearDown()
+        public void TearDown()
         {
-            var testAgentObject = GameObject.Find(nameof(DoNothingAgent));
-            Object.Destroy(testAgentObject);
-            await Task.Delay(100);
+            SceneManager.activeSceneChanged -= _dispatcher.DispatchByScene;
         }
 
         private static AutopilotSettings CreateAutopilotSettings()
@@ -47,80 +47,81 @@ namespace DeNA.Anjin
             return doNothingAgent;
         }
 
+        private void SetUpDispatcher(AutopilotSettings settings)
+        {
+            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            var randomFactory = new RandomFactory(0);
+
+            _dispatcher = new AgentDispatcher(settings, logger, randomFactory);
+            SceneManager.activeSceneChanged += _dispatcher.DispatchByScene;
+        }
+
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
 
-        private static Scene LoadTestScene()
+        private static async Task LoadTestSceneAsync(string path)
         {
-            return EditorSceneManager.LoadSceneInPlayMode(
-                TestScenePath,
+#if UNITY_EDITOR
+            await EditorSceneManager.LoadSceneAsyncInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Single));
+#endif
         }
 
         [Test]
-        public void DispatchByScene_DispatchAgentBySceneAgentMaps()
+        public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
-            const string ActualAgentName = nameof(DoNothingAgent);
-
+            const string AgentName = "Mapped Agent";
             var settings = CreateAutopilotSettings();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
-                scenePath = TestScenePath, agent = CreateDoNothingAgent()
+                scenePath = TestScenePath, agent = CreateDoNothingAgent(AgentName)
             });
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
-            Assert.That(gameObject, Is.Not.Null);
+            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
 
         [Test]
-        public void DispatchByScene_DispatchFallbackAgent()
+        public async Task DispatchByScene_DispatchFallbackAgent()
         {
-            const string ActualAgentName = "Fallback";
-
+            const string AgentName = "Fallback Agent";
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = CreateDoNothingAgent(ActualAgentName);
+            settings.fallbackAgent = CreateDoNothingAgent(AgentName);
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
-            Assert.That(gameObject, Is.Not.Null);
+            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
 
         [Test]
-        public void DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
+        public async Task DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
         {
             var settings = CreateAutopilotSettings();
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            SetUpDispatcher(settings);
 
+            await LoadTestSceneAsync(TestScenePath);
+
+            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            Assert.That(actual, Is.Empty);
             LogAssert.Expect(LogType.Warning, "Agent not found by scene: Buttons");
         }
 
         [Test]
-        public void DispatchByScene_DispatchObserverAgent()
+        public async Task DispatchByScene_DispatchObserverAgent()
         {
-            const string ActualAgentName = "Observer";
-
+            const string AgentName = "Observer Agent";
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = CreateDoNothingAgent();
-            settings.observerAgent = CreateDoNothingAgent(ActualAgentName);
+            settings.observerAgent = CreateDoNothingAgent(AgentName);
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
-            Assert.That(gameObject, Is.Not.Null);
+            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
     }
 }
