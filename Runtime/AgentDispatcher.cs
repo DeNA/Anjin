@@ -85,17 +85,21 @@ namespace DeNA.Anjin
 
             if (!agent)
             {
-                if (!_settings.fallbackAgent)
+                if (_settings.fallbackAgent)
+                {
+                    _logger.Log($"Use fallback agent. scene: {scene.path}");
+                    agent = _settings.fallbackAgent;
+                }
+                else
                 {
                     _logger.Log(LogType.Warning, $"Agent not found by scene: {scene.name}");
-                    return;
                 }
-
-                _logger.Log($"Use fallback agent. scene: {scene.path}");
-                agent = _settings.fallbackAgent;
             }
 
-            DispatchAgent(agent);
+            if (agent)
+            {
+                DispatchAgent(agent);
+            }
 
             if (_settings.observerAgent != null)
             {
