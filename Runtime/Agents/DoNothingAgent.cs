@@ -24,16 +24,21 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            if (lifespanSec > 0)
+            try
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(lifespanSec), cancellationToken: token);
+                if (lifespanSec > 0)
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(lifespanSec), cancellationToken: token);
+                }
+                else
+                {
+                    await UniTask.WaitWhile(() => true, cancellationToken: token); // Wait indefinitely
+                }
             }
-            else
+            finally
             {
-                await UniTask.WaitWhile(() => true, cancellationToken: token); // 無期限に待機
+                Logger.Log($"Exit {this.name}.Run()");
             }
-
-            Logger.Log($"Exit {this.name}.Run()");
         }
     }
 }

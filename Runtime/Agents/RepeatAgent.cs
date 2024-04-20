@@ -26,14 +26,19 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            while (true)
+            agent.Logger = Logger;
+            agent.Random = Random; // This Agent does not consume pseudo-random numbers, so passed on as is.
+            try
             {
-                agent.Logger = Logger;
-                agent.Random = Random; // This Agent does not consume pseudo-random numbers, so passed on as is.
-                await agent.Run(token);
+                while (true) // Note: This agent is not terminate myself
+                {
+                    await agent.Run(token);
+                }
             }
-
-            // Note: This agent is not terminate myself
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
     }
 }

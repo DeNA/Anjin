@@ -28,9 +28,14 @@ namespace DeNA.Anjin.Agents
                 tasks[i] = agent.Run(token);
             }
 
-            await UniTask.WhenAll(tasks);
-
-            Logger.Log($"Exit {this.name}.Run()");
+            try
+            {
+                await UniTask.WhenAll(tasks);
+            }
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
     }
 }

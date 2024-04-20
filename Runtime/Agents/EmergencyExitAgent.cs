@@ -26,27 +26,32 @@ namespace DeNA.Anjin.Agents
             Logger.Log($"Enter {this.name}.Run()");
 
             var selectables = new Selectable[20];
-            while (true)
+            try
             {
-                var allSelectableCount = Selectable.allSelectableCount;
-                if (selectables.Length < allSelectableCount)
+                while (true) // Note: This agent is not terminate myself
                 {
-                    selectables = new Selectable[allSelectableCount];
-                }
-
-                Selectable.AllSelectablesNoAlloc(selectables);
-                for (var i = 0; i < allSelectableCount; i++)
-                {
-                    if (selectables[i].TryGetComponent<EmergencyExit>(out var emergencyExit))
+                    var allSelectableCount = Selectable.allSelectableCount;
+                    if (selectables.Length < allSelectableCount)
                     {
-                        ClickEmergencyExitButton(emergencyExit);
+                        selectables = new Selectable[allSelectableCount];
                     }
+
+                    Selectable.AllSelectablesNoAlloc(selectables);
+                    for (var i = 0; i < allSelectableCount; i++)
+                    {
+                        if (selectables[i].TryGetComponent<EmergencyExit>(out var emergencyExit))
+                        {
+                            ClickEmergencyExitButton(emergencyExit);
+                        }
+                    }
+
+                    await UniTask.NextFrame(token);
                 }
-
-                await UniTask.NextFrame(token);
             }
-
-            // Note: This agent is not terminate myself
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]

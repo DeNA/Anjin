@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.TestDoubles;
@@ -37,17 +36,18 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+            await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
             Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -61,17 +61,19 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+            await UniTask.Delay(500);
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
+            Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
             Assert.That(childAgent.CompleteCount, Is.GreaterThan(2));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -85,20 +87,20 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+            await UniTask.Delay(500);
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
-            Assert.That(childAgent.Logger, Is.Not.Null);
+            Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
             Assert.That(childAgent.Logger, Is.EqualTo(agent.Logger)); // Instances inherited from parent
-            Assert.That(childAgent.Random, Is.Not.Null);
             Assert.That(childAgent.Random, Is.EqualTo(agent.Random)); // Instances inherited from parent
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

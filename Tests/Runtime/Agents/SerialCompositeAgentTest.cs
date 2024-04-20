@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,9 +30,9 @@ namespace DeNA.Anjin.Agents
         [Test]
         public async Task Run_cancelTask_stopAgent()
         {
-            var firstChildAgent = CreateChildAgent(5000);
-            var secondChildAgent = CreateChildAgent(5000);
-            var lastChildAgent = CreateChildAgent(5000);
+            var firstChildAgent = CreateChildAgent(500);
+            var secondChildAgent = CreateChildAgent(500);
+            var lastChildAgent = CreateChildAgent(500);
 
             var agent = ScriptableObject.CreateInstance<SerialCompositeAgent>();
             agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
@@ -41,17 +40,23 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agents = new List<AbstractAgent>() { firstChildAgent, secondChildAgent, lastChildAgent };
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+            await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
             Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+
+            await UniTask.Delay(1000); // Consider overhead
+            Assert.That(firstChildAgent.CompleteCount, Is.EqualTo(0));
+            Assert.That(secondChildAgent.CompleteCount, Is.EqualTo(0));
+            Assert.That(lastChildAgent.CompleteCount, Is.EqualTo(0));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -71,13 +76,16 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: token); // オーバーヘッドがあるため+1secを指定
+                await UniTask.Delay(3000); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
                 Assert.That(firstChildAgent.CompleteCount, Is.EqualTo(1));
                 Assert.That(secondChildAgent.CompleteCount, Is.EqualTo(1));
                 Assert.That(lastChildAgent.CompleteCount, Is.EqualTo(1));
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -97,10 +105,9 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(3), cancellationToken: token); // Consider overhead
+                await UniTask.Delay(3000); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
-                Assert.That(firstChildAgent.Logger, Is.Not.Null);
                 Assert.That(firstChildAgent.Logger, Is.EqualTo(agent.Logger)); // Instances inherited from parent
                 Assert.That(firstChildAgent.Random, Is.Not.Null);
                 Assert.That(firstChildAgent.Random, Is.Not.EqualTo(agent.Random));
@@ -110,6 +117,9 @@ namespace DeNA.Anjin.Agents
                 Assert.That(firstRandomValue, Is.Not.EqualTo(agent.Random.Next()));
                 Assert.That(firstRandomValue, Is.Not.EqualTo(secondChildAgent.Random.Next()));
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

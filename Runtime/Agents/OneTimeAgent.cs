@@ -47,9 +47,14 @@ namespace DeNA.Anjin.Agents
 
             agent.Logger = Logger;
             agent.Random = Random; // This Agent does not consume pseudo-random numbers, so passed on as is.
-            await agent.Run(token);
-
-            Logger.Log($"Exit {this.name}.Run()");
+            try
+            {
+                await agent.Run(token);
+            }
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
     }
 }
