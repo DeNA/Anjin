@@ -63,34 +63,40 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            using (var agentCts = new CancellationTokenSource()) // To cancel only the Working Agent.
+            try
             {
-                _cts = agentCts;
-
-                using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, agentCts.Token))
+                using (var agentCts = new CancellationTokenSource()) // To cancel only the Working Agent.
                 {
-                    try
-                    {
-                        agent.Logger = Logger;
-                        agent.Random = Random; // This Agent does not consume pseudo-random numbers, so passed on as is.
-                        await agent.Run(linkedCts.Token);
+                    _cts = agentCts;
 
-                        throw new TimeoutException(
-                            $"Could not receive defuse message `{defuseMessage}` before the agent terminated.");
-                    }
-                    catch (OperationCanceledException e)
+                    using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, agentCts.Token))
                     {
-                        if (token.IsCancellationRequested) // The parent was cancelled.
+                        try
                         {
-                            throw;
-                        }
+                            agent.Logger = Logger;
+                            agent.Random = Random;
+                            // Note: This Agent does not consume pseudo-random numbers, so passed on as is.
+                            await agent.Run(linkedCts.Token);
 
-                        Logger.Log($"Working agent {agent.name} was cancelled.");
+                            throw new TimeoutException(
+                                $"Could not receive defuse message `{defuseMessage}` before the agent terminated.");
+                        }
+                        catch (OperationCanceledException e)
+                        {
+                            if (token.IsCancellationRequested) // The parent was cancelled.
+                            {
+                                throw;
+                            }
+
+                            Logger.Log($"Working agent {agent.name} was cancelled.");
+                        }
                     }
                 }
             }
-
-            Logger.Log($"Exit {this.name}.Run()");
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
     }
 }

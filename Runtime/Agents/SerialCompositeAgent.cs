@@ -18,14 +18,19 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            foreach (var agent in agents)
+            try
             {
-                agent.Logger = Logger;
-                agent.Random = RandomFactory.CreateRandom();
-                await agent.Run(token);
+                foreach (var agent in agents)
+                {
+                    agent.Logger = Logger;
+                    agent.Random = RandomFactory.CreateRandom();
+                    await agent.Run(token);
+                }
             }
-
-            Logger.Log($"Exit {this.name}.Run()");
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
     }
 }

@@ -55,6 +55,11 @@ namespace DeNA.Anjin.Agents
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Enter {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -66,13 +71,16 @@ namespace DeNA.Anjin.Agents
             agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
             agent.Random = new RandomFactory(0).CreateRandom();
 
-            LogAssert.Expect(LogType.Log, "Working agent UGUIMonkeyAgent was cancelled.");
-            LogAssert.Expect(LogType.Log, "Exit TimeBombAgent.Run()");
-
             using (var cts = new CancellationTokenSource())
             {
                 await agent.Run(cts.Token);
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Enter {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Working agent {monkeyAgent.name} was cancelled.");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -97,6 +105,11 @@ namespace DeNA.Anjin.Agents
                         "Could not receive defuse message `^Never match!$` before the agent terminated."));
                 }
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Enter {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {monkeyAgent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

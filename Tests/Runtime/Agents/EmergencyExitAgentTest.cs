@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -27,24 +27,26 @@ namespace DeNA.Anjin.Agents
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+            await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
             Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
-        private static SpyButton CreateButtonWithEmergencyExitAnnotation()
+        private static SpyButton CreateButtonWithEmergencyExitAnnotation(bool interactable = true)
         {
-            var button = new GameObject();
-            button.AddComponent<EmergencyExit>();
-            return button.AddComponent<SpyButton>();
+            var button = new GameObject().AddComponent<SpyButton>();
+            button.GetComponent<Selectable>().interactable = interactable;
+            button.gameObject.AddComponent<EmergencyExit>();
+            return button;
         }
 
         [Test]
@@ -59,14 +61,20 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+                await UniTask.NextFrame();
 
                 var emergencyButton = CreateButtonWithEmergencyExitAnnotation();
                 await UniTask.NextFrame(token);
 
                 Assert.That(emergencyButton.IsClicked, Is.True, "Clicked button with EmergencyExit annotation");
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Pending), "Keep agent running");
+
+                cancellationTokenSource.Cancel();
+                await UniTask.NextFrame();
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -81,15 +89,20 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromMilliseconds(500), cancellationToken: token);
+                await UniTask.NextFrame();
 
-                var emergencyButton = CreateButtonWithEmergencyExitAnnotation();
-                emergencyButton.gameObject.GetComponent<Button>().interactable = false;
+                var emergencyButton = CreateButtonWithEmergencyExitAnnotation(false);
                 await UniTask.NextFrame(token);
 
                 Assert.That(emergencyButton.IsClicked, Is.False, "Does not click button with EmergencyExit annotation");
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Pending), "Keep agent running");
+
+                cancellationTokenSource.Cancel();
+                await UniTask.NextFrame();
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

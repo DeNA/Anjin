@@ -127,9 +127,15 @@ namespace DeNA.Anjin.Agents
                         randomString: new RandomStringImpl(random)),
                 },
             };
-            await Monkey.Run(config, token);
 
-            Logger.Log($"Exit {this.name}.Run()");
+            try
+            {
+                await Monkey.Run(config, token);
+            }
+            finally
+            {
+                Logger.Log($"Exit {this.name}.Run()");
+            }
         }
 
         private RandomStringParameters GetRandomStringParameters(GameObject gameObject)

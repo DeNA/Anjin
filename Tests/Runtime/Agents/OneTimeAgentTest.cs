@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -38,17 +38,18 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromMilliseconds(200), cancellationToken: token);
+            await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
             Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -66,11 +67,14 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: token); // Consider overhead
+                await UniTask.Delay(500); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
                 Assert.That(agent.wasExecuted, Is.True);
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -89,11 +93,14 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: token); // Consider overhead
+                await UniTask.Delay(500); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
                 Assert.That(childAgent.CompleteCount, Is.EqualTo(0)); // Skip run child agent
             }
+
+            LogAssert.Expect(LogType.Log, new Regex($"^Skip {agent.name}"));
+            LogAssert.NoUnexpectedReceived(); // Not output enter/exit log
         }
 
         [Test]
@@ -111,14 +118,15 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: token); // Consider overhead
+                await UniTask.Delay(500); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
-                Assert.That(childAgent.Logger, Is.Not.Null);
                 Assert.That(childAgent.Logger, Is.EqualTo(agent.Logger)); // Instances inherited from parent
-                Assert.That(childAgent.Random, Is.Not.Null);
                 Assert.That(childAgent.Random, Is.EqualTo(agent.Random)); // Instances inherited from parent
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

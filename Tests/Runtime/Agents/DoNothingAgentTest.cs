@@ -1,13 +1,13 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
@@ -23,17 +23,18 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.lifespanSec = 0; // Expect indefinite execution
 
-            var agentName = agent.GetType().Name;
-            var gameObject = new GameObject(agentName);
+            var gameObject = new GameObject();
             var token = gameObject.GetCancellationTokenOnDestroy();
             var task = agent.Run(token);
-            await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+            await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
-            // ReSharper disable once MethodSupportsCancellation
             await UniTask.NextFrame();
 
             Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
         [Test]
@@ -49,10 +50,13 @@ namespace DeNA.Anjin.Agents
             {
                 var token = cancellationTokenSource.Token;
                 var task = agent.Run(token);
-                await UniTask.Delay(TimeSpan.FromSeconds(2), cancellationToken: token); // Consider overhead
+                await UniTask.Delay(2000); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
             }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }
