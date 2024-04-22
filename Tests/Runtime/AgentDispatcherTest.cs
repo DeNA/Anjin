@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using UnityEngine;
@@ -50,11 +51,11 @@ namespace DeNA.Anjin
             return testSettings;
         }
 
-        private static DoNothingAgent CreateDoNothingAgent(string name = nameof(DoNothingAgent))
+        private static SpyAliveCountAgent CreateSpyAliveCountAgent(string name = nameof(DoNothingAgent))
         {
-            var doNothingAgent = ScriptableObject.CreateInstance<DoNothingAgent>();
-            doNothingAgent.name = name;
-            return doNothingAgent;
+            var agent = ScriptableObject.CreateInstance<SpyAliveCountAgent>();
+            agent.name = name;
+            return agent;
         }
 
         private void SetUpDispatcher(AutopilotSettings settings)
@@ -81,12 +82,6 @@ namespace DeNA.Anjin
             return scene;
         }
 
-        private static IEnumerable<string> FindAliveAgentNames()
-        {
-            return Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
-            // Note: AsyncDestroyTrigger is a component attached to the GameObject when binding agent by GetCancellationTokenOnDestroy.
-        }
-
         [Test]
         public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
@@ -94,14 +89,15 @@ namespace DeNA.Anjin
             var settings = CreateAutopilotSettings();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
-                scenePath = TestScenePath, agent = CreateDoNothingAgent(AgentName)
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
             });
             SetUpDispatcher(settings);
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = FindAliveAgentNames();
-            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
+            var gameObject = GameObject.Find(AgentName);
+            Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
         }
 
         [Test]
@@ -109,13 +105,14 @@ namespace DeNA.Anjin
         {
             const string AgentName = "Fallback Agent";
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = CreateDoNothingAgent(AgentName);
+            settings.fallbackAgent = CreateSpyAliveCountAgent(AgentName);
             SetUpDispatcher(settings);
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = FindAliveAgentNames();
-            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
+            var gameObject = GameObject.Find(AgentName);
+            Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
         }
 
         [Test]
@@ -126,9 +123,8 @@ namespace DeNA.Anjin
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = FindAliveAgentNames();
-            Assert.That(actual, Is.Empty);
             LogAssert.Expect(LogType.Warning, "Agent not found by scene: Buttons");
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(0));
         }
 
         [Test]
@@ -136,13 +132,14 @@ namespace DeNA.Anjin
         {
             const string AgentName = "Observer Agent";
             var settings = CreateAutopilotSettings();
-            settings.observerAgent = CreateDoNothingAgent(AgentName);
+            settings.observerAgent = CreateSpyAliveCountAgent(AgentName);
             SetUpDispatcher(settings);
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = FindAliveAgentNames();
-            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
+            var gameObject = GameObject.Find(AgentName);
+            Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
         }
 
         [Test]
@@ -152,22 +149,19 @@ namespace DeNA.Anjin
             var settings = CreateAutopilotSettings();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
-                scenePath = TestScenePath, agent = CreateDoNothingAgent(AgentName)
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
             });
             SetUpDispatcher(settings);
 
             var scene = await LoadTestSceneAsync(TestScenePath);
-
-            var agents = FindAliveAgentNames();
-            Assume.That(agents, Is.EquivalentTo(new[] { AgentName }));
+            Assume.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
 
             var additiveScene = await LoadTestSceneAsync(TestScenePath2, LoadSceneMode.Additive);
             SceneManager.SetActiveScene(additiveScene);
 
             SceneManager.SetActiveScene(scene); // Re-activate
 
-            var actual = FindAliveAgentNames();
-            Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1)); // Not create duplicate agents
         }
     }
 }
