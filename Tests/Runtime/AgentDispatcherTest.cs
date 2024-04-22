@@ -81,6 +81,12 @@ namespace DeNA.Anjin
             return scene;
         }
 
+        private static IEnumerable<string> FindAliveAgentNames()
+        {
+            return Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            // Note: AsyncDestroyTrigger is a component attached to the GameObject when binding agent by GetCancellationTokenOnDestroy.
+        }
+
         [Test]
         public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
@@ -94,7 +100,7 @@ namespace DeNA.Anjin
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            var actual = FindAliveAgentNames();
             Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
 
@@ -108,7 +114,7 @@ namespace DeNA.Anjin
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            var actual = FindAliveAgentNames();
             Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
 
@@ -120,7 +126,7 @@ namespace DeNA.Anjin
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            var actual = FindAliveAgentNames();
             Assert.That(actual, Is.Empty);
             LogAssert.Expect(LogType.Warning, "Agent not found by scene: Buttons");
         }
@@ -135,7 +141,7 @@ namespace DeNA.Anjin
 
             await LoadTestSceneAsync(TestScenePath);
 
-            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            var actual = FindAliveAgentNames();
             Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
 
@@ -152,7 +158,7 @@ namespace DeNA.Anjin
 
             var scene = await LoadTestSceneAsync(TestScenePath);
 
-            var agents = Object.FindObjectsOfType<AbstractAgent>().Select(x => x.name);
+            var agents = FindAliveAgentNames();
             Assume.That(agents, Is.EquivalentTo(new[] { AgentName }));
 
             var additiveScene = await LoadTestSceneAsync(TestScenePath2, LoadSceneMode.Additive);
@@ -160,7 +166,7 @@ namespace DeNA.Anjin
 
             SceneManager.SetActiveScene(scene); // Re-activate
 
-            var actual = Object.FindObjectsOfType<AsyncDestroyTrigger>().Select(x => x.name);
+            var actual = FindAliveAgentNames();
             Assert.That(actual, Is.EquivalentTo(new[] { AgentName }));
         }
     }
