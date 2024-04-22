@@ -17,13 +17,6 @@ namespace DeNA.Anjin
     public interface IAgentDispatcher : IDisposable
     {
         /// <summary>
-        /// Agent dispatch by next scene
-        /// </summary>
-        /// <param name="next"></param>
-        /// <param name="mode"></param>
-        void DispatchByScene(Scene next, LoadSceneMode mode);
-
-        /// <summary>
         /// Agent dispatch by current scene
         /// </summary>
         /// <param name="scene">Current scene</param>
@@ -56,8 +49,7 @@ namespace DeNA.Anjin
             SceneManager.sceneLoaded -= this.DispatchByScene;
         }
 
-        /// <inheritdoc/>
-        public void DispatchByScene(Scene next, LoadSceneMode mode)
+        private void DispatchByScene(Scene next, LoadSceneMode mode)
         {
             DispatchByScene(next);
         }
