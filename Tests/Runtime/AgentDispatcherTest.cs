@@ -3,10 +3,8 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Triggers;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
