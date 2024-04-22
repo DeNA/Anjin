@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
+using TestHelper.Attributes;
 using TestHelper.RuntimeInternals;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -76,6 +77,7 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
+        [FocusGameView]
         public async Task Run_DefaultScreenshotFilenamePrefix_UseAgentName()
         {
             const string AgentName = "MyMonkeyAgent";
