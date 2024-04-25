@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -51,7 +50,6 @@ namespace DeNA.Anjin
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
-            SceneManager.activeSceneChanged += _dispatcher.DispatchByScene;
 
             if (_settings.lifespanSec > 0)
             {
@@ -92,13 +90,14 @@ namespace DeNA.Anjin
         /// <param name="exitCode">Exit code for Unity Editor</param>
         /// <param name="logString">Log message string when terminate by the log message</param>
         /// <param name="stackTrace">Stack trace when terminate by the log message</param>
+        /// <param name="token">Cancellation token</param>
         /// <returns>A task awaits termination get completed</returns>
         public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null,
             CancellationToken token = default)
         {
             if (_dispatcher != null)
             {
-                SceneManager.activeSceneChanged -= _dispatcher.DispatchByScene;
+                _dispatcher.Dispose();
             }
 
             if (_logMessageHandler != null)

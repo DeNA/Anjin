@@ -14,15 +14,8 @@ namespace DeNA.Anjin
     /// <summary>
     /// Agent dispatcher interface
     /// </summary>
-    public interface IAgentDispatcher
+    public interface IAgentDispatcher : IDisposable
     {
-        /// <summary>
-        /// Agent dispatch by next scene
-        /// </summary>
-        /// <param name="current">Current scene</param>
-        /// <param name="next">Next transition scene</param>
-        void DispatchByScene(Scene current, Scene next);
-
         /// <summary>
         /// Agent dispatch by current scene
         /// </summary>
@@ -30,7 +23,7 @@ namespace DeNA.Anjin
         void DispatchByScene(Scene scene);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public class AgentDispatcher : IAgentDispatcher
     {
         private readonly AutopilotSettings _settings;
@@ -48,22 +41,20 @@ namespace DeNA.Anjin
             _settings = settings;
             _logger = logger;
             _randomFactory = randomFactory;
+            SceneManager.sceneLoaded += this.DispatchByScene;
         }
 
-        /// <summary>
-        /// Dispatch agent mapped to Scene `next`
-        /// </summary>
-        /// <param name="current"></param>
-        /// <param name="next"></param>
-        public void DispatchByScene(Scene current, Scene next)
+        public void Dispose()
+        {
+            SceneManager.sceneLoaded -= this.DispatchByScene;
+        }
+
+        private void DispatchByScene(Scene next, LoadSceneMode mode)
         {
             DispatchByScene(next);
         }
 
-        /// <summary>
-        /// Dispatch agent mapped to Scene
-        /// </summary>
-        /// <param name="scene"></param>
+        /// <inheritdoc/>
         public void DispatchByScene(Scene scene)
         {
             AbstractAgent agent = null;
@@ -79,17 +70,21 @@ namespace DeNA.Anjin
 
             if (!agent)
             {
-                if (!_settings.fallbackAgent)
+                if (_settings.fallbackAgent)
+                {
+                    _logger.Log($"Use fallback agent. scene: {scene.path}");
+                    agent = _settings.fallbackAgent;
+                }
+                else
                 {
                     _logger.Log(LogType.Warning, $"Agent not found by scene: {scene.name}");
-                    return;
                 }
-
-                _logger.Log($"Use fallback agent. scene: {scene.path}");
-                agent = _settings.fallbackAgent;
             }
 
-            DispatchAgent(agent);
+            if (agent)
+            {
+                DispatchAgent(agent);
+            }
 
             if (_settings.observerAgent != null)
             {
@@ -107,7 +102,7 @@ namespace DeNA.Anjin
 
             agent.Logger = _logger;
             agent.Random = _randomFactory.CreateRandom();
-            
+
             try
             {
                 agent.Run(token).Forget();

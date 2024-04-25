@@ -1,17 +1,23 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor.SceneManagement;
+#endif
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace DeNA.Anjin
 {
@@ -19,18 +25,21 @@ namespace DeNA.Anjin
     [SuppressMessage("ApiDesign", "RS0030")]
     public class AgentDispatcherTest
     {
+        private IAgentDispatcher _dispatcher;
+
         [SetUp]
         public void SetUp()
         {
-            Assume.That(GameObject.Find(nameof(DoNothingAgent)), Is.Null);
+            foreach (var agent in Object.FindObjectsOfType<AbstractAgent>())
+            {
+                Object.Destroy(agent);
+            }
         }
 
         [TearDown]
-        public async Task TearDown()
+        public void TearDown()
         {
-            var testAgentObject = GameObject.Find(nameof(DoNothingAgent));
-            Object.Destroy(testAgentObject);
-            await Task.Delay(100);
+            _dispatcher?.Dispose();
         }
 
         private static AutopilotSettings CreateAutopilotSettings()
@@ -40,87 +49,117 @@ namespace DeNA.Anjin
             return testSettings;
         }
 
-        private static DoNothingAgent CreateDoNothingAgent(string name = nameof(DoNothingAgent))
+        private static SpyAliveCountAgent CreateSpyAliveCountAgent(string name = nameof(DoNothingAgent))
         {
-            var doNothingAgent = ScriptableObject.CreateInstance<DoNothingAgent>();
-            doNothingAgent.name = name;
-            return doNothingAgent;
+            var agent = ScriptableObject.CreateInstance<SpyAliveCountAgent>();
+            agent.name = name;
+            return agent;
+        }
+
+        private void SetUpDispatcher(AutopilotSettings settings)
+        {
+            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            var randomFactory = new RandomFactory(0);
+
+            _dispatcher = new AgentDispatcher(settings, logger, randomFactory);
         }
 
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
 
-        private static Scene LoadTestScene()
+        private static async UniTask<Scene> LoadTestSceneAsync(string path, LoadSceneMode mode = LoadSceneMode.Single)
         {
-            return EditorSceneManager.LoadSceneInPlayMode(
-                TestScenePath,
-                new LoadSceneParameters(LoadSceneMode.Single));
+            Scene scene = default;
+#if UNITY_EDITOR
+            scene = EditorSceneManager.LoadSceneInPlayMode(path, new LoadSceneParameters(mode));
+            while (!scene.isLoaded)
+            {
+                await Task.Yield();
+            }
+#endif
+            return scene;
         }
 
         [Test]
-        public void DispatchByScene_DispatchAgentBySceneAgentMaps()
+        public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
-            const string ActualAgentName = nameof(DoNothingAgent);
-
+            const string AgentName = "Mapped Agent";
             var settings = CreateAutopilotSettings();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
-                scenePath = TestScenePath, agent = CreateDoNothingAgent()
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
             });
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
+            var gameObject = GameObject.Find(AgentName);
             Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
         }
 
         [Test]
-        public void DispatchByScene_DispatchFallbackAgent()
+        public async Task DispatchByScene_DispatchFallbackAgent()
         {
-            const string ActualAgentName = "Fallback";
-
+            const string AgentName = "Fallback Agent";
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = CreateDoNothingAgent(ActualAgentName);
+            settings.fallbackAgent = CreateSpyAliveCountAgent(AgentName);
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
+            var gameObject = GameObject.Find(AgentName);
             Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
         }
 
         [Test]
-        public void DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
+        public async Task DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
         {
             var settings = CreateAutopilotSettings();
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            SetUpDispatcher(settings);
+
+            await LoadTestSceneAsync(TestScenePath);
 
             LogAssert.Expect(LogType.Warning, "Agent not found by scene: Buttons");
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(0));
         }
 
         [Test]
-        public void DispatchByScene_DispatchObserverAgent()
+        public async Task DispatchByScene_DispatchObserverAgent()
         {
-            const string ActualAgentName = "Observer";
-
+            const string AgentName = "Observer Agent";
             var settings = CreateAutopilotSettings();
-            settings.fallbackAgent = CreateDoNothingAgent();
-            settings.observerAgent = CreateDoNothingAgent(ActualAgentName);
+            settings.observerAgent = CreateSpyAliveCountAgent(AgentName);
+            SetUpDispatcher(settings);
 
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
-            var randomFactory = new RandomFactory(0);
-            var dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-            dispatcher.DispatchByScene(LoadTestScene());
+            await LoadTestSceneAsync(TestScenePath);
 
-            var gameObject = GameObject.Find(ActualAgentName);
+            var gameObject = GameObject.Find(AgentName);
             Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
+        }
+
+        [Test]
+        public async Task DispatchByScene_ReActivateScene_NotCreateDuplicateAgents()
+        {
+            const string AgentName = "Mapped Agent";
+            var settings = CreateAutopilotSettings();
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
+            });
+            SetUpDispatcher(settings);
+
+            var scene = await LoadTestSceneAsync(TestScenePath);
+            Assume.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
+
+            var additiveScene = await LoadTestSceneAsync(TestScenePath2, LoadSceneMode.Additive);
+            SceneManager.SetActiveScene(additiveScene);
+
+            SceneManager.SetActiveScene(scene); // Re-activate
+
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1)); // Not create duplicate agents
         }
     }
 }
