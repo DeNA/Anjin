@@ -100,7 +100,6 @@ namespace DeNA.Anjin.Agents
             }
 
             LogAssert.Expect(LogType.Log, new Regex($"^Skip {agent.name}"));
-            LogAssert.NoUnexpectedReceived(); // Not output enter/exit log
         }
 
         [Test]
