@@ -84,6 +84,22 @@ namespace DeNA.Anjin
             yield return UniTask.ToCoroutine(() => TerminateAsync(ExitCode.Normally));
         }
 
+        private void OnDestroy()
+        {
+            // Clear event listeners.
+            // When play mode is stopped by the user, onDestroy calls without TerminateAsync.
+
+            if (_dispatcher != null)
+            {
+                _dispatcher.Dispose();
+            }
+
+            if (_logMessageHandler != null)
+            {
+                Application.logMessageReceivedThreaded -= _logMessageHandler.HandleLog;
+            }
+        }
+
         /// <summary>
         /// Terminate autopilot
         /// </summary>
@@ -95,16 +111,6 @@ namespace DeNA.Anjin
         public async UniTask TerminateAsync(ExitCode exitCode, string logString = null, string stackTrace = null,
             CancellationToken token = default)
         {
-            if (_dispatcher != null)
-            {
-                _dispatcher.Dispose();
-            }
-
-            if (_logMessageHandler != null)
-            {
-                Application.logMessageReceivedThreaded -= _logMessageHandler.HandleLog;
-            }
-
             if (_state.settings != null && !string.IsNullOrEmpty(_state.settings.junitReportPath))
             {
                 var time = Time.realtimeSinceStartup - _startTime;
