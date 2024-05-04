@@ -46,7 +46,6 @@ namespace DeNA.Anjin
             //       Because some agent can throw an error immediately, so reporter can miss the error if
             //       registering logMessageReceived is placed after DispatchByScene.
             _logMessageHandler = new LogMessageHandler(_settings, _settings.reporter);
-            Application.logMessageReceivedThreaded += _logMessageHandler.HandleLog;
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
@@ -96,7 +95,7 @@ namespace DeNA.Anjin
 
             if (_logMessageHandler != null)
             {
-                Application.logMessageReceivedThreaded -= _logMessageHandler.HandleLog;
+                _logMessageHandler.Dispose();
             }
         }
 
