@@ -121,17 +121,8 @@ This item can also be overridden from the commandline (see below).
   <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. </dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
   <dt>JUnit Report Path</dt><dd>Specifies the JUnit format report file output path (optional). If there are zero errors and zero failures, the autopilot run is considered to have completed successfully. </dd>
-  <dt>Slack Token</dt><dd>Web API token used for Slack notifications (if omitted, no notifications will be sent)</dd>
-  <dt>Slack Channels</dt><dd>Channels to send Slack notifications (not notified if omitted. Multiple channels can be specified by separating them with commas)</dd>
-</dl>
-
-#### Slack Mention Settings
-
-Set the mentions to be given to Slack notifications.
-
-<dl>
-  <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to Mention in Slack Notification Message</dd>
-  <dt>Add Here In Slack Message</dt><dd>Add @here to Slack notification message. Default is off</dd>
+  <dt>Logger</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
+  <dt>Reporter</dt><dd>Reporter that called when some errors occurred in target application</dd>
 </dl>
 
 #### Error Handling Settings
@@ -152,10 +143,29 @@ Set up a filter to catch abnormal log messages and notify Slack.
 Whether you use the built-in Agent or implement custom Agent, you must create an instance (.asset file) of it in the Unity editor.
 
 Instances are created by right-clicking in the Project window of the Unity editor to open the context menu, then selecting
-**Create > Anjin > Agent name**.
+**Create > Anjin > Agent type name**.
 
 Select the generated file, Agent-specific settings are displayed in the inspector and can be customized.
-You can prepare multiple Agents with different settings for the same Agent and use them in different Scenes.
+You can prepare multiple Agents with different settings for the same Agent type and use them in different Scenes.
+
+
+### Generate and configure the Logger setting file (.asset)
+
+Logger instances are created by right-clicking in the Project window of the Unity editor to open the context menu, then selecting
+**Create > Anjin > Logger type name**.
+
+Select the generated file, Logger-specific settings are displayed in the inspector and can be customized.
+You can prepare multiple Loggers with different settings for the same Logger type.
+
+
+### Generate and configure the Reporter setting file (.asset)
+
+Reporter instances are created by right-clicking in the Project window of the Unity editor to open the context menu, then selecting
+**Create > Anjin > Reporter type name**.
+
+Select the generated file, Reporter-specific settings are displayed in the inspector and can be customized.
+You can prepare multiple Reporters with different settings for the same Reporter type.
+
 
 
 ## Run autopilot
@@ -214,8 +224,6 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
   <dt>JUNIT_REPORT_PATH</dt><dd>Specifies the JUnit-style report file output path</dd>
-  <dt>SLACK_TOKEN</dt><dd>Web API token used for Slack notifications</dd>
-  <dt>SLACK_CHANNELS</dt><dd>Channels to send Slack notifications</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
@@ -224,7 +232,7 @@ In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_S
 
 ## Built-in Agents
 
-The following Agents are provided. These can be used as they are, or project-specific Agents can be implemented and used.
+The following Agent types are provided. These can be used as they are, or project-specific Agents can be implemented and used.
 
 
 ### UGUIMonkeyAgent
@@ -367,6 +375,78 @@ This can be used in games that contain behavior that is irregular in the executi
 
 It should always be started at the same time as other Agents (that actually perform game operations).
 This can be accomplished with `ParallelCompositeAgent`, but it is easier to set it up as an `ObserverAgent` in AutopilotSettings.
+
+
+
+## Built-in Logger
+
+The following Logger types are provided. These can be used as they are, or project-specific Loggers can be implemented and used.
+
+
+### Composite Logger
+
+A Logger that delegates to multiple loggers.
+
+The instance of this Logger (.asset file) can have the following settings.
+
+<dl>
+  <dt>Loggers</dt><dd>A list of Logger to delegates</dd>
+</dl>
+
+
+### Console Logger
+
+A Logger that outputs to a console.
+
+The instance of this Logger (.asset file) can have the following settings.
+
+<dl>
+  <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
+</dl>
+
+
+### File Logger
+
+A Logger that outputs to a specified file.
+
+The instance of this Logger (.asset file) can have the following settings.
+
+<dl>
+  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.</dd>
+  <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
+  <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
+</dl>
+
+
+
+## Built-in Reporter
+
+The following Reporter types are provided. These can be used as they are, or project-specific Reporters can be implemented and used.
+
+
+### Composite Reporter
+
+A Reporter that delegates to multiple Reporters.
+
+The instance of this Reporter (.asset file) can have the following settings.
+
+<dl>
+  <dt>Reporters</dt><dd>A list of Reporter to delegates</dd>
+</dl>
+
+
+### Slack Reporter
+
+A Reporter that post report to Slack.
+
+The instance of this Reporter (.asset file) can have the following settings.
+
+<dl>
+  <dt>Slack Token</dt><dd>Web API token used for Slack notifications (if omitted, no notifications will be sent)</dd>
+  <dt>Slack Channels</dt><dd>Channels to send Slack notifications (not notified if omitted. Multiple channels can be specified by separating them with commas)</dd>
+  <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to Mention in Slack Notification Message</dd>
+  <dt>Add Here In Slack Message</dt><dd>Add @here to Slack notification message. Default is off</dd>
+</dl>
 
 
 

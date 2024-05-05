@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 namespace DeNA.Anjin.Loggers
 {
     /// <summary>
-    /// Logger that output to a file.
+    /// A Logger that outputs to a specified file.
     /// </summary>
     /// <remarks>
     /// If you want more functionality in the future, consider using the Unity Logging package (com.unity.logging) or ZLogger.

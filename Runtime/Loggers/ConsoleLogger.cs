@@ -6,6 +6,7 @@ using UnityEngine;
 namespace DeNA.Anjin.Loggers
 {
     /// <summary>
+    /// A Logger that outputs to a console.
     /// Logger using <c>Debug.unityLogger</c>
     /// </summary>
     [CreateAssetMenu(fileName = "New ConsoleLogger", menuName = "Anjin/Console Logger", order = 71)]

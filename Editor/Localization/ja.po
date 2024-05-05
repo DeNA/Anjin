@@ -93,7 +93,7 @@ msgstr "ロガー"
 
 # logger tooltip
 msgid "Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default."
-msgstr "オートパイロットが使用するロガー。 省略時は Debug.unityLogger がデフォルトとして使用されます"
+msgstr "オートパイロットが使用するロガー指定します。省略時は Debug.unityLogger がデフォルトとして使用されます"
 
 # reporter
 msgid "Reporter"
@@ -101,7 +101,7 @@ msgstr "レポータ"
 
 # reporter tooltip
 msgid "Reporter that called when some errors occurred in target application"
-msgstr "対象のアプリケーションで発生したエラーを通知するレポータ"
+msgstr "対象のアプリケーションで発生したエラーを通知するレポータを指定します"
 
 # obsolete slack settings
 msgid "Slack settings will be moved to SlackReporter"
@@ -484,7 +484,7 @@ msgstr "ログ出力ファイルのパス。プロジェクトルートからの
 
 # Timestamp
 msgid "Timestamp"
-msgstr "タイムスタンプ"
+msgstr "タイムスタンプを追加"
 
 # Timestamp tooltip
 msgid "Output timestamp to log entities"
