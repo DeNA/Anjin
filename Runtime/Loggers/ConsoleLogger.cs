@@ -11,10 +11,13 @@ namespace DeNA.Anjin.Loggers
     [CreateAssetMenu(fileName = "New ConsoleLogger", menuName = "Anjin/Console Logger", order = 71)]
     public class ConsoleLogger : AbstractLogger
     {
-        public ConsoleLogger()
-        {
-            LoggerImpl = new Logger(Debug.unityLogger.logHandler);
-            LoggerImpl.filterLogType = LogType.Log;
-        }
+        /// <summary>
+        /// To selective enable debug log message.
+        /// </summary>
+        public LogType filterLogType = LogType.Log;
+
+        /// <inheritdoc />
+        public override ILogger LoggerImpl =>
+            new Logger(Debug.unityLogger.logHandler) { filterLogType = filterLogType };
     }
 }

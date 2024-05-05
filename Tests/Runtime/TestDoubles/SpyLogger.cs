@@ -11,12 +11,25 @@ namespace DeNA.Anjin.TestDoubles
 {
     public class SpyLogger : AbstractLogger
     {
-        public List<string> Logs => ((SpyLogHandler)((Logger)LoggerImpl).logHandler).Logs;
+        private SpyLogHandler _handler;
+        private ILogger _logger;
 
-        public SpyLogger()
+        public override ILogger LoggerImpl
         {
-            LoggerImpl = new Logger(new SpyLogHandler());
+            get
+            {
+                if (_logger != null)
+                {
+                    return _logger;
+                }
+
+                _handler = new SpyLogHandler();
+                _logger = new Logger(_handler);
+                return _logger;
+            }
         }
+
+        public List<string> Logs => _handler.Logs;
 
         private class SpyLogHandler : ILogHandler
         {

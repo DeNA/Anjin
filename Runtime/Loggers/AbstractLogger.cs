@@ -20,6 +20,6 @@ namespace DeNA.Anjin.Loggers
         /// <summary>
         /// Logger implementation used for autopilot.
         /// </summary>
-        public ILogger LoggerImpl { get; protected set; }
+        public abstract ILogger LoggerImpl { get; }
     }
 }

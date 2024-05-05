@@ -448,3 +448,14 @@ msgstr "説明"
 # description tooltip
 msgid "Description about this logger instance"
 msgstr "このLoggerインスタンスの説明"
+
+
+#: Editor/UI/Loggers/ConsoleLoggerEditor.cs
+
+# Filter LogType
+msgid "Filter LogType"
+msgstr "フィルタリングLogType"
+
+# Filter LogType tooltip
+msgid "To selective enable debug log message"
+msgstr "選択したLogType以上のログ出力のみを有効にします"

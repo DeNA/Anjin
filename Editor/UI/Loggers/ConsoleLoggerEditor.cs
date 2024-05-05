@@ -16,6 +16,9 @@ namespace DeNA.Anjin.Editor.UI.Loggers
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this logger instance");
 
+        private static readonly string s_filterLogType = L10n.Tr("Filter LogType");
+        private static readonly string s_filterLogTypeTooltip = L10n.Tr("To selective enable debug log message");
+
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
@@ -23,6 +26,8 @@ namespace DeNA.Anjin.Editor.UI.Loggers
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLogger.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLogger.filterLogType)),
+                new GUIContent(s_filterLogType, s_filterLogTypeTooltip));
 
             serializedObject.ApplyModifiedProperties();
         }
