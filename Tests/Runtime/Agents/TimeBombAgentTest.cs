@@ -42,7 +42,7 @@ namespace DeNA.Anjin.Agents
         {
             var monkeyAgent = CreateMonkeyAgent(5);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())
@@ -68,7 +68,7 @@ namespace DeNA.Anjin.Agents
         {
             var monkeyAgent = CreateMonkeyAgent(5);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Tutorial Completed!$");
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())
@@ -89,7 +89,7 @@ namespace DeNA.Anjin.Agents
         {
             var monkeyAgent = CreateMonkeyAgent(1);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())

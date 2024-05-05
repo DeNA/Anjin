@@ -18,7 +18,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_cancelTask_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<DoNothingAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.lifespanSec = 0; // Expect indefinite execution
@@ -41,7 +41,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_lifespanPassed_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<DoNothingAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_lifespanPassed_stopAgent);
             agent.lifespanSec = 1;

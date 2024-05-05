@@ -35,7 +35,7 @@ namespace DeNA.Anjin.Agents
             var lastChildAgent = CreateChildAgent(500);
 
             var agent = ScriptableObject.CreateInstance<ParallelCompositeAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agents = new List<AbstractAgent>() { firstChildAgent, secondChildAgent, lastChildAgent };
@@ -67,7 +67,7 @@ namespace DeNA.Anjin.Agents
             var lastChildAgent = CreateChildAgent(500);
 
             var agent = ScriptableObject.CreateInstance<ParallelCompositeAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_lifespanPassed_stopAgent);
             agent.agents = new List<AbstractAgent>() { firstChildAgent, secondChildAgent, lastChildAgent };
@@ -96,7 +96,7 @@ namespace DeNA.Anjin.Agents
             var lastChildAgent = CreateChildAgent(500);
 
             var agent = ScriptableObject.CreateInstance<ParallelCompositeAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_setLoggerAndRandomInstanceToChildAgent);
             agent.agents = new List<AbstractAgent>() { firstChildAgent, secondChildAgent, lastChildAgent };

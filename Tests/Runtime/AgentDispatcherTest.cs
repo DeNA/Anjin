@@ -58,7 +58,7 @@ namespace DeNA.Anjin
 
         private void SetUpDispatcher(AutopilotSettings settings)
         {
-            var logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            var logger = Debug.unityLogger;
             var randomFactory = new RandomFactory(0);
 
             _dispatcher = new AgentDispatcher(settings, logger, randomFactory);

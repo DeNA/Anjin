@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -32,7 +33,14 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            _logger = CreateLogger();
+            if (_settings.logger != null)
+            {
+                _logger = _settings.logger.LoggerImpl;
+            }
+            else
+            {
+                _logger = CreateDefaultLogger();
+            }
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -61,15 +69,17 @@ namespace DeNA.Anjin
             }
 
             _startTime = Time.realtimeSinceStartup;
+            _logger.Log("Launched autopilot");
         }
 
         /// <summary>
-        /// Returns an agent dispatcher that autopilot uses. You can change a logger by overriding this method
+        /// Returns an logger that autopilot uses. You can change a logger by overriding this method.
+        /// Default logger is that write to console.
         /// </summary>
-        /// <returns>A new logger</returns>
-        protected virtual ILogger CreateLogger()
+        /// <returns>A new logger that write to console</returns>
+        protected virtual ILogger CreateDefaultLogger()
         {
-            return new ConsoleLogger(Debug.unityLogger.logHandler);
+            return new ConsoleLoggerImpl(Debug.unityLogger.logHandler);
         }
 
         /// <summary>

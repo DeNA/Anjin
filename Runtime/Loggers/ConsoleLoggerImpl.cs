@@ -5,12 +5,12 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace DeNA.Anjin.Utilities
+namespace DeNA.Anjin.Loggers
 {
     /// <summary>
     /// Logger using <c>Debug.unityLogger</c>
     /// </summary>
-    public class ConsoleLogger : ILogger
+    public class ConsoleLoggerImpl : ILogger
     {
         private readonly ILogger _loggerImpl = Debug.unityLogger;
 
@@ -27,7 +27,7 @@ namespace DeNA.Anjin.Utilities
         /// Constructor
         /// </summary>
         /// <param name="handler"></param>
-        public ConsoleLogger(ILogHandler handler)
+        public ConsoleLoggerImpl(ILogHandler handler)
         {
             this.logHandler = handler;
             this.logEnabled = true;
