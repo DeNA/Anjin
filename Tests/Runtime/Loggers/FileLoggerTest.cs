@@ -8,6 +8,8 @@ using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 
+// ReSharper disable MethodHasAsyncOverload
+
 namespace DeNA.Anjin.Loggers
 {
     [TestFixture]
@@ -23,7 +25,10 @@ namespace DeNA.Anjin.Loggers
         [Test, Order(0)]
         public async Task GetLoggerImpl_DirectoryDoesNotExist_CreateDirectoryAndWriteToFile()
         {
-            Directory.Delete(LogsDirectoryPath, true);
+            if (Directory.Exists(LogsDirectoryPath))
+            {
+                Directory.Delete(LogsDirectoryPath, true);
+            }
 
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
@@ -35,7 +40,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-            var actual = await File.ReadAllTextAsync(path);
+            var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
         }
 
@@ -44,7 +49,7 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            await File.WriteAllTextAsync(path, "Existing content");
+            File.WriteAllText(path, "Existing content");
 
             var sut = ScriptableObject.CreateInstance<FileLogger>();
             sut.outputPath = path;
@@ -54,7 +59,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-            var actual = await File.ReadAllTextAsync(path);
+            var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
         }
 
@@ -72,7 +77,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-            var actual = await File.ReadAllTextAsync(path);
+            var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine + message + Environment.NewLine));
         }
 
@@ -99,10 +104,10 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-            var actual = await File.ReadAllTextAsync(path);
+            var actual = File.ReadAllText(path);
             Assert.That(actual, Does.StartWith(
                 "System.Exception: " + message + Environment.NewLine +
-                "  at DeNA.Anjin.Loggers.FileLoggerTest.LogException_WriteToFile"));
+                "  at DeNA.Anjin.Loggers.FileLoggerTest"));
         }
 
         [Test]
@@ -121,7 +126,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-            var actual = await File.ReadAllTextAsync(path);
+            var actual = File.ReadAllText(path);
             var timestampFormat = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
             var expected = timestampFormat + message + Environment.NewLine +
                            timestampFormat + message + Environment.NewLine +
