@@ -450,6 +450,17 @@ msgid "Description about this logger instance"
 msgstr "このLoggerインスタンスの説明"
 
 
+#: Editor/UI/Loggers/CompositeLoggerEditor.cs
+
+# Loggers
+msgid "Loggers"
+msgstr "Loggers"
+
+# Loggers tooltip
+msgid "Loggers to delegates"
+msgstr "出力を委譲するLoggerを指定します"
+
+
 #: Editor/UI/Loggers/ConsoleLoggerEditor.cs
 
 # Filter LogType
