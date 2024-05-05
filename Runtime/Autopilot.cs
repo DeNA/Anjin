@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -79,7 +78,7 @@ namespace DeNA.Anjin
         /// <returns>A new logger that write to console</returns>
         protected virtual ILogger CreateDefaultLogger()
         {
-            return new ConsoleLoggerImpl(Debug.unityLogger.logHandler);
+            return Debug.unityLogger;
         }
 
         /// <summary>

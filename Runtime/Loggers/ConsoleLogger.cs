@@ -13,7 +13,8 @@ namespace DeNA.Anjin.Loggers
     {
         public ConsoleLogger()
         {
-            LoggerImpl = new ConsoleLoggerImpl(Debug.unityLogger.logHandler);
+            LoggerImpl = new Logger(Debug.unityLogger.logHandler);
+            LoggerImpl.filterLogType = LogType.Log;
         }
     }
 }
