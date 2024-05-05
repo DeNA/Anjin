@@ -119,6 +119,11 @@ namespace DeNA.Anjin
                 JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, logString, stackTrace, time);
             }
 
+            if (exitCode != ExitCode.Normally)
+            {
+                _logger.Log(LogType.Error, logString + Environment.NewLine + stackTrace);
+            }
+
             Destroy(this.gameObject);
 
             if (_state.IsLaunchFromPlayMode)
