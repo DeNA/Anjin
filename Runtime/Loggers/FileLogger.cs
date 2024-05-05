@@ -30,6 +30,11 @@ namespace DeNA.Anjin.Loggers
         /// </summary>
         public LogType filterLogType = LogType.Log;
 
+        /// <summary>
+        /// Output timestamp to log entities.
+        /// </summary>
+        public bool timestamp = true;
+
         private FileLogHandler _handler;
         private ILogger _logger;
 
@@ -49,7 +54,7 @@ namespace DeNA.Anjin.Loggers
                     Directory.CreateDirectory(directory);
                 }
 
-                _handler = new FileLogHandler(outputPath);
+                _handler = new FileLogHandler(outputPath, timestamp);
                 _logger = new Logger(_handler) { filterLogType = filterLogType };
                 return _logger;
             }
@@ -61,24 +66,59 @@ namespace DeNA.Anjin.Loggers
             _handler?.Dispose();
         }
 
+        internal class TimestampCache
+        {
+            private string _timestampCache;
+            private int _timestampCacheFrame;
+
+            public string GetTimestamp()
+            {
+                if (Time.frameCount != _timestampCacheFrame)
+                {
+                    _timestampCache = DateTime.Now.ToString("[HH:mm:ss.fff] ");
+                    _timestampCacheFrame = Time.frameCount;
+                }
+
+                return _timestampCache;
+            }
+        }
+
         private class FileLogHandler : ILogHandler, IDisposable
         {
             private readonly StreamWriter _writer;
+            private readonly bool _timestamp;
+            private readonly TimestampCache _timestampCache;
 
-            public FileLogHandler(string outputPath)
+            public FileLogHandler(string outputPath, bool timestamp)
             {
                 _writer = new StreamWriter(outputPath, false);
                 _writer.AutoFlush = true;
+                _timestamp = timestamp;
+                if (_timestamp)
+                {
+                    _timestampCache = new TimestampCache();
+                }
             }
 
             public void LogFormat(LogType logType, Object context, string format, params object[] args)
             {
+                if (_timestamp)
+                {
+                    _writer.Write(_timestampCache.GetTimestamp());
+                }
+
                 _writer.WriteLine(format, args);
             }
 
             public void LogException(Exception exception, Object context)
             {
+                if (_timestamp)
+                {
+                    _writer.Write(_timestampCache.GetTimestamp());
+                }
+
                 _writer.WriteLine("{0}", new object[] { exception.ToString() });
+
                 if (exception.StackTrace != null)
                 {
                     _writer.WriteLine("{0}", new object[] { exception.StackTrace });

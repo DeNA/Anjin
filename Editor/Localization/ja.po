@@ -481,3 +481,11 @@ msgstr "出力ファイルパス"
 # Output Path tooltip
 msgid "Log output file path. Specify relative path from project root or absolute path."
 msgstr "ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します"
+
+# Timestamp
+msgid "Timestamp"
+msgstr "タイムスタンプ"
+
+# Timestamp tooltip
+msgid "Output timestamp to log entities"
+msgstr "ログエンティティにタイムスタンプを出力します"

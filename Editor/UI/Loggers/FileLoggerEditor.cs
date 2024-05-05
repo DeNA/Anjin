@@ -22,6 +22,9 @@ namespace DeNA.Anjin.Editor.UI.Loggers
         private static readonly string s_filterLogType = L10n.Tr("Filter LogType");
         private static readonly string s_filterLogTypeTooltip = L10n.Tr("To selective enable debug log message");
 
+        private static readonly string s_timestamp = L10n.Tr("Timestamp");
+        private static readonly string s_timestampTooltip = L10n.Tr("Output timestamp to log entities");
+
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
@@ -33,6 +36,8 @@ namespace DeNA.Anjin.Editor.UI.Loggers
                 new GUIContent(s_outputPath, s_outputPathTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.filterLogType)),
                 new GUIContent(s_filterLogType, s_filterLogTypeTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.timestamp)),
+                new GUIContent(s_timestamp, s_timestampTooltip));
 
             serializedObject.ApplyModifiedProperties();
         }

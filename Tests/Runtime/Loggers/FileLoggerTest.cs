@@ -4,6 +4,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace DeNA.Anjin.Loggers
             var path = GetOutputPath();
             var sut = ScriptableObject.CreateInstance<FileLogger>();
             sut.outputPath = path;
+            sut.timestamp = false;
 
             sut.LoggerImpl.Log(message);
             sut.Dispose();
@@ -46,6 +48,7 @@ namespace DeNA.Anjin.Loggers
 
             var sut = ScriptableObject.CreateInstance<FileLogger>();
             sut.outputPath = path;
+            sut.timestamp = false;
 
             sut.LoggerImpl.Log(message);
             sut.Dispose();
@@ -62,6 +65,7 @@ namespace DeNA.Anjin.Loggers
             var path = GetOutputPath();
             var sut = ScriptableObject.CreateInstance<FileLogger>();
             sut.outputPath = path;
+            sut.timestamp = false;
 
             sut.LoggerImpl.Log(message);
             sut.LoggerImpl.Log(message);
@@ -79,6 +83,7 @@ namespace DeNA.Anjin.Loggers
             var path = GetOutputPath();
             var sut = ScriptableObject.CreateInstance<FileLogger>();
             sut.outputPath = path;
+            sut.timestamp = false;
 
             Exception exception;
             try
@@ -98,6 +103,30 @@ namespace DeNA.Anjin.Loggers
             Assert.That(actual, Does.StartWith(
                 "System.Exception: " + message + Environment.NewLine +
                 "  at DeNA.Anjin.Loggers.FileLoggerTest.LogException_WriteToFile"));
+        }
+
+        [Test]
+        public async Task LogFormat_WithTimestamp_WriteTimestamp()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = GetOutputPath();
+            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            sut.outputPath = path;
+            sut.timestamp = true;
+
+            sut.LoggerImpl.Log(message);
+            await UniTask.NextFrame();
+            sut.LoggerImpl.Log(message);
+            sut.LoggerImpl.Log(message); // using cache
+            sut.Dispose();
+            await Task.Yield();
+
+            var actual = await File.ReadAllTextAsync(path);
+            var timestampFormat = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
+            var expected = timestampFormat + message + Environment.NewLine +
+                           timestampFormat + message + Environment.NewLine +
+                           timestampFormat + message + Environment.NewLine;
+            Assert.That(actual, Does.Match(expected));
         }
     }
 }
