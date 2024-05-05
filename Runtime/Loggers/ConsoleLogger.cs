@@ -17,9 +17,22 @@ namespace DeNA.Anjin.Loggers
         /// </summary>
         public LogType filterLogType = LogType.Log;
 
+        private ILogger _logger;
+
         /// <inheritdoc />
-        public override ILogger LoggerImpl =>
-            new Logger(Debug.unityLogger.logHandler) { filterLogType = filterLogType };
+        public override ILogger LoggerImpl
+        {
+            get
+            {
+                if (_logger != null)
+                {
+                    return _logger;
+                }
+
+                _logger = new Logger(Debug.unityLogger.logHandler) { filterLogType = filterLogType };
+                return _logger;
+            }
+        }
 
         /// <inheritdoc />
         public override void Dispose()
