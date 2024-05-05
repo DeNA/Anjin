@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System;
 using UnityEngine;
 
 namespace DeNA.Anjin.Loggers
@@ -8,7 +9,7 @@ namespace DeNA.Anjin.Loggers
     /// <summary>
     /// Abstract logger settings used for autopilot.
     /// </summary>
-    public abstract class AbstractLogger : ScriptableObject
+    public abstract class AbstractLogger : ScriptableObject, IDisposable
     {
 #if UNITY_EDITOR
         /// <summary>
@@ -21,5 +22,8 @@ namespace DeNA.Anjin.Loggers
         /// Logger implementation used for autopilot.
         /// </summary>
         public abstract ILogger LoggerImpl { get; }
+
+        /// <inheritdoc />
+        public abstract void Dispose();
     }
 }

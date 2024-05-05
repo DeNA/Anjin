@@ -31,6 +31,11 @@ namespace DeNA.Anjin.TestDoubles
 
         public List<string> Logs => _handler.Logs;
 
+        public override void Dispose()
+        {
+            // Nothing to dispose.
+        }
+
         private class SpyLogHandler : ILogHandler
         {
             public readonly List<string> Logs = new List<string>();

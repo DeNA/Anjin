@@ -97,15 +97,9 @@ namespace DeNA.Anjin
             // Clear event listeners.
             // When play mode is stopped by the user, onDestroy calls without TerminateAsync.
 
-            if (_dispatcher != null)
-            {
-                _dispatcher.Dispose();
-            }
-
-            if (_logMessageHandler != null)
-            {
-                _logMessageHandler.Dispose();
-            }
+            _dispatcher?.Dispose();
+            _logMessageHandler?.Dispose();
+            _settings.logger?.Dispose();
         }
 
         /// <summary>

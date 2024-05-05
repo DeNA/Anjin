@@ -470,3 +470,14 @@ msgstr "フィルタリングLogType"
 # Filter LogType tooltip
 msgid "To selective enable debug log message"
 msgstr "選択したLogType以上のログ出力のみを有効にします"
+
+
+#: Editor/UI/Loggers/FileLoggerEditor.cs
+
+# Output Path
+msgid "Output File Path"
+msgstr "出力ファイルパス"
+
+# Output Path tooltip
+msgid "Log output file path. Specify relative path from project root or absolute path."
+msgstr "ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します"

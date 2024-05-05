@@ -22,6 +22,12 @@ namespace DeNA.Anjin.Loggers
         /// <inheritdoc />
         public override ILogger LoggerImpl => new Logger(new CompositeLogHandler(loggers));
 
+        /// <inheritdoc />
+        public override void Dispose()
+        {
+            // Nothing to dispose.
+        }
+
         private class CompositeLogHandler : ILogHandler
         {
             private readonly List<AbstractLogger> _loggers;
