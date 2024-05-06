@@ -20,12 +20,13 @@ namespace DeNA.Anjin.Agents
             Logger.Log($"Enter {this.name}.Run()");
 
             var tasks = new UniTask[agents.Count];
+            var taskIndex = 0;
 
-            foreach (var (agent, i) in agents.Select((agent, i) => (agent, i)))
+            foreach (var agent in agents.Where(agent => agent != null && agent != this))
             {
                 agent.Logger = Logger;
                 agent.Random = RandomFactory.CreateRandom();
-                tasks[i] = agent.Run(token);
+                tasks[taskIndex++] = agent.Run(token);
             }
 
             try
