@@ -66,14 +66,14 @@ namespace DeNA.Anjin.Loggers
             _handler?.Dispose();
         }
 
-        internal class TimestampCache
+        private class TimestampCache
         {
             private string _timestampCache;
             private int _timestampCacheFrame;
 
             public string GetTimestamp()
             {
-                if (Time.frameCount != _timestampCacheFrame)
+                if (_timestampCacheFrame != Time.frameCount)
                 {
                     _timestampCache = DateTime.Now.ToString("[HH:mm:ss.fff] ");
                     _timestampCacheFrame = Time.frameCount;
@@ -88,6 +88,7 @@ namespace DeNA.Anjin.Loggers
             private readonly StreamWriter _writer;
             private readonly bool _timestamp;
             private readonly TimestampCache _timestampCache;
+            private bool _disposed;
 
             public FileLogHandler(string outputPath, bool timestamp)
             {
@@ -102,6 +103,11 @@ namespace DeNA.Anjin.Loggers
 
             public void LogFormat(LogType logType, Object context, string format, params object[] args)
             {
+                if (_disposed)
+                {
+                    return;
+                }
+
                 if (_timestamp)
                 {
                     _writer.Write(_timestampCache.GetTimestamp());
@@ -112,22 +118,23 @@ namespace DeNA.Anjin.Loggers
 
             public void LogException(Exception exception, Object context)
             {
+                if (_disposed)
+                {
+                    return;
+                }
+
                 if (_timestamp)
                 {
                     _writer.Write(_timestampCache.GetTimestamp());
                 }
 
                 _writer.WriteLine("{0}", new object[] { exception.ToString() });
-
-                if (exception.StackTrace != null)
-                {
-                    _writer.WriteLine("{0}", new object[] { exception.StackTrace });
-                }
             }
 
             public void Dispose()
             {
                 _writer?.Dispose();
+                _disposed = true;
             }
         }
     }

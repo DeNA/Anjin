@@ -16,10 +16,23 @@ namespace DeNA.Anjin.Loggers
     public class FileLoggerTest
     {
         private const string LogsDirectoryPath = "Logs/FileLoggerTest";
+        private const string TimestampRegex = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
 
         private static string GetOutputPath()
         {
             return Path.Combine(LogsDirectoryPath, $"{TestContext.CurrentContext.Test.Name}.log");
+        }
+
+        private static Exception CreateExceptionWithStacktrace(string message)
+        {
+            try
+            {
+                throw new ApplicationException(message);
+            }
+            catch (Exception e)
+            {
+                return e;
+            }
         }
 
         [Test, Order(0)]
@@ -82,7 +95,7 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public async Task LogException_WriteToFile()
+        public async Task LogFormat_Disposed_NotWriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
@@ -90,24 +103,16 @@ namespace DeNA.Anjin.Loggers
             sut.outputPath = path;
             sut.timestamp = false;
 
-            Exception exception;
-            try
-            {
-                throw new Exception(message);
-            }
-            catch (Exception e)
-            {
-                exception = e;
-            }
-
-            sut.LoggerImpl.LogException(exception);
+            sut.LoggerImpl.Log(message);
+            sut.LoggerImpl.Log(message);
             sut.Dispose();
             await Task.Yield();
 
+            sut.LoggerImpl.Log(message); // write after disposed
+            await Task.Yield();
+
             var actual = File.ReadAllText(path);
-            Assert.That(actual, Does.StartWith(
-                "System.Exception: " + message + Environment.NewLine +
-                "  at DeNA.Anjin.Loggers.FileLoggerTest"));
+            Assert.That(actual, Is.EqualTo(message + Environment.NewLine + message + Environment.NewLine));
         }
 
         [Test]
@@ -127,11 +132,69 @@ namespace DeNA.Anjin.Loggers
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
-            var timestampFormat = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
-            var expected = timestampFormat + message + Environment.NewLine +
-                           timestampFormat + message + Environment.NewLine +
-                           timestampFormat + message + Environment.NewLine;
-            Assert.That(actual, Does.Match(expected));
+            Assert.That(actual, Does.Match(
+                "^" +
+                TimestampRegex + message + Environment.NewLine +
+                TimestampRegex + message + Environment.NewLine +
+                TimestampRegex + message + Environment.NewLine +
+                "$"));
+        }
+
+        [Test]
+        public async Task LogException_WriteToFile()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = GetOutputPath();
+            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            sut.outputPath = path;
+            sut.timestamp = false;
+
+            var exception = CreateExceptionWithStacktrace(message);
+            sut.LoggerImpl.LogException(exception);
+            sut.Dispose();
+            await Task.Yield();
+
+            var actual = File.ReadAllText(path);
+            Assert.That(actual, Is.EqualTo(exception + Environment.NewLine));
+        }
+
+        [Test]
+        public async Task LogException_Disposed_NotWriteToFile()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = GetOutputPath();
+            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            sut.outputPath = path;
+            sut.timestamp = false;
+
+            var exception = CreateExceptionWithStacktrace(message);
+            sut.LoggerImpl.LogException(exception);
+            sut.Dispose();
+            await Task.Yield();
+
+            sut.LoggerImpl.LogException(exception); // write after disposed
+            await Task.Yield();
+
+            var actual = File.ReadAllText(path);
+            Assert.That(actual, Is.EqualTo(exception + Environment.NewLine));
+        }
+
+        [Test]
+        public async Task LogException_WithTimestamp_WriteTimestamp()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = GetOutputPath();
+            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            sut.outputPath = path;
+            sut.timestamp = true;
+
+            var exception = CreateExceptionWithStacktrace(message);
+            sut.LoggerImpl.LogException(exception);
+            sut.Dispose();
+            await Task.Yield();
+
+            var actual = File.ReadAllText(path);
+            Assert.That(actual, Does.Match("^" + TimestampRegex + ".*"));
         }
     }
 }

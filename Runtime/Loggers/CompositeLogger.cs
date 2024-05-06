@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -32,7 +33,7 @@ namespace DeNA.Anjin.Loggers
                     return _logger;
                 }
 
-                _handler = new CompositeLogHandler(loggers);
+                _handler = new CompositeLogHandler(loggers, this);
                 _logger = new Logger(_handler);
                 return _logger;
             }
@@ -41,34 +42,44 @@ namespace DeNA.Anjin.Loggers
         /// <inheritdoc />
         public override void Dispose()
         {
-            foreach (var logger in loggers)
-            {
-                logger.Dispose();
-            }
+            ((CompositeLogHandler)LoggerImpl.logHandler).Dispose();
         }
 
-        private class CompositeLogHandler : ILogHandler
+        private class CompositeLogHandler : ILogHandler, IDisposable
         {
             private readonly List<AbstractLogger> _loggers;
+            private readonly AbstractLogger _owner;
 
-            public CompositeLogHandler(List<AbstractLogger> loggers)
+            public CompositeLogHandler(List<AbstractLogger> loggers, AbstractLogger owner)
             {
                 _loggers = loggers;
+                _owner = owner;
             }
 
+            /// <inheritdoc />
             public void LogFormat(LogType logType, Object context, string format, params object[] args)
             {
-                foreach (var logger in _loggers)
+                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
                 {
                     logger.LoggerImpl.LogFormat(logType, context, format, args);
                 }
             }
 
+            /// <inheritdoc />
             public void LogException(Exception exception, Object context)
             {
-                foreach (var logger in _loggers)
+                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
                 {
                     logger.LoggerImpl.LogException(exception, context);
+                }
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
+                {
+                    logger.Dispose();
                 }
             }
         }
