@@ -1,17 +1,19 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Utilities
 {
     /// <summary>
     /// Log message handling using <c>Application.logMessageReceived</c>.
     /// </summary>
-    public class LogMessageHandler
+    public class LogMessageHandler : IDisposable
     {
         private readonly AutopilotSettings _settings;
         private readonly AbstractReporter _reporter;
@@ -25,6 +27,12 @@ namespace DeNA.Anjin.Utilities
         {
             _settings = settings;
             _reporter = reporter;
+            Application.logMessageReceivedThreaded += this.HandleLog;
+        }
+
+        public void Dispose()
+        {
+            Application.logMessageReceivedThreaded -= this.HandleLog;
         }
 
         /// <summary>
