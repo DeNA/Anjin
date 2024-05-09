@@ -20,8 +20,8 @@ namespace DeNA.Anjin.Loggers
         /// </summary>
         public List<AbstractLogger> loggers = new List<AbstractLogger>();
 
-        private ILogHandler _handler;
-        private ILogger _logger;
+        private CompositeLogHandler _handler;
+        private Logger _logger;
 
         /// <inheritdoc />
         public override ILogger LoggerImpl
