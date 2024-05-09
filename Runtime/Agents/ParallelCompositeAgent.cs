@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -19,14 +20,13 @@ namespace DeNA.Anjin.Agents
         {
             Logger.Log($"Enter {this.name}.Run()");
 
-            var tasks = new UniTask[agents.Count];
-            var taskIndex = 0;
+            var tasks = new List<UniTask>();
 
             foreach (var agent in agents.Where(agent => agent != null && agent != this))
             {
                 agent.Logger = Logger;
                 agent.Random = RandomFactory.CreateRandom();
-                tasks[taskIndex++] = agent.Run(token);
+                tasks.Add(agent.Run(token));
             }
 
             try
