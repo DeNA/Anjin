@@ -42,7 +42,7 @@ namespace DeNA.Anjin.Loggers
         /// <inheritdoc />
         public override void Dispose()
         {
-            ((CompositeLogHandler)LoggerImpl.logHandler).Dispose();
+            _handler?.Dispose();
         }
 
         private class CompositeLogHandler : ILogHandler, IDisposable
