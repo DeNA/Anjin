@@ -10,7 +10,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     /// <summary>
     /// Editor GUI for FileLogger.
     /// </summary>
-    [CustomEditor(typeof(FileLogger))]
+    [CustomEditor(typeof(FileLoggerAsset))]
     public class FileLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
@@ -30,13 +30,13 @@ namespace DeNA.Anjin.Editor.UI.Loggers
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.description)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLoggerAsset.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.outputPath)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLoggerAsset.outputPath)),
                 new GUIContent(s_outputPath, s_outputPathTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.filterLogType)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLoggerAsset.filterLogType)),
                 new GUIContent(s_filterLogType, s_filterLogTypeTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLogger.timestamp)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(FileLoggerAsset.timestamp)),
                 new GUIContent(s_timestamp, s_timestampTooltip));
 
             serializedObject.ApplyModifiedProperties();

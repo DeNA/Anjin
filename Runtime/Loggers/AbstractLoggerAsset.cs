@@ -9,7 +9,7 @@ namespace DeNA.Anjin.Loggers
     /// <summary>
     /// Abstract logger settings used for autopilot.
     /// </summary>
-    public abstract class AbstractLogger : ScriptableObject, IDisposable
+    public abstract class AbstractLoggerAsset : ScriptableObject, IDisposable
     {
 #if UNITY_EDITOR
         /// <summary>
@@ -21,7 +21,7 @@ namespace DeNA.Anjin.Loggers
         /// <summary>
         /// Logger implementation used for autopilot.
         /// </summary>
-        public abstract ILogger LoggerImpl { get; }
+        public abstract ILogger Logger { get; }
 
         /// <inheritdoc />
         public abstract void Dispose();

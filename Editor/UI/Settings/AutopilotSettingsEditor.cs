@@ -115,7 +115,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_timeScale, s_timeScaleTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.junitReportPath)),
                 new GUIContent(s_junitReportPath, s_junitReportPathTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.logger)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.loggerAsset)),
                 new GUIContent(s_logger, s_loggerTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporter)),
                 new GUIContent(s_reporter, s_reporterTooltip));

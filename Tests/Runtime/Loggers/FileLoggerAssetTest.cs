@@ -13,7 +13,7 @@ using UnityEngine;
 namespace DeNA.Anjin.Loggers
 {
     [TestFixture]
-    public class FileLoggerTest
+    public class FileLoggerAssetTest
     {
         private const string LogsDirectoryPath = "Logs/FileLoggerTest";
         private const string TimestampRegex = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
@@ -45,11 +45,11 @@ namespace DeNA.Anjin.Loggers
 
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
             await Task.Yield();
 
@@ -64,11 +64,11 @@ namespace DeNA.Anjin.Loggers
             var path = GetOutputPath();
             File.WriteAllText(path, "Existing content");
 
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
             await Task.Yield();
 
@@ -81,12 +81,12 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            sut.LoggerImpl.Log(message);
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
             await Task.Yield();
 
@@ -99,16 +99,16 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            sut.LoggerImpl.Log(message);
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
             await Task.Yield();
 
-            sut.LoggerImpl.Log(message); // write after disposed
+            sut.Logger.Log(message); // write after disposed
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -120,14 +120,14 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = true;
 
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             await UniTask.NextFrame();
-            sut.LoggerImpl.Log(message);
-            sut.LoggerImpl.Log(message); // using cache
+            sut.Logger.Log(message);
+            sut.Logger.Log(message); // using cache
             sut.Dispose();
             await Task.Yield();
 
@@ -145,12 +145,12 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
             sut.Dispose();
             await Task.Yield();
 
@@ -163,16 +163,16 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
             sut.Dispose();
             await Task.Yield();
 
-            sut.LoggerImpl.LogException(exception); // write after disposed
+            sut.Logger.LogException(exception); // write after disposed
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -184,12 +184,12 @@ namespace DeNA.Anjin.Loggers
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
-            var sut = ScriptableObject.CreateInstance<FileLogger>();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = true;
 
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
             sut.Dispose();
             await Task.Yield();
 

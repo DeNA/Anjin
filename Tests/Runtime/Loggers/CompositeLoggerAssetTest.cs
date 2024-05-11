@@ -9,7 +9,7 @@ using UnityEngine;
 namespace DeNA.Anjin.Loggers
 {
     [TestFixture]
-    public class CompositeLoggerTest
+    public class CompositeLoggerAssetTest
     {
         private static Exception CreateExceptionWithStacktrace(string message)
         {
@@ -26,14 +26,14 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogFormat_CompositeMultipleLoggers_OutputBothLoggers()
         {
-            var logger1 = ScriptableObject.CreateInstance<SpyLogger>();
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(logger1);
-            sut.loggers.Add(logger2);
+            var logger1 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(logger1);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
 
             Assert.That(logger1.Logs, Does.Contain(message));
             Assert.That(logger2.Logs, Does.Contain(message));
@@ -42,13 +42,13 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogFormat_LoggersIncludesNull_IgnoreNull()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(null);
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(null);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
 
             Assert.That(logger2.Logs, Does.Contain(message));
         }
@@ -56,13 +56,13 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogFormat_NestingLogger_IgnoreNested()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(sut); // nesting
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(sut); // nesting
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
 
             Assert.That(logger2.Logs, Does.Contain(message));
         }
@@ -70,15 +70,15 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogException_CompositeMultipleLoggers_OutputBothLoggers()
         {
-            var logger1 = ScriptableObject.CreateInstance<SpyLogger>();
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(logger1);
-            sut.loggers.Add(logger2);
+            var logger1 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(logger1);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
 
             Assert.That(logger1.Logs, Does.Contain(exception.ToString()));
             Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
@@ -87,14 +87,14 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogException_LoggersIncludesNull_IgnoreNull()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(null);
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(null);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
 
             Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
         }
@@ -102,14 +102,14 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void LogException_NestingLogger_IgnoreNested()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(sut); // nesting
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(sut); // nesting
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
             var exception = CreateExceptionWithStacktrace(message);
-            sut.LoggerImpl.LogException(exception);
+            sut.Logger.LogException(exception);
 
             Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
         }
@@ -117,14 +117,14 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void Dispose_CompositeMultipleLoggers_DisposeAllLoggers()
         {
-            var logger1 = ScriptableObject.CreateInstance<SpyLogger>();
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(logger1);
-            sut.loggers.Add(logger2);
+            var logger1 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(logger1);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
 
             Assert.That(logger1.Disposed, Is.True);
@@ -134,13 +134,13 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void Dispose_LoggersIncludesNull_IgnoreNull()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(null);
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(null);
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
 
             Assert.That(logger2.Disposed, Is.True);
@@ -149,13 +149,13 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public void Dispose_NestingLogger_IgnoreNested()
         {
-            var logger2 = ScriptableObject.CreateInstance<SpyLogger>();
-            var sut = ScriptableObject.CreateInstance<CompositeLogger>();
-            sut.loggers.Add(sut); // nesting
-            sut.loggers.Add(logger2);
+            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            sut.loggerAssets.Add(sut); // nesting
+            sut.loggerAssets.Add(logger2);
 
             var message = TestContext.CurrentContext.Test.Name;
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
             sut.Dispose();
 
             Assert.That(logger2.Disposed, Is.True);

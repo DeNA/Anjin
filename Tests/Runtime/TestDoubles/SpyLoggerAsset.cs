@@ -9,14 +9,14 @@ using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.TestDoubles
 {
-    public class SpyLogger : AbstractLogger
+    public class SpyLoggerAsset : AbstractLoggerAsset
     {
         public bool Disposed { get; private set; }
 
         private SpyLogHandler _handler;
         private ILogger _logger;
 
-        public override ILogger LoggerImpl
+        public override ILogger Logger
         {
             get
             {

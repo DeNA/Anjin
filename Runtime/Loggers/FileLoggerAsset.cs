@@ -17,7 +17,7 @@ namespace DeNA.Anjin.Loggers
     /// <see href="https://github.com/Cysharp/ZLogger"/>
     /// </remarks>
     [CreateAssetMenu(fileName = "New FileLogger", menuName = "Anjin/File Logger", order = 72)]
-    public class FileLogger : AbstractLogger
+    public class FileLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
         /// Log output file path.
@@ -39,7 +39,7 @@ namespace DeNA.Anjin.Loggers
         private ILogger _logger;
 
         /// <inheritdoc />
-        public override ILogger LoggerImpl
+        public override ILogger Logger
         {
             get
             {

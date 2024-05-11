@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace DeNA.Anjin
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
+        private AbstractLoggerAsset _loggerAsset;
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
@@ -32,14 +34,8 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            if (_settings.logger != null)
-            {
-                _logger = _settings.logger.LoggerImpl;
-            }
-            else
-            {
-                _logger = CreateDefaultLogger();
-            }
+            _loggerAsset = _settings.loggerAsset;
+            _logger = _loggerAsset != null ? _loggerAsset.Logger : CreateDefaultLogger();
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -99,7 +95,7 @@ namespace DeNA.Anjin
 
             _dispatcher?.Dispose();
             _logMessageHandler?.Dispose();
-            _settings.logger?.Dispose();
+            _settings.loggerAsset?.Dispose();
         }
 
         /// <summary>

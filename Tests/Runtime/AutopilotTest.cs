@@ -32,8 +32,8 @@ namespace DeNA.Anjin
             var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
             autopilotSettings.sceneAgentMaps = new List<SceneAgentMap>();
             autopilotSettings.lifespanSec = 1;
-            var spyLogger = ScriptableObject.CreateInstance<SpyLogger>();
-            autopilotSettings.logger = spyLogger;
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            autopilotSettings.loggerAsset = spyLogger;
 
             await LauncherFromTest.AutopilotAsync(autopilotSettings);
 

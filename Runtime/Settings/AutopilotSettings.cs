@@ -129,7 +129,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Logger used for this autopilot settings.
         /// </summary>
-        public AbstractLogger logger;
+        public AbstractLoggerAsset loggerAsset;
 
         /// <summary>
         /// Reporter that called when some errors occurred

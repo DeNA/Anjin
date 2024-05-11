@@ -10,7 +10,7 @@ namespace DeNA.Anjin.Loggers
     /// Logger using <c>Debug.unityLogger</c>
     /// </summary>
     [CreateAssetMenu(fileName = "New ConsoleLogger", menuName = "Anjin/Console Logger", order = 71)]
-    public class ConsoleLogger : AbstractLogger
+    public class ConsoleLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
         /// To selective enable debug log message.
@@ -20,7 +20,7 @@ namespace DeNA.Anjin.Loggers
         private ILogger _logger;
 
         /// <inheritdoc />
-        public override ILogger LoggerImpl
+        public override ILogger Logger
         {
             get
             {

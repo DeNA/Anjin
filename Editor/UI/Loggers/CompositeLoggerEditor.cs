@@ -10,7 +10,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     /// <summary>
     /// Editor GUI for CompositeLogger.
     /// </summary>
-    [CustomEditor(typeof(CompositeLogger))]
+    [CustomEditor(typeof(CompositeLoggerAsset))]
     public class CompositeLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
@@ -24,9 +24,9 @@ namespace DeNA.Anjin.Editor.UI.Loggers
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(CompositeLogger.description)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(CompositeLoggerAsset.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(CompositeLogger.loggers)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(CompositeLoggerAsset.loggerAssets)),
                 new GUIContent(s_loggers, s_loggersTooltip));
 
             serializedObject.ApplyModifiedProperties();

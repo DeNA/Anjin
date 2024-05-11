@@ -13,18 +13,18 @@ namespace DeNA.Anjin.Loggers
     /// A class for a logger that delegates to multiple loggers
     /// </summary>
     [CreateAssetMenu(fileName = "New CompositeLogger", menuName = "Anjin/Composite Logger", order = 70)]
-    public class CompositeLogger : AbstractLogger
+    public class CompositeLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
         /// Loggers to delegates
         /// </summary>
-        public List<AbstractLogger> loggers = new List<AbstractLogger>();
+        public List<AbstractLoggerAsset> loggerAssets = new List<AbstractLoggerAsset>();
 
         private CompositeLogHandler _handler;
         private Logger _logger;
 
         /// <inheritdoc />
-        public override ILogger LoggerImpl
+        public override ILogger Logger
         {
             get
             {
@@ -33,7 +33,7 @@ namespace DeNA.Anjin.Loggers
                     return _logger;
                 }
 
-                _handler = new CompositeLogHandler(loggers, this);
+                _handler = new CompositeLogHandler(loggerAssets, this);
                 _logger = new Logger(_handler);
                 return _logger;
             }
@@ -47,39 +47,39 @@ namespace DeNA.Anjin.Loggers
 
         private class CompositeLogHandler : ILogHandler, IDisposable
         {
-            private readonly List<AbstractLogger> _loggers;
-            private readonly AbstractLogger _owner;
+            private readonly List<AbstractLoggerAsset> _loggerAssets;
+            private readonly AbstractLoggerAsset _owner;
 
-            public CompositeLogHandler(List<AbstractLogger> loggers, AbstractLogger owner)
+            public CompositeLogHandler(List<AbstractLoggerAsset> loggerAssets, AbstractLoggerAsset owner)
             {
-                _loggers = loggers;
+                _loggerAssets = loggerAssets;
                 _owner = owner;
             }
 
             /// <inheritdoc />
             public void LogFormat(LogType logType, Object context, string format, params object[] args)
             {
-                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
+                foreach (var loggerAsset in _loggerAssets.Where(x => x != null && x != _owner))
                 {
-                    logger.LoggerImpl.LogFormat(logType, context, format, args);
+                    loggerAsset.Logger.LogFormat(logType, context, format, args);
                 }
             }
 
             /// <inheritdoc />
             public void LogException(Exception exception, Object context)
             {
-                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
+                foreach (var loggerAsset in _loggerAssets.Where(x => x != null && x != _owner))
                 {
-                    logger.LoggerImpl.LogException(exception, context);
+                    loggerAsset.Logger.LogException(exception, context);
                 }
             }
 
             /// <inheritdoc />
             public void Dispose()
             {
-                foreach (var logger in _loggers.Where(logger => logger != null && logger != _owner))
+                foreach (var loggerAsset in _loggerAssets.Where(x => x != null && x != _owner))
                 {
-                    logger.Dispose();
+                    loggerAsset.Dispose();
                 }
             }
         }

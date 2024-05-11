@@ -10,7 +10,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     /// <summary>
     /// Editor GUI for ConsoleLogger.
     /// </summary>
-    [CustomEditor(typeof(ConsoleLogger))]
+    [CustomEditor(typeof(ConsoleLoggerAsset))]
     public class ConsoleLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
@@ -24,9 +24,9 @@ namespace DeNA.Anjin.Editor.UI.Loggers
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLogger.description)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLoggerAsset.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLogger.filterLogType)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ConsoleLoggerAsset.filterLogType)),
                 new GUIContent(s_filterLogType, s_filterLogTypeTooltip));
 
             serializedObject.ApplyModifiedProperties();

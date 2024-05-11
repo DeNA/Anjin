@@ -8,15 +8,15 @@ using UnityEngine.TestTools;
 namespace DeNA.Anjin.Loggers
 {
     [TestFixture]
-    public class ConsoleLoggerTest
+    public class ConsoleLoggerAssetTest
     {
         [Test]
         public void FilterLogTypeIsNotSet_LogAsDefault()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var sut = ScriptableObject.CreateInstance<ConsoleLogger>();
+            var sut = ScriptableObject.CreateInstance<ConsoleLoggerAsset>();
 
-            sut.LoggerImpl.Log(message);
+            sut.Logger.Log(message);
 
             LogAssert.Expect(LogType.Log, message);
             LogAssert.NoUnexpectedReceived();
@@ -28,11 +28,11 @@ namespace DeNA.Anjin.Loggers
             LogType logType)
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var sut = ScriptableObject.CreateInstance<ConsoleLogger>();
+            var sut = ScriptableObject.CreateInstance<ConsoleLoggerAsset>();
             sut.filterLogType = logType;
 
-            sut.LoggerImpl.Log(logType, message);
-            sut.LoggerImpl.Log("Not output message because LogType.Log");
+            sut.Logger.Log(logType, message);
+            sut.Logger.Log("Not output message because LogType.Log");
 
             LogAssert.Expect(logType, message);
             LogAssert.NoUnexpectedReceived();
