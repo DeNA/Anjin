@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -18,6 +19,7 @@ namespace DeNA.Anjin
     /// </summary>
     public class Autopilot : MonoBehaviour
     {
+        private AbstractLoggerAsset _loggerAsset;
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
@@ -32,7 +34,8 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            _logger = CreateLogger();
+            _loggerAsset = _settings.loggerAsset;
+            _logger = _loggerAsset != null ? _loggerAsset.Logger : CreateDefaultLogger();
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -61,15 +64,17 @@ namespace DeNA.Anjin
             }
 
             _startTime = Time.realtimeSinceStartup;
+            _logger.Log("Launched autopilot");
         }
 
         /// <summary>
-        /// Returns an agent dispatcher that autopilot uses. You can change a logger by overriding this method
+        /// Returns an logger that autopilot uses. You can change a logger by overriding this method.
+        /// Default logger is that write to console.
         /// </summary>
-        /// <returns>A new logger</returns>
-        protected virtual ILogger CreateLogger()
+        /// <returns>A new logger that write to console</returns>
+        protected virtual ILogger CreateDefaultLogger()
         {
-            return new ConsoleLogger(Debug.unityLogger.logHandler);
+            return Debug.unityLogger;
         }
 
         /// <summary>
@@ -88,15 +93,9 @@ namespace DeNA.Anjin
             // Clear event listeners.
             // When play mode is stopped by the user, onDestroy calls without TerminateAsync.
 
-            if (_dispatcher != null)
-            {
-                _dispatcher.Dispose();
-            }
-
-            if (_logMessageHandler != null)
-            {
-                _logMessageHandler.Dispose();
-            }
+            _dispatcher?.Dispose();
+            _logMessageHandler?.Dispose();
+            _settings.loggerAsset?.Dispose();
         }
 
         /// <summary>
@@ -114,6 +113,11 @@ namespace DeNA.Anjin
             {
                 var time = Time.realtimeSinceStartup - _startTime;
                 JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, logString, stackTrace, time);
+            }
+
+            if (exitCode != ExitCode.Normally)
+            {
+                _logger.Log(LogType.Error, logString + Environment.NewLine + stackTrace);
             }
 
             Destroy(this.gameObject);

@@ -31,7 +31,7 @@ namespace DeNA.Anjin.Agents
             var childAgent = CreateChildAgent(100);
 
             var agent = ScriptableObject.CreateInstance<RepeatAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
@@ -56,7 +56,7 @@ namespace DeNA.Anjin.Agents
             var childAgent = CreateChildAgent(100);
 
             var agent = ScriptableObject.CreateInstance<RepeatAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
@@ -82,7 +82,7 @@ namespace DeNA.Anjin.Agents
             var childAgent = CreateChildAgent(100);
 
             var agent = ScriptableObject.CreateInstance<RepeatAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;

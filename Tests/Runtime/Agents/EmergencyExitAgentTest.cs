@@ -23,7 +23,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_cancelTask_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
 
@@ -53,7 +53,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_existEmergencyExitButton_ClickEmergencyExitButton()
         {
             var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
 
@@ -81,7 +81,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_existNotInteractableEmergencyExitButton_DoesNotClickEmergencyExitButton()
         {
             var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
 

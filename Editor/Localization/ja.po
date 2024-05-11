@@ -87,13 +87,21 @@ msgstr "JUnitレポート出力パス"
 msgid "JUnit report output path"
 msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
 
+# logger
+msgid "Logger"
+msgstr "ロガー"
+
+# logger tooltip
+msgid "Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default."
+msgstr "オートパイロットが使用するロガー指定します。省略時は Debug.unityLogger がデフォルトとして使用されます"
+
 # reporter
 msgid "Reporter"
 msgstr "レポータ"
 
 # reporter tooltip
 msgid "Reporter that called when some errors occurred in target application"
-msgstr "対象のアプリケーションで発生したエラーを通知するレポータ"
+msgstr "対象のアプリケーションで発生したエラーを通知するレポータを指定します"
 
 # obsolete slack settings
 msgid "Slack settings will be moved to SlackReporter"
@@ -429,3 +437,55 @@ msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録�
 # composite reporters
 msgid "Reporters"
 msgstr "レポータ"
+
+
+#: Editor/UI/Loggers/ 共通
+
+# description (same as AutopilotSettingsEditor.cs)
+msgid "Description"
+msgstr "説明"
+
+# description tooltip
+msgid "Description about this logger instance"
+msgstr "このLoggerインスタンスの説明"
+
+
+#: Editor/UI/Loggers/CompositeLoggerEditor.cs
+
+# Loggers
+msgid "Loggers"
+msgstr "Loggers"
+
+# Loggers tooltip
+msgid "Loggers to delegates"
+msgstr "出力を委譲するLoggerを指定します"
+
+
+#: Editor/UI/Loggers/ConsoleLoggerEditor.cs
+
+# Filter LogType
+msgid "Filter LogType"
+msgstr "フィルタリングLogType"
+
+# Filter LogType tooltip
+msgid "To selective enable debug log message"
+msgstr "選択したLogType以上のログ出力のみを有効にします"
+
+
+#: Editor/UI/Loggers/FileLoggerEditor.cs
+
+# Output Path
+msgid "Output File Path"
+msgstr "出力ファイルパス"
+
+# Output Path tooltip
+msgid "Log output file path. Specify relative path from project root or absolute path."
+msgstr "ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します"
+
+# Timestamp
+msgid "Timestamp"
+msgstr "タイムスタンプを追加"
+
+# Timestamp tooltip
+msgid "Output timestamp to log entities"
+msgstr "ログエンティティにタイムスタンプを出力します"

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using DeNA.Anjin.Agents;
+using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using UnityEngine;
 
@@ -126,10 +127,15 @@ namespace DeNA.Anjin.Settings
         public string[] ignoreMessages;
 
         /// <summary>
+        /// Logger used for this autopilot settings.
+        /// </summary>
+        public AbstractLoggerAsset loggerAsset;
+
+        /// <summary>
         /// Reporter that called when some errors occurred
         /// </summary>
         public AbstractReporter reporter;
-        
+
         /// <summary>
         /// Overwrites specified values in the command line arguments
         /// </summary>

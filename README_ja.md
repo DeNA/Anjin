@@ -118,17 +118,8 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
-  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）</dd>
-  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない。カンマ区切りで複数指定対応）</dd>
-</dl>
-
-#### Slackメンション設定
-
-Slack通知に付与するメンションを設定します。
-
-<dl>
-  <dt>Mention Sub Team IDs</dt><dd>Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add Here In Slack Message</dt><dd>Slack通知メッセージに@hereを付けます。デフォルトはoff</dd>
+  <dt>Logger</dt><dd>オートパイロットが使用するロガー指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
+  <dt>Reporter</dt><dd>対象のアプリケーションで発生したエラーを通知するレポータを指定します</dd>
 </dl>
 
 #### エラーハンドリング設定
@@ -154,6 +145,26 @@ Slack通知に付与するメンションを設定します。
 
 生成したファイルを選択すると、インスペクタにAgent固有の設定項目が表示され、カスタマイズが可能です。
 同じAgentでも設定の違うものを複数用意して、Sceneによって使い分けることができます。
+
+
+### ロガー設定ファイル（.asset）の生成
+
+ロガーインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
+**Create > Anjin > Logger名**
+を選択すると生成できます。ファイル名は任意です。
+
+生成したファイルを選択すると、インスペクタにロガー固有の設定項目が表示され、カスタマイズが可能です。
+同じロガーでも設定の違うものを複数用意して使い分けることができます。
+
+
+### レポータ設定ファイル（.asset）の生成
+
+レポータインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
+**Create > Anjin > Reporter名**
+を選択すると生成できます。ファイル名は任意です。
+
+生成したファイルを選択すると、インスペクタにレポータ固有の設定項目が表示され、カスタマイズが可能です。
+同じレポータでも設定の違うものを複数用意して使い分けることができます。
 
 
 
@@ -215,8 +226,6 @@ $(UNITY) \
   <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUNIT_REPORT_PATH</dt><dd>JUnit形式のレポートファイル出力パスを指定します</dd>
-  <dt>SLACK_TOKEN</dt><dd>Slack通知に使用するWeb APIトークン</dd>
-  <dt>SLACK_CHANNELS</dt><dd>Slack通知を送るチャンネル</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
@@ -370,6 +379,78 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 
 常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
 `ParallelCompositeAgent` でも実現できますが、AutopilotSettingsに `Observer Agent` として設定するほうが簡単です。
+
+
+
+## ビルトイン ロガー
+
+以下のロガータイプが用意されています。これらをそのまま使用することも、プロジェクト独自のロガーを実装して使用することも可能です。
+
+
+### Composite Logger
+
+複数のロガーを登録し、そのすべてにログ出力を委譲するロガーです。
+
+このロガーのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>Loggers</dt><dd>ログ出力を委譲するLoggerのリスト</dd>
+</dl>
+
+
+### Console Logger
+
+ログをコンソールに出力するロガーです。
+
+このロガーのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
+</dl>
+
+
+### File Logger
+
+ログを指定ファイルに出力するロガーです。
+
+このロガーのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。</dd>
+  <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
+  <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
+</dl>
+
+
+
+## ビルトイン レポータ
+
+以下のレポータタイプが用意されています。これらをそのまま使用することも、プロジェクト独自のレポータを実装して使用することも可能です。
+
+
+### Composite Reporter
+
+複数のレポータを登録し、そのすべてにレポート送信を委譲するレポータです。
+
+このレポータのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>Reporters</dt><dd>レポート送信を委譲するReporterのリスト</dd>
+</dl>
+
+
+### Slack Reporter
+
+Slackにレポート送信するレポータです。
+
+このレポータのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）</dd>
+  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない。カンマ区切りで複数指定対応）</dd>
+  <dt>Mention Sub Team IDs</dt><dd>Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
+  <dt>Add Here In Slack Message</dt><dd>Slack通知メッセージに@hereを付けます。デフォルトはoff</dd>
+</dl>
 
 
 

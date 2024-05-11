@@ -30,7 +30,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_cancelTask_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(
@@ -54,7 +54,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_playbackFinished_stopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
-            agent.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_playbackFinished_stopAgent);
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(
