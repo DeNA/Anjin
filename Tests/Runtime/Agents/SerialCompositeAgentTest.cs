@@ -131,7 +131,7 @@ namespace DeNA.Anjin.Agents
             var lastChildAgent = CreateChildAgent(500);
 
             var sut = ScriptableObject.CreateInstance<SerialCompositeAgent>();
-            sut.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            sut.Logger = Debug.unityLogger;
             sut.Random = new RandomFactory(0).CreateRandom();
             sut.name = nameof(Run_lifespanPassed_stopAgent);
             sut.agents = new List<AbstractAgent>() { firstChildAgent, null, lastChildAgent };
@@ -156,7 +156,7 @@ namespace DeNA.Anjin.Agents
             var lastChildAgent = CreateChildAgent(500);
 
             var sut = ScriptableObject.CreateInstance<SerialCompositeAgent>();
-            sut.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            sut.Logger = Debug.unityLogger;
             sut.Random = new RandomFactory(0).CreateRandom();
             sut.name = nameof(Run_lifespanPassed_stopAgent);
             sut.agents = new List<AbstractAgent>() { firstChildAgent, sut, lastChildAgent };
