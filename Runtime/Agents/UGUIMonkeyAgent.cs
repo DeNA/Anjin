@@ -105,6 +105,7 @@ namespace DeNA.Anjin.Agents
                 Lifetime = lifespanSec > 0 ? TimeSpan.FromSeconds(lifespanSec) : TimeSpan.MaxValue,
                 DelayMillis = delayMillis,
                 Random = random,
+                Logger = Logger,
                 SecondsToErrorForNoInteractiveComponent = secondsToErrorForNoInteractiveComponent,
                 Gizmos = gizmos,
                 Screenshots = screenshotEnabled
