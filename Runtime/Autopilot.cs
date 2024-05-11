@@ -72,7 +72,7 @@ namespace DeNA.Anjin
         /// Default logger is that write to console.
         /// </summary>
         /// <returns>A new logger that write to console</returns>
-        protected virtual ILogger CreateDefaultLogger()
+        private static ILogger CreateDefaultLogger()
         {
             return Debug.unityLogger;
         }
