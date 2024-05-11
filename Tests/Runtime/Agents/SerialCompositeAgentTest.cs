@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
+// ReSharper disable MethodSupportsCancellation
+
 namespace DeNA.Anjin.Agents
 {
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
@@ -120,6 +122,56 @@ namespace DeNA.Anjin.Agents
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
+        }
+
+        [Test]
+        public async Task Run_IncludesNull_IgnoreNull()
+        {
+            var firstChildAgent = CreateChildAgent(500);
+            var lastChildAgent = CreateChildAgent(500);
+
+            var sut = ScriptableObject.CreateInstance<SerialCompositeAgent>();
+            sut.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            sut.Random = new RandomFactory(0).CreateRandom();
+            sut.name = nameof(Run_lifespanPassed_stopAgent);
+            sut.agents = new List<AbstractAgent>() { firstChildAgent, null, lastChildAgent };
+
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var token = cancellationTokenSource.Token;
+                await sut.Run(token);
+            }
+
+            Assert.That(firstChildAgent.CompleteCount, Is.EqualTo(1));
+            Assert.That(lastChildAgent.CompleteCount, Is.EqualTo(1));
+
+            LogAssert.Expect(LogType.Log, $"Enter {sut.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {sut.name}.Run()");
+        }
+
+        [Test]
+        public async Task Run_NestingAgent_IgnoreNested()
+        {
+            var firstChildAgent = CreateChildAgent(500);
+            var lastChildAgent = CreateChildAgent(500);
+
+            var sut = ScriptableObject.CreateInstance<SerialCompositeAgent>();
+            sut.Logger = new ConsoleLogger(Debug.unityLogger.logHandler);
+            sut.Random = new RandomFactory(0).CreateRandom();
+            sut.name = nameof(Run_lifespanPassed_stopAgent);
+            sut.agents = new List<AbstractAgent>() { firstChildAgent, sut, lastChildAgent };
+
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var token = cancellationTokenSource.Token;
+                await sut.Run(token);
+            }
+
+            Assert.That(firstChildAgent.CompleteCount, Is.EqualTo(1));
+            Assert.That(lastChildAgent.CompleteCount, Is.EqualTo(1));
+
+            LogAssert.Expect(LogType.Log, $"Enter {sut.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {sut.name}.Run()");
         }
     }
 }

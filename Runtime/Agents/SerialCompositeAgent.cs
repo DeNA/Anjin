@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace DeNA.Anjin.Agents
 
             try
             {
-                foreach (var agent in agents)
+                foreach (var agent in agents.Where(agent => agent != null && agent != this))
                 {
                     agent.Logger = Logger;
                     agent.Random = RandomFactory.CreateRandom();
