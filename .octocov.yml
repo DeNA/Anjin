@@ -3,17 +3,19 @@ coverage:
   if: true
   paths:
     - ./Logs/Report/lcov.info # Warning: This path is replace by regex in test.yml
+
 codeToTestRatio:
   code:
-    - 'Editor/**/*.cs'
-    - 'Runtime/**/*.cs'
-    - 'Samples~/**/*.cs'
-    - '!Samples~/**/Tests/**/*.cs'
+    - '**/*.cs'
+    - '!**/Tests/**'
+    - '!UnityProject~/Library/**'
   test:
-    - 'Tests/**/*.cs'
-    - 'Samples~/**/Tests/**/*.cs'
+    - '**/Tests/**/*.cs'
+    - '!UnityProject~/Library/**'
+
 testExecutionTime:
   if: true
+
 diff:
   datastores:
     - artifact://${GITHUB_REPOSITORY}
