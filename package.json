@@ -7,23 +7,22 @@
   "dependencies": {
     "com.cysharp.unitask": "2.3.3",
     "com.nowsprinting.test-helper.monkey": "0.12.0",
-    "com.nowsprinting.test-helper.random": "0.3.0",
     "com.unity.automated-testing": "0.8.1-preview.2"
   },
   "displayName": "Anjin",
   "documentationUrl": "https://github.com/DeNA/Anjin/blob/master/README.md",
   "files": [
-    "Annotations",
-    "Annotations*",
-    "Documentation~",
-    "Editor",
-    "Editor*",
-    "Runtime",
-    "Runtime*",
-    "Tests",
-    "Tests*",
+    "Annotations/",
+    "Annotations.meta",
+    "Documentation~/",
+    "Editor/",
+    "Editor.meta",
+    "Runtime/",
+    "Runtime.meta",
+    "Tests/",
+    "Tests.meta",
+    "LICENSE.txt*",
     "package.json*",
-    "LICENSE*",
     "README*"
   ],
   "keywords": [
