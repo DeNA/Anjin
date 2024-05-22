@@ -21,7 +21,7 @@ jobs:
           submodules: false
           lfs: false
 
-      - uses: DeNA/unity-meta-check@v3
+      - uses: DeNA/unity-meta-check@v4
 
       - uses: 8398a7/action-slack@v3
         with:
