@@ -8,11 +8,11 @@ namespace DeNA.Anjin.ArgumentCapture
 {
     internal static class ArgumentCapture
     {
-        internal static (bool, T) Capture<T>(string key)
+        internal static (bool, T) Capture<T>(string key, string[] args = null)
         {
             string captureString = null;
 #if UNITY_EDITOR
-            captureString = CaptureString(key);
+            captureString = CaptureString(key, args);
 #elif UNITY_ANDROID
             captureString = ArgumentCaptureAndroid.CaptureString(key);
 #elif UNITY_IOS
@@ -45,17 +45,21 @@ namespace DeNA.Anjin.ArgumentCapture
             return (false, default(T));
         }
 
-        private static string CaptureString(string key)
+        private static string CaptureString(string key, string[] args = null)
         {
             // Arguments first
-            var args = Environment.GetCommandLineArgs();
+            if (args == null)
+            {
+                args = Environment.GetCommandLineArgs();
+            }
+
             for (var i = 0; i < args.Length; i++)
             {
                 if (args[i].ToLower().Equals($"-{key.ToLower()}"))
                 {
                     if (i == args.Length - 1)
                     {
-                        return string.Empty; // In Bool, it's possible that the termination is KEY.
+                        return true.ToString(); // In Bool, it's possible that the termination is KEY.
                     }
 
                     return args[i + 1];

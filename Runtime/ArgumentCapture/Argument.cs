@@ -19,14 +19,15 @@ namespace DeNA.Anjin.ArgumentCapture
         private readonly (bool, T) _captured;
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="defaultValue"></param>
-        public Argument(string key, T defaultValue = default(T))
+        /// <param name="key">Key of arguments</param>
+        /// <param name="defaultValue">Use this value if not specified key in arguments</param>
+        /// <param name="args">Command line arguments for testing</param>
+        public Argument(string key, T defaultValue = default, string[] args = null)
         {
             _defaultValue = defaultValue;
-            _captured = ArgumentCapture.Capture<T>(key);
+            _captured = ArgumentCapture.Capture<T>(key, args);
         }
 
         /// <inheritdoc/>
