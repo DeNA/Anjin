@@ -95,7 +95,7 @@ namespace DeNA.Anjin.Utilities
                                     >
                                     <error message=""Error message!""
                                            type=""""
-                                            >Stack trace!</error>
+                                            ><![CDATA[Stack trace!]]></error>
                         </testcase>
             </testsuite>
 </testsuites>"));
@@ -123,7 +123,7 @@ namespace DeNA.Anjin.Utilities
                                     >
                                     <failure message=""Failure message!""
                                              type=""""
-                                            >Stack trace!!</failure>
+                                            ><![CDATA[Stack trace!!]]></failure>
                         </testcase>
             </testsuite>
 </testsuites>"));
