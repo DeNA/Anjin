@@ -74,12 +74,12 @@ namespace DeNA.Anjin.Utilities
         private const string ErrorElement = @"
                                     <error message=""{0}""
                                            type=""""
-                                            >{1}</error>";
+                                            ><![CDATA[{1}]]></error>";
 
         private const string FailureElement = @"
                                     <failure message=""{0}""
                                              type=""""
-                                            >{1}</failure>";
+                                            ><![CDATA[{1}]]></failure>";
 
         // XML format from: https://github.com/jenkinsci/benchmark-plugin/blob/master/doc/JUnit%20format/JUnit.txt
     }
