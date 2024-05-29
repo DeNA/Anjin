@@ -124,14 +124,14 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 
 #### エラーハンドリング設定
 
-異常系ログメッセージを捕捉してSlackに通知するフィルタを設定します。
+異常系ログメッセージを捕捉してレポータで通知するフィルタを設定します。
 
 <dl>
-  <dt>handle Exception</dt><dd>例外を検知したらSlackに通知します</dd>
-  <dt>handle Error</dt><dd>エラーを検知したらSlackに通知します</dd>
-  <dt>handle Assert</dt><dd>アサート違反を検知したらSlackに通知します</dd>
-  <dt>handle Warning</dt><dd>警告を検知したらSlackに通知します</dd>
-  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはSlackに通知しません</dd>
+  <dt>handle Exception</dt><dd>例外を検知したらレポータで通知します</dd>
+  <dt>handle Error</dt><dd>エラーを検知したらレポータで通知します</dd>
+  <dt>handle Assert</dt><dd>アサート違反を検知したらレポータで通知します</dd>
+  <dt>handle Warning</dt><dd>警告を検知したらレポータで通知します</dd>
+  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません</dd>
 </dl>
 
 
@@ -226,6 +226,10 @@ $(UNITY) \
   <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUNIT_REPORT_PATH</dt><dd>JUnit形式のレポートファイル出力パスを指定します</dd>
+  <dt>HANDLE_EXCEPTION</dt><dd>例外を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
+  <dt>HANDLE_ERROR</dt><dd>エラーを検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
+  <dt>HANDLE_ASSERT</dt><dd>アサート違反を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
+  <dt>HANDLE_WARNING</dt><dd>警告を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。

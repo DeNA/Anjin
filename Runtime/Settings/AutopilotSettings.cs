@@ -161,6 +161,26 @@ namespace DeNA.Anjin.Settings
                 junitReportPath = args.JUnitReportPath.Value();
             }
 
+            if (args.HandleException.IsCaptured())
+            {
+                handleException = args.HandleException.Value();
+            }
+
+            if (args.HandleError.IsCaptured())
+            {
+                handleError = args.HandleError.Value();
+            }
+
+            if (args.HandleAssert.IsCaptured())
+            {
+                handleAssert = args.HandleAssert.Value();
+            }
+
+            if (args.HandleWarning.IsCaptured())
+            {
+                handleWarning = args.HandleWarning.Value();
+            }
+
             if (args.SlackToken.IsCaptured())
             {
 #pragma warning disable CS0618 // Type or member is obsolete
