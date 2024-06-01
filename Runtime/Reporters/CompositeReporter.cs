@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Settings;
 using UnityEngine;
 
 namespace DeNA.Anjin.Reporters
@@ -24,7 +23,6 @@ namespace DeNA.Anjin.Reporters
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
-            AutopilotSettings settings,
             string logString,
             string stackTrace,
             LogType type,
@@ -36,7 +34,7 @@ namespace DeNA.Anjin.Reporters
                 reporters
                     .Where(r => r != this && r != null)
                     .Select(
-                        r => r.PostReportAsync(settings, logString, stackTrace, type, withScreenshot, cancellationToken)
+                        r => r.PostReportAsync(logString, stackTrace, type, withScreenshot, cancellationToken)
                     )
             );
         }

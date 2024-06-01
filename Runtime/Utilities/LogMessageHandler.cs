@@ -53,7 +53,7 @@ namespace DeNA.Anjin.Utilities
 
             if (_reporter != null)
             {
-                await _reporter.PostReportAsync(_settings, logString, stackTrace, type, true);
+                await _reporter.PostReportAsync(logString, stackTrace, type, true);
             }
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
