@@ -3,7 +3,6 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Settings;
 using UnityEngine;
 
 namespace DeNA.Anjin.Reporters
@@ -16,7 +15,6 @@ namespace DeNA.Anjin.Reporters
         /// <summary>
         /// Post report log message, stacktrace and screenshot
         /// </summary>
-        /// <param name="settings">Autopilot settings</param>
         /// <param name="logString">Log message</param>
         /// <param name="stackTrace">Stack trace</param>
         /// <param name="type">Log message type</param>
@@ -24,7 +22,6 @@ namespace DeNA.Anjin.Reporters
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
         public abstract UniTask PostReportAsync(
-            AutopilotSettings settings,
             string logString,
             string stackTrace,
             LogType type,

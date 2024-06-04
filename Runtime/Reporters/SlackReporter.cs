@@ -38,7 +38,6 @@ namespace DeNA.Anjin.Reporters
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
-            AutopilotSettings settings,
             string logString,
             string stackTrace,
             LogType type,
@@ -46,18 +45,18 @@ namespace DeNA.Anjin.Reporters
             CancellationToken cancellationToken = default
         )
         {
+            OverwriteByCommandlineArguments();
+
             // NOTE: In _sender.send, switch the execution thread to the main thread, so UniTask.WhenAll is meaningless.
-            foreach (var slackChannel in (string.IsNullOrEmpty(settings.slackChannels)
-                         ? slackChannels
-                         : settings.slackChannels).Split(','))
+            foreach (var slackChannel in slackChannels.Split(','))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;
                 }
-                
+
                 await _sender.Send(
-                    string.IsNullOrEmpty(settings.slackToken) ? slackToken : settings.slackToken,
+                    slackToken,
                     slackChannel,
                     mentionSubTeamIDs.Split(','),
                     addHereInSlackMessage,
@@ -66,6 +65,21 @@ namespace DeNA.Anjin.Reporters
                     withScreenshot,
                     cancellationToken
                 );
+            }
+        }
+
+        private void OverwriteByCommandlineArguments()
+        {
+            var args = new Arguments();
+
+            if (args.SlackToken.IsCaptured())
+            {
+                slackToken = args.SlackToken.Value();
+            }
+
+            if (args.SlackChannels.IsCaptured())
+            {
+                slackChannels = args.SlackChannels.Value();
             }
         }
     }

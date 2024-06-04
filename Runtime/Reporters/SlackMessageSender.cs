@@ -95,7 +95,7 @@ namespace DeNA.Anjin.Reporters
             if (withScreenshot)
             {
                 var coroutineRunner = new GameObject().AddComponent<CoroutineRunner>();
-                await UniTask.WaitForEndOfFrame(coroutineRunner);
+                await UniTask.WaitForEndOfFrame(coroutineRunner, cancellationToken);
                 Object.Destroy(coroutineRunner);
 
                 var screenshot = ScreenCapture.CaptureScreenshotAsTexture();
@@ -107,7 +107,8 @@ namespace DeNA.Anjin.Reporters
                     slackToken,
                     slackChannel,
                     withoutAlpha.EncodeToPNG(),
-                    postTitleTask.Ts
+                    postTitleTask.Ts,
+                    cancellationToken
                 );
                 if (!postScreenshotTask.Success)
                 {
@@ -115,8 +116,11 @@ namespace DeNA.Anjin.Reporters
                 }
             }
 
-            var body = Body(logString, stackTrace);
-            await _slackAPI.Post(slackToken, slackChannel, body, postTitleTask.Ts);
+            if (stackTrace != null && stackTrace.Length > 0)
+            {
+                var body = Body(logString, stackTrace);
+                await _slackAPI.Post(slackToken, slackChannel, body, postTitleTask.Ts, cancellationToken);
+            }
         }
 
 

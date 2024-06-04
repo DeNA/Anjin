@@ -183,16 +183,12 @@ namespace DeNA.Anjin.Settings
 
             if (args.SlackToken.IsCaptured())
             {
-#pragma warning disable CS0618 // Type or member is obsolete
                 slackToken = args.SlackToken.Value();
-#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             if (args.SlackChannels.IsCaptured())
             {
-#pragma warning disable CS0618 // Type or member is obsolete
                 slackChannels = args.SlackChannels.Value();
-#pragma warning restore CS0618 // Type or member is obsolete
             }
         }
     }

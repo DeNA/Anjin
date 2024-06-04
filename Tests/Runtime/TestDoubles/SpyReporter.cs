@@ -19,7 +19,6 @@ namespace DeNA.Anjin.TestDoubles
         public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
         
         public override async UniTask PostReportAsync(
-            AutopilotSettings settings,
             string logString,
             string stackTrace,
             LogType type,
@@ -30,7 +29,6 @@ namespace DeNA.Anjin.TestDoubles
             Debug.Log("Reporter called");
             Arguments.Add(new Dictionary<string, string>
             {
-                {"settings", settings.ToString()},
                 {"logString", logString},
                 {"stackTrace", stackTrace},
                 {"type", type.ToString()},
