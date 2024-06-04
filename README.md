@@ -127,14 +127,14 @@ This item can also be overridden from the commandline (see below).
 
 #### Error Handling Settings
 
-Set up a filter to catch abnormal log messages and notify Slack.
+Set up a filter to catch abnormal log messages and notify using Reporter.
 
 <dl>
-  <dt>handle Exception</dt><dd>Notify Slack when exception detected in log</dd>
-  <dt>handle Error</dt><dd>Notify Slack when error detected in log</dd>
-  <dt>handle Assert</dt><dd>Notify Slack when assert detected in log</dd>
-  <dt>handle Warning</dt><dd>Notify Slack when warning detected in log</dd>
-  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be notified to Slack</dd>
+  <dt>Handle Exception</dt><dd>Report when exception is detected in log</dd>
+  <dt>Handle Error</dt><dd>Report when error message is detected in log</dd>
+  <dt>Handle Assert</dt><dd>Report when assert message is detected in log</dd>
+  <dt>Handle Warning</dt><dd>Report when warning message is detected in log</dd>
+  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be report</dd>
 </dl>
 
 
@@ -224,6 +224,10 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
   <dt>JUNIT_REPORT_PATH</dt><dd>Specifies the JUnit-style report file output path</dd>
+  <dt>HANDLE_EXCEPTION</dt><dd>Overwrites whether to report when an exception occurs with TRUE/FALSE</dd>
+  <dt>HANDLE_ERROR</dt><dd>Overwrites whether to report when an error message is detected with TRUE/FALSE</dd>
+  <dt>HANDLE_ASSERT</dt><dd>Overwrites whether to report when an assert message is detected with TRUE/FALSE</dd>
+  <dt>HANDLE_WARNING</dt><dd>Overwrites whether to report when an warning message is detected with TRUE/FALSE</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.

@@ -13,6 +13,10 @@ namespace DeNA.Anjin.TestDoubles
         internal IArgument<string> _randomSeed;
         internal IArgument<float> _timeScale;
         internal IArgument<string> _jUnitReportPath;
+        internal IArgument<bool> _handleException;
+        internal IArgument<bool> _handleError;
+        internal IArgument<bool> _handleAssert;
+        internal IArgument<bool> _handleWarning;
         internal IArgument<string> _slackToken;
         internal IArgument<string> _slackChannels;
 
@@ -55,6 +59,11 @@ namespace DeNA.Anjin.TestDoubles
                 return _jUnitReportPath;
             }
         }
+
+        public override IArgument<bool> HandleException => _handleException;
+        public override IArgument<bool> HandleError => _handleError;
+        public override IArgument<bool> HandleAssert => _handleAssert;
+        public override IArgument<bool> HandleWarning => _handleWarning;
 
         public override IArgument<string> SlackToken
         {

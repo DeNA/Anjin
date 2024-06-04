@@ -16,6 +16,10 @@ namespace DeNA.Anjin.Settings
             sut.randomSeed = "1";
             sut.timeScale = 1.0f;
             sut.junitReportPath = "path/to/junit_report.xml";
+            sut.handleException = true;
+            sut.handleError = true;
+            sut.handleAssert = true;
+            sut.handleWarning = true;
             sut.slackToken = "token";
             sut.slackChannels = "channel1, channel2, channel3";
             return sut;
@@ -29,6 +33,10 @@ namespace DeNA.Anjin.Settings
                 _randomSeed = new StubArgument<string>(), // Not captured
                 _timeScale = new StubArgument<float>(), // Not captured
                 _jUnitReportPath = new StubArgument<string>(), // Not captured
+                _handleException = new StubArgument<bool>(), // Not captured
+                _handleError = new StubArgument<bool>(), // Not captured
+                _handleAssert = new StubArgument<bool>(), // Not captured
+                _handleWarning = new StubArgument<bool>(), // Not captured
                 _slackToken = new StubArgument<string>(), // Not captured
                 _slackChannels = new StubArgument<string>(), // Not captured
             };
@@ -45,6 +53,10 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.randomSeed, Is.EqualTo("1"));
             Assert.That(sut.timeScale, Is.EqualTo(1.0f));
             Assert.That(sut.junitReportPath, Is.EqualTo("path/to/junit_report.xml"));
+            Assert.That(sut.handleException, Is.True);
+            Assert.That(sut.handleError, Is.True);
+            Assert.That(sut.handleAssert, Is.True);
+            Assert.That(sut.handleWarning, Is.True);
             Assert.That(sut.slackToken, Is.EqualTo("token"));
             Assert.That(sut.slackChannels, Is.EqualTo("channel1, channel2, channel3"));
         }
@@ -57,6 +69,10 @@ namespace DeNA.Anjin.Settings
                 _randomSeed = new StubArgument<string>(true, ""),
                 _timeScale = new StubArgument<float>(true, 2.5f),
                 _jUnitReportPath = new StubArgument<string>(true, "/path/to/another_junit_report.xml"),
+                _handleException = new StubArgument<bool>(true, false),
+                _handleError = new StubArgument<bool>(true, false),
+                _handleAssert = new StubArgument<bool>(true, false),
+                _handleWarning = new StubArgument<bool>(true, false),
                 _slackToken = new StubArgument<string>(true, "another token"),
                 _slackChannels = new StubArgument<string>(true, "channel4"),
             };
@@ -73,6 +89,10 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.randomSeed, Is.EqualTo(""));
             Assert.That(sut.timeScale, Is.EqualTo(2.5f));
             Assert.That(sut.junitReportPath, Is.EqualTo("/path/to/another_junit_report.xml"));
+            Assert.That(sut.handleException, Is.False);
+            Assert.That(sut.handleError, Is.False);
+            Assert.That(sut.handleAssert, Is.False);
+            Assert.That(sut.handleWarning, Is.False);
             Assert.That(sut.slackToken, Is.EqualTo("another token"));
             Assert.That(sut.slackChannels, Is.EqualTo("channel4"));
         }

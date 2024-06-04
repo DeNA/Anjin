@@ -46,6 +46,26 @@ namespace DeNA.Anjin.Settings
         public virtual IArgument<string> JUnitReportPath => new Argument<string>("JUNIT_REPORT_PATH");
 
         /// <summary>
+        /// Specifies the enable/disable handling Exception (optional).
+        /// </summary>
+        public virtual IArgument<bool> HandleException => new Argument<bool>("HANDLE_EXCEPTION");
+
+        /// <summary>
+        /// Specifies the enable/disable handling Error (optional).
+        /// </summary>
+        public virtual IArgument<bool> HandleError => new Argument<bool>("HANDLE_ERROR");
+
+        /// <summary>
+        /// Specifies the enable/disable handling Assert (optional).
+        /// </summary>
+        public virtual IArgument<bool> HandleAssert => new Argument<bool>("HANDLE_ASSERT");
+
+        /// <summary>
+        /// Specifies the enable/disable handling Warning (optional).
+        /// </summary>
+        public virtual IArgument<bool> HandleWarning => new Argument<bool>("HANDLE_WARNING");
+
+        /// <summary>
         /// Web API token used for Slack notifications.
         /// 
         /// if omitted, no notifications will be sent.
