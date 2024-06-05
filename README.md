@@ -416,7 +416,8 @@ A Logger that outputs to a specified file.
 The instance of this Logger (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.</dd>
+  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+        This setting can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but if multiple File Loggers are defined, they will all be overwritten with the same path.</dd>
   <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
   <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
 </dl>
