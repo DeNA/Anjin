@@ -48,8 +48,13 @@ namespace DeNA.Anjin.Loggers
                     return _logger;
                 }
 
+                if (string.IsNullOrEmpty(outputPath))
+                {
+                    throw new InvalidOperationException("outputPath is not set.");
+                }
+
                 var directory = Path.GetDirectoryName(outputPath);
-                if (directory != null && !Directory.Exists(directory))
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }

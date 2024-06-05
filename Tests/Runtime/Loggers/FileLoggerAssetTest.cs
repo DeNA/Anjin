@@ -36,7 +36,7 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test, Order(0)]
-        public async Task GetLoggerImpl_DirectoryDoesNotExist_CreateDirectoryAndWriteToFile()
+        public async Task GetLogger_DirectoryDoesNotExist_CreateDirectoryAndWriteToFile()
         {
             if (Directory.Exists(LogsDirectoryPath))
             {
@@ -58,7 +58,7 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public async Task GetLoggerImpl_FileExists_OverwrittenToFile()
+        public async Task GetLogger_FileExists_OverwrittenToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
             var path = GetOutputPath();
@@ -74,6 +74,39 @@ namespace DeNA.Anjin.Loggers
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
+        }
+
+        [Test]
+        public void GetLogger_OutputPathIsEmpty_ThrowsException()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = string.Empty;
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
+            sut.outputPath = path;
+            sut.timestamp = false;
+
+            Assert.That(() => sut.Logger, Throws.TypeOf<InvalidOperationException>()
+                .And.Message.EqualTo("outputPath is not set."));
+        }
+
+        [Test]
+        public async Task GetLogger_OutputPathWithoutDirectory_WriteToFile()
+        {
+            var message = TestContext.CurrentContext.Test.Name;
+            var path = $"{TestContext.CurrentContext.Test.Name}.log"; // without directory
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
+            sut.outputPath = path;
+            sut.timestamp = false;
+
+            sut.Logger.Log(message);
+            sut.Dispose();
+            await Task.Yield();
+
+            var actual = File.ReadAllText(path);
+            Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
+
+            // teardown
+            File.Delete(path);
         }
 
         [Test]
