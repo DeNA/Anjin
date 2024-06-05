@@ -447,8 +447,10 @@ A Reporter that post report to Slack.
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Slack Token</dt><dd>Web API token used for Slack notifications (if omitted, no notifications will be sent)</dd>
-  <dt>Slack Channels</dt><dd>Channels to send Slack notifications (not notified if omitted. Multiple channels can be specified by separating them with commas)</dd>
+  <dt>Slack Token</dt><dd>Web API token used for Slack notifications. If omitted, no notifications will be sent.
+        This setting can be overwritten with the command line argument <code>-SLACK_TOKEN</code>.</dd>
+  <dt>Slack Channels</dt><dd>Channels to send Slack notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
+        This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to Mention in Slack Notification Message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to Slack notification message. Default is off</dd>
 </dl>

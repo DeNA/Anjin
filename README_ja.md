@@ -451,8 +451,8 @@ Slackにレポート送信するレポータです。
 このレポータのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）</dd>
-  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない。カンマ区切りで複数指定対応）</dd>
+  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）。コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできます。</dd>
+  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。</dd>
   <dt>Mention Sub Team IDs</dt><dd>Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
   <dt>Add Here In Slack Message</dt><dd>Slack通知メッセージに@hereを付けます。デフォルトはoff</dd>
 </dl>
