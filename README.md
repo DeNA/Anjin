@@ -416,7 +416,8 @@ A Logger that outputs to a specified file.
 The instance of this Logger (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.</dd>
+  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+        This setting can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but if multiple File Loggers are defined, they will all be overwritten with the same path.</dd>
   <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
   <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
 </dl>
@@ -446,8 +447,10 @@ A Reporter that post report to Slack.
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Slack Token</dt><dd>Web API token used for Slack notifications (if omitted, no notifications will be sent)</dd>
-  <dt>Slack Channels</dt><dd>Channels to send Slack notifications (not notified if omitted. Multiple channels can be specified by separating them with commas)</dd>
+  <dt>Slack Token</dt><dd>Web API token used for Slack notifications. If omitted, no notifications will be sent.
+        This setting can be overwritten with the command line argument <code>-SLACK_TOKEN</code>.</dd>
+  <dt>Slack Channels</dt><dd>Channels to send Slack notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
+        This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to Mention in Slack Notification Message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to Slack notification message. Default is off</dd>
 </dl>

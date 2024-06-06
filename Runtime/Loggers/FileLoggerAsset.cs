@@ -3,6 +3,7 @@
 
 using System;
 using System.IO;
+using DeNA.Anjin.Settings;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -48,13 +49,20 @@ namespace DeNA.Anjin.Loggers
                     return _logger;
                 }
 
-                var directory = Path.GetDirectoryName(outputPath);
-                if (directory != null && !Directory.Exists(directory))
+                var args = new Arguments();
+                var path = args.FileLoggerOutputPath.IsCaptured() ? args.FileLoggerOutputPath.Value() : outputPath;
+                if (string.IsNullOrEmpty(path))
+                {
+                    throw new InvalidOperationException("outputPath is not set.");
+                }
+
+                var directory = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                _handler = new FileLogHandler(outputPath, timestamp);
+                _handler = new FileLogHandler(path, timestamp);
                 _logger = new Logger(_handler) { filterLogType = filterLogType };
                 return _logger;
             }

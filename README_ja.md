@@ -420,7 +420,8 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 このロガーのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。</dd>
+  <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+        コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているときに指定すると、すべての出力パスが上書きされますので注意してください。</dd>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
   <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
 </dl>
@@ -450,8 +451,8 @@ Slackにレポート送信するレポータです。
 このレポータのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）</dd>
-  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない。カンマ区切りで複数指定対応）</dd>
+  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）。コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできます。</dd>
+  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。</dd>
   <dt>Mention Sub Team IDs</dt><dd>Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
   <dt>Add Here In Slack Message</dt><dd>Slack通知メッセージに@hereを付けます。デフォルトはoff</dd>
 </dl>

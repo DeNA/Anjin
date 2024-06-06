@@ -46,6 +46,14 @@ namespace DeNA.Anjin.Settings
         public virtual IArgument<string> JUnitReportPath => new Argument<string>("JUNIT_REPORT_PATH");
 
         /// <summary>
+        /// Specifies the output path using <c>FileLoggerAsset</c> (optional).
+        ///
+        /// This argument is not used in <c>AutopilotSettings</c>, Used in <c>FileLoggerAsset</c>.
+        /// Note: If multiple FileLoggers are defined, they will all be overwritten with the same path.
+        /// </summary>
+        public virtual IArgument<string> FileLoggerOutputPath => new Argument<string>("FILE_LOGGER_OUTPUT_PATH");
+
+        /// <summary>
         /// Specifies the enable/disable handling Exception (optional).
         /// </summary>
         public virtual IArgument<bool> HandleException => new Argument<bool>("HANDLE_EXCEPTION");
