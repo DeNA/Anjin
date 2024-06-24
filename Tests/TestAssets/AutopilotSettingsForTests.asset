@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: "\u4E3B\u306BAutopilot\u8D77\u52D5\u30C6\u30B9\u30C8\u7528"
   sceneAgentMaps: []
-  fallbackAgent: {fileID: 11400000, guid: 6baa725d137a54b42923932c3d5a1ea0, type: 2}
+  fallbackAgent: {fileID: 0}
+  observerAgent: {fileID: 0}
   lifespanSec: 2
   randomSeed: 0
   timeScale: 1
-  recordMovie: 0
   junitReportPath: 
   slackToken: 
   slackChannels: 
@@ -38,3 +38,5 @@ MonoBehaviour:
   - Stale
   - EGL_BAD_NATIVE_WINDOW
   - EGL_BAD_ALLOC
+  loggerAsset: {fileID: 0}
+  reporter: {fileID: 0}
