@@ -602,7 +602,7 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 > [!WARNING]  
 > Required install packages for running tests (when adding to the `testables` in package.json), as follows:
 > - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
-> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.4.2 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.7.2 or later
 
 Generate a temporary project and run tests on each Unity version from the command line.
 
