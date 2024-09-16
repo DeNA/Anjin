@@ -2,6 +2,9 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
@@ -17,6 +20,7 @@ namespace DeNA.Anjin.Utilities
     {
         private readonly AutopilotSettings _settings;
         private readonly AbstractReporter _reporter;
+        private List<Regex> _ignoreMessagesRegexes;
 
         /// <summary>
         /// Constructor
@@ -63,7 +67,7 @@ namespace DeNA.Anjin.Utilities
             }
         }
 
-        private static bool IsIgnoreMessage(string logString, string stackTrace, LogType type,
+        private bool IsIgnoreMessage(string logString, string stackTrace, LogType type,
             AutopilotSettings settings)
         {
             if (type == LogType.Log)
@@ -91,12 +95,14 @@ namespace DeNA.Anjin.Utilities
                 return true;
             }
 
-            foreach (var ignoreMessage in settings.ignoreMessages)
+            if (_ignoreMessagesRegexes == null)
             {
-                if (logString.Contains(ignoreMessage))
-                {
-                    return true;
-                }
+                _ignoreMessagesRegexes = CreateIgnoreMessageRegexes(_settings);
+            }
+
+            if (_ignoreMessagesRegexes.Exists(regex => regex.IsMatch(logString)))
+            {
+                return true;
             }
 
             if (stackTrace.Contains(nameof(LogMessageHandler)) || stackTrace.Contains(nameof(SlackAPI)))
@@ -106,6 +112,11 @@ namespace DeNA.Anjin.Utilities
             }
 
             return false;
+        }
+
+        private static List<Regex> CreateIgnoreMessageRegexes(AutopilotSettings settings)
+        {
+            return settings.ignoreMessages.Select(ignoreMessage => new Regex(ignoreMessage)).ToList();
         }
     }
 }

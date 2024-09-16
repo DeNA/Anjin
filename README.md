@@ -134,7 +134,7 @@ Set up a filter to catch abnormal log messages and notify using Reporter.
   <dt>Handle Error</dt><dd>Report when error message is detected in log</dd>
   <dt>Handle Assert</dt><dd>Report when assert message is detected in log</dd>
   <dt>Handle Warning</dt><dd>Report when warning message is detected in log</dd>
-  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be report</dd>
+  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be report. Can specify regex.</dd>
 </dl>
 
 
