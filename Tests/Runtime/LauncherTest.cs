@@ -8,11 +8,15 @@ using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+#if !UNITY_2020_1_OR_NEWER
 using UnityEngine.TestTools;
+#endif
 
 namespace DeNA.Anjin
 {
+#if !UNITY_2020_1_OR_NEWER
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor)] // Fail on Unity 2019 Linux editor
+#endif
     [SuppressMessage("ApiDesign", "RS0030")]
     public class LauncherTest
     {
