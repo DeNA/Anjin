@@ -3,9 +3,9 @@
 
 using DeNA.Anjin.Attributes;
 
-namespace DeNA.Anjin.Editor.Fakes
+namespace DeNA.Anjin.TestDoubles
 {
-    public static class FakeInitializeOnLaunchAutopilot
+    public static class SpyInitializeOnLaunchAutopilot
     {
         public static bool IsCallInitializeOnLaunchAutopilotMethod { get; private set; }
 
@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Editor.Fakes
         }
 
         [InitializeOnLaunchAutopilot]
-        public static void FakeInitializeOnLaunchAutopilotMethod()
+        public static void InitializeOnLaunchAutopilotMethod()
         {
             IsCallInitializeOnLaunchAutopilotMethod = true;
         }

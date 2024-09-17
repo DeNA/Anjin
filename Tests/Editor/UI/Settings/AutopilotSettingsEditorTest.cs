@@ -3,8 +3,8 @@
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using DeNA.Anjin.Editor.Fakes;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -70,7 +70,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         [UnityTest]
         public IEnumerator Launch_CallMethodWithInitializeOnLaunchAutopilotAttribute()
         {
-            FakeInitializeOnLaunchAutopilot.Reset();
+            SpyInitializeOnLaunchAutopilot.Reset();
 
             var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
                 "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
@@ -80,7 +80,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
 
             yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
 
-            Assert.That(FakeInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethod, Is.True);
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethod, Is.True);
         }
     }
 }
