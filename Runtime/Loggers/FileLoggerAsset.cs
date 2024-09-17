@@ -6,6 +6,10 @@ using System.IO;
 using DeNA.Anjin.Settings;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using DeNA.Anjin.Attributes;
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Loggers
 {
@@ -145,5 +149,19 @@ namespace DeNA.Anjin.Loggers
                 _disposed = true;
             }
         }
+
+#if UNITY_EDITOR
+        [InitializeOnLaunchAutopilot]
+        public static void ResetLoggers()
+        {
+            foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(FileLoggerAsset)}"))
+            {
+                var so = AssetDatabase.LoadAssetAtPath<FileLoggerAsset>(AssetDatabase.GUIDToAssetPath(guid));
+                so._handler?.Dispose();
+                so._handler = null;
+                so._logger = null;
+            }
+        }
+#endif
     }
 }

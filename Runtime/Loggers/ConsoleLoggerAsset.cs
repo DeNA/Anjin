@@ -2,6 +2,10 @@
 // This software is released under the MIT License.
 
 using UnityEngine;
+#if UNITY_EDITOR
+using DeNA.Anjin.Attributes;
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Loggers
 {
@@ -39,5 +43,17 @@ namespace DeNA.Anjin.Loggers
         {
             // Nothing to dispose.
         }
+
+#if UNITY_EDITOR
+        [InitializeOnLaunchAutopilot]
+        public static void ResetLoggers()
+        {
+            foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(ConsoleLoggerAsset)}"))
+            {
+                var so = AssetDatabase.LoadAssetAtPath<ConsoleLoggerAsset>(AssetDatabase.GUIDToAssetPath(guid));
+                so._logger = null;
+            }
+        }
+#endif
     }
 }
