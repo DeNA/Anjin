@@ -5,6 +5,8 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
@@ -33,7 +35,8 @@ namespace DeNA.Anjin
         /// Run autopilot
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        public static void Run()
+        // ReSharper disable once Unity.IncorrectMethodSignature
+        public static async UniTask Run()
         {
             var state = AutopilotState.Instance;
             if (!state.IsRunning)
@@ -48,20 +51,31 @@ namespace DeNA.Anjin
 
             ScreenshotStore.CleanDirectories();
 
-            CallAttachedInitializeOnLaunchAutopilotAttributeMethods();
+            await CallAttachedInitializeOnLaunchAutopilotAttributeMethods();
 
             var autopilot = new GameObject(nameof(Autopilot)).AddComponent<Autopilot>();
             Object.DontDestroyOnLoad(autopilot);
         }
 
-        private static void CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
+        private static async UniTask CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
         {
             foreach (var methodInfo in AppDomain.CurrentDomain.GetAssemblies()
                          .SelectMany(x => x.GetTypes())
                          .SelectMany(x => x.GetMethods())
                          .Where(x => x.GetCustomAttributes(typeof(InitializeOnLaunchAutopilotAttribute), false).Any()))
             {
-                methodInfo.Invoke(null, null); // static method only
+                switch (methodInfo.ReturnType.Name)
+                {
+                    case nameof(Task):
+                        await (Task)methodInfo.Invoke(null, null);
+                        break;
+                    case nameof(UniTask):
+                        await (UniTask)methodInfo.Invoke(null, null);
+                        break;
+                    default:
+                        methodInfo.Invoke(null, null); // static method only
+                        break;
+                }
             }
         }
 
