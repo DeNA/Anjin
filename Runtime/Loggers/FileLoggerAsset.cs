@@ -3,11 +3,11 @@
 
 using System;
 using System.IO;
+using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
-using DeNA.Anjin.Attributes;
 using UnityEditor;
 #endif
 
@@ -150,10 +150,19 @@ namespace DeNA.Anjin.Loggers
             }
         }
 
-#if UNITY_EDITOR
         [InitializeOnLaunchAutopilot]
         public static void ResetLoggers()
         {
+            // Reset runtime instances
+            var loggerAssets = FindObjectsOfType<FileLoggerAsset>();
+            foreach (var current in loggerAssets)
+            {
+                current._handler?.Dispose();
+                current._handler = null;
+                current._logger = null;
+            }
+#if UNITY_EDITOR
+            // Reset asset files (in Editor only)
             foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(FileLoggerAsset)}"))
             {
                 var so = AssetDatabase.LoadAssetAtPath<FileLoggerAsset>(AssetDatabase.GUIDToAssetPath(guid));
@@ -161,7 +170,7 @@ namespace DeNA.Anjin.Loggers
                 so._handler = null;
                 so._logger = null;
             }
-        }
 #endif
+        }
     }
 }

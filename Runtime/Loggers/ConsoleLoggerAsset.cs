@@ -1,9 +1,9 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using DeNA.Anjin.Attributes;
 using UnityEngine;
 #if UNITY_EDITOR
-using DeNA.Anjin.Attributes;
 using UnityEditor;
 #endif
 
@@ -44,16 +44,23 @@ namespace DeNA.Anjin.Loggers
             // Nothing to dispose.
         }
 
-#if UNITY_EDITOR
         [InitializeOnLaunchAutopilot]
         public static void ResetLoggers()
         {
+            // Reset runtime instances
+            var loggerAssets = FindObjectsOfType<ConsoleLoggerAsset>();
+            foreach (var current in loggerAssets)
+            {
+                current._logger = null;
+            }
+#if UNITY_EDITOR
+            // Reset asset files (in Editor only)
             foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(ConsoleLoggerAsset)}"))
             {
                 var so = AssetDatabase.LoadAssetAtPath<ConsoleLoggerAsset>(AssetDatabase.GUIDToAssetPath(guid));
                 so._logger = null;
             }
-        }
 #endif
+        }
     }
 }
