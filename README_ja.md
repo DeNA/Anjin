@@ -484,8 +484,26 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 
 ### タイトル独自事前処理
 
-タイトル独自の初期化処理が必要な場合、初期化を行なうstaticメソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
+タイトル独自の初期化処理が必要な場合、初期化を行なう `public static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
 オートパイロットの起動処理の中でメソッドを呼び出します。
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static void InitializeOnLaunchAutopilotMethod()
+{
+    // プロジェクト固有の初期化処理
+}
+```
+
+非同期メソッドにも対応しています。
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static async UniTask InitializeOnLaunchAutopilotMethod()
+{
+    // プロジェクト固有の初期化処理
+}
+```
 
 なお、オートパイロットの起動処理は、`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)`（`RuntimeInitializeOnLoadMethod`のデフォルト）で実行しています。
 また`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)`で、Configurable Enter Play Modeのための初期化処理を実装しています。
