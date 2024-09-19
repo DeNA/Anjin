@@ -116,7 +116,24 @@ namespace DeNA.Anjin.Utilities
 
         private static List<Regex> CreateIgnoreMessageRegexes(AutopilotSettings settings)
         {
-            return settings.ignoreMessages.Select(ignoreMessage => new Regex(ignoreMessage)).ToList();
+            List<Regex> regexs = new();
+            foreach (var message in settings.ignoreMessages)
+            {
+                Regex pattern;
+                try
+                {
+                    pattern = new Regex(message);
+                }
+                catch (ArgumentException e)
+                {
+                    Debug.LogException(e);
+                    continue;
+                }
+
+                regexs.Add(pattern);
+            }
+
+            return regexs;
         }
     }
 }
