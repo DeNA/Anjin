@@ -36,7 +36,7 @@ namespace DeNA.Anjin
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         // ReSharper disable once Unity.IncorrectMethodSignature
-        public static async UniTask Run()
+        public static async UniTaskVoid Run()
         {
             var state = AutopilotState.Instance;
             if (!state.IsRunning)
