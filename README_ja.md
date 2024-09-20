@@ -131,7 +131,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>handle Error</dt><dd>エラーを検知したらレポータで通知します</dd>
   <dt>handle Assert</dt><dd>アサート違反を検知したらレポータで通知します</dd>
   <dt>handle Warning</dt><dd>警告を検知したらレポータで通知します</dd>
-  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません</dd>
+  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません。正規表現でも指定できます</dd>
 </dl>
 
 

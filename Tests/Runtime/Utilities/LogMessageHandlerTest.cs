@@ -7,6 +7,7 @@ using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Utilities
 {
@@ -150,6 +151,53 @@ namespace DeNA.Anjin.Utilities
             await UniTask.NextFrame();
 
             Assert.That(spyReporter.Arguments, Is.Empty);
+        }
+
+        [Test]
+        public async Task HandleLog_MatchIgnoreMessagePattern_notReported()
+        {
+            var settings = CreateEmptyAutopilotSettings();
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var sut = new LogMessageHandler(settings, spyReporter);
+
+            settings.ignoreMessages = new[] { "ignore.+ignore" };
+            settings.handleException = true;
+            sut.HandleLog("ignore_xxx_ignore", string.Empty, LogType.Exception);
+            await UniTask.NextFrame();
+
+            Assert.That(spyReporter.Arguments, Is.Empty);
+        }
+
+        [Test]
+        public async Task HandleLog_NotMatchIgnoreMessagePattern_Reported()
+        {
+            var settings = CreateEmptyAutopilotSettings();
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var sut = new LogMessageHandler(settings, spyReporter);
+
+            settings.ignoreMessages = new[] { "ignore.+ignore" };
+            settings.handleException = true;
+            sut.HandleLog("ignore", string.Empty, LogType.Exception);
+            await UniTask.NextFrame();
+
+            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task HandleLog_InvalidIgnoreMessagePattern_ThrowArgumentExceptionAndReported()
+        {
+            var settings = CreateEmptyAutopilotSettings();
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var sut = new LogMessageHandler(settings, spyReporter);
+
+            settings.ignoreMessages = new[] { "[a" }; // invalid pattern
+            settings.handleException = true;
+
+            sut.HandleLog("ignore", string.Empty, LogType.Exception);
+            await UniTask.NextFrame();
+
+            LogAssert.Expect(LogType.Exception, "ArgumentException: parsing \"[a\" - Unterminated [] set.");
+            Assert.That(spyReporter.Arguments, Is.Not.Empty); // Report is executed
         }
 
         [Test]

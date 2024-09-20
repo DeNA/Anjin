@@ -134,7 +134,7 @@ Set up a filter to catch abnormal log messages and notify using Reporter.
   <dt>Handle Error</dt><dd>Report when error message is detected in log</dd>
   <dt>Handle Assert</dt><dd>Report when assert message is detected in log</dd>
   <dt>Handle Warning</dt><dd>Report when warning message is detected in log</dd>
-  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be report</dd>
+  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be reported. Regex is also available.</dd>
 </dl>
 
 
@@ -368,7 +368,7 @@ This Agent instance (.asset file) can contain the following.
 
 <dl>
   <dt>Agent</dt><dd>Working Agent. If this Agent exits first, the TimeBombAgent will fail.</dd>
-  <dt>Defuse Message</dt><dd>Defuse the time bomb when this message comes to the log first. Can specify regex.</dd>
+  <dt>Defuse Message</dt><dd>Defuse the time bomb when this message comes to the log first. Regex is also available.</dd>
 </dl>
 
 
