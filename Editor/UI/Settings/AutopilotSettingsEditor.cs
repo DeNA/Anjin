@@ -185,7 +185,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             if (EditorApplication.isPlaying)
             {
                 state.launchFrom = LaunchType.EditorPlayMode;
-                Launcher.Run();
+                Launcher.Run().Forget();
             }
             else
             {

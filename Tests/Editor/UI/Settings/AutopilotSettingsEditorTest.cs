@@ -3,7 +3,6 @@
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using DeNA.Anjin.Editor.Fakes;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEditor;
@@ -65,22 +64,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
 
             var autopilot = Object.FindObjectOfType<Autopilot>();
             Assert.That((bool)autopilot.gameObject, Is.True, "Autopilot object is alive");
-        }
-
-        [UnityTest]
-        public IEnumerator Launch_CallMethodWithInitializeOnLaunchAutopilotAttribute()
-        {
-            FakeInitializeOnLaunchAutopilot.Reset();
-
-            var testSettings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset");
-            var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
-            var state = AutopilotState.Instance;
-            editor.Launch(state); // Note: Can not call editor.OnInspectorGUI() and GUILayout.Button()
-
-            yield return new WaitForDomainReload(); // Wait for domain reloading by switching play mode
-
-            Assert.That(FakeInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethod, Is.True);
         }
     }
 }

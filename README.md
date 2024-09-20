@@ -481,8 +481,26 @@ Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an
 
 ### Game title-specific pre-processing
 
-If your title requires its own initialization process, add the `InitializeOnLaunchAutopilot` attribute to the static method that does the initialization.
+If your title requires its own initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `public static` method that does the initialization.
 An added method is called from the autopilot launch process.
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static void InitializeOnLaunchAutopilotMethod()
+{
+    // initialize code for your game.
+}
+```
+
+Async methods are also supported.
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static async UniTask InitializeOnLaunchAutopilotMethod()
+{
+    // initialize code for your game.
+}
+```
 
 Note that the autopilot launch process is performed with `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)` (default for `RuntimeInitializeOnLoadMethod`).
 Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)` implements the initialization process for Configurable Enter Play Mode.

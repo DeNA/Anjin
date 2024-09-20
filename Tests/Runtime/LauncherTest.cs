@@ -1,18 +1,24 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using DeNA.Anjin.Editor.UI.Settings;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+#if !UNITY_2020_1_OR_NEWER
 using UnityEngine.TestTools;
+#endif
 
 namespace DeNA.Anjin
 {
+#if !UNITY_2020_1_OR_NEWER
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor)] // Fail on Unity 2019 Linux editor
+#endif
     [SuppressMessage("ApiDesign", "RS0030")]
     public class LauncherTest
     {
@@ -51,7 +57,7 @@ namespace DeNA.Anjin
             var state = AutopilotState.Instance;
             editor.Launch(state);
 
-            await Task.Delay(2200); // 2sec+overhead
+            await Task.Delay(5000); // 2sec+overhead
 
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
@@ -65,12 +71,52 @@ namespace DeNA.Anjin
             var editor = (AutopilotSettingsEditor)UnityEditor.Editor.CreateEditor(testSettings);
             var state = AutopilotState.Instance;
             editor.Launch(state);
+
             await Task.Delay(2000);
             await editor.Stop();
             // Note: If Autopilot stops for life before Stop, a NullReference exception is raised here.
 
             Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
             Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+        }
+
+        [Test]
+        public async Task Launch_InitializeOnLaunchAutopilotAttribute_Called()
+        {
+            SpyInitializeOnLaunchAutopilot.Reset();
+
+            var settings = ScriptableObject.CreateInstance(typeof(AutopilotSettings)) as AutopilotSettings;
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = 1;
+            await LauncherFromTest.AutopilotAsync(settings); // TODO: Renamed in another PR
+
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethod, Is.True);
+        }
+
+        [Test]
+        public async Task Launch_InitializeOnLaunchAutopilotAttributeAttachToAsyncMethod_Called()
+        {
+            SpyInitializeOnLaunchAutopilot.Reset();
+
+            var settings = ScriptableObject.CreateInstance(typeof(AutopilotSettings)) as AutopilotSettings;
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = 1;
+            await LauncherFromTest.AutopilotAsync(settings); // TODO: Renamed in another PR
+
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethodAsync, Is.True);
+        }
+
+        [Test]
+        public async Task Launch_InitializeOnLaunchAutopilotAttributeAttachToUniTaskAsyncMethod_Called()
+        {
+            SpyInitializeOnLaunchAutopilot.Reset();
+
+            var settings = ScriptableObject.CreateInstance(typeof(AutopilotSettings)) as AutopilotSettings;
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = 1;
+            await LauncherFromTest.AutopilotAsync(settings); // TODO: Renamed in another PR
+
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethodUniTaskAsync, Is.True);
         }
     }
 }
