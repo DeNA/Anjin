@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 // ReSharper disable MethodHasAsyncOverload
 
@@ -228,6 +232,49 @@ namespace DeNA.Anjin.Loggers
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Does.Match("^" + TimestampRegex + ".*"));
+        }
+
+        [Test]
+        public async Task ResetLoggers_InstanceOnly_ResetLoggerAsset()
+        {
+            var path = GetOutputPath();
+            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
+            sut.outputPath = path;
+            sut.Logger.Log("Before reset");
+            sut.Dispose();
+            await Task.Yield();
+            Assume.That(path, Does.Exist);
+
+            File.Delete(path);
+            FileLoggerAsset.ResetLoggers(); // Called when on launch autopilot
+
+            sut.Logger.Log("After reset");
+            sut.Dispose();
+            await Task.Yield();
+            Assert.That(path, Does.Exist);
+        }
+
+        [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public async Task ResetLoggers_FromAssetFile_ResetLoggerAsset()
+        {
+            var path = GetOutputPath();
+#if UNITY_EDITOR
+            var sut = AssetDatabase.LoadAssetAtPath<FileLoggerAsset>(
+                "Packages/com.dena.anjin/Tests/TestAssets/FileLogger.asset");
+            sut.outputPath = path;
+            sut.Logger.Log("Before reset");
+            sut.Dispose();
+            await Task.Yield();
+            Assume.That(path, Does.Exist);
+#endif
+            File.Delete(path);
+            FileLoggerAsset.ResetLoggers(); // Called when on launch autopilot
+
+            sut.Logger.Log("After reset");
+            sut.Dispose();
+            await Task.Yield();
+            Assert.That(path, Does.Exist);
         }
     }
 }
