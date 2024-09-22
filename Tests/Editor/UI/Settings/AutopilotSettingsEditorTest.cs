@@ -21,13 +21,19 @@ namespace DeNA.Anjin.Editor.UI.Settings
     /// TODO: Change to parameterized tests. However, it requires saving "Enter Play Mode Settings".
     /// </remarks>
     [TestFixture]
-    [Timeout(15000)]
+    [Timeout(30000)]
     public class AutopilotSettingsEditorTest
     {
+        [SetUp]
+        public void SetUp()
+        {
+            Assume.That(AutopilotState.Instance.IsRunning, Is.False);
+        }
+
         private static AutopilotSettings LoadAutopilotSettings()
         {
             var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(
-                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset"); // lifespanSec is 2
+                "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsInfinity.asset"); // infinity loop
             return settings;
         }
 

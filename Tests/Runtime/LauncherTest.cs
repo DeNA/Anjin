@@ -61,7 +61,7 @@ namespace DeNA.Anjin
         [PostBuildCleanup(typeof(CleanupResources))]
         public async Task LaunchAutopilotAsync_WithAssetFile_RunAutopilot()
         {
-            var assetPath = CopyAssetsToResources.GetAssetPath("AutopilotSettingsForTests.asset"); // lifespanSec is 2
+            var assetPath = CopyAssetsToResources.GetAssetPath("AutopilotSettings2sec.asset"); // lifespanSec is 2
 
             var beforeTimestamp = Time.time;
             await Launcher.LaunchAutopilotAsync(assetPath);
