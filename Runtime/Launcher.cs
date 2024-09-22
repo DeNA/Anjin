@@ -1,7 +1,5 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
-
-#if UNITY_EDITOR
 
 using System;
 using System.Linq;
@@ -11,9 +9,11 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
@@ -23,13 +23,44 @@ namespace DeNA.Anjin
     public static class Launcher
     {
         /// <summary>
-        /// Reset event handlers even if domain reload is off
-        /// <see href="https://docs.unity3d.com/ja/current/Manual/ConfigurableEnterPlayMode.html"/>
+        /// Run autopilot from Play Mode test.
+        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
         /// </summary>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        internal static void ResetEventHandlers()
+        /// <param name="settings">Autopilot settings</param>
+        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings)
         {
-            EditorApplication.playModeStateChanged -= OnChangePlayModeState;
+#if UNITY_EDITOR
+            if (!EditorApplication.isPlaying)
+            {
+                throw new InvalidOperationException("Not support run from Edit Mode");
+            }
+#endif
+            var state = AutopilotState.Instance;
+            if (state.IsRunning)
+            {
+                throw new InvalidOperationException("Autopilot is already running");
+            }
+
+            state.launchFrom = LaunchType.PlayMode;
+            state.settings = settings;
+            LaunchAutopilot().Forget();
+
+            await UniTask.WaitUntil(() => !state.IsRunning);
+        }
+
+        /// <summary>
+        /// Run autopilot from Play Mode test.
+        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// </summary>
+        /// <param name="autopilotSettingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
+        public static async UniTask LaunchAutopilotAsync(string autopilotSettingsPath)
+        {
+#if UNITY_EDITOR
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
+#else
+            var settings = Resources.Load<AutopilotSettings>(autopilotSettingsPath);
+#endif
+            await LaunchAutopilotAsync(settings);
         }
 
         /// <summary>
@@ -37,17 +68,12 @@ namespace DeNA.Anjin
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         // ReSharper disable once Unity.IncorrectMethodSignature
-        public static async UniTaskVoid Run()
+        internal static async UniTaskVoid LaunchAutopilot()
         {
             var state = AutopilotState.Instance;
             if (!state.IsRunning)
             {
                 return; // Normally play mode (not run autopilot)
-            }
-
-            if (!state.IsLaunchFromPlayMode)
-            {
-                EditorApplication.playModeStateChanged += OnChangePlayModeState;
             }
 
             ScreenshotStore.CleanDirectories();
@@ -80,45 +106,5 @@ namespace DeNA.Anjin
                 }
             }
         }
-
-        /// <summary>
-        /// Stop autopilot on play mode exit event when run on Unity editor.
-        /// Not called when invoked from play mode (not registered in event listener).
-        /// </summary>
-        /// <param name="playModeStateChange"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        private static void OnChangePlayModeState(PlayModeStateChange playModeStateChange)
-        {
-            if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
-            {
-                return;
-            }
-
-            EditorApplication.playModeStateChanged -= OnChangePlayModeState;
-
-            var state = AutopilotState.Instance;
-            switch (state.launchFrom)
-            {
-                case LaunchType.EditorEditMode:
-                    Debug.Log("Exit play mode");
-                    state.Reset();
-                    break;
-
-                case LaunchType.Commandline:
-                    // Exit Unity when returning from play mode to edit mode.
-                    // Because it may freeze when exiting without going through edit mode.
-                    var exitCode = (int)state.exitCode;
-                    Debug.Log($"Exit Unity-editor by autopilot, exit code={exitCode}");
-                    EditorApplication.Exit(exitCode);
-                    break;
-
-                default:
-#pragma warning disable S3928
-                    throw new ArgumentOutOfRangeException(nameof(state.launchFrom));
-#pragma warning restore S3928
-            }
-        }
     }
 }
-
-#endif

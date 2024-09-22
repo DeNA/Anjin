@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
@@ -27,10 +26,11 @@ namespace DeNA.Anjin.Utilities
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
         /// <param name="reporter">Reporter implementation</param>
-        public LogMessageHandler(AutopilotSettings settings, AbstractReporter reporter)
+        public LogMessageHandler(AutopilotSettings settings, AbstractReporter reporter = null)
         {
             _settings = settings;
-            _reporter = reporter;
+            _reporter = reporter != null ? reporter : _settings.reporter;
+
             Application.logMessageReceivedThreaded += this.HandleLog;
         }
 
@@ -47,13 +47,23 @@ namespace DeNA.Anjin.Utilities
         /// <param name="type">Log message type</param>
         public async void HandleLog(string logString, string stackTrace, LogType type)
         {
-            if (IsIgnoreMessage(logString, stackTrace, type, _settings))
+            if (_settings == null)
+            {
+                return;
+            }
+
+            if (IsIgnoreMessage(logString, stackTrace, type))
             {
                 return;
             }
 
             // NOTE: HandleLog may called by non-main thread because it subscribe Application.logMessageReceivedThreaded
             await UniTask.SwitchToMainThread();
+
+            if (_settings.loggerAsset != null)
+            {
+                _settings.loggerAsset.Logger.Log(type, logString, stackTrace);
+            }
 
             if (_reporter != null)
             {
@@ -63,34 +73,40 @@ namespace DeNA.Anjin.Utilities
             var autopilot = Object.FindObjectOfType<Autopilot>();
             if (autopilot != null)
             {
-                await autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
+                if (type == LogType.Exception)
+                {
+                    await autopilot.TerminateAsync(ExitCode.UnCatchExceptions, logString, stackTrace);
+                }
+                else
+                {
+                    await autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
+                }
             }
         }
 
-        private bool IsIgnoreMessage(string logString, string stackTrace, LogType type,
-            AutopilotSettings settings)
+        private bool IsIgnoreMessage(string logString, string stackTrace, LogType type)
         {
             if (type == LogType.Log)
             {
                 return true;
             }
 
-            if (type == LogType.Exception && !settings.handleException)
+            if (type == LogType.Exception && !_settings.handleException)
             {
                 return true;
             }
 
-            if (type == LogType.Assert && !settings.handleAssert)
+            if (type == LogType.Assert && !_settings.handleAssert)
             {
                 return true;
             }
 
-            if (type == LogType.Error && !settings.handleError)
+            if (type == LogType.Error && !_settings.handleError)
             {
                 return true;
             }
 
-            if (type == LogType.Warning && !settings.handleWarning)
+            if (type == LogType.Warning && !_settings.handleWarning)
             {
                 return true;
             }

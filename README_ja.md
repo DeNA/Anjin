@@ -181,14 +181,14 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 
 ### 2. Play Modeテストから実行
 
-非同期メソッド `LauncherFromTest.AutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+非同期メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
 引数には `AutopilotSettings` ファイルパスを指定します。
 
 ```
 [Test]
 public async Task LaunchAutopilotFromTest()
 {
-  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
 }
 ```
 

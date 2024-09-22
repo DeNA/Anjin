@@ -10,9 +10,12 @@ using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using Assert = UnityEngine.Assertions.Assert;
+#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
 using AssertionException = NUnit.Framework.AssertionException;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -160,19 +163,17 @@ This time, temporarily generate and use SlackReporter instance.");
                 JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, logString, stackTrace, time);
             }
 
-            if (exitCode != ExitCode.Normally)
-            {
-                _logger.Log(LogType.Error, logString + Environment.NewLine + stackTrace);
-            }
-
             Destroy(this.gameObject);
 
-            if (_state.IsLaunchFromPlayMode)
+            _logger.Log("Terminate autopilot");
+            _state.settings = null;
+            _state.exitCode = exitCode;
+
+            if (_state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
             {
-                _logger.Log("Terminate autopilot");
-                _state.Reset();
 #if UNITY_INCLUDE_TESTS
-                if (_state.launchFrom == LaunchType.PlayModeTests && exitCode != ExitCode.Normally)
+                // Play mode tests
+                if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
                 {
                     throw new AssertionException($"Autopilot failed with exit code {exitCode}");
                 }
@@ -181,18 +182,17 @@ This time, temporarily generate and use SlackReporter instance.");
             }
 
 #if UNITY_EDITOR
-            // Terminate when ran specified time.
+            // Terminate when launch from edit mode (including launch from commandline)
             _logger.Log("Stop playing by autopilot");
-            _state.exitCode = exitCode;
             // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
             // SEE: https://github.com/DeNA/Anjin/issues/20
-            await UniTask.DelayFrame(1, cancellationToken: token);
+            await UniTask.NextFrame(token);
             EditorApplication.isPlaying = false;
-            // Call Launcher.OnChangePlayModeState() so terminates Unity editor, when launch from CLI.
+            // Note: Call `Launcher.OnChangePlayModeState()` so terminates Unity editor, when launch from commandline.
 #else
-            _logger.Log($"Exit Unity-editor by autopilot, exit code={exitCode}");
+            // Player build launch from commandline
+            _logger.Log($"Exit Unity-player by autopilot, exit code={exitCode}");
             Application.Quit((int)exitCode);
-            await UniTask.CompletedTask;
 #endif
         }
 

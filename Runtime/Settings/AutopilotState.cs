@@ -5,6 +5,9 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Settings
 {
@@ -56,17 +59,6 @@ namespace DeNA.Anjin.Settings
             }
         }
 
-        /// <summary>
-        /// Is launch from play mode (Editor play mode or Play Mode tests)
-        /// </summary>
-        public bool IsLaunchFromPlayMode
-        {
-            get
-            {
-                return launchFrom == LaunchType.EditorPlayMode || launchFrom == LaunchType.PlayModeTests;
-            }
-        }
-
         [NonSerialized] private static AutopilotState s_instance;
 
         /// <summary>
@@ -80,30 +72,30 @@ namespace DeNA.Anjin.Settings
                 if (!s_instance)
                 {
 #if UNITY_EDITOR
-                    var settingsArray = UnityEditor.AssetDatabase
+                    var stateArray = AssetDatabase
                         .FindAssets($"t:{nameof(AutopilotState)}")
-                        .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
-                        .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<AutopilotState>)
+                        .Select(AssetDatabase.GUIDToAssetPath)
+                        .Select(AssetDatabase.LoadAssetAtPath<AutopilotState>)
                         //.Where(b => b)
                         .ToArray();
                     // Use files in the project instead of specifying paths.
 
-                    if (settingsArray.Length > 1)
+                    if (stateArray.Length > 1)
                     {
-                        Debug.LogWarning("Find multiple autopilot settings files!");
+                        Debug.LogWarning("Find multiple AutopilotState files!");
                     }
 
-                    s_instance = settingsArray.FirstOrDefault();
-
+                    s_instance = stateArray.FirstOrDefault();
+#endif
                     if (!s_instance)
                     {
                         Debug.Log("Create new AutopilotState instance");
-                        s_instance = ScriptableObject.CreateInstance<AutopilotState>();
-                        UnityEditor.AssetDatabase.CreateAsset(s_instance, $"Assets/{nameof(AutopilotState)}.asset");
-                    }
-#else
-                    // TODO: Runtime
+                        s_instance = CreateInstance<AutopilotState>();
+#if UNITY_EDITOR
+                        AssetDatabase.CreateAsset(s_instance, $"Assets/{nameof(AutopilotState)}.asset");
+                        // Note: Create asset file only running in Editor.
 #endif
+                    }
                 }
 
                 return s_instance;

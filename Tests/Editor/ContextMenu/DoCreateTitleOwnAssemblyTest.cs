@@ -44,6 +44,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
             }
         }
 
+        [Explicit("Occurs infinite loop when \"Run All\"")]
         [Test]
         public void Action_CreatedRuntimeFolderContainingAsmdef()
         {

@@ -181,14 +181,14 @@ After the set run time has elapsed, or as in normal play mode, clicking the Play
 
 ### 2. Run from Play Mode test
 
-Autopilot works within your test code using the async method `LauncherFromTest.AutopilotAsync(string)`.
+Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
 Specify the `AutopilotSettings` file path as the argument.
 
 ```
 [Test]
 public async Task LaunchAutopilotFromTest()
 {
-  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
 }
 ```
 

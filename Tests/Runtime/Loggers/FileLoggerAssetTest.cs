@@ -267,7 +267,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
             Assume.That(path, Does.Exist);
-#endif
+
             File.Delete(path);
             FileLoggerAsset.ResetLoggers(); // Called when on launch autopilot
 
@@ -275,6 +275,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
             Assert.That(path, Does.Exist);
+#endif
         }
     }
 }

@@ -4,8 +4,12 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace DeNA.Anjin.Agents
 {
@@ -26,11 +30,20 @@ namespace DeNA.Anjin.Agents
         [InitializeOnLaunchAutopilot]
         public static void ResetExecutedFlag()
         {
+            // Reset runtime instances
+            var oneTimeAgents = FindObjectsOfType<OneTimeAgent>();
+            foreach (var current in oneTimeAgents)
+            {
+                current.wasExecuted = false;
+            }
+#if UNITY_EDITOR
+            // Reset asset files (in Editor only)
             foreach (var guid in AssetDatabase.FindAssets("t:OneTimeAgent"))
             {
                 var so = AssetDatabase.LoadAssetAtPath<OneTimeAgent>(AssetDatabase.GUIDToAssetPath(guid));
                 so.wasExecuted = false;
             }
+#endif
         }
 
         /// <inheritdoc />

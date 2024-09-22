@@ -16,13 +16,24 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
+#pragma warning disable CS0618 // Type or member is obsolete
+
 namespace DeNA.Anjin
 {
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     [SuppressMessage("ApiDesign", "RS0030")]
     public class AgentDispatcherTest
     {
+        private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
+
         private IAgentDispatcher _dispatcher;
+
+        private static string GetSceneName(string path)
+        {
+            var pattern = new Regex(@"([^/]+)\.unity$");
+            return pattern.Match(path).Groups[1].Value;
+        }
 
         [TearDown]
         public void TearDown()
@@ -50,15 +61,6 @@ namespace DeNA.Anjin
             var randomFactory = new RandomFactory(0);
 
             _dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-        }
-
-        private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
-        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
-
-        private static string GetSceneName(string path)
-        {
-            var pattern = new Regex(@"([^/]+)\.unity$");
-            return pattern.Match(path).Groups[1].Value;
         }
 
         [Test]
@@ -142,7 +144,7 @@ namespace DeNA.Anjin
             Assume.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
 
             await SceneManagerHelper.LoadSceneAsync(TestScenePath2, LoadSceneMode.Additive);
-            var additiveScene = SceneManager.GetSceneByName(GetSceneName((TestScenePath2)));
+            var additiveScene = SceneManager.GetSceneByName(GetSceneName(TestScenePath2));
             SceneManager.SetActiveScene(additiveScene);
 
             SceneManager.SetActiveScene(scene); // Re-activate

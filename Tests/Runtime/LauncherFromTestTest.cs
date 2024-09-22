@@ -5,9 +5,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestUtils.Build;
 using NUnit.Framework;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.TestTools;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
@@ -32,28 +36,28 @@ namespace DeNA.Anjin
             Assert.That(afterTimestamp - beforeTimestamp, Is.GreaterThan(2f), "Autopilot is running for 2 seconds");
 
             var state = AutopilotState.Instance;
-            Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
-            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
-            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
-            Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+            Assert.That(state.IsRunning, Is.False);
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.PlayMode));
+            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally));
         }
 
         [Test]
+        [PrebuildSetup(typeof(CopyAssetsToResources))]
+        [PostBuildCleanup(typeof(CleanupResources))]
         public async Task AutopilotAsync_WithAssetFile_RunAutopilot()
         {
-            const string AssetPath = "Packages/com.dena.anjin/Tests/TestAssets/AutopilotSettingsForTests.asset";
+            var assetPath = CopyAssetsToResources.GetAssetPath("AutopilotSettingsForTests.asset"); // lifespanSec is 2
 
             var beforeTimestamp = Time.time;
-            await LauncherFromTest.AutopilotAsync(AssetPath);
+            await LauncherFromTest.AutopilotAsync(assetPath);
 
             var afterTimestamp = Time.time;
             Assert.That(afterTimestamp - beforeTimestamp, Is.GreaterThan(2f), "Autopilot is running for 2 seconds");
 
             var state = AutopilotState.Instance;
-            Assert.That(state.IsRunning, Is.False, "AutopilotState is terminated");
-            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.NotSet), "Launch from is reset");
-            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally), "Exit code is reset");
-            Assert.That(EditorApplication.isPlaying, Is.True, "Keep play mode");
+            Assert.That(state.IsRunning, Is.False);
+            Assert.That(state.launchFrom, Is.EqualTo(LaunchType.PlayMode));
+            Assert.That(state.exitCode, Is.EqualTo(ExitCode.Normally));
         }
     }
 }

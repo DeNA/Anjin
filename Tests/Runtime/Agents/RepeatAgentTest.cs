@@ -12,7 +12,6 @@ using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
 {
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class RepeatAgentTest
     {
         private static int s_childAgentCount;

@@ -14,7 +14,6 @@ using UnityEngine.TestTools;
 namespace DeNA.Anjin.Agents
 {
     [TestFixture]
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class TimeBombAgentTest
     {
         private static UGUIMonkeyAgent CreateMonkeyAgent(long lifespanSec)
