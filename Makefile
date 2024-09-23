@@ -27,7 +27,7 @@ endef
 
 define base_arguments
   -projectPath $(PROJECT_HOME) \
-  -logFile $(LOG_DIR)/test_$(TEST_PLATFORM).log
+  -logFile $(LOG_DIR)/$(TEST_PLATFORM).log
 endef
 
 define test_arguments
@@ -37,7 +37,7 @@ define test_arguments
   -runTests \
   -testCategory "!IgnoreCI" \
   -testPlatform $(TEST_PLATFORM) \
-  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml \
+  -testResults $(LOG_DIR)/$(TEST_PLATFORM)-results.xml \
   -testHelperScreenshotDirectory $(LOG_DIR)/Screenshots
 endef
 
