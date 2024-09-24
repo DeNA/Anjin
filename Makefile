@@ -10,7 +10,7 @@ PACKAGE_NAME?=$(shell grep -o -E '"name": "(.+)"' $(PACKAGE_HOME)/package.json |
 
 # Code Coverage report filter (comma separated)
 # see: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/CoverageBatchmode.html
-PACKAGE_ASSEMBLIES?=$(shell echo $(shell find $(PACKAGE_HOME) -name "*.asmdef" -maxdepth 3 | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//) | sed -e s/\ /,/g)
+PACKAGE_ASSEMBLIES?=$(shell echo $(shell find $(PACKAGE_HOME) -name "*.asmdef" | grep -v -E "\/UnityProject~\/" | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//) | sed -e s/\ /,/g)
 COVERAGE_ASSEMBLY_FILTERS?=$(PACKAGE_ASSEMBLIES),+<assets>,-*.Tests
 
 UNAME := $(shell uname)
@@ -27,7 +27,7 @@ endef
 
 define base_arguments
   -projectPath $(PROJECT_HOME) \
-  -logFile $(LOG_DIR)/test_$(TEST_PLATFORM).log
+  -logFile $(LOG_DIR)/$(TEST_PLATFORM).log
 endef
 
 define test_arguments
@@ -37,7 +37,7 @@ define test_arguments
   -runTests \
   -testCategory "!IgnoreCI" \
   -testPlatform $(TEST_PLATFORM) \
-  -testResults $(LOG_DIR)/test_$(TEST_PLATFORM)_results.xml \
+  -testResults $(LOG_DIR)/$(TEST_PLATFORM)-results.xml \
   -testHelperScreenshotDirectory $(LOG_DIR)/Screenshots
 endef
 
