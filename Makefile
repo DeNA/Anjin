@@ -97,7 +97,7 @@ create_project:
 	  -batchmode \
 	  -quit
 	touch UnityProject~/Assets/.gitkeep
-	openupm -c $(PROJECT_HOME) add -f com.unity.test-framework
+	openupm -c $(PROJECT_HOME) add -f com.unity.test-framework@stable
 	openupm -c $(PROJECT_HOME) add -f com.unity.testtools.codecoverage
 	openupm -c $(PROJECT_HOME) add -f com.cysharp.unitask
 	openupm -c $(PROJECT_HOME) add -f com.nowsprinting.test-helper.monkey
