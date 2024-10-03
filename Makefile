@@ -96,13 +96,13 @@ create_project:
 	  -createProject $(PROJECT_HOME) \
 	  -batchmode \
 	  -quit
-	touch UnityProject~/Assets/.gitkeep
-	openupm -c $(PROJECT_HOME) add -f com.unity.test-framework
-	openupm -c $(PROJECT_HOME) add -f com.unity.testtools.codecoverage
-	openupm -c $(PROJECT_HOME) add -f com.cysharp.unitask
-	openupm -c $(PROJECT_HOME) add -f com.nowsprinting.test-helper.monkey
-	openupm -c $(PROJECT_HOME) add -f com.nowsprinting.test-helper.random
-	openupm -c $(PROJECT_HOME) add -ft $(PACKAGE_NAME)@file:../../
+	touch $(PROJECT_HOME)/Assets/.gitkeep
+	openupm add -c $(PROJECT_HOME) -f com.unity.test-framework@stable
+	openupm add -c $(PROJECT_HOME) -f com.unity.testtools.codecoverage
+	openupm add -c $(PROJECT_HOME) -f com.cysharp.unitask
+	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.monkey
+	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.random
+	openupm add -c $(PROJECT_HOME) -ft $(PACKAGE_NAME)@file:../../
 
 .PHONY: remove_project
 remove_project:
