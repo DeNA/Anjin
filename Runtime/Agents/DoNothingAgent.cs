@@ -28,7 +28,8 @@ namespace DeNA.Anjin.Agents
             {
                 if (lifespanSec > 0)
                 {
-                    await UniTask.Delay(TimeSpan.FromSeconds(lifespanSec), cancellationToken: token);
+                    await UniTask.Delay(TimeSpan.FromSeconds(lifespanSec), ignoreTimeScale: true,
+                        cancellationToken: token);
                 }
                 else
                 {
