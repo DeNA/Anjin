@@ -38,6 +38,9 @@ namespace DeNA.Anjin.Editor.ContextMenu
 
         private static void CreateScriptAssetWithContent(string path, string content)
         {
+#if UNITY_6000_0_OR_NEWER
+            ProjectWindowUtil.CreateScriptAssetWithContent(path, content);
+#else
             var projectWindowUtilType = typeof(ProjectWindowUtil);
             var createScriptAssetWithContentMethod = projectWindowUtilType.GetMethod("CreateScriptAssetWithContent",
                 BindingFlags.Static | BindingFlags.NonPublic);
@@ -48,6 +51,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
             }
 
             createScriptAssetWithContentMethod.Invoke(null, new object[] { path, content });
+#endif
         }
     }
 }
