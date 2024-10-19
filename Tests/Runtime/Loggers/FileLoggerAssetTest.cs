@@ -24,7 +24,12 @@ namespace DeNA.Anjin.Loggers
 
         private static string GetOutputPath()
         {
+#if UNITY_EDITOR
             return Path.Combine(LogsDirectoryPath, $"{TestContext.CurrentContext.Test.Name}.log");
+#else
+            return Path.Combine(Application.persistentDataPath, LogsDirectoryPath,
+                $"{TestContext.CurrentContext.Test.Name}.log");
+#endif
         }
 
         private static Exception CreateExceptionWithStacktrace(string message)
@@ -106,7 +111,11 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
+#if UNITY_EDITOR
             var actual = File.ReadAllText(path);
+#else
+            var actual = File.ReadAllText(Path.Combine(Application.persistentDataPath, path));
+#endif
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
 
             // teardown

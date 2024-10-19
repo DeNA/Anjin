@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Strategies;
+using DeNA.Anjin.Utilities;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
 using TestHelper.Monkey.Operators;
@@ -69,9 +70,9 @@ namespace DeNA.Anjin.Agents
         public bool defaultScreenshotDirectory = true;
 
         /// <summary>
-        /// Directory path for screenshot images. Create a new directory if directory not exists.
-        /// If the value is null or empty,
-        /// <c>Path.Combine(Application.persistentDataPath, "TestHelper.Monkey", "Screenshots")</c> will be used
+        /// Directory to save screenshots.
+        /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
+        /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.
         /// </summary>
         public string screenshotDirectory;
 
@@ -111,7 +112,7 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
-                        Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
+                        Directory = defaultScreenshotDirectory ? null : PathUtils.GetAbsolutePath(screenshotDirectory),
                         FilenameStrategy = new TwoTieredCounterStrategy(
                             defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),

@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
+using DeNA.Anjin.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -54,8 +55,16 @@ namespace DeNA.Anjin.Loggers
                 }
 
                 var args = new Arguments();
-                var path = args.FileLoggerOutputPath.IsCaptured() ? args.FileLoggerOutputPath.Value() : outputPath;
-                if (string.IsNullOrEmpty(path))
+                string path;
+                if (args.FileLoggerOutputPath.IsCaptured())
+                {
+                    path = args.FileLoggerOutputPath.Value();
+                }
+                else if (!string.IsNullOrEmpty(outputPath))
+                {
+                    path = PathUtils.GetAbsolutePath(outputPath);
+                }
+                else
                 {
                     throw new InvalidOperationException("outputPath is not set.");
                 }
