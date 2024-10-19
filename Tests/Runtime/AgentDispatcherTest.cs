@@ -151,5 +151,21 @@ namespace DeNA.Anjin
 
             Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1)); // Not create duplicate agents
         }
+
+        [Test]
+        public async Task Dispose_DestroyAllRunningAgents()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.fallbackAgent = CreateSpyAliveCountAgent("Fallback Agent");
+            settings.observerAgent = CreateSpyAliveCountAgent("Observer Agent");
+            SetUpDispatcher(settings);
+            await SceneManagerHelper.LoadSceneAsync(TestScenePath);
+
+            _dispatcher.Dispose();
+            await UniTask.NextFrame(); // Wait for destroy
+
+            var agents = Object.FindObjectsOfType<AgentInspector>();
+            Assert.That(agents, Is.Empty, "Agents were destroyed");
+        }
     }
 }
