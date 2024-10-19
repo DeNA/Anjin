@@ -64,6 +64,31 @@ namespace DeNA.Anjin
         }
 
         /// <summary>
+        /// Launch autopilot on player build with command line arguments.
+        /// </summary>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void LaunchAutopilotOnPlayerFromCommandline()
+        {
+#if !UNITY_EDITOR
+            var args = new Arguments();
+            if (!args.LaunchAutopilotSettings.IsCaptured())
+            {
+                return;
+            }
+
+            var settings = Resources.Load<AutopilotSettings>(args.LaunchAutopilotSettings.Value());
+            var state = AutopilotState.Instance;
+            if (state.IsRunning)
+            {
+                throw new InvalidOperationException("Autopilot is already running");
+            }
+
+            state.launchFrom = LaunchType.Commandline;
+            state.settings = settings;
+#endif
+        }
+
+        /// <summary>
         /// Run autopilot
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
