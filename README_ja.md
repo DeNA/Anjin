@@ -170,36 +170,16 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 
 ## 実行方法
 
-次の2通りの方法でオートパイロットを実行できます。
+次の3通りの方法で、Unityエディタ内でオートパイロットを実行できます。
 
 
-### 1. Unityエディタ (GUI) の再生モードから実行
+### 1. Unityエディタ（GUI）の再生モードで実行
 
 実行したい設定ファイル（AutopilotSettings）をインスペクタで開き、**実行**ボタンをクリックするとオートパイロットが有効な状態で再生モードに入ります。
 設定された実行時間が経過するか、通常の再生モードと同じく再生ボタンクリックで停止します。
 
 
-### 2. Play Modeテストから実行
-
-非同期メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
-引数には `AutopilotSettings` ファイルパスを指定します。
-
-```
-[Test]
-public async Task LaunchAutopilotFromTest()
-{
-  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
-}
-```
-
-> [!NOTE]  
-> 実行中にエラーを検知すると `LogError` が出力されるため、そのテストは失敗と判定されます。
-
-> [!WARNING]  
-> テストのデフォルトタイムアウトは3分です。オートパイロットの実行時間が3分を超える場合は `Timeout` 属性でタイムアウト時間を指定してください。
-
-
-### 3. コマンドラインから実行
+### 2. コマンドラインから実行
 
 コマンドラインから実行する場合、以下の引数を指定します。
 
@@ -233,6 +213,33 @@ $(UNITY) \
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
+
+
+### 3. Play Modeテスト内で実行
+
+非同期メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+引数には `AutopilotSettings` ファイルパスを指定します。
+
+```
+[Test]
+[LoadScene("Assets/MyGame/Scenes/TitleScene.unity")]
+public async Task LaunchAutopilotInTest()
+{
+  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!WARNING]  
+> テストのデフォルトタイムアウトは3分です。オートパイロットの実行時間が3分を超える場合は `Timeout` 属性でタイムアウト時間を指定してください。
+
+> [!WARNING]  
+> テストをプレイヤーで実行するときは、必要な設定ファイルを `Resources` フォルダに置き、ビルドに含まれるようにしてください。テストのプレイヤービルドに処理を挟むには `IPrebuildSetup` および `IPostBuildCleanup` が利用できます。
+
+> [!NOTE]  
+> `LoadScene` 属性は [Test Helper](https://github.com/nowsprinting/test-helper) パッケージに含まれています。テスト開始前にSceneのロードを行ないます。
+
+> [!NOTE]  
+> テスト実行中にエラーを検知すると `LogError` が出力されるため、そのテストは失敗と判定されます。エラーハンドリングをAnjinで行なう前提で `LogAssert.ignoreFailingMessages` で抑止してもいいでしょう。
 
 
 
@@ -293,8 +300,13 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 従って、レコーディングはScene単位に区切って行なうようご注意ください。
 
 また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
+<<<<<<< HEAD
 各プラットフォームの`Application.persistentDataPath`はUnityマニュアルの
 [Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+=======
+各プラットフォームの `Application.persistentDataPath` はUnityマニュアルの
+[Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+>>>>>>> 39a1061 (Fix READMEs)
 を参照してください。
 
 
@@ -531,6 +543,88 @@ Anjinの操作を制御するためのアノテーションを定義していま
 
 このコンポーネントがアタッチされた`Button`が表示されると、`EmergencyExitAgent`はすぐにクリックを試みます。
 通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなるボタンに付けることを想定しています。
+
+
+
+## プレイヤービルドでの実行［実験的機能］
+
+Anjinをプレイヤービルドに含めることで、プレイヤー（実機）でもオートパイロットを実行できます。
+
+> [!WARNING]  
+> この機能は実験的機能です。
+> また、Anjin本体はメモリアロケーションなどをあまり気にせず作られています。パフォーマンステストに使うときは注意してください。
+
+
+### ビルド方法
+
+#### 1. カスタムスクリプトシンボル `DENA_AUTOPILOT_ENABLE` および `COM_NOWSPRINTING_TEST_HELPER_ENABLE` を設定する
+
+カスタムスクリプトシンボルを設定します。設定方法はUnityマニュアルの
+[カスタム製スクリプトシンボル - Unity マニュアル](https://docs.unity3d.com/ja/current/Manual/CustomScriptingSymbols.html)
+を参照してください。
+
+
+#### 2. 設定ファイルをビルドに含める
+
+必要な設定ファイルを `Resources` フォルダに置き、ビルドに含まれるようにしてください。
+プレイヤービルドに処理を挟むには `IPreprocessBuildWithReport` および `IPostprocessBuildWithReport` が利用できます。
+
+
+#### 3. iCloudバックアップ対象から外す（任意）
+
+プレイヤー実行では、ビルトインのFile LoggerやAgentのスクリーンショットなどは `Application.persistentDataPath` 下に出力されます。
+このパスはデフォルトでiCloudバックアップ対象のため、不要であれば除外します。
+
+```csharp
+UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
+```
+
+
+#### 4. デバッグメニューにオートパイロット起動ボタンを追加する（任意）
+
+たとえば [UnityDebugSheet](https://github.com/Haruma-K/UnityDebugSheet) から起動するには次のようにします。
+
+```csharp
+AddButton("Launch autopilot", clicked: () =>
+  {
+    _drawerController.SetStateWithAnimation(DrawerState.Min); // 先にデバッグメニューを閉じる
+
+#if UNITY_EDITOR
+    const string Path = "Assets/Path/To/AutopilotSettings.asset";
+#else
+    const string Path = "Path/To/AutopilotSettings"; // 拡張子（.asset）は不要です
+#endif
+    Launcher.LaunchAutopilotAsync(Path).Forget();
+});
+```
+
+
+### 起動方法
+
+デバッグメニューから起動するほか、コマンドライン引数で起動を指示できます。
+コマンドラインから実行する場合、以下の引数を指定します。
+
+```bash
+$(ROM) -LAUNCH_AUTOPILOT_SETTINGS Path/To/AutopilotSettings
+```
+
+なお、
+
+- `ROM` にはプレイヤービルド実行ファイルのパスを指定します
+- `-LAUNCH_AUTOPILOT_SETTINGS` には、実行したい設定ファイル（AutopilotSettings）のパスを指定します。パスは Resources フォルダからの相対パスで、拡張子（.asset）は不要です
+
+ほか、エディターでの実行と同じ引数を指定できます。
+
+> [!NOTE]  
+> プレイヤー実行では、ビルトインのFile LoggerやAgentのスクリーンショットなどは `Application.persistentDataPath` 下に出力されます。  
+> 各プラットフォームのパスはUnityマニュアルの
+>[Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+> を参照してください。
+
+> [!NOTE]  
+> Androidはコマンドライン引数の指定方法が異なります。Unityマニュアルの
+> [Android プレイヤーのコマンドライン引数を指定する - Unity マニュアル](https://docs.unity3d.com/ja/current/Manual/android-custom-activity-command-line.html)
+> を参照してください。
 
 
 

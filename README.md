@@ -170,7 +170,7 @@ You can prepare multiple Reporters with different settings for the same Reporter
 
 ## Run autopilot
 
-Autopilot can be executed in two ways.
+Autopilot can be run in the Unity editor in three ways.
 
 
 ### 1. Run on play mode in Unity editor (GUI)
@@ -179,27 +179,7 @@ Open the AutopilotSettings file you wish to run in the inspector and click the *
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
 
-### 2. Run from Play Mode test
-
-Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
-Specify the `AutopilotSettings` file path as the argument.
-
-```
-[Test]
-public async Task LaunchAutopilotFromTest()
-{
-  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
-}
-```
-
-> [!NOTE]  
-> If an error is detected in running, it will be output to `LogError` and the test will fail.
-
-> [!WARNING]  
-> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
-
-
-### 3. Run from commandline
+### 2. Launch from commandline
 
 To execute from the commandline, specify the following arguments.
 
@@ -231,6 +211,33 @@ For details on each argument, see the entry of the same name in the "Generate an
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
+
+
+### 3. Run in Play Mode test
+
+Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
+Specify the `AutopilotSettings` file path as the argument.
+
+```
+[Test]
+[LoadScene("Assets/MyGame/Scenes/TitleScene.unity")]
+public async Task LaunchAutopilotInTest()
+{
+  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!WARNING]  
+> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
+
+> [!WARNING]  
+> When running tests on a player, any necessary configuration files must be placed in the `Resources` folder to be included in the player build. It can use `IPrebuildSetup` and `IPostBuildCleanup` to insert processing into the test player build.
+
+> [!NOTE]  
+> `LoadScene` attribute is defined in [Test Helper](https://github.com/nowsprinting/test-helper) package. This attribute loads the scene before starting the test.
+
+> [!NOTE]  
+> If an error is detected while running, it will be output to `LogError` and the test will fail. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
 
 
 
@@ -528,6 +535,83 @@ The `GameObject` to which this component is attached avoids manipulation by the 
 
 When a `Button` to which this component is attached appears, the `EmergencyExitAgent` will immediately attempt to click on it.
 It is intended to be attached to buttons that are irregular in the execution of the test scenario, such as the "return to title screen" button due to a communication error or a daybreak.
+
+
+
+## Run on player build \[experimental\]
+
+It can run autopilot on the players (real devices) if Anjin is included in player builds.
+
+> [!WARNING]  
+> This feature is experimental.
+> And Anjin itself is designed without much consideration for memory allocation, so please be careful when using it for performance testing.
+
+
+### How to build
+
+#### 1. Set the custom scripting symbols `DENA_AUTOPILOT_ENABLE` and `COM_NOWSPRINTING_TEST_HELPER_ENABLE`
+
+Set a custom scripting symbols. See below:  
+[Manual: Custom scripting symbols](https://docs.unity3d.com/Manual/custom-scripting-symbols.html)
+
+
+#### 2. Including configuration files into the player build
+
+Any necessary configuration files must be placed in the `Resources` folder to be included in the player build.
+It can use `IPreprocessBuildWithReport` and `IPostprocessBuildWithReport` to insert processing into the player build.
+
+
+#### 3. Exclude from iCloud backup (optional)
+
+Built-in File Logger and Agent screenshots are output under `Application.persistentDataPath` when running the player.
+This path is included in iCloud backup by default, so exclude it if not required.
+
+```csharp
+UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
+```
+
+
+#### 4. Add a launch autopilot button to the debug menu (optional)
+
+e.g., Launch autopilot with [UnityDebugSheet](https://github.com/Haruma-K/UnityDebugSheet):
+
+```csharp
+AddButton("Launch autopilot", clicked: () =>
+  {
+    _drawerController.SetStateWithAnimation(DrawerState.Min); // close debug menu before launch autopilot
+
+#if UNITY_EDITOR
+    const string Path = "Assets/Path/To/AutopilotSettings.asset";
+#else
+    const string Path = "Path/To/AutopilotSettings"; // without the .asset extension
+#endif
+    Launcher.LaunchAutopilotAsync(Path).Forget();
+});
+```
+
+
+### How to launch autopilot on player build
+
+It can also launch it using command line arguments, in addition to launching it from the debug menu.
+To execute from the command line, specify the following arguments.
+
+```bash
+$(ROM) -LAUNCH_AUTOPILOT_SETTINGS Path/To/AutopilotSettings
+```
+
+- `ROM` is the path to the player build executable file.
+- `-LAUNCH_AUTOPILOT_SETTINGS` is the path to the settings file (AutopilotSettings) you want to run. Path is relative to the `Resources` folder and without the `.asset` extension.
+
+It can specify the same arguments as when running in the editor.
+
+> [!NOTE]  
+> Built-in File Logger and Agent screenshots are output under `Application.persistentDataPath` when running the player.
+> See below for each platform:  
+> [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+
+> [!NOTE]  
+> Android has a different way of specifying command line arguments. See below:  
+> [Manual: Specify Android Player command-line arguments](https://docs.unity3d.com/Manual/android-custom-activity-command-line.html)
 
 
 
