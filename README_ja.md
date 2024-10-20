@@ -294,7 +294,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
 各プラットフォームの`Application.persistentDataPath`はUnityマニュアルの
-[Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
 を参照してください。
 
 
@@ -544,7 +544,7 @@ Anjinの実行状態を永続化している `AutopilotState.asset` が不正な
 それでも解決しない場合、 `AutopilotState.asset` を削除してみてください。
 
 
-### [CompilerError] Argument 1: Cannot convert to 'System.Threading.CancellationToken'
+### \[CompilerError\] Argument 1: Cannot convert to 'System.Threading.CancellationToken'
 
 次のコンパイルエラーが発生するケースが報告されています。
 
@@ -560,6 +560,23 @@ Compiler Error at Library\PackageCache\com.dena.anjin@1.0.1\Runtime\Reporters\Sl
 通常、インストール方法に従っていれば適正なバージョンのUniTaskがインストールされます。
 しかし、プロジェクトに埋め込みパッケージとしてUniTaskが配置されていたりすればそちらが優先されてしまいます。
 Unityエディターが生成するPackages/packages-lock.jsonの中身を確認するか、お使いのIDEのコード定義ジャンプ機能で `UniTask.WaitForEndOfFrame()` のソースファイルがどこにあるかを確認するなどして、古いUniTaskがインストールされている原因を突き止められます。
+
+
+### 実行中に "settings has been obsoleted" 警告が出る
+
+たとえば次のような警告メッセージが出力されることがあります。
+
+```
+Slack settings in AutopilotSettings has been obsoleted.
+Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+```
+
+すでに新しい設定方法（上例では `SlackReporter` ）に移行済みであっても、廃止されたフィールドに値が残っていることを警告されています。
+設定ファイルをInspectorウィンドウで開き、**Debug Mode** に切り替えることで廃止されたフィールドを編集できます。
+
+Inspectorウィンドウの操作については、Unityマニュアルの
+[Inspector の使用 - Unity マニュアル](https://docs.unity3d.com/ja/current/Manual/InspectorOptions.html)
+を参照してください。
 
 
 
