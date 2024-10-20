@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Threading;
@@ -12,6 +12,13 @@ namespace DeNA.Anjin.Reporters
     /// </summary>
     public abstract class AbstractReporter : ScriptableObject
     {
+#if UNITY_EDITOR
+        /// <summary>
+        /// Description about this agent instance.
+        /// </summary>
+        [Multiline] public string description;
+#endif
+
         /// <summary>
         /// Post report log message, stacktrace and screenshot
         /// </summary>
