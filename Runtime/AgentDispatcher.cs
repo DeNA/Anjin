@@ -1,11 +1,11 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +20,9 @@ namespace DeNA.Anjin
         /// Agent dispatch by current scene
         /// </summary>
         /// <param name="scene">Current scene</param>
-        void DispatchByScene(Scene scene);
+        /// <param name="fallback">Use fallback agent if true</param>
+        /// <returns>True: Agent dispatched</returns>
+        bool DispatchByScene(Scene scene, bool fallback = true);
     }
 
     /// <inheritdoc/>
@@ -55,7 +57,7 @@ namespace DeNA.Anjin
         }
 
         /// <inheritdoc/>
-        public void DispatchByScene(Scene scene)
+        public bool DispatchByScene(Scene scene, bool fallback = true)
         {
             AbstractAgent agent = null;
 
@@ -70,7 +72,7 @@ namespace DeNA.Anjin
 
             if (!agent)
             {
-                if (_settings.fallbackAgent)
+                if (_settings.fallbackAgent && fallback)
                 {
                     _logger.Log($"Use fallback agent. scene: {scene.path}");
                     agent = _settings.fallbackAgent;
@@ -92,6 +94,8 @@ namespace DeNA.Anjin
                 // Note: The ObserverAgent is not made to DontDestroyOnLoad, to start every time.
                 //      Because it is a source of bugs to force the implementation of DontDestroyOnLoad to the descendants of the Composite.
             }
+
+            return agent != null; // Returns Agent dispatched or not.
         }
 
         private void DispatchAgent(AbstractAgent agent)

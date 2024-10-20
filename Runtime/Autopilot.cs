@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -9,9 +9,11 @@ using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using AssertionException = NUnit.Framework.AssertionException;
 
 namespace DeNA.Anjin
 {
@@ -54,7 +56,11 @@ namespace DeNA.Anjin
             _logMessageHandler = new LogMessageHandler(_settings, _settings.reporter);
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
-            _dispatcher.DispatchByScene(SceneManager.GetActiveScene());
+            var dispatched = _dispatcher.DispatchByScene(SceneManager.GetActiveScene(), false);
+            if (!dispatched)
+            {
+                DispatchByLoadedScenes(); // Try dispatch by loaded (not active) scenes.
+            }
 
             if (_settings.lifespanSec > 0)
             {
@@ -68,6 +74,18 @@ namespace DeNA.Anjin
 
             _startTime = Time.realtimeSinceStartup;
             _logger.Log("Launched autopilot");
+        }
+
+        private void DispatchByLoadedScenes()
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var fallback = i == SceneManager.sceneCount - 1; // Use fallback agent only in the last scene.
+                if (_dispatcher.DispatchByScene(SceneManager.GetSceneAt(i), fallback))
+                {
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -154,7 +172,7 @@ This time, temporarily generate and use SlackReporter instance.");
 #if UNITY_INCLUDE_TESTS
                 if (_state.launchFrom == LaunchType.PlayModeTests && exitCode != ExitCode.Normally)
                 {
-                    throw new NUnit.Framework.AssertionException($"Autopilot failed with exit code {exitCode}");
+                    throw new AssertionException($"Autopilot failed with exit code {exitCode}");
                 }
 #endif
                 return; // Only terminate autopilot run if starting from play mode.
@@ -167,7 +185,7 @@ This time, temporarily generate and use SlackReporter instance.");
             // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
             // SEE: https://github.com/DeNA/Anjin/issues/20
             await UniTask.DelayFrame(1, cancellationToken: token);
-            UnityEditor.EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
             // Call Launcher.OnChangePlayModeState() so terminates Unity editor, when launch from CLI.
 #else
             _logger.Log($"Exit Unity-editor by autopilot, exit code={exitCode}");

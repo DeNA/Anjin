@@ -75,6 +75,27 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        public async Task Start_NoMappedSceneInLoadedScenes_DispatchFallbackAgent()
+        {
+            const string AdditiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+            const string ActiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Empty.unity";
+
+            var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
+
+            var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            autopilotSettings.sceneAgentMaps = new List<SceneAgentMap>();
+            autopilotSettings.fallbackAgent = spyFallbackAgent;
+            autopilotSettings.lifespanSec = 1;
+
+            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
+            await SceneManagerHelper.LoadSceneAsync(AdditiveScenePath, LoadSceneMode.Additive);
+
+            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+
+            Assert.That(spyFallbackAgent.CompleteCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void ConvertSlackReporterFromObsoleteSlackSettings_HasSlackSettings_GenerateSlackReporter()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
