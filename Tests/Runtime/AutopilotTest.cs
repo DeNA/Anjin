@@ -5,11 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace DeNA.Anjin
@@ -42,6 +45,33 @@ namespace DeNA.Anjin
 
             Assert.That(spyLogger.Logs, Does.Contain("Launched autopilot")); // using spy logger
             LogAssert.NoUnexpectedReceived(); // not write to console
+        }
+
+        [Test]
+        public async Task Start_MappedSceneIsNotActiveButLoaded_DispatchAgent()
+        {
+            const string MappedScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+            const string ActiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Empty.unity";
+
+            var spyMappedAgent = ScriptableObject.CreateInstance<SpyAgent>();
+            var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
+
+            var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            autopilotSettings.sceneAgentMaps = new List<SceneAgentMap>
+            {
+                new SceneAgentMap { scenePath = MappedScenePath, agent = spyMappedAgent }
+            };
+            autopilotSettings.fallbackAgent = spyFallbackAgent;
+            autopilotSettings.lifespanSec = 1;
+
+            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
+            await SceneManagerHelper.LoadSceneAsync(MappedScenePath, LoadSceneMode.Additive);
+            Assume.That(SceneManager.GetActiveScene().path, Is.EqualTo(ActiveScenePath), "Mapped scene is not active");
+
+            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+
+            Assert.That(spyMappedAgent.CompleteCount, Is.EqualTo(1), "Mapped Agent dispatched");
+            Assert.That(spyFallbackAgent.CompleteCount, Is.EqualTo(0), "Fallback Agent is not dispatched");
         }
 
         [Test]
