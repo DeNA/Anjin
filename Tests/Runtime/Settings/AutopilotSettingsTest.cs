@@ -20,8 +20,6 @@ namespace DeNA.Anjin.Settings
             sut.handleError = true;
             sut.handleAssert = true;
             sut.handleWarning = true;
-            sut.slackToken = "token";
-            sut.slackChannels = "channel1, channel2, channel3";
             return sut;
         }
 
@@ -37,8 +35,6 @@ namespace DeNA.Anjin.Settings
                 _handleError = new StubArgument<bool>(), // Not captured
                 _handleAssert = new StubArgument<bool>(), // Not captured
                 _handleWarning = new StubArgument<bool>(), // Not captured
-                _slackToken = new StubArgument<string>(), // Not captured
-                _slackChannels = new StubArgument<string>(), // Not captured
             };
             return arguments;
         }
@@ -57,8 +53,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.handleError, Is.True);
             Assert.That(sut.handleAssert, Is.True);
             Assert.That(sut.handleWarning, Is.True);
-            Assert.That(sut.slackToken, Is.EqualTo("token"));
-            Assert.That(sut.slackChannels, Is.EqualTo("channel1, channel2, channel3"));
         }
 
         private static Arguments CreateCapturedArguments()
@@ -73,8 +67,6 @@ namespace DeNA.Anjin.Settings
                 _handleError = new StubArgument<bool>(true, false),
                 _handleAssert = new StubArgument<bool>(true, false),
                 _handleWarning = new StubArgument<bool>(true, false),
-                _slackToken = new StubArgument<string>(true, "another token"),
-                _slackChannels = new StubArgument<string>(true, "channel4"),
             };
             return arguments;
         }
@@ -93,8 +85,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.handleError, Is.False);
             Assert.That(sut.handleAssert, Is.False);
             Assert.That(sut.handleWarning, Is.False);
-            Assert.That(sut.slackToken, Is.EqualTo("another token"));
-            Assert.That(sut.slackChannels, Is.EqualTo("channel4"));
         }
     }
 }
