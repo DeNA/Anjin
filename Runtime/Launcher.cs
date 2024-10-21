@@ -5,6 +5,7 @@
 
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
@@ -59,9 +60,10 @@ namespace DeNA.Anjin
 
         private static async UniTask CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
         {
+            const BindingFlags MethodBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             foreach (var methodInfo in AppDomain.CurrentDomain.GetAssemblies()
                          .SelectMany(x => x.GetTypes())
-                         .SelectMany(x => x.GetMethods())
+                         .SelectMany(x => x.GetMethods(MethodBindingFlags))
                          .Where(x => x.GetCustomAttributes(typeof(InitializeOnLaunchAutopilotAttribute), false).Any()))
             {
                 switch (methodInfo.ReturnType.Name)

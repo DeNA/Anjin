@@ -84,7 +84,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_DefaultScreenshotFilenamePrefix_UseAgentName()
         {
             const string AgentName = "MyMonkeyAgent";
-            var filename = $"{AgentName}_0001.png";
+            var filename = $"{AgentName}01_0001.png";
             var path = Path.Combine(_defaultOutputDirectory, filename);
             if (File.Exists(path))
             {

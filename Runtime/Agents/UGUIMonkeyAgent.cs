@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Strategies;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
 using TestHelper.Monkey.Operators;
 using TestHelper.Monkey.Random;
-using TestHelper.Monkey.ScreenshotFilenameStrategies;
 using TestHelper.Random;
 using UnityEngine;
 
@@ -112,7 +112,7 @@ namespace DeNA.Anjin.Agents
                     ? new ScreenshotOptions
                     {
                         Directory = defaultScreenshotDirectory ? null : screenshotDirectory,
-                        FilenameStrategy = new CounterBasedStrategy(
+                        FilenameStrategy = new TwoTieredCounterStrategy(
                             defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),
                         SuperSize = screenshotSuperSize,

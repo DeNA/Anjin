@@ -484,7 +484,7 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 
 ### タイトル独自事前処理
 
-タイトル独自の初期化処理が必要な場合、初期化を行なう `public static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
+タイトル独自の初期化処理が必要な場合、初期化を行なう `static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
 オートパイロットの起動処理の中でメソッドを呼び出します。
 
 ```csharp
@@ -499,7 +499,7 @@ public static void InitializeOnLaunchAutopilotMethod()
 
 ```csharp
 [InitializeOnLaunchAutopilot]
-public static async UniTask InitializeOnLaunchAutopilotMethod()
+private static async UniTask InitializeOnLaunchAutopilotMethod()
 {
     // プロジェクト固有の初期化処理
 }

@@ -481,7 +481,7 @@ Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an
 
 ### Game title-specific pre-processing
 
-If your title requires its own initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `public static` method that does the initialization.
+If your title requires its own initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `static` method that does the initialization.
 An added method is called from the autopilot launch process.
 
 ```csharp
@@ -496,7 +496,7 @@ Async methods are also supported.
 
 ```csharp
 [InitializeOnLaunchAutopilot]
-public static async UniTask InitializeOnLaunchAutopilotMethod()
+private static async UniTask InitializeOnLaunchAutopilotMethod()
 {
     // initialize code for your game.
 }
