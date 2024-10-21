@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DeNA.Anjin.Attributes;
 using TestHelper.Monkey.ScreenshotFilenameStrategies;
@@ -24,13 +25,18 @@ namespace DeNA.Anjin.Strategies
         }
 
         /// <inheritdoc/>
+        [SuppressMessage("ReSharper", "CanSimplifyDictionaryLookupWithTryAdd")]
         public TwoTieredCounterStrategy(string filenamePrefix = null, [CallerMemberName] string callerMemberName = null)
             : base(filenamePrefix, callerMemberName)
         {
             var key = base.GetFilenamePrefix();
-            if (!s_prefixCounters.TryAdd(key, 1))
+            if (s_prefixCounters.ContainsKey(key))
             {
                 s_prefixCounters[key]++;
+            }
+            else
+            {
+                s_prefixCounters[key] = 1;
             }
 
             _uniqueNumberOfPrefix = s_prefixCounters[key];
