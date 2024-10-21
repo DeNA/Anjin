@@ -9,11 +9,13 @@ using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using AssertionException = NUnit.Framework.AssertionException;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
