@@ -94,7 +94,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        public async Task Launch_InitializeOnLaunchAutopilotAttributeAttachToAsyncMethod_Called()
+        public async Task Launch_InitializeOnLaunchAutopilotAttributeAttachToNonPublicMethod_Called()
         {
             SpyInitializeOnLaunchAutopilot.Reset();
 
@@ -103,7 +103,20 @@ namespace DeNA.Anjin
             settings.lifespanSec = 1;
             await LauncherFromTest.AutopilotAsync(settings); // TODO: Renamed in another PR
 
-            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethodAsync, Is.True);
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethodNonPublic, Is.True);
+        }
+
+        [Test]
+        public async Task Launch_InitializeOnLaunchAutopilotAttributeAttachToTaskAsyncMethod_Called()
+        {
+            SpyInitializeOnLaunchAutopilot.Reset();
+
+            var settings = ScriptableObject.CreateInstance(typeof(AutopilotSettings)) as AutopilotSettings;
+            settings.sceneAgentMaps = new List<SceneAgentMap>();
+            settings.lifespanSec = 1;
+            await LauncherFromTest.AutopilotAsync(settings); // TODO: Renamed in another PR
+
+            Assert.That(SpyInitializeOnLaunchAutopilot.IsCallInitializeOnLaunchAutopilotMethodTaskAsync, Is.True);
         }
 
         [Test]
