@@ -45,7 +45,7 @@ namespace DeNA.Anjin.Agents
         {
             var button = new GameObject().AddComponent<SpyButton>();
             button.GetComponent<Selectable>().interactable = interactable;
-            button.gameObject.AddComponent<EmergencyExit>();
+            button.gameObject.AddComponent<EmergencyExitAnnotation>();
             return button;
         }
 

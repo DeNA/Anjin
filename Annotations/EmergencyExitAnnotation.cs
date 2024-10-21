@@ -11,7 +11,7 @@ namespace DeNA.Anjin.Annotations
     /// As soon as the component appears on the screen, it is click by <c>EmergencyExitAgent</c>
     /// </summary>
     [RequireComponent(typeof(Button))]
-    public class EmergencyExit : MonoBehaviour
+    public class EmergencyExitAnnotation : MonoBehaviour
     {
     }
 }
