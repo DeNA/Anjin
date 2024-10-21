@@ -39,7 +39,7 @@ namespace DeNA.Anjin.Agents
                     Selectable.AllSelectablesNoAlloc(selectables);
                     for (var i = 0; i < allSelectableCount; i++)
                     {
-                        if (selectables[i].TryGetComponent<EmergencyExit>(out var emergencyExit))
+                        if (selectables[i].TryGetComponent<EmergencyExitAnnotation>(out var emergencyExit))
                         {
                             ClickEmergencyExitButton(emergencyExit);
                         }
@@ -55,11 +55,11 @@ namespace DeNA.Anjin.Agents
         }
 
         [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
-        private void ClickEmergencyExitButton(EmergencyExit emergencyExit)
+        private void ClickEmergencyExitButton(EmergencyExitAnnotation emergencyExitAnnotation)
         {
-            Logger.Log($"Click emergency exit button: {emergencyExit.name}");
+            Logger.Log($"Click emergency exit button: {emergencyExitAnnotation.name}");
 
-            var gameObject = emergencyExit.gameObject;
+            var gameObject = emergencyExitAnnotation.gameObject;
             var button = gameObject.GetComponent<Button>();
             button.OnPointerClick(new PointerEventData(EventSystem.current));
             // Note: Button.OnPointerClick() does not look at PointerEventData coordinates.
