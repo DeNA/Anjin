@@ -9,7 +9,8 @@
         "UniTask",
         "DeNA.Anjin.Editor",
         "TestHelper",
-        "TestHelper.RuntimeInternals"
+        "TestHelper.RuntimeInternals",
+        "TestHelper.Monkey"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
