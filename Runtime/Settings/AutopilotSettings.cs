@@ -180,16 +180,6 @@ namespace DeNA.Anjin.Settings
             {
                 handleWarning = args.HandleWarning.Value();
             }
-
-            if (args.SlackToken.IsCaptured())
-            {
-                slackToken = args.SlackToken.Value();
-            }
-
-            if (args.SlackChannels.IsCaptured())
-            {
-                slackChannels = args.SlackChannels.Value();
-            }
         }
     }
 }

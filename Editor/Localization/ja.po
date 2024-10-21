@@ -103,46 +103,6 @@ msgstr "レポータ"
 msgid "Reporter that called when some errors occurred in target application"
 msgstr "対象のアプリケーションで発生したエラーを通知するレポータを指定します"
 
-# obsolete slack settings
-msgid "Slack settings will be moved to SlackReporter"
-msgstr "Slack 設定は SlackReporter へ移動しました"
-
-# slackToken
-msgid "Slack Token"
-msgstr "Slackトークン"
-
-# slackToken tooltip
-msgid "Slack API token"
-msgstr "Slack通知に使用するWeb APIトークン（省略時は通知されない）"
-
-# slackChannels
-msgid "Slack Channels"
-msgstr "Slackチャンネル"
-
-# slackChannels tooltip
-msgid "Slack channels to send notification"
-msgstr "Slack通知を送るチャンネル（省略時は通知されない。現時点では1チャンネルのみ有効ですが、将来的にはカンマ区切りで複数指定対応予定）"
-
-# Header: Slack Mention Settings
-msgid "Slack Mention Settings"
-msgstr "Slackメンション設定"
-
-# mentionSubTeamIDs
-msgid "Sub Team IDs to Mention"
-msgstr "メンション宛先"
-
-# mentionSubTeamIDs tooltip
-msgid "Sub team IDs to mention (comma separates)"
-msgstr "Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します"
-
-# addHereInSlackMessage
-msgid "Add @here Into Slack Message"
-msgstr "@hereをメッセージにつける"
-
-# addHereInSlackMessage tooltip
-msgid "Whether adding @here into Slack messages or not"
-msgstr "Slack通知メッセージに@hereを付けます"
-
 # Header: Error Handling Settings
 msgid "Error Handling Settings"
 msgstr "エラーハンドリング設定"
@@ -489,3 +449,53 @@ msgstr "タイムスタンプを追加"
 # Timestamp tooltip
 msgid "Output timestamp to log entities"
 msgstr "ログエンティティにタイムスタンプを出力します"
+
+
+#: Editor/UI/Reporters/ 共通
+
+# description
+msgid "Description"
+msgstr "説明"
+
+# description tooltip
+msgid "Description about this setting instance"
+msgstr "このReporterインスタンスの説明"
+
+
+#: Editor/UI/Reporters/SlackReporterEditor.cs
+
+# slackToken
+msgid "Slack Token"
+msgstr "Slackトークン"
+
+# slackToken tooltip
+msgid "Slack API token"
+msgstr "Slack通知に使用するWeb APIトークン（省略時は通知されない）"
+
+# slackChannels
+msgid "Slack Channels"
+msgstr "Slackチャンネル"
+
+# slackChannels tooltip
+msgid "Slack channels to send notification"
+msgstr "Slack通知を送るチャンネル（省略時は通知されない。現時点では1チャンネルのみ有効ですが、将来的にはカンマ区切りで複数指定対応予定）"
+
+# Header: Slack Mention Settings
+msgid "Slack Mention Settings"
+msgstr "Slackメンション設定"
+
+# mentionSubTeamIDs
+msgid "Sub Team IDs to Mention"
+msgstr "メンション宛先"
+
+# mentionSubTeamIDs tooltip
+msgid "Sub team IDs to mention (comma separates)"
+msgstr "Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します"
+
+# addHereInSlackMessage
+msgid "Add @here Into Slack Message"
+msgstr "@hereをメッセージにつける"
+
+# addHereInSlackMessage tooltip
+msgid "Whether adding @here into Slack messages or not"
+msgstr "Slack通知メッセージに@hereを付けます"

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -49,17 +49,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_reporter = L10n.Tr("Reporter");
         private static readonly string s_reporterTooltip = L10n.Tr("Reporter that called when some errors occurred in target application");
         
-        private static readonly string s_slackToken = L10n.Tr("Slack Token");
-        private static readonly string s_slackTokenTooltip = L10n.Tr("Slack API token");
-        private static readonly string s_slackChannels = L10n.Tr("Slack Channels");
-        private static readonly string s_slackChannelsTooltip = L10n.Tr("Slack channels to send notification");
-
-        private static readonly string s_slackMentionSettingsHeader = L10n.Tr("Slack Mention Settings");
-        private static readonly string s_mentionSubTeamIDs = L10n.Tr("Sub Team IDs to Mention");
-        private static readonly string s_mentionSubTeamIDsTooltip = L10n.Tr("Sub team IDs to mention (comma separates)");
-        private static readonly string s_addHereInSlackMessage = L10n.Tr("Add @here Into Slack Message");
-        private static readonly string s_addHereInSlackMessageTooltip = L10n.Tr("Whether adding @here into Slack messages or not");
-
         private static readonly string s_errorHandlingSettingsHeader = L10n.Tr("Error Handling Settings");
         private static readonly string s_handleException = L10n.Tr("Handle Exception");
         private static readonly string s_handleExceptionTooltip = L10n.Tr("Notify when Exception detected in log");
@@ -70,9 +59,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_handleWarning = L10n.Tr("Handle Warning");
         private static readonly string s_handleWarningTooltip = L10n.Tr("Notify when Warning detected in log");
         private static readonly string s_ignoreMessages = L10n.Tr("Ignore Messages");
-
-        private static readonly string s_obsoletedSlackParamsHelpBox =
-            L10n.Tr("Slack settings will be moved to SlackReporter");
 
         private static readonly string s_ignoreMessagesTooltip =
             L10n.Tr("Do not send notifications when log messages contain this string");
@@ -119,18 +105,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_logger, s_loggerTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporter)),
                 new GUIContent(s_reporter, s_reporterTooltip));
-            EditorGUILayout.HelpBox(s_obsoletedSlackParamsHelpBox, MessageType.Warning);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.slackToken)),
-                new GUIContent(s_slackToken, s_slackTokenTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.slackChannels)),
-                new GUIContent(s_slackChannels, s_slackChannelsTooltip));
-
-            DrawHeader(s_slackMentionSettingsHeader);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.mentionSubTeamIDs)),
-                new GUIContent(s_mentionSubTeamIDs, s_mentionSubTeamIDsTooltip));
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty(nameof(AutopilotSettings.addHereInSlackMessage)),
-                new GUIContent(s_addHereInSlackMessage, s_addHereInSlackMessageTooltip));
 
             DrawHeader(s_errorHandlingSettingsHeader);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleException)),

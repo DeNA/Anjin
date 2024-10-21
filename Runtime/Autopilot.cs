@@ -6,6 +6,7 @@ using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Loggers;
+using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -36,6 +37,8 @@ namespace DeNA.Anjin
 
             _loggerAsset = _settings.loggerAsset;
             _logger = _loggerAsset != null ? _loggerAsset.Logger : CreateDefaultLogger();
+
+            ConvertSlackReporterFromObsoleteSlackSettings(_settings, _logger);
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -75,6 +78,28 @@ namespace DeNA.Anjin
         private static ILogger CreateDefaultLogger()
         {
             return Debug.unityLogger;
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal static void ConvertSlackReporterFromObsoleteSlackSettings(AutopilotSettings settings, ILogger logger)
+        {
+            if (string.IsNullOrEmpty(settings.slackToken) || string.IsNullOrEmpty(settings.slackChannels) ||
+                settings.reporter != null)
+                // TODO: This condition will change when the AutopilotSettings.reporter is changed to a List<AbstractReporter>.
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
+Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+This time, temporarily generate and use SlackReporter instance.");
+
+            var reporter = ScriptableObject.CreateInstance<SlackReporter>();
+            reporter.slackToken = settings.slackToken;
+            reporter.slackChannels = settings.slackChannels;
+            reporter.mentionSubTeamIDs = settings.mentionSubTeamIDs;
+            reporter.addHereInSlackMessage = settings.addHereInSlackMessage;
+            settings.reporter = reporter;
         }
 
         /// <summary>

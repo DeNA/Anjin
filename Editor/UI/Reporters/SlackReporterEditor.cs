@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using DeNA.Anjin.Reporters;
@@ -16,6 +16,11 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private const float SpacerPixels = 10f;
         private const float SpacerPixelsUnderHeader = 4f;
         
+        private static readonly string s_description = L10n.Tr("Description");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this logger instance");
+        private SerializedProperty _descriptionProp;
+        private GUIContent _descriptionGUIContent;
+
         private static readonly string s_slackToken = L10n.Tr("Slack Token");
         private static readonly string s_slackTokenTooltip = L10n.Tr("Slack API token");
         private SerializedProperty _slackTokenProp;
@@ -47,6 +52,9 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
         private void Initialize()
         {
+            _descriptionProp = serializedObject.FindProperty(nameof(SlackReporter.description));
+            _descriptionGUIContent = new GUIContent(s_description, s_descriptionTooltip);
+
             _slackTokenProp = serializedObject.FindProperty(nameof(SlackReporter.slackToken));
             _slackTokenGUIContent = new GUIContent(s_slackToken, s_slackTokenTooltip);
 
@@ -65,6 +73,9 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         {
             serializedObject.Update();
             
+            EditorGUILayout.PropertyField(_descriptionProp, _descriptionGUIContent);
+            GUILayout.Space(SpacerPixels);
+
             EditorGUILayout.PropertyField(_slackTokenProp, _slackTokenGUIContent);
             EditorGUILayout.PropertyField(_slackChannelsProp, _slackChannelsGUIContent);
 

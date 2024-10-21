@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using DeNA.Anjin.Reporters;
@@ -14,6 +14,11 @@ namespace DeNA.Anjin.Editor.UI.Reporters
     [CustomEditor(typeof(CompositeReporter))]
     public class CompositeReporterEditor : UnityEditor.Editor
     {
+        private static readonly string s_description = L10n.Tr("Description");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this logger instance");
+        private SerializedProperty _descriptionProp;
+        private GUIContent _descriptionGUIContent;
+
         private SerializedProperty _reportersProp;
         private ReorderableList _reorderableList;
         private static readonly string s_reporters = L10n.Tr("Reporters");
@@ -30,6 +35,9 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
         private void Initialize()
         {
+            _descriptionProp = serializedObject.FindProperty(nameof(SlackReporter.description));
+            _descriptionGUIContent = new GUIContent(s_description, s_descriptionTooltip);
+
             _reportersProp = serializedObject.FindProperty(nameof(CompositeReporter.reporters));
             _reportersGUIContent = new GUIContent(s_reporters);
             _reporterGUIContent = new GUIContent(s_reporter);
@@ -52,7 +60,8 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            
+
+            EditorGUILayout.PropertyField(_descriptionProp, _descriptionGUIContent);
             _reorderableList.DoLayoutList();
             
             serializedObject.ApplyModifiedProperties();
