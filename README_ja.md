@@ -599,9 +599,21 @@ MIT License
 ## コントリビュート
 
 IssueやPull requestを歓迎します。
-
 Pull requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
 ブランチ名から自動的にラベルを付ける設定もあります。[PR Labeler settings](.github/pr-labeler.yml) を参照してください。
+
+
+おおまかな機能追加の受け入れ方針は次のとおりです。
+
+- すべてのビルトイン機能は、Unityエディタのインスペクタウィンドウで設定を完結して使用できること
+- `Autopilot` 本体への機能追加は極力避け、Agentなどによる拡張を検討する
+- 汎用的でないAgentの追加は控える。ブログやGistでの公開、もしくはSamplesに置くことを検討する
+
+
+次の機能要望およびPull requestは、Anjinのコンセプトに反するためリジェクトされます。
+
+- 複数のテストシナリオ（AutopilotSettings）を連続実行する機能。Play Modeテストから実行する機能を利用してください
+- AutopilotSettingsに「開始Scene」を指定できる機能。どのSceneからでも動作するテストシナリオを組むことを推奨しています
 
 
 ## 開発方法

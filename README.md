@@ -594,8 +594,20 @@ MIT License
 ## How to contribute
 
 Open an issue or create a pull request.
-
 Be grateful if you could label the pull request as `enhancement`, `bug`, `chore`, and `documentation`. See [PR Labeler settings](.github/pr-labeler.yml) for automatically labeling from the branch name.
+
+
+The general policy for accepting new features is as follows:
+
+- All built-in features can be easily configured in the Unity Editor's Inspector window.
+- Avoid adding features to the `Autopilot` class as much as possible, and consider expanding it with Agents, etc.
+- Refrain from adding non-general-purpose agents. Consider publishing them on your blog or Gist or placing them in Samples.
+
+
+The following feature requests/ pull requests will be rejected because they go against the concept of Anjin:
+
+- Ability to run multiple test scenarios (AutopilotSettings) in succession. Use the feature to run from Play Mode tests.
+- Ability to specify "Start Scene" in AutopilotSettings. We recommend creating a test scenario that can be run from any Scene.
 
 
 ## How to development
