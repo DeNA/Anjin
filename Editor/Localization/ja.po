@@ -394,10 +394,6 @@ msgstr "操作を記録したJSONファイル"
 msgid "JSON file recorded by AutomatedQA package"
 msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したjsonファイルを設定します"
 
-# composite reporters
-msgid "Reporters"
-msgstr "レポータ"
-
 
 #: Editor/UI/Loggers/ 共通
 
@@ -458,8 +454,13 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this setting instance"
+msgid "Description about this reporter instance"
 msgstr "このReporterインスタンスの説明"
+
+
+#: Editor/UI/Reporters/CompositeReporterEditor.cs
+msgid "Reporters"
+msgstr "レポータ"
 
 
 #: Editor/UI/Reporters/SlackReporterEditor.cs
