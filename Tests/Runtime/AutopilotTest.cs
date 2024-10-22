@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -10,6 +9,7 @@ using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
+using TestHelper.Attributes;
 using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +21,9 @@ namespace DeNA.Anjin
     [TestFixture]
     public class AutopilotTest
     {
+        private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
+
         private static DoNothingAgent CreateAgent()
         {
             var agent = ScriptableObject.CreateInstance<DoNothingAgent>();
@@ -86,10 +89,12 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        [BuildScene(TestScenePath)]
+        [BuildScene(TestScenePath2)]
         public async Task Start_MappedSceneIsNotActiveButLoaded_DispatchAgent()
         {
-            const string MappedScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
-            const string ActiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Empty.unity";
+            const string MappedScenePath = TestScenePath;
+            const string ActiveScenePath = TestScenePath2;
 
             var spyMappedAgent = ScriptableObject.CreateInstance<SpyAgent>();
             var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
@@ -106,17 +111,19 @@ namespace DeNA.Anjin
             await SceneManagerHelper.LoadSceneAsync(MappedScenePath, LoadSceneMode.Additive);
             Assume.That(SceneManager.GetActiveScene().path, Is.EqualTo(ActiveScenePath), "Mapped scene is not active");
 
-            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+            await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
             Assert.That(spyMappedAgent.CompleteCount, Is.EqualTo(1), "Mapped Agent dispatched");
             Assert.That(spyFallbackAgent.CompleteCount, Is.EqualTo(0), "Fallback Agent is not dispatched");
         }
 
         [Test]
+        [BuildScene(TestScenePath)]
+        [BuildScene(TestScenePath2)]
         public async Task Start_NoMappedSceneInLoadedScenes_DispatchFallbackAgent()
         {
-            const string AdditiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
-            const string ActiveScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Empty.unity";
+            const string AdditiveScenePath = TestScenePath;
+            const string ActiveScenePath = TestScenePath2;
 
             var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
 
@@ -127,7 +134,7 @@ namespace DeNA.Anjin
             await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
             await SceneManagerHelper.LoadSceneAsync(AdditiveScenePath, LoadSceneMode.Additive);
 
-            await LauncherFromTest.AutopilotAsync(autopilotSettings);
+            await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
             Assert.That(spyFallbackAgent.CompleteCount, Is.EqualTo(1));
         }
