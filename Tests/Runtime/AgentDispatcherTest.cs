@@ -16,8 +16,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 namespace DeNA.Anjin
 {
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]

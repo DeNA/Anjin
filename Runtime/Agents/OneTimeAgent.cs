@@ -9,8 +9,6 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 namespace DeNA.Anjin.Agents
 {
     /// <summary>

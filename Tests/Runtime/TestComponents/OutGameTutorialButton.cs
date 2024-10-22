@@ -4,8 +4,6 @@
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
 
-#pragma warning disable CS0618 // Type or member is obsolete
-
 namespace DeNA.Anjin.TestComponents
 {
     [RequireComponent(typeof(Button))]
