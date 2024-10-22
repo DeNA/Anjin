@@ -654,7 +654,7 @@ Please delete the value using Debug Mode in the Inspector window. And create a S
 ```
 
 Even if you have already migrated to a new setting method (`SlackReporter` in the above example), you are warned that values remain in obsolete fields.
-You can edit obsolete fields by opening the settings file in the Inspector window and switching to Debug Mode.
+You can edit obsolete fields by opening the settings file in the Inspector window and switching to **Debug Mode**.
 
 For information on how to use the Inspector window, see the Unity manual:  
 [Manual: Working in the Inspector](https://docs.unity3d.com/Manual/InspectorOptions.html)

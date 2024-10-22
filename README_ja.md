@@ -300,13 +300,8 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 従って、レコーディングはScene単位に区切って行なうようご注意ください。
 
 また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
-<<<<<<< HEAD
-各プラットフォームの`Application.persistentDataPath`はUnityマニュアルの
-[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
-=======
 各プラットフォームの `Application.persistentDataPath` はUnityマニュアルの
 [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
->>>>>>> 39a1061 (Fix READMEs)
 を参照してください。
 
 
