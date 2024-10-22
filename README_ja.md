@@ -301,7 +301,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
 各プラットフォームの `Application.persistentDataPath` はUnityマニュアルの
-[Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
 を参照してください。
 
 
