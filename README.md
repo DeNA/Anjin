@@ -10,7 +10,7 @@ It consists of the following two elements.
 2. An Agent that realizes auto-execution closed to the Scene
 
 Agents are small, isolated C# scripts that perform specific operations, such as playback of UI operations or monkey tests.
-In addition to those provided built-in, game title-specific ones can be implemented and used.
+In addition to the built-in ones, you can implement and use ones specific to your game title.
 
 Click [日本語](./README_ja.md) for the Japanese page if you need.
 
@@ -70,7 +70,7 @@ There is no need to track it, so we recommend adding it to your project's .gitig
 
 ## Settings for game title
 
-After installing the UPM package in the game title project, configure and implement the following.
+After installing the UPM package in the game title Unity project, configure and implement the following.
 
 - Generate and configure the AutopilotSettings.asset file
 - Generate and configure the .asset file for the Agent to be used
@@ -243,7 +243,7 @@ public async Task LaunchAutopilotInTest()
 
 ## Built-in Agents
 
-The following Agent types are provided. These can be used as they are, or project-specific Agents can be implemented and used.
+The following Agent types are provided. These can be used as they are, or game-title-specific custom Agents can be implemented and used.
 
 
 ### UGUIMonkeyAgent
@@ -391,7 +391,7 @@ This can be accomplished with `ParallelCompositeAgent`, but it is easier to set 
 
 ## Built-in Logger
 
-The following Logger types are provided. These can be used as they are, or project-specific Loggers can be implemented and used.
+The following Logger types are provided. These can be used as they are, or game-title-specific custom Loggers can be implemented and used.
 
 
 ### Composite Logger
@@ -433,7 +433,7 @@ The instance of this Logger (.asset file) can have the following settings.
 
 ## Built-in Reporter
 
-The following Reporter types are provided. These can be used as they are, or project-specific Reporters can be implemented and used.
+The following Reporter types are provided. These can be used as they are, or game-title-specific custom Reporters can be implemented and used.
 
 
 ### Composite Reporter
@@ -464,13 +464,13 @@ The instance of this Reporter (.asset file) can have the following settings.
 
 
 
-## Implementation of game title-specific code
+## Implementation of game-title-specific
 
-Game title specific Agents and initialization code must be avoided in the release build.
+Game-title-specific custom Agents and initialization code must be avoided in the release build.
 Create a unique assembly and turn off "Auto Referenced", and set the "Define Constraints" to `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE`.
 
 This asmdef and its storage folder can be created by opening the context menu anywhere in the Project window and selecting
-**Create > Anjin > Title Own Assembly Folder**.
+**Create > Anjin > Game Title Specific Assembly Folder**.
 
 
 ### Custom Agent
@@ -486,9 +486,9 @@ The following fields defined in `AbstractAgent` are available. Each instance is 
 Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
 
 
-### Game title-specific pre-processing
+### Game-title-specific initialization process
 
-If your title requires its own initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `static` method that does the initialization.
+If your game title requires its specific initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `static` method that does the initialization.
 An added method is called from the autopilot launch process.
 
 ```csharp
@@ -503,7 +503,7 @@ Async methods are also supported.
 
 ```csharp
 [InitializeOnLaunchAutopilot]
-private static async UniTask InitializeOnLaunchAutopilotMethod()
+private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
 {
     // initialize code for your game.
 }
