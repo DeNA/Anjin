@@ -222,9 +222,12 @@ $(UNITY) \
 
 ```
 [Test]
-[LoadScene("Assets/MyGame/Scenes/TitleScene.unity")]
 public async Task LaunchAutopilotInTest()
 {
+  // 最初のSceneをロード
+  await SceneManager.LoadSceneAsync(0);
+
+  // オートパイロットを起動
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
 }
 ```
@@ -236,10 +239,7 @@ public async Task LaunchAutopilotInTest()
 > テストをプレイヤーで実行するときは、必要な設定ファイルを `Resources` フォルダに置き、ビルドに含まれるようにしてください。テストのプレイヤービルドに処理を挟むには `IPrebuildSetup` および `IPostBuildCleanup` が利用できます。
 
 > [!NOTE]  
-> `LoadScene` 属性は [Test Helper](https://github.com/nowsprinting/test-helper) パッケージに含まれています。テスト開始前にSceneのロードを行ないます。
-
-> [!NOTE]  
-> テスト実行中にエラーを検知すると `LogError` が出力されるため、そのテストは失敗と判定されます。エラーハンドリングをAnjinで行なう前提で `LogAssert.ignoreFailingMessages` で抑止してもいいでしょう。
+> テストランナーに `LogException` または `LogError` 出力を検知されると、そのテストは失敗と判定されます。エラーハンドリングをAnjinで行なう前提で `LogAssert.ignoreFailingMessages` で抑止してもいいでしょう。
 
 
 

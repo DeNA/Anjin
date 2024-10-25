@@ -216,13 +216,16 @@ In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_S
 ### 3. Run in Play Mode test
 
 Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
-Specify the `AutopilotSettings` file path as the argument.
+Specify the `AutopilotSettings` file path via the argument.
 
 ```
 [Test]
-[LoadScene("Assets/MyGame/Scenes/TitleScene.unity")]
 public async Task LaunchAutopilotInTest()
 {
+  // Load the first scene
+  await SceneManager.LoadSceneAsync(0);
+
+  // Launch autopilot
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
 }
 ```
@@ -234,10 +237,7 @@ public async Task LaunchAutopilotInTest()
 > When running tests on a player, any necessary configuration files must be placed in the `Resources` folder to be included in the player build. It can use `IPrebuildSetup` and `IPostBuildCleanup` to insert processing into the test player build.
 
 > [!NOTE]  
-> `LoadScene` attribute is defined in [Test Helper](https://github.com/nowsprinting/test-helper) package. This attribute loads the scene before starting the test.
-
-> [!NOTE]  
-> If an error is detected while running, it will be output to `LogError` and the test will fail. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
+> The test will fail if the test-runner detects a `LogException` or  `LogError` output. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
 
 
 
