@@ -18,6 +18,7 @@ namespace DeNA.Anjin.Settings
 
         /// <summary>
         /// Launch autopilot on player build, And specify the autopilot settings file path.
+        /// This argument is only used in player builds.
         /// </summary>
         public virtual IArgument<string> LaunchAutopilotSettings => new Argument<string>("LAUNCH_AUTOPILOT_SETTINGS");
 

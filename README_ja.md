@@ -587,11 +587,14 @@ AddButton("Launch autopilot", clicked: () =>
 #if UNITY_EDITOR
     const string Path = "Assets/Path/To/AutopilotSettings.asset";
 #else
-    const string Path = "Path/To/AutopilotSettings"; // 拡張子（.asset）は不要です
+    const string Path = "Path/To/AutopilotSettings"; // Resourcesからの相対パスを指定。拡張子（.asset）は不要です
 #endif
     Launcher.LaunchAutopilotAsync(Path).Forget();
 });
 ```
+
+> [!NOTE]  
+> `Launcher.LaunchAutopilotAsync` は、引数に `AutopilotSettings` インスタンスを渡すオーバーロードも使用できます。
 
 
 ### 起動方法

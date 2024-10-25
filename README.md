@@ -583,11 +583,14 @@ AddButton("Launch autopilot", clicked: () =>
 #if UNITY_EDITOR
     const string Path = "Assets/Path/To/AutopilotSettings.asset";
 #else
-    const string Path = "Path/To/AutopilotSettings"; // without the .asset extension
+    const string Path = "Path/To/AutopilotSettings"; // relative path from Resources and without the .asset extension.
 #endif
     Launcher.LaunchAutopilotAsync(Path).Forget();
 });
 ```
+
+> [!NOTE]  
+> `Launcher.LaunchAutopilotAsync` can also use an overload that passes an `AutopilotSettings` instance as an argument.
 
 
 ### How to launch autopilot on player build
