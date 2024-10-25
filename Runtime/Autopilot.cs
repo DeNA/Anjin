@@ -188,7 +188,7 @@ This time, temporarily generate and use SlackReporter instance.");
             // SEE: https://github.com/DeNA/Anjin/issues/20
             await UniTask.NextFrame(token);
             EditorApplication.isPlaying = false;
-            // Note: Call `Launcher.OnChangePlayModeState()` so terminates Unity editor, when launch from commandline.
+            // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
 #else
             // Player build launch from commandline
             _logger.Log($"Exit Unity-player by autopilot, exit code={exitCode}");
