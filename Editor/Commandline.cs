@@ -107,7 +107,6 @@ namespace DeNA.Anjin.Editor
         /// Not called when invoked from play mode (not registered in event listener).
         /// </summary>
         /// <param name="playModeStateChange"></param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private static void OnChangePlayModeState(PlayModeStateChange playModeStateChange)
         {
             if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
