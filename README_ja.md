@@ -3,7 +3,9 @@
 [![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
 [![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)
 
-Unity製ゲームのオートパイロットツールです。
+Click [English](./README.md) for English page if you need.
+
+**Anjin**は、Unity製ゲーム向けのオートパイロット フレームワークです。
 次の2つの要素で構成されています。
 
 1. ゲーム中にロードされたSceneに応じて、対応するAgentを起動するディスパッチャ
@@ -11,8 +13,6 @@ Unity製ゲームのオートパイロットツールです。
 
 Agentとは、UI操作のプレイバックやモンキーテストなど、特定の操作を実行する小さく切り分けられたC#スクリプトです。
 ビルトインで提供しているもののほか、ゲームタイトル固有のものを実装して使用できます。
-
-Click [English](./README.md) for English page if you need.
 
 
 
@@ -131,7 +131,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>handle Error</dt><dd>エラーを検知したらレポータで通知します</dd>
   <dt>handle Assert</dt><dd>アサート違反を検知したらレポータで通知します</dd>
   <dt>handle Warning</dt><dd>警告を検知したらレポータで通知します</dd>
-  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません。正規表現でも指定できます</dd>
+  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません。正規表現も使用可能で、エスケープはバックスラッシュ1文字（`\`）です</dd>
 </dl>
 
 
@@ -343,7 +343,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 1つの子Agentを登録し、それをAutopilot実行期間を通じて1回だけ実行できるAgentです。
 2回目以降の実行はスキップされます。
 
-たとえば、タイトル画面で初回だけ導線が異なる、ホーム画面で初回だけログインボーナス受け取りがあるといったゲームにおいて、 通信エラーなどによるタイトル画面戻しが発生してもそのまま実行するシナリオを構築できます。
+たとえば、タイトル画面で初回だけ導線が異なる、ホーム画面で初回だけログインボーナス受け取りがあるといったゲームにおいて、 通信エラーなどによるタイトル画面戻しが発生してもそのまま実行するテストシナリオを構築できます。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
@@ -356,7 +356,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 1つの子Agentを登録し、それを無限に繰り返し実行するAgentです。
 
-SerialCompositeAgentと組み合わせることで、シナリオを何周もしたり、シナリオの最後のAgentだけを繰り返し実行することができます。
+SerialCompositeAgentと組み合わせることで、一連の操作を何周もしたり、特定のAgentだけを繰り返し実行することができます。
 なお、有限回の繰り返しはサポートしません（SerialCompositeAgentで実現できるため）。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
@@ -385,7 +385,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 
 ### EmergencyExitAgent
 
-`DeNA.Anjin.Annotations` アセンブリに含まれる `EmergencyExit` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。
+`DeNA.Anjin.Annotations` アセンブリに含まれる `EmergencyExitAnnotations` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。
 たとえば通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなる振る舞いが含まれるゲームで利用できます。
 
 常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
@@ -398,7 +398,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 以下のロガータイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムロガーを実装して使用することも可能です。
 
 
-### Composite Logger
+### CompositeLogger
 
 複数のロガーを登録し、そのすべてにログ出力を委譲するロガーです。
 
@@ -409,7 +409,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 </dl>
 
 
-### Console Logger
+### ConsoleLogger
 
 ログをコンソールに出力するロガーです。
 
@@ -420,7 +420,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 </dl>
 
 
-### File Logger
+### FileLogger
 
 ログを指定ファイルに出力するロガーです。
 
@@ -440,7 +440,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 以下のレポータタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムレポータを実装して使用することも可能です。
 
 
-### Composite Reporter
+### CompositeReporter
 
 複数のレポータを登録し、そのすべてにレポート送信を委譲するレポータです。
 
@@ -451,18 +451,29 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 </dl>
 
 
-### Slack Reporter
+### SlackReporter
 
 Slackにレポート送信するレポータです。
 
 このレポータのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Slack Token</dt><dd>Slack通知に使用するWeb APIトークン（省略時は通知されない）。コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできます。</dd>
-  <dt>Slack Channels</dt><dd>Slack通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。</dd>
-  <dt>Mention Sub Team IDs</dt><dd>Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add Here In Slack Message</dt><dd>Slack通知メッセージに@hereを付けます。デフォルトはoff</dd>
+  <dt>Slack Token</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
+        コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできます。</dd>
+  <dt>Slack Channels</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
+        コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。
+        チャンネルにはBotを招待しておく必要があります。</dd>
+  <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
+  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます。デフォルトはoff</dd>
 </dl>
+
+Botは次のページで作成できます。  
+[Slack API: Applications](https://api.slack.com/apps)
+
+Botには次の権限が必要です。
+
+- chat:write
+- files:write
 
 
 
@@ -534,7 +545,7 @@ Anjinの操作を制御するためのアノテーションを定義していま
 このコンポーネントがアタッチされた`GameObject`は、`UGUIMonkeyAgent`によって操作されることを避けることができます。
 
 
-### EmergencyExit
+### EmergencyExitAnnotations
 
 このコンポーネントがアタッチされた`Button`が表示されると、`EmergencyExitAgent`はすぐにクリックを試みます。
 通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなるボタンに付けることを想定しています。
@@ -680,9 +691,21 @@ MIT License
 ## コントリビュート
 
 IssueやPull requestを歓迎します。
-
 Pull requestには `enhancement`, `bug`, `chore`, `documentation` といったラベルを付けてもらえるとありがたいです。
 ブランチ名から自動的にラベルを付ける設定もあります。[PR Labeler settings](.github/pr-labeler.yml) を参照してください。
+
+
+おおまかな機能追加の受け入れ方針は次のとおりです。
+
+- すべてのビルトイン機能は、Unityエディタのインスペクタウィンドウで設定を完結して使用できること
+- `Autopilot` 本体への機能追加は極力避け、Agentなどによる拡張を検討する
+- 汎用的でないAgentの追加は控える。ブログやGistでの公開、もしくはSamplesに置くことを検討する
+
+
+次の機能要望およびPull requestは、Anjinのコンセプトに反するためリジェクトされます。
+
+- 複数のテストシナリオ（AutopilotSettings）を連続実行する機能。Play Modeテストから実行する機能を利用してください
+- AutopilotSettingsに「開始Scene」を指定できる機能。どのSceneからでも動作するテストシナリオを組むことを推奨しています
 
 
 ## 開発方法

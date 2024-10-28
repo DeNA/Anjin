@@ -3,7 +3,9 @@
 [![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
 [![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)
 
-This is an autopilot tool for games made with Unity.
+Click [日本語](./README_ja.md) for the Japanese page if you need.
+
+**Anjin** is an autopilot framework for games made with Unity.
 It consists of the following two elements.
 
 1. A dispatcher that launches the corresponding Agent according to the Scene loaded in the game
@@ -11,8 +13,6 @@ It consists of the following two elements.
 
 Agents are small, isolated C# scripts that perform specific operations, such as playback of UI operations or monkey tests.
 In addition to the built-in ones, you can implement and use ones specific to your game title.
-
-Click [日本語](./README_ja.md) for the Japanese page if you need.
 
 
 
@@ -134,7 +134,7 @@ Set up a filter to catch abnormal log messages and notify using Reporter.
   <dt>Handle Error</dt><dd>Report when error message is detected in log</dd>
   <dt>Handle Assert</dt><dd>Report when assert message is detected in log</dd>
   <dt>Handle Warning</dt><dd>Report when warning message is detected in log</dd>
-  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be reported. Regex is also available.</dd>
+  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be reported. Regex is also available, and escape is a single backslash (`\`).</dd>
 </dl>
 
 
@@ -339,7 +339,7 @@ The instance of this Agent (.asset file) can have the following settings.
 An Agent that can register one child Agent and execute it only once throughout the Autopilot execution period.
 The second time executions will be skipped.
 
-For example, in a game where the title scene leads to a different path only for the first time or where the user receives a login bonus only for the first time on the home scene, it is possible to construct a scenario in which the title screen is executed as is even if a communication error or the like causes a return to the title scene.
+For example, in a game where the title scene leads to a different path only for the first time or where the user receives a login bonus only for the first time on the home scene, it is possible to construct a test scenario in which the title screen is executed as is even if a communication error or the like causes a return to the title scene.
 
 The Agent instance (.asset file) can contain the following settings.
 
@@ -352,7 +352,7 @@ The Agent instance (.asset file) can contain the following settings.
 
 An Agent that executes one child Agent indefinitely and repeatedly.
 
-Combined with SerialCompositeAgent, it can be used to repeat a scenario many times or to repeat only the last Agent in a scenario.
+Combined with SerialCompositeAgent, it can be used to repeat a sequence many times or to repeat a specific Agent.
 Note that finite iterations are not supported (to use SerialCompositeAgent).
 
 This Agent instance (.asset file) can contain the following.
@@ -381,7 +381,7 @@ This Agent instance (.asset file) can contain the following.
 
 ### EmergencyExitAgent
 
-An Agent that monitors the appearance of the `EmergencyExit` component in the `DeNA.Anjin.Annotations` assembly and clicks on it as soon as it appears.
+An Agent that monitors the appearance of the `EmergencyExitAnnotations` component in the `DeNA.Anjin.Annotations` assembly and clicks on it as soon as it appears.
 This can be used in games that contain behavior that is irregular in the execution of the test scenario, for example, communication errors or "return to title screen" buttons that are triggered by a daybreak.
 
 It should always be started at the same time as other Agents (that actually perform game operations).
@@ -394,7 +394,7 @@ This can be accomplished with `ParallelCompositeAgent`, but it is easier to set 
 The following Logger types are provided. These can be used as they are, or game-title-specific custom Loggers can be implemented and used.
 
 
-### Composite Logger
+### CompositeLogger
 
 A Logger that delegates to multiple loggers.
 
@@ -405,7 +405,7 @@ The instance of this Logger (.asset file) can have the following settings.
 </dl>
 
 
-### Console Logger
+### ConsoleLogger
 
 A Logger that outputs to a console.
 
@@ -416,7 +416,7 @@ The instance of this Logger (.asset file) can have the following settings.
 </dl>
 
 
-### File Logger
+### FileLogger
 
 A Logger that outputs to a specified file.
 
@@ -436,7 +436,7 @@ The instance of this Logger (.asset file) can have the following settings.
 The following Reporter types are provided. These can be used as they are, or game-title-specific custom Reporters can be implemented and used.
 
 
-### Composite Reporter
+### CompositeReporter
 
 A Reporter that delegates to multiple Reporters.
 
@@ -447,20 +447,29 @@ The instance of this Reporter (.asset file) can have the following settings.
 </dl>
 
 
-### Slack Reporter
+### SlackReporter
 
 A Reporter that post report to Slack.
 
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Slack Token</dt><dd>Web API token used for Slack notifications. If omitted, no notifications will be sent.
+  <dt>Slack Token</dt><dd>OAuth token of Slack Bot used for notifications. If omitted, no notifications will be sent.
         This setting can be overwritten with the command line argument <code>-SLACK_TOKEN</code>.</dd>
-  <dt>Slack Channels</dt><dd>Channels to send Slack notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
-        This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.</dd>
-  <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to Mention in Slack Notification Message</dd>
-  <dt>Add Here In Slack Message</dt><dd>Add @here to Slack notification message. Default is off</dd>
+  <dt>Slack Channels</dt><dd>Channels to send notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
+        This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.
+        The bot must be invited to the channel.</dd>
+  <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
+  <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
 </dl>
+
+You can create a bot on the following page:  
+[Slack API: Applications](https://api.slack.com/apps)
+
+The bot needs the following permissions:
+
+- chat:write
+- files:write
 
 
 
@@ -531,7 +540,7 @@ Please note that this will be included in the release build due to the way it wo
 The `GameObject` to which this component is attached avoids manipulation by the `UGUIMonkeyAgent`.
 
 
-### EmergencyExit
+### EmergencyExitAnnotations
 
 When a `Button` to which this component is attached appears, the `EmergencyExitAgent` will immediately attempt to click on it.
 It is intended to be attached to buttons that are irregular in the execution of the test scenario, such as the "return to title screen" button due to a communication error or a daybreak.
@@ -672,8 +681,20 @@ MIT License
 ## How to contribute
 
 Open an issue or create a pull request.
-
 Be grateful if you could label the pull request as `enhancement`, `bug`, `chore`, and `documentation`. See [PR Labeler settings](.github/pr-labeler.yml) for automatically labeling from the branch name.
+
+
+The general policy for accepting new features is as follows:
+
+- All built-in features can be easily configured in the Unity Editor's Inspector window.
+- Avoid adding features to the `Autopilot` class as much as possible, and consider expanding it with Agents, etc.
+- Refrain from adding non-general-purpose agents. Consider publishing them on your blog or Gist or placing them in Samples.
+
+
+The following feature requests/ pull requests will be rejected because they go against the concept of Anjin:
+
+- Ability to run multiple test scenarios (AutopilotSettings) in succession. Use the feature to run from Play Mode tests.
+- Ability to specify "Start Scene" in AutopilotSettings. We recommend creating a test scenario that can be run from any Scene.
 
 
 ## How to development
