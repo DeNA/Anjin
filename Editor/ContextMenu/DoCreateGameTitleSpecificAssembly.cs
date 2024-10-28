@@ -1,17 +1,19 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.IO;
-using System.Reflection;
 using DeNA.Anjin.Editor.Definitions;
 using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
+#if !UNITY_6000_0_OR_NEWER
+using System.Reflection;
 using UnityEngine;
+#endif
 
 namespace DeNA.Anjin.Editor.ContextMenu
 {
     /// <inheritdoc/>
-    public class DoCreateTitleOwnAssembly : EndNameEditAction
+    public class DoCreateGameTitleSpecificAssembly : EndNameEditAction
     {
         /// <inheritdoc/>
         public override void Action(int instanceId, string pathName, string resourceFile)

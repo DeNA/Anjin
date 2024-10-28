@@ -69,11 +69,11 @@ Anjinを起動すると、次のファイルが自動生成されます。
 
 ## ゲームタイトルごとの設定
 
-ゲームタイトルのプロジェクトにUPMパッケージをインストール後、以下の設定・実装を行います。
+ゲームタイトルのUnityプロジェクトにUPMパッケージをインストール後、以下の設定・実装を行います。
 
 - AutopilotSettings.assetファイルを生成、設定
 - 使用するAgentの.assetファイルを生成・設定
-- 必要に応じて専用Agentの実装
+- 必要に応じてカスタムAgentの実装
 - 必要に応じて初期化処理の実装
 
 > [!NOTE]  
@@ -115,7 +115,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 
 <dl>
   <dt>Lifespan</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
-  <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはタイトル側での実装が必要です。</dd>
+  <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
   <dt>Logger</dt><dd>オートパイロットが使用するロガー指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
@@ -137,7 +137,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 
 ### Agent設定ファイル（.asset）の生成
 
-ビルトインのAgentを使用する場合でも、タイトル独自Agentを実装した場合でも、Unityエディタでそのインスタンス（.assetファイル）を生成する必要があります。
+ビルトインのAgentを使用する場合でも、カスタムAgentを実装した場合でも、Unityエディタでそのインスタンス（.assetファイル）を生成する必要があります。
 
 インスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
 **Create > Anjin > Agent名**
@@ -245,7 +245,7 @@ public async Task LaunchAutopilotInTest()
 
 ## ビルトインAgent
 
-以下のAgentが用意されています。これらをそのまま使用することも、プロジェクト独自のAgentを実装して使用することも可能です。
+以下のAgentが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムAgentを実装して使用することも可能です。
 
 
 ### UGUIMonkeyAgent
@@ -395,7 +395,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 
 ## ビルトイン ロガー
 
-以下のロガータイプが用意されています。これらをそのまま使用することも、プロジェクト独自のロガーを実装して使用することも可能です。
+以下のロガータイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムロガーを実装して使用することも可能です。
 
 
 ### Composite Logger
@@ -437,7 +437,7 @@ SerialCompositeAgentと組み合わせることで、シナリオを何周もし
 
 ## ビルトイン レポータ
 
-以下のレポータタイプが用意されています。これらをそのまま使用することも、プロジェクト独自のレポータを実装して使用することも可能です。
+以下のレポータタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムレポータを実装して使用することも可能です。
 
 
 ### Composite Reporter
@@ -466,19 +466,19 @@ Slackにレポート送信するレポータです。
 
 
 
-## ゲームタイトル独自処理の実装
+## ゲームタイトル固有の実装
 
-ゲームタイトル固有のAgent等を実装する場合、リリースビルドへの混入を避けるため、専用のアセンブリに分けることをおすすめします。
+ゲームタイトル固有のカスタムAgentや初期化処理を実装する場合、リリースビルドへの混入を避けるため、専用のアセンブリに分けることをおすすめします。
 Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraintsに `UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE` を設定することで、リリースビルドからは除外できます。
 
 このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き
-**Create > Anjin > Title Own Assembly Folder**
+**Create > Anjin > Game Title Specific Assembly Folder**
 を選択することで生成できます。
 
 
-### タイトル独自Agent
+### カスタムAgent
 
-タイトル独自のAgentは、`Anjin.Agents.AbstractAgent` を継承して作ります。
+カスタムAgentは、`Anjin.Agents.AbstractAgent` を継承して作ります。
 メソッド `UniTask Run(CancellationToken)` に、Agentが実行する処理を実装するだけです。
 
 `AbstractAgent` に定義された以下のフィールドを利用できます。各インスタンスは `Run` メソッド呼び出し前に設定されています。
@@ -489,16 +489,16 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
 
 
-### タイトル独自事前処理
+### ゲームタイトル固有の初期化処理
 
-タイトル独自の初期化処理が必要な場合、初期化を行なう `static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
+ゲームタイトル固有の初期化処理が必要な場合、初期化を行なう `static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
 オートパイロットの起動処理の中でメソッドを呼び出します。
 
 ```csharp
 [InitializeOnLaunchAutopilot]
 public static void InitializeOnLaunchAutopilotMethod()
 {
-    // プロジェクト固有の初期化処理
+    // ゲームタイトル固有の初期化処理
 }
 ```
 
@@ -506,9 +506,9 @@ public static void InitializeOnLaunchAutopilotMethod()
 
 ```csharp
 [InitializeOnLaunchAutopilot]
-private static async UniTask InitializeOnLaunchAutopilotMethod()
+private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
 {
-    // プロジェクト固有の初期化処理
+    // ゲームタイトル固有の初期化処理
 }
 ```
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections;
@@ -12,7 +12,7 @@ using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Editor.ContextMenu
 {
-    public class DoCreateTitleOwnAssemblyTest
+    public class DoCreateGameTitleSpecificAssemblyTest
     {
         private const string AssemblyName = "TestOutputOfAnjin";
         private readonly string _path = Path.Combine("Assets", AssemblyName);
@@ -51,7 +51,7 @@ namespace DeNA.Anjin.Editor.ContextMenu
         [Test]
         public void Action_CreatedRuntimeFolderContainingAsmdef()
         {
-            var sut = ScriptableObject.CreateInstance<DoCreateTitleOwnAssembly>();
+            var sut = ScriptableObject.CreateInstance<DoCreateGameTitleSpecificAssembly>();
             sut.Action(0, _path, null);
 
             var asmdefPath = Path.Combine(_path, $"{AssemblyName}.asmdef");
