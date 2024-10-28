@@ -482,15 +482,31 @@ This asmdef and its storage folder can be created by opening the context menu an
 **Create > Anjin > Game Title Specific Assembly Folder**.
 
 
-### Custom Agent
+### Custom Agents
 
 A custom Agent is created by inheriting from `Anjin.Agents.AbstractAgent`.
-Simply implement the process to be executed by the Agent in the method `UniTask Run(CancellationToken)`.
+Simply implement the process to be executed by the Agent in the method `UniTask Run()`.
 
 The following fields defined in `AbstractAgent` are available. Each instance is set before calling the `Run` method.
 
 - `Logger`: Implementation of `UnityEngine.ILogger` specified in AutopilotSettings. Use this if you want to log output in Agent.
 - `Random`: Implementation of `Anjin.Utilities.IRandom`. Which is created from a seed specified in AutopilotSettings or a startup argument.
+
+Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
+
+
+### Custom Loggers
+
+A custom Logger is created by inheriting from `Anjin.Logers.AbstractLoggerAsset`.
+Simply implement the `ILogger Logger { get; }` property.
+
+Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
+
+
+### Custom Reporters
+
+A custom Reporter is created by inheriting from `Anjin.Reporters.AbstractReporter`.
+Simply implement the method `UniTask PostReportAsync()`.
 
 Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
 

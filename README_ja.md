@@ -500,6 +500,22 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
 
 
+### カスタムLogger
+
+カスタムLoggerは、`Anjin.Logers.AbstractLoggerAsset` を継承して作ります。
+`ILogger Logger { get; }` プロパティを実装するだけです。
+
+なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
+
+
+### カスタムReporter
+
+カスタムReporterは、`Anjin.Reporters.AbstractReporter` を継承して作ります。
+メソッド `UniTask PostReportAsync()` を実装するだけです。
+
+なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
+
+
 ### ゲームタイトル固有の初期化処理
 
 ゲームタイトル固有の初期化処理が必要な場合、初期化を行なう `static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
