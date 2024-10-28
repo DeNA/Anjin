@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
@@ -14,7 +15,6 @@ using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
 {
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class OneTimeAgentTest
     {
         private static int s_childAgentCount;
@@ -126,6 +126,20 @@ namespace DeNA.Anjin.Agents
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
+        }
+
+        [Test]
+        public async Task ResetExecutedFlagWhenLaunchAutopilot()
+        {
+            var sut = ScriptableObject.CreateInstance<OneTimeAgent>();
+            sut.wasExecuted = true;
+
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.lifespanSec = 1;
+            await Launcher.LaunchAutopilotAsync(settings);
+
+            sut = ScriptableObject.CreateInstance<OneTimeAgent>(); // Reload because domain reloaded
+            Assert.That(sut.wasExecuted, Is.False); // was reset
         }
     }
 }

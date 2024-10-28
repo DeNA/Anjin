@@ -22,7 +22,16 @@ namespace DeNA.Anjin
     [SuppressMessage("ApiDesign", "RS0030")]
     public class AgentDispatcherTest
     {
+        private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
+        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
+
         private IAgentDispatcher _dispatcher;
+
+        private static string GetSceneName(string path)
+        {
+            var pattern = new Regex(@"([^/]+)\.unity$");
+            return pattern.Match(path).Groups[1].Value;
+        }
 
         [TearDown]
         public void TearDown()
@@ -50,15 +59,6 @@ namespace DeNA.Anjin
             var randomFactory = new RandomFactory(0);
 
             _dispatcher = new AgentDispatcher(settings, logger, randomFactory);
-        }
-
-        private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
-        private const string TestScenePath2 = "Packages/com.dena.anjin/Tests/TestScenes/Error.unity";
-
-        private static string GetSceneName(string path)
-        {
-            var pattern = new Regex(@"([^/]+)\.unity$");
-            return pattern.Match(path).Groups[1].Value;
         }
 
         [Test]
@@ -142,12 +142,28 @@ namespace DeNA.Anjin
             Assume.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
 
             await SceneManagerHelper.LoadSceneAsync(TestScenePath2, LoadSceneMode.Additive);
-            var additiveScene = SceneManager.GetSceneByName(GetSceneName((TestScenePath2)));
+            var additiveScene = SceneManager.GetSceneByName(GetSceneName(TestScenePath2));
             SceneManager.SetActiveScene(additiveScene);
 
             SceneManager.SetActiveScene(scene); // Re-activate
 
             Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1)); // Not create duplicate agents
+        }
+
+        [Test]
+        public async Task Dispose_DestroyAllRunningAgents()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.fallbackAgent = CreateSpyAliveCountAgent("Fallback Agent");
+            settings.observerAgent = CreateSpyAliveCountAgent("Observer Agent");
+            SetUpDispatcher(settings);
+            await SceneManagerHelper.LoadSceneAsync(TestScenePath);
+
+            _dispatcher.Dispose();
+            await UniTask.NextFrame(); // Wait for destroy
+
+            var agents = Object.FindObjectsOfType<AgentInspector>();
+            Assert.That(agents, Is.Empty, "Agents were destroyed");
         }
     }
 }

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7a1731caa574ed4b9334b7d52febe27, type: 3}
-  m_Name: AutopilotSettingsForImmediatlyFacingErrors
+  m_Name: AutopilotSettings2sec
   m_EditorClassIdentifier: 
-  description: 
+  description: "\u4E3B\u306BAutopilot\u8D77\u52D5\u30C6\u30B9\u30C8\u7528\nlifespan=2sec"
   sceneAgentMaps: []
   fallbackAgent: {fileID: 0}
   observerAgent: {fileID: 0}
-  lifespanSec: 300
-  randomSeed: 
+  lifespanSec: 2
+  randomSeed: 0
   timeScale: 1
   junitReportPath: 
   slackToken: 
@@ -28,5 +28,15 @@ MonoBehaviour:
   handleError: 1
   handleAssert: 1
   handleWarning: 0
-  ignoreMessages: []
+  ignoreMessages:
+  - 'Assertion failed on expression: ''task.rasterData.vertexBuffer == NULL'''
+  - 'CannotContinueException: No enough space'
+  - 'LCXError:'
+  - The profiler has run out of samples for this frame. This frame will be skipped.
+    Increase the sample limit using Profiler.maxNumberOfSamplesPerFrame
+  - response headers has no STATUS.
+  - Stale
+  - EGL_BAD_NATIVE_WINDOW
+  - EGL_BAD_ALLOC
+  loggerAsset: {fileID: 0}
   reporter: {fileID: 0}

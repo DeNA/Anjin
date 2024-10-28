@@ -7,7 +7,6 @@
         "DeNA.Anjin",
         "DeNA.Anjin.Annotations",
         "UniTask",
-        "DeNA.Anjin.Editor",
         "TestHelper",
         "TestHelper.RuntimeInternals",
         "TestHelper.Monkey"

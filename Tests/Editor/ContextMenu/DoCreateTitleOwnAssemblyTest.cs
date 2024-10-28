@@ -1,12 +1,14 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Collections;
 using System.IO;
 using DeNA.Anjin.Editor.Definitions;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Editor.ContextMenu
 {
@@ -34,14 +36,16 @@ namespace DeNA.Anjin.Editor.ContextMenu
             Assume.That(exist, Is.False, "Generated folder does not exist before test");
         }
 
-        [TearDown]
-        public void TearDown()
+        [UnityTearDown]
+        public IEnumerator TearDown()
         {
             var exist = AssetDatabase.IsValidFolder(_path);
             if (exist)
             {
                 AssetDatabase.DeleteAsset(_path);
             }
+
+            yield return new WaitForDomainReload();
         }
 
         [Test]

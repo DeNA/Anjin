@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using DeNA.Anjin.ArgumentCapture;
@@ -12,9 +12,15 @@ namespace DeNA.Anjin.Settings
     public class Arguments
     {
         /// <summary>
-        /// Path to the run autopilot settings file (required)
+        /// Path to the run autopilot settings file (required in editor)
         /// </summary>
         public virtual IArgument<string> AutopilotSettings => new Argument<string>("AUTOPILOT_SETTINGS");
+
+        /// <summary>
+        /// Launch autopilot on player build, And specify the autopilot settings file path.
+        /// This argument is only used in player builds.
+        /// </summary>
+        public virtual IArgument<string> LaunchAutopilotSettings => new Argument<string>("LAUNCH_AUTOPILOT_SETTINGS");
 
         /// <summary>
         /// Specifies the execution time limit in seconds.

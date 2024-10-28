@@ -3,8 +3,11 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
+using DeNA.Anjin.Attributes;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Agents
 {
@@ -22,14 +25,23 @@ namespace DeNA.Anjin.Agents
 
         [SerializeField] [HideInInspector] internal bool wasExecuted;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void ResetExecutedFlag()
+        [InitializeOnLaunchAutopilot]
+        public static void ResetExecutedFlag()
         {
+            // Reset runtime instances
+            var oneTimeAgents = FindObjectsOfType<OneTimeAgent>();
+            foreach (var current in oneTimeAgents)
+            {
+                current.wasExecuted = false;
+            }
+#if UNITY_EDITOR
+            // Reset asset files (in Editor only)
             foreach (var guid in AssetDatabase.FindAssets("t:OneTimeAgent"))
             {
                 var so = AssetDatabase.LoadAssetAtPath<OneTimeAgent>(AssetDatabase.GUIDToAssetPath(guid));
                 so.wasExecuted = false;
             }
+#endif
         }
 
         /// <inheritdoc />

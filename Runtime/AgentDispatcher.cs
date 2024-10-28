@@ -8,6 +8,7 @@ using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin
 {
@@ -48,6 +49,13 @@ namespace DeNA.Anjin
 
         public void Dispose()
         {
+            var inspectors = Object.FindObjectsOfType<AgentInspector>();
+            foreach (var inspector in inspectors)
+            {
+                _logger.Log($"Destroy running agent: {inspector.gameObject.name}");
+                Object.Destroy(inspector.gameObject);
+            }
+
             SceneManager.sceneLoaded -= this.DispatchByScene;
         }
 
@@ -101,22 +109,13 @@ namespace DeNA.Anjin
         private void DispatchAgent(AbstractAgent agent)
         {
             var agentName = agent.name;
-            var gameObject = new GameObject(agentName);
-            var token = gameObject.GetCancellationTokenOnDestroy(); // Agent also dies when GameObject is destroyed
-
             agent.Logger = _logger;
             agent.Random = _randomFactory.CreateRandom();
 
-            try
-            {
-                agent.Run(token).Forget();
-                _logger.Log($"Agent {agentName} dispatched!");
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                _logger.Log($"Agent {agentName} dispatched but immediately threw an error!");
-            }
+            var inspector = new GameObject(agentName).AddComponent<AgentInspector>();
+            var token = inspector.gameObject.GetCancellationTokenOnDestroy();
+            _logger.Log($"Dispatch agent: {agentName}");
+            agent.Run(token).Forget(); // Agent also dies when GameObject is destroyed
         }
     }
 }

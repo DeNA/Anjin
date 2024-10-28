@@ -15,28 +15,19 @@ namespace DeNA.Anjin
 
         /// <summary>
         /// Launch via Edit mode
+        /// When autopilot is finished, exits play mode.
         /// </summary>
-        EditorEditMode,
+        EditMode,
 
         /// <summary>
-        /// Launch via Play mode
+        /// Launch via Play mode (includes play mode tests and player build)
         /// </summary>
-        EditorPlayMode,
+        PlayMode,
 
         /// <summary>
-        /// Launch via Play mode tests
-        /// </summary>
-        PlayModeTests,
-
-        /// <summary>
-        /// Launch from commandline interface
-        /// When autopilot is finished, Unity editor is also exit.
+        /// Launch from commandline interface (Editor or Player)
+        /// When autopilot is finished, Unity editor/player is also exit.
         /// </summary>
         Commandline,
-
-        /// <summary>
-        /// Launch on standalone platform player build (not support yet)
-        /// </summary>
-        Runtime,
     }
 }

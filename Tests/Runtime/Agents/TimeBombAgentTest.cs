@@ -14,9 +14,10 @@ using UnityEngine.TestTools;
 namespace DeNA.Anjin.Agents
 {
     [TestFixture]
-    [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
     public class TimeBombAgentTest
     {
+        private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/OutGameTutorial.unity";
+
         private static UGUIMonkeyAgent CreateMonkeyAgent(long lifespanSec)
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
@@ -34,16 +35,17 @@ namespace DeNA.Anjin.Agents
             agent.name = nameof(TimeBombAgent);
             agent.agent = workingAgent;
             agent.defuseMessage = defuseMessage;
+            agent.Logger = Debug.unityLogger;
+            agent.Random = new RandomFactory(0).CreateRandom();
             return agent;
         }
 
         [Test]
+        [LoadScene(TestScene)]
         public async Task Run_CancelTask_StopAgent()
         {
             var monkeyAgent = CreateMonkeyAgent(5);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())
             {
@@ -63,13 +65,11 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
-        [LoadScene("Packages/com.dena.anjin/Tests/TestScenes/OutGameTutorial.unity")]
+        [LoadScene(TestScene)]
         public async Task Run_Defuse_StopAgent()
         {
             var monkeyAgent = CreateMonkeyAgent(5);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Tutorial Completed!$");
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())
             {
@@ -84,13 +84,11 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
-        [LoadScene("Packages/com.dena.anjin/Tests/TestScenes/OutGameTutorial.unity")]
+        [LoadScene(TestScene)]
         public async Task Run_NotDefuse_ThrowsTimeoutException()
         {
             var monkeyAgent = CreateMonkeyAgent(1);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
 
             using (var cts = new CancellationTokenSource())
             {

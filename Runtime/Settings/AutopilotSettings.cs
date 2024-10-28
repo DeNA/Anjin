@@ -45,7 +45,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Scene to Agent assign mapping
         /// </summary>
-        public List<SceneAgentMap> sceneAgentMaps;
+        public List<SceneAgentMap> sceneAgentMaps = new List<SceneAgentMap>();
 
         /// <summary>
         /// Agent for when not assigned

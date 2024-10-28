@@ -24,7 +24,7 @@ namespace DeNA.Anjin.Utilities
             }
 
             var xml = CreateJUnitXmlReport(exitCode, logString, stackTrace, time);
-            File.WriteAllText(path, xml);
+            File.WriteAllText(PathUtils.GetAbsolutePath(path), xml);
         }
 
         private static string CreateJUnitXmlReport(int exitCode, string logString, string stackTrace, float time)

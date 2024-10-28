@@ -170,7 +170,7 @@ You can prepare multiple Reporters with different settings for the same Reporter
 
 ## Run autopilot
 
-Autopilot can be executed in two ways.
+Autopilot can be run in the Unity editor in three ways.
 
 
 ### 1. Run on play mode in Unity editor (GUI)
@@ -179,27 +179,7 @@ Open the AutopilotSettings file you wish to run in the inspector and click the *
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
 
-### 2. Run from Play Mode test
-
-Autopilot works within your test code using the async method `LauncherFromTest.AutopilotAsync(string)`.
-Specify the `AutopilotSettings` file path as the argument.
-
-```
-[Test]
-public async Task LaunchAutopilotFromTest()
-{
-  await LauncherFromTest.AutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
-}
-```
-
-> [!NOTE]  
-> If an error is detected in running, it will be output to `LogError` and the test will fail.
-
-> [!WARNING]  
-> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
-
-
-### 3. Run from commandline
+### 2. Launch from commandline
 
 To execute from the commandline, specify the following arguments.
 
@@ -233,6 +213,33 @@ For details on each argument, see the entry of the same name in the "Generate an
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
 
 
+### 3. Run in Play Mode test
+
+Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
+Specify the `AutopilotSettings` file path via the argument.
+
+```
+[Test]
+public async Task LaunchAutopilotInTest()
+{
+  // Load the first scene
+  await SceneManager.LoadSceneAsync(0);
+
+  // Launch autopilot
+  await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
+}
+```
+
+> [!WARNING]  
+> The default timeout for tests is 3 minutes. If the autopilot execution time exceeds 3 minutes, please specify the timeout time with the `Timeout` attribute.
+
+> [!WARNING]  
+> When running tests on a player, any necessary configuration files must be placed in the `Resources` folder to be included in the player build. It can use `IPrebuildSetup` and `IPostBuildCleanup` to insert processing into the test player build.
+
+> [!NOTE]  
+> The test will fail if the test-runner detects a `LogException` or  `LogError` output. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
+
+
 
 ## Built-in Agents
 
@@ -258,7 +265,7 @@ An instance of this Agent (.asset file) can contain the following.
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
-  <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, Application.persistentDataPath + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
+  <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, `Application.persistentDataPath` + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
   <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
   <dt>Super Size</dt><dd>The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified</dd>
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
@@ -531,6 +538,86 @@ It is intended to be attached to buttons that are irregular in the execution of 
 
 
 
+## Run on player build \[experimental\]
+
+It can run autopilot on the players (real devices) if Anjin is included in player builds.
+
+> [!WARNING]  
+> This feature is experimental.
+> And Anjin itself is designed without much consideration for memory allocation, so please be careful when using it for performance testing.
+
+
+### How to build
+
+#### 1. Set the custom scripting symbols `DENA_AUTOPILOT_ENABLE` and `COM_NOWSPRINTING_TEST_HELPER_ENABLE`
+
+Set a custom scripting symbols. See below:  
+[Manual: Custom scripting symbols](https://docs.unity3d.com/Manual/custom-scripting-symbols.html)
+
+
+#### 2. Including configuration files into the player build
+
+Any necessary configuration files must be placed in the `Resources` folder to be included in the player build.
+It can use `IPreprocessBuildWithReport` and `IPostprocessBuildWithReport` to insert processing into the player build.
+
+
+#### 3. Exclude from iCloud backup (optional)
+
+Built-in File Logger and Agent screenshots are output under `Application.persistentDataPath` when running the player.
+This path is included in iCloud backup by default, so exclude it if not required.
+
+```csharp
+UnityEngine.iOS.Device.SetNoBackupFlag(Application.persistentDataPath);
+```
+
+
+#### 4. Add a launch autopilot button to the debug menu (optional)
+
+e.g., Launch autopilot with [UnityDebugSheet](https://github.com/Haruma-K/UnityDebugSheet):
+
+```csharp
+AddButton("Launch autopilot", clicked: () =>
+  {
+    _drawerController.SetStateWithAnimation(DrawerState.Min); // close debug menu before launch autopilot
+
+#if UNITY_EDITOR
+    const string Path = "Assets/Path/To/AutopilotSettings.asset";
+#else
+    const string Path = "Path/To/AutopilotSettings"; // relative path from Resources and without the .asset extension.
+#endif
+    Launcher.LaunchAutopilotAsync(Path).Forget();
+});
+```
+
+> [!NOTE]  
+> `Launcher.LaunchAutopilotAsync` can also use an overload that passes an `AutopilotSettings` instance as an argument.
+
+
+### How to launch autopilot on player build
+
+It can also launch it using command line arguments, in addition to launching it from the debug menu.
+To execute from the command line, specify the following arguments.
+
+```bash
+$(ROM) -LAUNCH_AUTOPILOT_SETTINGS Path/To/AutopilotSettings
+```
+
+- `ROM` is the path to the player build executable file.
+- `-LAUNCH_AUTOPILOT_SETTINGS` is the path to the settings file (AutopilotSettings) you want to run. Path is relative to the `Resources` folder and without the `.asset` extension.
+
+It can specify the same arguments as when running in the editor.
+
+> [!NOTE]  
+> Built-in File Logger and Agent screenshots are output under `Application.persistentDataPath` when running the player.
+> See below for each platform:  
+> [Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
+
+> [!NOTE]  
+> Android has a different way of specifying command line arguments. See below:  
+> [Manual: Specify Android Player command-line arguments](https://docs.unity3d.com/Manual/android-custom-activity-command-line.html)
+
+
+
 ## Troubleshooting
 
 ### Autopilot runs on its own in play mode.
@@ -570,7 +657,7 @@ Please delete the value using Debug Mode in the Inspector window. And create a S
 ```
 
 Even if you have already migrated to a new setting method (`SlackReporter` in the above example), you are warned that values remain in obsolete fields.
-You can edit obsolete fields by opening the settings file in the Inspector window and switching to Debug Mode.
+You can edit obsolete fields by opening the settings file in the Inspector window and switching to **Debug Mode**.
 
 For information on how to use the Inspector window, see the Unity manual:  
 [Manual: Working in the Inspector](https://docs.unity3d.com/Manual/InspectorOptions.html)
@@ -602,7 +689,7 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 > [!WARNING]  
 > Required install packages for running tests (when adding to the `testables` in package.json), as follows:
 > - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
-> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.4.2 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.7.2 or later
 
 Generate a temporary project and run tests on each Unity version from the command line.
 

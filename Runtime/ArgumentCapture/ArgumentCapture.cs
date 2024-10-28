@@ -11,12 +11,12 @@ namespace DeNA.Anjin.ArgumentCapture
         internal static (bool, T) Capture<T>(string key, string[] args = null)
         {
             string captureString = null;
-#if UNITY_EDITOR
-            captureString = CaptureString(key, args);
-#elif UNITY_ANDROID
+#if !UNITY_EDITOR && UNITY_ANDROID
             captureString = ArgumentCaptureAndroid.CaptureString(key);
-#elif UNITY_IOS
+#elif !UNITY_EDITOR && UNITY_IOS
             captureString = ArgumentCaptureIos.CaptureString(key);
+#else
+            captureString = CaptureString(key, args);
 #endif
 
             if (string.IsNullOrEmpty(captureString))

@@ -1,12 +1,10 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Editor.UI.Settings
 {
@@ -44,10 +42,14 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_junitReportPathTooltip = L10n.Tr("JUnit report output path");
 
         private static readonly string s_logger = L10n.Tr("Logger");
-        private static readonly string s_loggerTooltip = L10n.Tr("Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
+
+        private static readonly string s_loggerTooltip =
+            L10n.Tr("Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
 
         private static readonly string s_reporter = L10n.Tr("Reporter");
-        private static readonly string s_reporterTooltip = L10n.Tr("Reporter that called when some errors occurred in target application");
+
+        private static readonly string s_reporterTooltip =
+            L10n.Tr("Reporter that called when some errors occurred in target application");
         
         private static readonly string s_errorHandlingSettingsHeader = L10n.Tr("Error Handling Settings");
         private static readonly string s_handleException = L10n.Tr("Handle Exception");
@@ -67,14 +69,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_stopButton = L10n.Tr("Stop");
         private const float SpacerPixels = 10f;
         private const float SpacerPixelsUnderHeader = 4f;
-
-        private AutopilotSettings _settings;
-
-        private void OnEnable()
-        {
-            _settings = target as AutopilotSettings;
-            Assert.IsNotNull(_settings);
-        }
 
         /// <inheritdoc/>
         public override void OnInspectorGUI()
@@ -127,14 +121,14 @@ namespace DeNA.Anjin.Editor.UI.Settings
             {
                 if (GUILayout.Button(s_stopButton))
                 {
-                    Stop().Forget();
+                    Stop();
                 }
             }
             else
             {
                 if (GUILayout.Button(s_runButton))
                 {
-                    Launch(state);
+                    Launch();
                 }
             }
         }
@@ -146,24 +140,29 @@ namespace DeNA.Anjin.Editor.UI.Settings
             GUILayout.Space(SpacerPixelsUnderHeader);
         }
 
-        [SuppressMessage("ApiDesign", "RS0030")]
-        internal async UniTask Stop()
+        // ReSharper disable once MemberCanBeMadeStatic.Global
+        internal void Stop()
         {
             var autopilot = FindObjectOfType<Autopilot>();
-            await autopilot.TerminateAsync(ExitCode.Normally);
+            if (autopilot)
+            {
+                autopilot.TerminateAsync(ExitCode.Normally).Forget();
+            }
         }
 
-        internal void Launch(AutopilotState state)
+        internal void Launch()
         {
-            state.settings = _settings;
+            var state = AutopilotState.Instance;
+            state.settings = (AutopilotSettings)target;
+
             if (EditorApplication.isPlaying)
             {
-                state.launchFrom = LaunchType.EditorPlayMode;
-                Launcher.Run().Forget();
+                state.launchFrom = LaunchType.PlayMode;
+                Launcher.LaunchAutopilot().Forget();
             }
             else
             {
-                state.launchFrom = LaunchType.EditorEditMode;
+                state.launchFrom = LaunchType.EditMode;
                 EditorApplication.isPlaying = true;
             }
         }

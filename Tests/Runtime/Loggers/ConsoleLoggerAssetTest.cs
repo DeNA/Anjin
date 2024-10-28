@@ -68,13 +68,14 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log("Before reset");
             sut.Dispose();
             Assume.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Warning));
-#endif
+
             ConsoleLoggerAsset.ResetLoggers(); // Called when on launch autopilot
 
             sut.filterLogType = LogType.Error;
             sut.Logger.Log("After reset");
             sut.Dispose();
             Assert.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Error));
+#endif
         }
     }
 }
