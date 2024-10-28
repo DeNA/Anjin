@@ -447,7 +447,7 @@ A Reporter that post report to Slack.
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Slack Token</dt><dd>Oath token of Slack Bot used for notifications. If omitted, no notifications will be sent.
+  <dt>Slack Token</dt><dd>OAuth token of Slack Bot used for notifications. If omitted, no notifications will be sent.
         This setting can be overwritten with the command line argument <code>-SLACK_TOKEN</code>.</dd>
   <dt>Slack Channels</dt><dd>Channels to send notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
         This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.
