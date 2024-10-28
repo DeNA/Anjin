@@ -18,6 +18,7 @@ using UnityEditor;
 namespace DeNA.Anjin.Agents
 {
     [TestFixture]
+    [UnityPlatform(exclude = new[] { RuntimePlatform.LinuxPlayer })] // Infinity loops inside the Automated QA package.
     [PrebuildSetup(typeof(CopyAssetsToResources))]
     [PostBuildCleanup(typeof(CleanupResources))]
     public class UGUIPlaybackAgentTest
