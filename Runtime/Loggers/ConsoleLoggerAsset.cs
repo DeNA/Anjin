@@ -44,7 +44,7 @@ namespace DeNA.Anjin.Loggers
             // Nothing to dispose.
         }
 
-        [InitializeOnLaunchAutopilot]
+        [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeLoggerOrder)]
         public static void ResetLoggers()
         {
             // Reset runtime instances
