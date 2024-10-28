@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     public class CompositeLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this logger instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance");
 
         private static readonly string s_loggers = L10n.Tr("Loggers");
         private static readonly string s_loggersTooltip = L10n.Tr("Loggers to delegates");

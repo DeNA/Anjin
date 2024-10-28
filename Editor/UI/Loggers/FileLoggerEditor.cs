@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     public class FileLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this logger instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance");
 
         private static readonly string s_outputPath = L10n.Tr("Output File Path");
         private static readonly string s_outputPathTooltip = L10n.Tr("Log output file path. Specify relative path from project root or absolute path.");

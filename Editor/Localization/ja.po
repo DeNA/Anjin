@@ -402,7 +402,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this logger instance"
+msgid "Description about this Logger instance"
 msgstr "このLoggerインスタンスの説明"
 
 
@@ -454,7 +454,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this reporter instance"
+msgid "Description about this Reporter instance"
 msgstr "このReporterインスタンスの説明"
 
 
