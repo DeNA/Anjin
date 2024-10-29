@@ -194,6 +194,12 @@ namespace DeNA.Anjin
 
         private static IEnumerable<(int, MethodInfo)> GetInitializeOnLaunchAutopilotMethods()
         {
+#if UNITY_EDITOR && UNITY_2021_3_OR_NEWER
+            return TypeCache.GetMethodsWithAttribute<InitializeOnLaunchAutopilotAttribute>()
+                .Select(x => (x.GetCustomAttribute<InitializeOnLaunchAutopilotAttribute>().CallbackOrder, x))
+                .OrderBy(x => x.Item1)
+                .Select(x => (x.Item1, x.Item2));
+#else
             const BindingFlags MethodBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             foreach (var method in AppDomain.CurrentDomain.GetAssemblies()
                          .SelectMany(x => x.GetTypes())
@@ -206,6 +212,7 @@ namespace DeNA.Anjin
                     yield return (attribute.CallbackOrder, method);
                 }
             }
+#endif
         }
 
         internal static async UniTask TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
