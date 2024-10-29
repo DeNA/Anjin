@@ -8,9 +8,6 @@ using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace DeNA.Anjin.Loggers
 {
@@ -170,16 +167,6 @@ namespace DeNA.Anjin.Loggers
                 current._handler = null;
                 current._logger = null;
             }
-#if UNITY_EDITOR
-            // Reset asset files (in Editor only)
-            foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(FileLoggerAsset)}"))
-            {
-                var so = AssetDatabase.LoadAssetAtPath<FileLoggerAsset>(AssetDatabase.GUIDToAssetPath(guid));
-                so._handler?.Dispose();
-                so._handler = null;
-                so._logger = null;
-            }
-#endif
         }
     }
 }

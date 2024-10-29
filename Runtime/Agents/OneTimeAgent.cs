@@ -5,9 +5,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace DeNA.Anjin.Agents
 {
@@ -23,7 +20,7 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public AbstractAgent agent;
 
-        [SerializeField] [HideInInspector] internal bool wasExecuted;
+        public bool WasExecuted { get; internal set; }
 
         [InitializeOnLaunchAutopilot]
         public static void ResetExecutedFlag()
@@ -32,28 +29,20 @@ namespace DeNA.Anjin.Agents
             var oneTimeAgents = FindObjectsOfType<OneTimeAgent>();
             foreach (var current in oneTimeAgents)
             {
-                current.wasExecuted = false;
+                current.WasExecuted = false;
             }
-#if UNITY_EDITOR
-            // Reset asset files (in Editor only)
-            foreach (var guid in AssetDatabase.FindAssets("t:OneTimeAgent"))
-            {
-                var so = AssetDatabase.LoadAssetAtPath<OneTimeAgent>(AssetDatabase.GUIDToAssetPath(guid));
-                so.wasExecuted = false;
-            }
-#endif
         }
 
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
         {
-            if (wasExecuted)
+            if (WasExecuted)
             {
                 Logger.Log($"Skip {this.name} since it has already been executed");
                 return;
             }
 
-            wasExecuted = true;
+            WasExecuted = true;
 
             Logger.Log($"Enter {this.name}.Run()");
 

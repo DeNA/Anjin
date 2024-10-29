@@ -42,7 +42,7 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public void ResetLoggers_InstanceOnly_ResetLoggerAsset()
+        public void ResetLoggers_ResetLoggerAsset()
         {
             var sut = ScriptableObject.CreateInstance<ConsoleLoggerAsset>();
             sut.filterLogType = LogType.Warning;
@@ -56,26 +56,6 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log("After reset");
             sut.Dispose();
             Assert.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Error));
-        }
-
-        [Test]
-        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-        public void ResetLoggers_FromAssetFile_ResetLoggerAsset()
-        {
-#if UNITY_EDITOR
-            var sut = AssetDatabase.LoadAssetAtPath<ConsoleLoggerAsset>(
-                "Packages/com.dena.anjin/Tests/TestAssets/ConsoleLogger.asset");
-            sut.Logger.Log("Before reset");
-            sut.Dispose();
-            Assume.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Warning));
-
-            ConsoleLoggerAsset.ResetLoggers(); // Called when on launch autopilot
-
-            sut.filterLogType = LogType.Error;
-            sut.Logger.Log("After reset");
-            sut.Dispose();
-            Assert.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Error));
-#endif
         }
     }
 }
