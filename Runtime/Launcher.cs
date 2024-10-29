@@ -2,8 +2,10 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
@@ -23,11 +25,11 @@ namespace DeNA.Anjin
     public static class Launcher
     {
         /// <summary>
-        /// Run autopilot from Play Mode test.
-        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
-        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings)
+        /// <param name="token">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings, CancellationToken token = default)
         {
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying)
@@ -45,22 +47,22 @@ namespace DeNA.Anjin
             state.settings = settings;
             LaunchAutopilot().Forget();
 
-            await UniTask.WaitUntil(() => !state.IsRunning);
+            await UniTask.WaitUntil(() => !state.IsRunning, cancellationToken: token);
         }
 
         /// <summary>
-        /// Run autopilot from Play Mode test.
-        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
-        /// <param name="autopilotSettingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
-        public static async UniTask LaunchAutopilotAsync(string autopilotSettingsPath)
+        /// <param name="settingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
+        /// <param name="token">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(string settingsPath, CancellationToken token = default)
         {
 #if UNITY_EDITOR
-            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(settingsPath);
 #else
-            var settings = Resources.Load<AutopilotSettings>(autopilotSettingsPath);
+            var settings = Resources.Load<AutopilotSettings>(settingsPath);
 #endif
-            await LaunchAutopilotAsync(settings);
+            await LaunchAutopilotAsync(settings, token);
         }
 
         /// <summary>
@@ -89,7 +91,7 @@ namespace DeNA.Anjin
         }
 
         /// <summary>
-        /// Run autopilot
+        /// Launch autopilot (internal).
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         // ReSharper disable once Unity.IncorrectMethodSignature
@@ -103,31 +105,83 @@ namespace DeNA.Anjin
 
             ScreenshotStore.CleanDirectories();
 
-            await CallAttachedInitializeOnLaunchAutopilotAttributeMethods();
+            await CallInitializeOnLaunchAutopilotMethods();
 
             var autopilot = new GameObject(nameof(Autopilot)).AddComponent<Autopilot>();
             Object.DontDestroyOnLoad(autopilot);
         }
 
-        private static async UniTask CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
+        private static async UniTask CallInitializeOnLaunchAutopilotMethods()
+        {
+            var orderedMethodMap = GetOrderedInitializeOnLaunchAutopilotMethodsMap();
+            // key: order, value: methods attaching InitializeOnLaunchAutopilotAttribute.
+
+            var tasks = new List<Task>();
+            var uniTasks = new List<UniTask>();
+
+            foreach (var (_, methods) in orderedMethodMap.OrderBy(x => x.Key))
+            {
+                tasks.Clear();
+                uniTasks.Clear();
+
+                foreach (var method in methods)
+                {
+                    try
+                    {
+                        switch (method.ReturnType.Name)
+                        {
+                            case nameof(Task):
+                                tasks.Add((Task)method.Invoke(null, null));
+                                break;
+                            case nameof(UniTask):
+                                uniTasks.Add((UniTask)method.Invoke(null, null));
+                                break;
+                            default:
+                                method.Invoke(null, null); // static method only
+                                break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Debug.LogError($"Invoke method failed: {method.Name}"); // Note: Logger is not initialized yet.
+                        throw;
+                    }
+                }
+
+                await Task.WhenAll(tasks);
+                await UniTask.WhenAll(uniTasks);
+            }
+        }
+
+        private static Dictionary<int, List<MethodInfo>> GetOrderedInitializeOnLaunchAutopilotMethodsMap()
+        {
+            var orderedMethodMap = new Dictionary<int, List<MethodInfo>>();
+            foreach (var (order, method) in GetInitializeOnLaunchAutopilotMethods())
+            {
+                if (!orderedMethodMap.TryGetValue(order, out var methods))
+                {
+                    methods = new List<MethodInfo>();
+                    orderedMethodMap[order] = methods;
+                }
+
+                methods.Add(method);
+            }
+
+            return orderedMethodMap;
+        }
+
+        private static IEnumerable<(int, MethodInfo)> GetInitializeOnLaunchAutopilotMethods()
         {
             const BindingFlags MethodBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            foreach (var methodInfo in AppDomain.CurrentDomain.GetAssemblies()
+            foreach (var method in AppDomain.CurrentDomain.GetAssemblies()
                          .SelectMany(x => x.GetTypes())
-                         .SelectMany(x => x.GetMethods(MethodBindingFlags))
-                         .Where(x => x.GetCustomAttributes(typeof(InitializeOnLaunchAutopilotAttribute), false).Any()))
+                         .SelectMany(x => x.GetMethods(MethodBindingFlags)))
             {
-                switch (methodInfo.ReturnType.Name)
+                var attribute = method.GetCustomAttributes<InitializeOnLaunchAutopilotAttribute>(false)
+                    .FirstOrDefault();
+                if (attribute != null)
                 {
-                    case nameof(Task):
-                        await (Task)methodInfo.Invoke(null, null);
-                        break;
-                    case nameof(UniTask):
-                        await (UniTask)methodInfo.Invoke(null, null);
-                        break;
-                    default:
-                        methodInfo.Invoke(null, null); // static method only
-                        break;
+                    yield return (attribute.CallbackOrder, method);
                 }
             }
         }
