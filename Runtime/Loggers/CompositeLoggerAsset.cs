@@ -16,7 +16,7 @@ namespace DeNA.Anjin.Loggers
     public class CompositeLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
-        /// Loggers to delegates
+        /// Loggers to delegate.
         /// </summary>
         public List<AbstractLoggerAsset> loggerAssets = new List<AbstractLoggerAsset>();
 

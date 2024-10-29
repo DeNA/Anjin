@@ -1,9 +1,11 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using DeNA.Anjin.Reporters;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Settings
 {
@@ -85,6 +87,63 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.handleError, Is.False);
             Assert.That(sut.handleAssert, Is.False);
             Assert.That(sut.handleWarning, Is.False);
+        }
+
+        [Test]
+        public void ConvertSlackReporterFromObsoleteSlackSettings_HasSlackSettings_GenerateSlackReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.slackToken = "token";
+            settings.slackChannels = "channels";
+            settings.mentionSubTeamIDs = "subteam";
+            settings.addHereInSlackMessage = true;
+
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
+
+            Assert.That(settings.reporters.Count, Is.EqualTo(1));
+            var slackReporter = settings.reporters[0] as SlackReporter;
+            Assert.That(slackReporter, Is.Not.Null);
+            Assert.That(slackReporter.slackToken, Is.EqualTo(settings.slackToken));
+            Assert.That(slackReporter.slackChannels, Is.EqualTo(settings.slackChannels));
+            Assert.That(slackReporter.mentionSubTeamIDs, Is.EqualTo(settings.mentionSubTeamIDs));
+            Assert.That(slackReporter.addHereInSlackMessage, Is.EqualTo(settings.addHereInSlackMessage));
+
+            LogAssert.Expect(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
+Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+This time, temporarily generate and use SlackReporter instance.");
+        }
+
+        [Test]
+        public void ConvertSlackReporterFromObsoleteSlackSettings_HasNotSlackToken_NotGenerateSlackReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.slackToken = "token";
+
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
+            Assert.That(settings.reporters, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertSlackReporterFromObsoleteSlackSettings_HasNotSlackChannels_NotGenerateSlackReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.slackChannels = "channels";
+
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
+            Assert.That(settings.reporters, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertSlackReporterFromObsoleteSlackSettings_ExistReporter_NotGenerateSlackReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.reporters.Add(ScriptableObject.CreateInstance<CompositeReporter>()); // already exists
+            settings.slackToken = "token";
+            settings.slackChannels = "channels";
+
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
+            Assert.That(settings.reporters.Count, Is.EqualTo(1));
+            Assert.That(settings.reporters, Has.No.InstanceOf<SlackReporter>());
         }
     }
 }

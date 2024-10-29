@@ -16,7 +16,7 @@ namespace DeNA.Anjin.Reporters
     public class CompositeReporter : AbstractReporter
     {
         /// <summary>
-        /// Reporters to delegate
+        /// Reporters to delegate.
         /// </summary>
         public List<AbstractReporter> reporters = new List<AbstractReporter>();
 

@@ -5,8 +5,6 @@ using System;
 using System.Collections;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Loggers;
-using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
@@ -38,7 +36,6 @@ namespace DeNA.Anjin
     /// </summary>
     public class Autopilot : MonoBehaviour, ITerminatable
     {
-        private AbstractLoggerAsset _loggerAsset;
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
@@ -54,10 +51,8 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            _loggerAsset = _settings.LoggerAsset;   // TODO:
-            _logger = _loggerAsset != null ? _loggerAsset.Logger : CreateDefaultLogger();
-
-            ConvertSlackReporterFromObsoleteSlackSettings(_settings, _logger);
+            _logger = _settings.LoggerAsset.Logger;
+            // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -103,38 +98,6 @@ namespace DeNA.Anjin
                     break;
                 }
             }
-        }
-
-        /// <summary>
-        /// Returns an logger that autopilot uses. You can change a logger by overriding this method.
-        /// Default logger is that write to console.
-        /// </summary>
-        /// <returns>A new logger that write to console</returns>
-        private static ILogger CreateDefaultLogger()
-        {
-            return Debug.unityLogger;
-        }
-
-        [Obsolete("Remove this method when bump major version")]
-        internal static void ConvertSlackReporterFromObsoleteSlackSettings(AutopilotSettings settings, ILogger logger)
-        {
-            if (string.IsNullOrEmpty(settings.slackToken) || string.IsNullOrEmpty(settings.slackChannels) ||
-                settings.Reporter != null)
-                // TODO: This condition will change when the AutopilotSettings.reporter is changed to a List<AbstractReporter>.
-            {
-                return;
-            }
-
-            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
-Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.");
-
-            var reporter = ScriptableObject.CreateInstance<SlackReporter>();
-            reporter.slackToken = settings.slackToken;
-            reporter.slackChannels = settings.slackChannels;
-            reporter.mentionSubTeamIDs = settings.mentionSubTeamIDs;
-            reporter.addHereInSlackMessage = settings.addHereInSlackMessage;
-            settings.reporters.Add(reporter);
         }
 
         /// <summary>

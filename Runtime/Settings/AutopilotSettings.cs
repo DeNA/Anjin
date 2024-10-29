@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Linq;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
@@ -138,13 +138,27 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// List of Loggers used for this autopilot settings.
         /// </summary>
-        public List<AbstractLoggerAsset> loggerAssets;
+        public List<AbstractLoggerAsset> loggerAssets = new List<AbstractLoggerAsset>();
+
+        private CompositeLoggerAsset _compositeLoggerAsset;
 
         /// <summary>
         /// Composite Loggers used for this autopilot settings.
-        /// Contains all Loggers of <c>loggerAssets</c> field. Create an instance at launch autopilot.
+        /// Contains <c>loggerAssets</c> field. Create an instance during the first call.
         /// </summary>
-        public CompositeLoggerAsset LoggerAsset { get; private set; }
+        public CompositeLoggerAsset LoggerAsset
+        {
+            get
+            {
+                if (_compositeLoggerAsset == null)
+                {
+                    _compositeLoggerAsset = CreateInstance<CompositeLoggerAsset>();
+                    _compositeLoggerAsset.loggerAssets = this.loggerAssets;
+                }
+
+                return _compositeLoggerAsset;
+            }
+        }
 
         /// <summary>
         /// Reporter that called when some errors occurred
@@ -155,13 +169,27 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// List of Reporters to be called on Autopilot terminate.
         /// </summary>
-        public List<AbstractReporter> reporters;
+        public List<AbstractReporter> reporters = new List<AbstractReporter>();
+
+        private CompositeReporter _compositeReporter;
 
         /// <summary>
         /// Composite Reporters to be called on Autopilot terminate.
-        /// Contains all Reporters of <c>reporters</c> field. Create an instance at launch autopilot.
+        /// Contains <c>reporters</c> field. Create an instance during the first call.
         /// </summary>
-        public CompositeReporter Reporter { get; private set; }
+        public CompositeReporter Reporter
+        {
+            get
+            {
+                if (_compositeReporter == null)
+                {
+                    _compositeReporter = CreateInstance<CompositeReporter>();
+                    _compositeReporter.reporters = this.reporters;
+                }
+
+                return _compositeReporter;
+            }
+        }
 
         /// <summary>
         /// Overwrites specified values in the command line arguments
@@ -209,20 +237,47 @@ namespace DeNA.Anjin.Settings
             }
         }
 
-        [InitializeOnLaunchAutopilot]
+        [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeSettings)]
         private static void Initialize()
         {
             var settings = AutopilotState.Instance.settings;
             Assert.NotNull(settings);
-            settings.CreateCompositeLoggerAndReporter();
+
+            // TODO: convert logger to loggers before create default logger.
+            settings.CreateDefaultLoggerIfNeeded();
+
+            var logger = settings.LoggerAsset.Logger;
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
         }
 
-        private void CreateCompositeLoggerAndReporter()
+        private void CreateDefaultLoggerIfNeeded()
         {
-            this.LoggerAsset = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
-            this.LoggerAsset.loggerAssets = loggerAssets;
-            this.Reporter = ScriptableObject.CreateInstance<CompositeReporter>();
-            this.Reporter.reporters = reporters;
+            if (!this.loggerAssets.Any()) // no logger settings.
+            {
+                this.loggerAssets.Add(CreateInstance<ConsoleLoggerAsset>());
+                this.LoggerAsset.Logger.Log("Create default logger.");
+            }
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertSlackReporterFromObsoleteSlackSettings(ILogger logger)
+        {
+            if (string.IsNullOrEmpty(this.slackToken) || string.IsNullOrEmpty(this.slackChannels) ||
+                this.reporters.Any())
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
+Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+This time, temporarily generate and use SlackReporter instance.");
+
+            var convertedReporter = CreateInstance<SlackReporter>();
+            convertedReporter.slackToken = this.slackToken;
+            convertedReporter.slackChannels = this.slackChannels;
+            convertedReporter.mentionSubTeamIDs = this.mentionSubTeamIDs;
+            convertedReporter.addHereInSlackMessage = this.addHereInSlackMessage;
+            this.reporters.Add(convertedReporter);
         }
     }
 }
