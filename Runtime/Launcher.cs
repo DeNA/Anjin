@@ -67,6 +67,8 @@ namespace DeNA.Anjin
 #else
             var settings = Resources.Load<AutopilotSettings>(settingsPath);
 #endif
+            Assert.IsNotNull(settings, $"Autopilot settings not found: {settingsPath}");
+
             await LaunchAutopilotAsync(settings, token);
         }
 
