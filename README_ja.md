@@ -118,20 +118,20 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
-  <dt>Logger</dt><dd>オートパイロットが使用するロガー指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
-  <dt>Reporter</dt><dd>対象のアプリケーションで発生したエラーを通知するレポータを指定します</dd>
+  <dt>Logger</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
+  <dt>Reporter</dt><dd>対象のアプリケーションで発生したエラーを通知するReporterを指定します</dd>
 </dl>
 
 #### エラーハンドリング設定
 
-異常系ログメッセージを捕捉してレポータで通知するフィルタを設定します。
+異常系ログメッセージを捕捉してReporterで通知するフィルタを設定します。
 
 <dl>
-  <dt>handle Exception</dt><dd>例外を検知したらレポータで通知します</dd>
-  <dt>handle Error</dt><dd>エラーを検知したらレポータで通知します</dd>
-  <dt>handle Assert</dt><dd>アサート違反を検知したらレポータで通知します</dd>
-  <dt>handle Warning</dt><dd>警告を検知したらレポータで通知します</dd>
-  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはレポータで通知しません。正規表現も使用可能で、エスケープはバックスラッシュ1文字（`\`）です</dd>
+  <dt>handle Exception</dt><dd>例外を検知したらReporterで通知します</dd>
+  <dt>handle Error</dt><dd>エラーを検知したらReporterで通知します</dd>
+  <dt>handle Assert</dt><dd>アサート違反を検知したらReporterで通知します</dd>
+  <dt>handle Warning</dt><dd>警告を検知したらReporterで通知します</dd>
+  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはReporterで通知しません。正規表現も使用可能で、エスケープはバックスラッシュ1文字（`\`）です</dd>
 </dl>
 
 
@@ -147,24 +147,24 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
 同じAgentでも設定の違うものを複数用意して、Sceneによって使い分けることができます。
 
 
-### ロガー設定ファイル（.asset）の生成
+### Logger設定ファイル（.asset）の生成
 
-ロガーインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
+Loggerインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
 **Create > Anjin > Logger名**
 を選択すると生成できます。ファイル名は任意です。
 
-生成したファイルを選択すると、インスペクタにロガー固有の設定項目が表示され、カスタマイズが可能です。
-同じロガーでも設定の違うものを複数用意して使い分けることができます。
+生成したファイルを選択すると、インスペクタにLogger固有の設定項目が表示され、カスタマイズが可能です。
+同じLoggerでも設定の違うものを複数用意して使い分けることができます。
 
 
-### レポータ設定ファイル（.asset）の生成
+### Reporter設定ファイル（.asset）の生成
 
-レポータインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
+Reporterインスタンスは、UnityエディタのProjectウィンドウで右クリックしてコンテキストメニューを開き、
 **Create > Anjin > Reporter名**
 を選択すると生成できます。ファイル名は任意です。
 
-生成したファイルを選択すると、インスペクタにレポータ固有の設定項目が表示され、カスタマイズが可能です。
-同じレポータでも設定の違うものを複数用意して使い分けることができます。
+生成したファイルを選択すると、インスペクタにReporter固有の設定項目が表示され、カスタマイズが可能です。
+同じReporterでも設定の違うものを複数用意して使い分けることができます。
 
 
 
@@ -393,16 +393,16 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 
 
-## ビルトイン ロガー
+## ビルトインLogger
 
-以下のロガータイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムロガーを実装して使用することも可能です。
+以下のLoggerタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムLoggerを実装して使用することも可能です。
 
 
 ### CompositeLogger
 
-複数のロガーを登録し、そのすべてにログ出力を委譲するロガーです。
+複数のLoggerを登録し、そのすべてにログ出力を委譲するLoggerです。
 
-このロガーのインスタンス（.assetファイル）には以下を設定できます。
+このLoggerのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
   <dt>Loggers</dt><dd>ログ出力を委譲するLoggerのリスト</dd>
@@ -411,9 +411,9 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 ### ConsoleLogger
 
-ログをコンソールに出力するロガーです。
+ログをコンソールに出力するLoggerです。
 
-このロガーのインスタンス（.assetファイル）には以下を設定できます。
+このLoggerのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
@@ -422,9 +422,9 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 ### FileLogger
 
-ログを指定ファイルに出力するロガーです。
+ログを指定ファイルに出力するLoggerです。
 
-このロガーのインスタンス（.assetファイル）には以下を設定できます。
+このLoggerのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
   <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
@@ -435,16 +435,16 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 
 
-## ビルトイン レポータ
+## ビルトインReporter
 
-以下のレポータタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムレポータを実装して使用することも可能です。
+以下のReporterタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムReporterを実装して使用することも可能です。
 
 
 ### CompositeReporter
 
-複数のレポータを登録し、そのすべてにレポート送信を委譲するレポータです。
+複数のReporterを登録し、そのすべてにレポート送信を委譲するReporterです。
 
-このレポータのインスタンス（.assetファイル）には以下を設定できます。
+このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
   <dt>Reporters</dt><dd>レポート送信を委譲するReporterのリスト</dd>
@@ -453,9 +453,9 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 ### SlackReporter
 
-Slackにレポート送信するレポータです。
+Slackにレポート送信するReporterです。
 
-このレポータのインスタンス（.assetファイル）には以下を設定できます。
+このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
   <dt>Slack Token</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
@@ -494,8 +494,24 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 
 `AbstractAgent` に定義された以下のフィールドを利用できます。各インスタンスは `Run` メソッド呼び出し前に設定されています。
 
-- `Logger` :  `UnityEngine.ILogger` の実装です。現時点ではコンソール出力ですが、ファイルロガーに差し替える予定があります。ログ出力にはこちらを使ってください
-- `Random` :  `Anjin.Utilities.IRandom` の実装です。設定ファイルもしくは起動時引数で指定されたシードから作られています
+- `Logger` :  `UnityEngine.ILogger` の実装です。AutopilotSettingsで設定されたLoggerがセットされます。Agent内のログ出力にはこちらを使用してください
+- `Random` :  `Anjin.Utilities.IRandom` の実装です。AutopilotSettingsもしくは起動時引数で指定されたシードから作られています
+
+なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
+
+
+### カスタムLogger
+
+カスタムLoggerは、`Anjin.Logers.AbstractLoggerAsset` を継承して作ります。
+`ILogger Logger { get; }` プロパティを実装するだけです。
+
+なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
+
+
+### カスタムReporter
+
+カスタムReporterは、`Anjin.Reporters.AbstractReporter` を継承して作ります。
+メソッド `UniTask PostReportAsync()` を実装するだけです。
 
 なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
 

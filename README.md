@@ -249,7 +249,7 @@ The following Agent types are provided. These can be used as they are, or game-t
 ### UGUIMonkeyAgent
 
 This is an Agent that randomly manipulates uGUI components.
-This agent implementation uses open source [test-helper.monkey](https://github.com/nowsprinting/test-helper.monkey) package.
+This Agent implementation uses open source [test-helper.monkey](https://github.com/nowsprinting/test-helper.monkey) package.
 
 An instance of this Agent (.asset file) can contain the following.
 
@@ -266,7 +266,7 @@ An instance of this Agent (.asset file) can contain the following.
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
   <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, `Application.persistentDataPath` + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
-  <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
+  <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is Agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
   <dt>Super Size</dt><dd>The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified</dd>
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
 </dl>
@@ -364,7 +364,7 @@ This Agent instance (.asset file) can contain the following.
 
 ### TimeBombAgent
 
-An Agent that will fail if a defuse message is not received before the inner agent exits.
+An Agent that will fail if a defuse message is not received before the inner Agent exits.
 
 For example, pass the out-game tutorial (Things that can be completed with tap operations on uGUI, such as smartphone games).
 
@@ -396,7 +396,7 @@ The following Logger types are provided. These can be used as they are, or game-
 
 ### CompositeLogger
 
-A Logger that delegates to multiple loggers.
+A Logger that delegates to multiple Loggers.
 
 The instance of this Logger (.asset file) can have the following settings.
 
@@ -482,15 +482,31 @@ This asmdef and its storage folder can be created by opening the context menu an
 **Create > Anjin > Game Title Specific Assembly Folder**.
 
 
-### Custom Agent
+### Custom Agents
 
 A custom Agent is created by inheriting from `Anjin.Agents.AbstractAgent`.
-Simply implement the process to be executed by the Agent in the method `UniTask Run(CancellationToken)`.
+Simply implement the process to be executed by the Agent in the method `UniTask Run()`.
 
 The following fields defined in `AbstractAgent` are available. Each instance is set before calling the `Run` method.
 
-- `Logger`: implementation of `UnityEngine.ILogger`. Use this for log output. Currently, it is a console output, but there are plans to replace it with a file logger.
-- `Random`: Implementation of `Anjin.Utilities.IRandom`. Which is created from a seed specified in a configuration file or a startup argument.
+- `Logger`: Implementation of `UnityEngine.ILogger` specified in AutopilotSettings. Use this if you want to log output in Agent.
+- `Random`: Implementation of `Anjin.Utilities.IRandom`. Which is created from a seed specified in AutopilotSettings or a startup argument.
+
+Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
+
+
+### Custom Loggers
+
+A custom Logger is created by inheriting from `Anjin.Logers.AbstractLoggerAsset`.
+Simply implement the `ILogger Logger { get; }` property.
+
+Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
+
+
+### Custom Reporters
+
+A custom Reporter is created by inheriting from `Anjin.Reporters.AbstractReporter`.
+Simply implement the method `UniTask PostReportAsync()`.
 
 Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
 
@@ -688,7 +704,7 @@ The general policy for accepting new features is as follows:
 
 - All built-in features can be easily configured in the Unity Editor's Inspector window.
 - Avoid adding features to the `Autopilot` class as much as possible, and consider expanding it with Agents, etc.
-- Refrain from adding non-general-purpose agents. Consider publishing them on your blog or Gist or placing them in Samples.
+- Refrain from adding non-general-purpose Agents, Loggers, and Reporters. Consider publishing them on your blog or Gist or placing them in Samples.
 
 
 The following feature requests/ pull requests will be rejected because they go against the concept of Anjin:
