@@ -54,7 +54,7 @@ namespace DeNA.Anjin
             _settings = _state.settings;
             Assert.IsNotNull(_settings);
 
-            _loggerAsset = _settings.loggerAsset;
+            _loggerAsset = _settings.LoggerAsset;   // TODO:
             _logger = _loggerAsset != null ? _loggerAsset.Logger : CreateDefaultLogger();
 
             ConvertSlackReporterFromObsoleteSlackSettings(_settings, _logger);
@@ -119,7 +119,7 @@ namespace DeNA.Anjin
         internal static void ConvertSlackReporterFromObsoleteSlackSettings(AutopilotSettings settings, ILogger logger)
         {
             if (string.IsNullOrEmpty(settings.slackToken) || string.IsNullOrEmpty(settings.slackChannels) ||
-                settings.reporter != null)
+                settings.Reporter != null)
                 // TODO: This condition will change when the AutopilotSettings.reporter is changed to a List<AbstractReporter>.
             {
                 return;
@@ -134,7 +134,7 @@ This time, temporarily generate and use SlackReporter instance.");
             reporter.slackChannels = settings.slackChannels;
             reporter.mentionSubTeamIDs = settings.mentionSubTeamIDs;
             reporter.addHereInSlackMessage = settings.addHereInSlackMessage;
-            settings.reporter = reporter;
+            settings.reporters.Add(reporter);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ This time, temporarily generate and use SlackReporter instance.");
             _logger?.Log("Destroy Autopilot object");
             _dispatcher?.Dispose();
             _logMessageHandler?.Dispose();
-            _settings.loggerAsset?.Dispose();
+            _settings.LoggerAsset?.Dispose();
         }
 
         /// <inheritdoc/>

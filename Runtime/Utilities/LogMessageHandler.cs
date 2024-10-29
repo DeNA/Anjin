@@ -60,9 +60,9 @@ namespace DeNA.Anjin.Utilities
             // NOTE: HandleLog may called by non-main thread because it subscribe Application.logMessageReceivedThreaded
             await UniTask.SwitchToMainThread();
 
-            if (_settings.loggerAsset != null)
+            if (_settings.LoggerAsset != null)
             {
-                _settings.loggerAsset.Logger.Log(type, logString, stackTrace);
+                _settings.LoggerAsset.Logger.Log(type, logString, stackTrace);
             }
 
             if (type == LogType.Exception)

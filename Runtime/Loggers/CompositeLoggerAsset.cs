@@ -10,9 +10,9 @@ using Object = UnityEngine.Object;
 namespace DeNA.Anjin.Loggers
 {
     /// <summary>
-    /// A class for a logger that delegates to multiple loggers
+    /// A class for a logger that delegates to multiple loggers.
+    /// This class is for Internal use. However, It is public for historical reasons.
     /// </summary>
-    [CreateAssetMenu(fileName = "New CompositeLogger", menuName = "Anjin/Composite Logger", order = 70)]
     public class CompositeLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>

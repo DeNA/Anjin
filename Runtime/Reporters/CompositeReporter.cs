@@ -10,16 +10,15 @@ using UnityEngine;
 namespace DeNA.Anjin.Reporters
 {
     /// <summary>
-    /// A class for reporters that delegate to multiple reporters
+    /// A class for reporters that delegate to multiple reporters.
+    /// This class is for Internal use. However, It is public for historical reasons.
     /// </summary>
-    [CreateAssetMenu(fileName = "New CompositeReporter", menuName = "Anjin/Composite Reporter", order = 51)]
     public class CompositeReporter : AbstractReporter
     {
         /// <summary>
         /// Reporters to delegate
         /// </summary>
         public List<AbstractReporter> reporters = new List<AbstractReporter>();
-
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(

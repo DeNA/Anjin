@@ -41,16 +41,17 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_junitReportPath = L10n.Tr("JUnit Report Path");
         private static readonly string s_junitReportPathTooltip = L10n.Tr("JUnit report output path");
 
-        private static readonly string s_logger = L10n.Tr("Logger");
+        private static readonly string s_loggers = L10n.Tr("Loggers");
 
-        private static readonly string s_loggerTooltip =
-            L10n.Tr("Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
+        private static readonly string s_loggersTooltip =
+            L10n.Tr(
+                "List of Loggers used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
 
-        private static readonly string s_reporter = L10n.Tr("Reporter");
+        private static readonly string s_reporters = L10n.Tr("Reporters");
 
-        private static readonly string s_reporterTooltip =
-            L10n.Tr("Reporter that called when some errors occurred in target application");
-        
+        private static readonly string s_reportersTooltip =
+            L10n.Tr("List of Reporters to be called on Autopilot terminate.");
+
         private static readonly string s_errorHandlingSettingsHeader = L10n.Tr("Error Handling Settings");
         private static readonly string s_handleException = L10n.Tr("Handle Exception");
         private static readonly string s_handleExceptionTooltip = L10n.Tr("Notify when Exception detected in log");
@@ -95,10 +96,10 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_timeScale, s_timeScaleTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.junitReportPath)),
                 new GUIContent(s_junitReportPath, s_junitReportPathTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.loggerAsset)),
-                new GUIContent(s_logger, s_loggerTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporter)),
-                new GUIContent(s_reporter, s_reporterTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.loggerAssets)),
+                new GUIContent(s_loggers, s_loggersTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporters)),
+                new GUIContent(s_reporters, s_reportersTooltip));
 
             DrawHeader(s_errorHandlingSettingsHeader);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleException)),

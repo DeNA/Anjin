@@ -88,20 +88,20 @@ msgid "JUnit report output path"
 msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
 
 # logger
-msgid "Logger"
-msgstr "Logger"
+msgid "Loggers"
+msgstr "Loggers"
 
 # logger tooltip
-msgid "Logger used for this autopilot settings. If omitted, Debug.unityLogger will be used as default."
-msgstr "オートパイロットが使用するLogger指定します。省略時は Debug.unityLogger がデフォルトとして使用されます"
+msgid "List of Loggers used for this autopilot settings. If omitted, Debug.unityLogger will be used as default."
+msgstr "オートパイロットで使用するLoggerを指定します。省略時は Debug.unityLogger がデフォルトとして使用されます"
 
 # reporter
-msgid "Reporter"
-msgstr "Reporter"
+msgid "Reporters"
+msgstr "Reporters"
 
 # reporter tooltip
-msgid "Reporter that called when some errors occurred in target application"
-msgstr "対象のアプリケーションで発生したエラーを通知するReporterを指定します"
+msgid "List of Reporters to be called on Autopilot terminate."
+msgstr "オートパイロット終了時に通知を行なうReporterを指定します"
 
 # Header: Error Handling Settings
 msgid "Error Handling Settings"
@@ -460,7 +460,7 @@ msgstr "このReporterインスタンスの説明"
 
 #: Editor/UI/Reporters/CompositeReporterEditor.cs
 msgid "Reporters"
-msgstr "Reporter"
+msgstr "Reporters"
 
 
 #: Editor/UI/Reporters/SlackReporterEditor.cs

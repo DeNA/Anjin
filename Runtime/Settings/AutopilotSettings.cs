@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using DeNA.Anjin.Agents;
+using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace DeNA.Anjin.Settings
@@ -129,12 +132,36 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Logger used for this autopilot settings.
         /// </summary>
+        [Obsolete("Use `loggerAssets` field or `LoggerAsset` property instead")]
         public AbstractLoggerAsset loggerAsset;
+
+        /// <summary>
+        /// List of Loggers used for this autopilot settings.
+        /// </summary>
+        public List<AbstractLoggerAsset> loggerAssets;
+
+        /// <summary>
+        /// Composite Loggers used for this autopilot settings.
+        /// Contains all Loggers of <c>loggerAssets</c> field. Create an instance at launch autopilot.
+        /// </summary>
+        public CompositeLoggerAsset LoggerAsset { get; private set; }
 
         /// <summary>
         /// Reporter that called when some errors occurred
         /// </summary>
+        [Obsolete("Use `reporters` field  or `Reporter` property instead")]
         public AbstractReporter reporter;
+
+        /// <summary>
+        /// List of Reporters to be called on Autopilot terminate.
+        /// </summary>
+        public List<AbstractReporter> reporters;
+
+        /// <summary>
+        /// Composite Reporters to be called on Autopilot terminate.
+        /// Contains all Reporters of <c>reporters</c> field. Create an instance at launch autopilot.
+        /// </summary>
+        public CompositeReporter Reporter { get; private set; }
 
         /// <summary>
         /// Overwrites specified values in the command line arguments
@@ -180,6 +207,22 @@ namespace DeNA.Anjin.Settings
             {
                 handleWarning = args.HandleWarning.Value();
             }
+        }
+
+        [InitializeOnLaunchAutopilot]
+        private static void Initialize()
+        {
+            var settings = AutopilotState.Instance.settings;
+            Assert.NotNull(settings);
+            settings.CreateCompositeLoggerAndReporter();
+        }
+
+        private void CreateCompositeLoggerAndReporter()
+        {
+            this.LoggerAsset = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
+            this.LoggerAsset.loggerAssets = loggerAssets;
+            this.Reporter = ScriptableObject.CreateInstance<CompositeReporter>();
+            this.Reporter.reporters = reporters;
         }
     }
 }

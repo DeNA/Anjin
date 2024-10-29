@@ -80,7 +80,7 @@ namespace DeNA.Anjin
             var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
             autopilotSettings.lifespanSec = 1;
             var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
-            autopilotSettings.loggerAsset = spyLogger;
+            autopilotSettings.loggerAssets.Add(spyLogger);
 
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
