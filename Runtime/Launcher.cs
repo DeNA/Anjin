@@ -11,8 +11,13 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
+using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
+using AssertionException = NUnit.Framework.AssertionException;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -71,7 +76,11 @@ namespace DeNA.Anjin
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void LaunchAutopilotOnPlayerFromCommandline()
         {
-#if !UNITY_EDITOR
+            if (Application.isEditor)
+            {
+                return;
+            }
+
             var args = new Arguments();
             if (!args.LaunchAutopilotSettings.IsCaptured())
             {
@@ -87,7 +96,6 @@ namespace DeNA.Anjin
 
             state.launchFrom = LaunchType.Commandline;
             state.settings = settings;
-#endif
         }
 
         /// <summary>
@@ -103,9 +111,23 @@ namespace DeNA.Anjin
                 return; // Normally play mode (not run autopilot)
             }
 
-            ScreenshotStore.CleanDirectories();
+            ScreenshotStore.CleanDirectories(); // Note: Scheduled to change soon.
 
-            await CallInitializeOnLaunchAutopilotMethods();
+            try
+            {
+                await CallInitializeOnLaunchAutopilotMethods();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+
+                var logger = Debug.unityLogger; // Note: Logger is not initialized yet.
+                const ExitCode ExitCode = ExitCode.AutopilotLaunchingFailed;
+                const string Caller = "Autopilot launcher";
+                Debug.Log("Cancel launching Autopilot");
+                TeardownLaunchAutopilotAsync(state, logger, ExitCode, Caller).Forget();
+                return;
+            }
 
             var autopilot = new GameObject(nameof(Autopilot)).AddComponent<Autopilot>();
             Object.DontDestroyOnLoad(autopilot);
@@ -183,6 +205,45 @@ namespace DeNA.Anjin
                 {
                     yield return (attribute.CallbackOrder, method);
                 }
+            }
+        }
+
+        internal static async UniTask TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
+            ExitCode exitCode, string caller, CancellationToken token = default)
+        {
+            state.settings = null;
+            state.exitCode = exitCode;
+
+            if (state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
+            {
+#if UNITY_INCLUDE_TESTS
+                // Play mode tests
+                if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
+                {
+                    throw new AssertionException($"{caller} failed with exit code {exitCode}");
+                }
+#endif
+                return; // Only terminate autopilot run if starting from play mode.
+            }
+
+            if (Application.isEditor)
+            {
+                // Terminate when launch from edit mode (including launch from commandline)
+                logger.Log($"Stop playing by {caller}");
+
+                // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
+                // SEE: https://github.com/DeNA/Anjin/issues/20
+                await UniTask.NextFrame(token);
+#if UNITY_EDITOR
+                EditorApplication.isPlaying = false;
+                // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
+#endif
+            }
+            else
+            {
+                // Player build launch from commandline
+                logger.Log($"Exit Unity-player by {caller}, exit code={exitCode}");
+                Application.Quit((int)exitCode);
             }
         }
     }

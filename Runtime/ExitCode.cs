@@ -4,23 +4,28 @@
 namespace DeNA.Anjin
 {
     /// <summary>
-    /// Exit code for autopilot running
+    /// Autopilot exit code.
     /// </summary>
     public enum ExitCode
     {
         /// <summary>
-        /// Normally exit
+        /// Normally exit.
         /// </summary>
         Normally = 0,
 
         /// <summary>
-        /// Exit by un catch Exceptions
+        /// Uncaught exceptions.
         /// </summary>
         UnCatchExceptions = 1,
 
         /// <summary>
-        /// Exit by fault in log message
+        /// Autopilot running failed.
         /// </summary>
-        AutopilotFailed = 2
+        AutopilotFailed = 2,
+
+        /// <summary>
+        /// Autopilot launching failed.
+        /// </summary>
+        AutopilotLaunchingFailed
     }
 }
