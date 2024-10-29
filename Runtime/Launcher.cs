@@ -141,12 +141,12 @@ namespace DeNA.Anjin
             var tasks = new List<Task>();
             var uniTasks = new List<UniTask>();
 
-            foreach (var (_, methods) in orderedMethodMap.OrderBy(x => x.Key))
+            foreach (var order in orderedMethodMap.Keys.OrderBy(x => x))
             {
                 tasks.Clear();
                 uniTasks.Clear();
 
-                foreach (var method in methods)
+                foreach (var method in orderedMethodMap[order])
                 {
                     try
                     {
