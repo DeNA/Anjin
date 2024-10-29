@@ -5,7 +5,7 @@ using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine.TestTools.Utils;
 
-namespace DeNA.Anjin.ArgumentCapture
+namespace DeNA.Anjin.Settings.ArgumentCapture
 {
     /// <summary>
     /// Test arguments when launch from the command line.
