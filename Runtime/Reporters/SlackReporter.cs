@@ -11,7 +11,7 @@ namespace DeNA.Anjin.Reporters
     /// <summary>
     /// Post report to Slack
     /// </summary>
-    [CreateAssetMenu(fileName = "New SlackReporter", menuName = "Anjin/Slack Reporter", order = 50)]
+    [CreateAssetMenu(fileName = "New SlackReporter", menuName = "Anjin/Slack Reporter", order = 90)]
     public class SlackReporter : AbstractReporter
     {
         /// <summary>
