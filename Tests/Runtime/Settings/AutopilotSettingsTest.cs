@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
@@ -90,6 +91,85 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
+        public void ConvertLoggersFromObsoleteLogger_HasLogger_IncludeToLoggers()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            var legacyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.loggerAsset = legacyLogger; // already exists
+
+            settings.ConvertLoggersFromObsoleteLogger();
+            Assert.That(settings.loggerAssets.Count, Is.EqualTo(1));
+            Assert.That(settings.loggerAssets, Has.Member(legacyLogger));
+
+            Assert.That(legacyLogger.Logs, Has.Member((LogType.Warning,
+                @"Single Logger setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
+This time, temporarily converting.")));
+        }
+
+        [Test]
+        public void ConvertLoggersFromObsoleteLogger_HasNotLogger_NotIncludeToLoggers()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            // Not set (single) logger
+
+            settings.ConvertLoggersFromObsoleteLogger();
+            Assert.That(settings.loggerAssets, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertLoggersFromObsoleteLogger_ExistLogger_NotIncludeToLoggers()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.loggerAssets.Add(ScriptableObject.CreateInstance<CompositeLoggerAsset>()); // already exists
+            settings.loggerAsset = ScriptableObject.CreateInstance<ConsoleLoggerAsset>();
+
+            settings.ConvertLoggersFromObsoleteLogger();
+            Assert.That(settings.loggerAssets.Count, Is.EqualTo(1));
+            Assert.That(settings.loggerAssets, Has.No.InstanceOf<ConsoleLoggerAsset>());
+        }
+
+        [Test]
+        public void ConvertReportersFromObsoleteReporter_HasReporter_IncludeToReporters()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            var legacyReporter = ScriptableObject.CreateInstance<SlackReporter>();
+            settings.reporter = legacyReporter;
+
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.ConvertReportersFromObsoleteReporter(spyLogger.Logger);
+            Assert.That(settings.reporters.Count, Is.EqualTo(1));
+            Assert.That(settings.reporters, Has.Member(legacyReporter));
+
+            Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
+                @"Single Reporter setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
+This time, temporarily converting.")));
+        }
+
+        [Test]
+        public void ConvertReportersFromObsoleteReporter_HasNotReporter_NotIncludeToReporters()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            // Not set (single) reporter
+
+            settings.ConvertReportersFromObsoleteReporter(Debug.unityLogger);
+            Assert.That(settings.reporters, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertReportersFromObsoleteReporter_ExistReporter_NotIncludeToReporters()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.reporters.Add(ScriptableObject.CreateInstance<CompositeReporter>()); // already exists
+            settings.reporter = ScriptableObject.CreateInstance<SlackReporter>();
+
+            settings.ConvertReportersFromObsoleteReporter(Debug.unityLogger);
+            Assert.That(settings.reporters.Count, Is.EqualTo(1));
+            Assert.That(settings.reporters, Has.No.InstanceOf<SlackReporter>());
+        }
+
+        [Test]
         public void ConvertSlackReporterFromObsoleteSlackSettings_HasSlackSettings_GenerateSlackReporter()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
@@ -98,7 +178,8 @@ namespace DeNA.Anjin.Settings
             settings.mentionSubTeamIDs = "subteam";
             settings.addHereInSlackMessage = true;
 
-            settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(spyLogger.Logger);
 
             Assert.That(settings.reporters.Count, Is.EqualTo(1));
             var slackReporter = settings.reporters[0] as SlackReporter;
@@ -108,9 +189,10 @@ namespace DeNA.Anjin.Settings
             Assert.That(slackReporter.mentionSubTeamIDs, Is.EqualTo(settings.mentionSubTeamIDs));
             Assert.That(slackReporter.addHereInSlackMessage, Is.EqualTo(settings.addHereInSlackMessage));
 
-            LogAssert.Expect(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
+            Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
+                @"Slack settings in AutopilotSettings has been obsolete.
 Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.");
+This time, temporarily generate and use SlackReporter instance.")));
         }
 
         [Test]
@@ -118,6 +200,7 @@ This time, temporarily generate and use SlackReporter instance.");
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.slackToken = "token";
+            // Not set slackChannels
 
             settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
             Assert.That(settings.reporters, Is.Empty);
@@ -128,6 +211,7 @@ This time, temporarily generate and use SlackReporter instance.");
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.slackChannels = "channels";
+            // Not set slackToken
 
             settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
             Assert.That(settings.reporters, Is.Empty);

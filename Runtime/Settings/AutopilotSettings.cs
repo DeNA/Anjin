@@ -243,10 +243,11 @@ namespace DeNA.Anjin.Settings
             var settings = AutopilotState.Instance.settings;
             Assert.NotNull(settings);
 
-            // TODO: convert logger to loggers before create default logger.
+            settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();
 
             var logger = settings.LoggerAsset.Logger;
+            settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert SlackReporter.
             settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
         }
 
@@ -260,6 +261,36 @@ namespace DeNA.Anjin.Settings
         }
 
         [Obsolete("Remove this method when bump major version")]
+        internal void ConvertLoggersFromObsoleteLogger()
+        {
+            if (this.loggerAsset == null || this.loggerAssets.Any())
+            {
+                return;
+            }
+
+            this.loggerAsset.Logger.Log(LogType.Warning, @"Single Logger setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
+This time, temporarily converting.");
+
+            this.loggerAssets.Add(this.loggerAsset);
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertReportersFromObsoleteReporter(ILogger logger)
+        {
+            if (this.reporter == null || this.reporters.Any())
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"Single Reporter setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
+This time, temporarily converting.");
+
+            this.reporters.Add(this.reporter);
+        }
+
+        [Obsolete("Remove this method when bump major version")]
         internal void ConvertSlackReporterFromObsoleteSlackSettings(ILogger logger)
         {
             if (string.IsNullOrEmpty(this.slackToken) || string.IsNullOrEmpty(this.slackChannels) ||
@@ -268,7 +299,7 @@ namespace DeNA.Anjin.Settings
                 return;
             }
 
-            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsoleted.
+            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsolete.
 Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
 This time, temporarily generate and use SlackReporter instance.");
 

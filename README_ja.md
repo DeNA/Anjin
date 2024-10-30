@@ -688,12 +688,12 @@ Compiler Error at Library\PackageCache\com.dena.anjin@1.0.1\Runtime\Reporters\Sl
 Unityエディターが生成するPackages/packages-lock.jsonの中身を確認するか、お使いのIDEのコード定義ジャンプ機能で `UniTask.WaitForEndOfFrame()` のソースファイルがどこにあるかを確認するなどして、古いUniTaskがインストールされている原因を突き止められます。
 
 
-### 実行中に "settings has been obsoleted" 警告が出る
+### 実行中に "settings has been obsolete" 警告が出る
 
 たとえば次のような警告メッセージが出力されることがあります。
 
 ```
-Slack settings in AutopilotSettings has been obsoleted.
+Slack settings in AutopilotSettings has been obsolete.
 Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
 ```
 
