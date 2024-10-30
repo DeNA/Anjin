@@ -12,13 +12,6 @@ using DeNA.Anjin.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assert = UnityEngine.Assertions.Assert;
-#if UNITY_INCLUDE_TESTS
-using NUnit.Framework;
-using AssertionException = NUnit.Framework.AssertionException;
-#endif
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace DeNA.Anjin
 {
@@ -163,37 +156,10 @@ This time, temporarily generate and use SlackReporter instance.");
                 JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, logString, stackTrace, time);
             }
 
-            Destroy(this.gameObject);
+            DestroyImmediate(this.gameObject);
 
-            _logger.Log("Terminate autopilot");
-            _state.settings = null;
-            _state.exitCode = exitCode;
-
-            if (_state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
-            {
-#if UNITY_INCLUDE_TESTS
-                // Play mode tests
-                if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
-                {
-                    throw new AssertionException($"Autopilot failed with exit code {exitCode}");
-                }
-#endif
-                return; // Only terminate autopilot run if starting from play mode.
-            }
-
-#if UNITY_EDITOR
-            // Terminate when launch from edit mode (including launch from commandline)
-            _logger.Log("Stop playing by autopilot");
-            // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
-            // SEE: https://github.com/DeNA/Anjin/issues/20
-            await UniTask.NextFrame(token);
-            EditorApplication.isPlaying = false;
-            // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
-#else
-            // Player build launch from commandline
-            _logger.Log($"Exit Unity-player by autopilot, exit code={exitCode}");
-            Application.Quit((int)exitCode);
-#endif
+            _logger.Log("Terminate Autopilot");
+            await Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, "Autopilot", token);
         }
 
         /// <summary>

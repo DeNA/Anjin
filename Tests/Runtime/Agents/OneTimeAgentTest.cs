@@ -70,7 +70,7 @@ namespace DeNA.Anjin.Agents
                 await UniTask.Delay(500); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
-                Assert.That(agent.wasExecuted, Is.True);
+                Assert.That(agent.WasExecuted, Is.True);
             }
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
@@ -87,7 +87,7 @@ namespace DeNA.Anjin.Agents
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
             agent.agent = childAgent;
-            agent.wasExecuted = true;
+            agent.WasExecuted = true;
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
@@ -132,14 +132,14 @@ namespace DeNA.Anjin.Agents
         public async Task ResetExecutedFlagWhenLaunchAutopilot()
         {
             var sut = ScriptableObject.CreateInstance<OneTimeAgent>();
-            sut.wasExecuted = true;
+            sut.WasExecuted = true;
 
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.lifespanSec = 1;
             await Launcher.LaunchAutopilotAsync(settings);
 
             sut = ScriptableObject.CreateInstance<OneTimeAgent>(); // Reload because domain reloaded
-            Assert.That(sut.wasExecuted, Is.False); // was reset
+            Assert.That(sut.WasExecuted, Is.False); // was reset
         }
     }
 }

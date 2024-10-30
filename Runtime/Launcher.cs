@@ -2,15 +2,22 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
+using NUnit.Framework;
 using UnityEngine;
 using Object = UnityEngine.Object;
+#if UNITY_INCLUDE_TESTS
+using NUnit.Framework;
+using AssertionException = NUnit.Framework.AssertionException;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -23,11 +30,11 @@ namespace DeNA.Anjin
     public static class Launcher
     {
         /// <summary>
-        /// Run autopilot from Play Mode test.
-        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
-        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings)
+        /// <param name="token">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings, CancellationToken token = default)
         {
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying)
@@ -45,22 +52,24 @@ namespace DeNA.Anjin
             state.settings = settings;
             LaunchAutopilot().Forget();
 
-            await UniTask.WaitUntil(() => !state.IsRunning);
+            await UniTask.WaitUntil(() => !state.IsRunning, cancellationToken: token);
         }
 
         /// <summary>
-        /// Run autopilot from Play Mode test.
-        /// If an error is detected in running, it will be output to `LogError` and the test will fail.
+        /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
-        /// <param name="autopilotSettingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
-        public static async UniTask LaunchAutopilotAsync(string autopilotSettingsPath)
+        /// <param name="settingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
+        /// <param name="token">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(string settingsPath, CancellationToken token = default)
         {
 #if UNITY_EDITOR
-            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(autopilotSettingsPath);
+            var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(settingsPath);
 #else
-            var settings = Resources.Load<AutopilotSettings>(autopilotSettingsPath);
+            var settings = Resources.Load<AutopilotSettings>(settingsPath);
 #endif
-            await LaunchAutopilotAsync(settings);
+            Assert.IsNotNull(settings, $"Autopilot settings not found: {settingsPath}");
+
+            await LaunchAutopilotAsync(settings, token);
         }
 
         /// <summary>
@@ -69,7 +78,11 @@ namespace DeNA.Anjin
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void LaunchAutopilotOnPlayerFromCommandline()
         {
-#if !UNITY_EDITOR
+            if (Application.isEditor)
+            {
+                return;
+            }
+
             var args = new Arguments();
             if (!args.LaunchAutopilotSettings.IsCaptured())
             {
@@ -85,11 +98,10 @@ namespace DeNA.Anjin
 
             state.launchFrom = LaunchType.Commandline;
             state.settings = settings;
-#endif
         }
 
         /// <summary>
-        /// Run autopilot
+        /// Launch autopilot (internal).
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         // ReSharper disable once Unity.IncorrectMethodSignature
@@ -101,34 +113,146 @@ namespace DeNA.Anjin
                 return; // Normally play mode (not run autopilot)
             }
 
-            ScreenshotStore.CleanDirectories();
+            ScreenshotStore.CleanDirectories(); // Note: Scheduled to change soon.
 
-            await CallAttachedInitializeOnLaunchAutopilotAttributeMethods();
+            try
+            {
+                await CallInitializeOnLaunchAutopilotMethods();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+
+                var logger = Debug.unityLogger; // Note: Logger is not initialized yet.
+                const ExitCode ExitCode = ExitCode.AutopilotLaunchingFailed;
+                const string Caller = "Autopilot launcher";
+                Debug.Log("Cancel launching Autopilot");
+                TeardownLaunchAutopilotAsync(state, logger, ExitCode, Caller).Forget();
+                return;
+            }
 
             var autopilot = new GameObject(nameof(Autopilot)).AddComponent<Autopilot>();
             Object.DontDestroyOnLoad(autopilot);
         }
 
-        private static async UniTask CallAttachedInitializeOnLaunchAutopilotAttributeMethods()
+        private static async UniTask CallInitializeOnLaunchAutopilotMethods()
         {
-            const BindingFlags MethodBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            foreach (var methodInfo in AppDomain.CurrentDomain.GetAssemblies()
-                         .SelectMany(x => x.GetTypes())
-                         .SelectMany(x => x.GetMethods(MethodBindingFlags))
-                         .Where(x => x.GetCustomAttributes(typeof(InitializeOnLaunchAutopilotAttribute), false).Any()))
+            var orderedMethodMap = GetOrderedInitializeOnLaunchAutopilotMethodsMap();
+            // key: order, value: methods attaching InitializeOnLaunchAutopilotAttribute.
+
+            var tasks = new List<Task>();
+            var uniTasks = new List<UniTask>();
+
+            foreach (var order in orderedMethodMap.Keys.OrderBy(x => x))
             {
-                switch (methodInfo.ReturnType.Name)
+                tasks.Clear();
+                uniTasks.Clear();
+
+                foreach (var method in orderedMethodMap[order])
                 {
-                    case nameof(Task):
-                        await (Task)methodInfo.Invoke(null, null);
-                        break;
-                    case nameof(UniTask):
-                        await (UniTask)methodInfo.Invoke(null, null);
-                        break;
-                    default:
-                        methodInfo.Invoke(null, null); // static method only
-                        break;
+                    try
+                    {
+                        switch (method.ReturnType.Name)
+                        {
+                            case nameof(Task):
+                                tasks.Add((Task)method.Invoke(null, null));
+                                break;
+                            case nameof(UniTask):
+                                uniTasks.Add((UniTask)method.Invoke(null, null));
+                                break;
+                            default:
+                                method.Invoke(null, null); // static method only
+                                break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Debug.LogError($"Invoke method failed: {method.Name}"); // Note: Logger is not initialized yet.
+                        throw;
+                    }
                 }
+
+                await Task.WhenAll(tasks);
+                await UniTask.WhenAll(uniTasks);
+            }
+        }
+
+        private static Dictionary<int, List<MethodInfo>> GetOrderedInitializeOnLaunchAutopilotMethodsMap()
+        {
+            var orderedMethodMap = new Dictionary<int, List<MethodInfo>>();
+            foreach (var (order, method) in GetInitializeOnLaunchAutopilotMethods())
+            {
+                if (!orderedMethodMap.TryGetValue(order, out var methods))
+                {
+                    methods = new List<MethodInfo>();
+                    orderedMethodMap[order] = methods;
+                }
+
+                methods.Add(method);
+            }
+
+            return orderedMethodMap;
+        }
+
+        private static IEnumerable<(int, MethodInfo)> GetInitializeOnLaunchAutopilotMethods()
+        {
+#if UNITY_EDITOR && UNITY_2021_3_OR_NEWER
+            return TypeCache.GetMethodsWithAttribute<InitializeOnLaunchAutopilotAttribute>()
+                .Select(x => (x.GetCustomAttribute<InitializeOnLaunchAutopilotAttribute>().CallbackOrder, x))
+                .OrderBy(x => x.Item1)
+                .Select(x => (x.Item1, x.Item2));
+#else
+            const BindingFlags MethodBindingFlags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
+            foreach (var method in AppDomain.CurrentDomain.GetAssemblies()
+                         .SelectMany(x => x.GetTypes())
+                         .SelectMany(x => x.GetMethods(MethodBindingFlags)))
+            {
+                var attribute = method.GetCustomAttributes<InitializeOnLaunchAutopilotAttribute>(false)
+                    .FirstOrDefault();
+                if (attribute != null)
+                {
+                    yield return (attribute.CallbackOrder, method);
+                }
+            }
+#endif
+        }
+
+        internal static async UniTask TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
+            ExitCode exitCode, string caller, CancellationToken token = default)
+        {
+            state.settings = null;
+            state.exitCode = exitCode;
+
+            if (state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
+            {
+#if UNITY_INCLUDE_TESTS
+                // Play mode tests
+                if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
+                {
+                    throw new AssertionException($"{caller} failed with exit code {exitCode}");
+                }
+#endif
+                return; // Only terminate autopilot run if starting from play mode.
+            }
+
+            if (Application.isEditor)
+            {
+                // Terminate when launch from edit mode (including launch from commandline)
+                logger.Log($"Stop playing by {caller}");
+
+                // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
+                // SEE: https://github.com/DeNA/Anjin/issues/20
+                await UniTask.NextFrame(token);
+#if UNITY_EDITOR
+                EditorApplication.isPlaying = false;
+                // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
+#endif
+            }
+            else
+            {
+                // Player build launch from commandline
+                logger.Log($"Exit Unity-player by {caller}, exit code={exitCode}");
+                Application.Quit((int)exitCode);
             }
         }
     }

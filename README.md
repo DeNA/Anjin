@@ -534,8 +534,12 @@ private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
 }
 ```
 
-Note that the autopilot launch process is performed with `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)` (default for `RuntimeInitializeOnLoadMethod`).
-Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)` implements the initialization process for Configurable Enter Play Mode.
+> [!NOTE]  
+> You can specify callback order with argument. Callbacks with lower values are called before ones with higher values.
+
+> [!NOTE]  
+> The autopilot launch process is performed with `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)` (default for `RuntimeInitializeOnLoadMethod`).
+> Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)` implements the initialization process for Configurable Enter Play Mode.
 
 
 
