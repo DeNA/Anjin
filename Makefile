@@ -101,6 +101,7 @@ create_project:
 	openupm add -c $(PROJECT_HOME) -f com.unity.test-framework@stable
 	openupm add -c $(PROJECT_HOME) -f com.unity.testtools.codecoverage
 	openupm add -c $(PROJECT_HOME) -f com.cysharp.unitask
+	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.monkey
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.random
 	openupm add -c $(PROJECT_HOME) -ft $(PACKAGE_NAME)@file:../../
