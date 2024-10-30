@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-namespace DeNA.Anjin.ArgumentCapture
+namespace DeNA.Anjin.Settings.ArgumentCapture
 {
     /// <summary>
     /// Commandline argument

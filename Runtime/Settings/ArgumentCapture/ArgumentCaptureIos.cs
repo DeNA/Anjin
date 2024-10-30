@@ -3,7 +3,7 @@
 
 using UnityEngine;
 
-namespace DeNA.Anjin.ArgumentCapture
+namespace DeNA.Anjin.Settings.ArgumentCapture
 {
     internal static class ArgumentCaptureIos
     {
