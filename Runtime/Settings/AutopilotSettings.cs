@@ -272,7 +272,8 @@ namespace DeNA.Anjin.Settings
 Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
 This time, temporarily converting.");
 
-            this.loggerAssets.Add(this.loggerAsset);
+            this.LoggerAsset.loggerAssets = new List<AbstractLoggerAsset> { this.loggerAsset };
+            // not change field directly.
         }
 
         [Obsolete("Remove this method when bump major version")]
@@ -287,7 +288,8 @@ This time, temporarily converting.");
 Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
 This time, temporarily converting.");
 
-            this.reporters.Add(this.reporter);
+            this.Reporter.reporters = new List<AbstractReporter> { this.reporter };
+            // not change field directly.
         }
 
         [Obsolete("Remove this method when bump major version")]
