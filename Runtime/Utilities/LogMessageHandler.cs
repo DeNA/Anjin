@@ -18,18 +18,15 @@ namespace DeNA.Anjin.Utilities
     public class LogMessageHandler : IDisposable
     {
         private readonly AutopilotSettings _settings;
-        private readonly AbstractReporter _reporter;
         private List<Regex> _ignoreMessagesRegexes;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
-        /// <param name="reporter">Reporter implementation</param>
-        public LogMessageHandler(AutopilotSettings settings, AbstractReporter reporter = null)
+        public LogMessageHandler(AutopilotSettings settings)
         {
             _settings = settings;
-            _reporter = reporter != null ? reporter : _settings.reporter;
 
             Application.logMessageReceivedThreaded += this.HandleLog;
         }
@@ -63,11 +60,6 @@ namespace DeNA.Anjin.Utilities
             if (_settings.loggerAsset != null)
             {
                 _settings.loggerAsset.Logger.Log(type, logString, stackTrace);
-            }
-
-            if (_reporter != null)
-            {
-                await _reporter.PostReportAsync(logString, stackTrace, type, true);
             }
 
             var autopilot = Object.FindObjectOfType<Autopilot>();

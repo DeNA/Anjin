@@ -122,7 +122,7 @@ This item can also be overridden from the commandline (see below).
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
   <dt>JUnit Report Path</dt><dd>Specifies the JUnit format report file output path (optional). If there are zero errors and zero failures, the autopilot run is considered to have completed successfully. </dd>
   <dt>Logger</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
-  <dt>Reporter</dt><dd>Reporter that called when some errors occurred in target application</dd>
+  <dt>Reporter</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
 
 #### Error Handling Settings

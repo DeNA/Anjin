@@ -119,7 +119,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
   <dt>Logger</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
-  <dt>Reporter</dt><dd>対象のアプリケーションで発生したエラーを通知するReporterを指定します</dd>
+  <dt>Reporter</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
 
 #### エラーハンドリング設定

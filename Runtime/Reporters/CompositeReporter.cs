@@ -23,10 +23,9 @@ namespace DeNA.Anjin.Reporters
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
-            string logString,
+            string message,
             string stackTrace,
-            LogType type,
-            bool withScreenshot,
+            ExitCode exitCode,
             CancellationToken cancellationToken = default
         )
         {
@@ -34,7 +33,7 @@ namespace DeNA.Anjin.Reporters
                 reporters
                     .Where(r => r != this && r != null)
                     .Select(
-                        r => r.PostReportAsync(logString, stackTrace, type, withScreenshot, cancellationToken)
+                        r => r.PostReportAsync(message, stackTrace, exitCode, cancellationToken)
                     )
             );
         }

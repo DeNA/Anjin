@@ -34,14 +34,18 @@ namespace DeNA.Anjin.Reporters
         /// </summary>
         public bool addHereInSlackMessage;
 
+        /// <summary>
+        /// With screenshot or not
+        /// </summary>
+        public bool withScreenshot;
+
         private readonly ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
-            string logString,
+            string message,
             string stackTrace,
-            LogType type,
-            bool withScreenshot,
+            ExitCode exitCode,
             CancellationToken cancellationToken = default
         )
         {
@@ -60,7 +64,7 @@ namespace DeNA.Anjin.Reporters
                     slackChannel,
                     mentionSubTeamIDs.Split(','),
                     addHereInSlackMessage,
-                    logString,
+                    message,
                     stackTrace,
                     withScreenshot,
                     cancellationToken

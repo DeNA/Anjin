@@ -500,3 +500,11 @@ msgstr "@hereをメッセージにつける"
 # addHereInSlackMessage tooltip
 msgid "Whether adding @here into Slack messages or not"
 msgstr "Slack通知メッセージに@hereを付けます"
+
+# withScreenshot
+msgid "Take screenshot"
+msgstr "スクリーンショット"
+
+# withScreenshot tooltip
+msgid "Take screenshot when posting report"
+msgstr "スクリーンショットを撮影してレポートに含めます"

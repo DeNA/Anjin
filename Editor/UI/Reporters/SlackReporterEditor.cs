@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
     {
         private const float SpacerPixels = 10f;
         private const float SpacerPixelsUnderHeader = 4f;
-        
+
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Reporter instance");
         private SerializedProperty _descriptionProp;
@@ -43,6 +43,11 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _addHereInSlackMessageProp;
         private GUIContent _addHereInSlackMessageGUIContent;
 
+        private static readonly string s_withScreenshot = L10n.Tr("Take screenshot");
+        private static readonly string s_withScreenshotTooltip = L10n.Tr("Take screenshot when posting report");
+        private SerializedProperty _withScreenshotProp;
+        private GUIContent _withScreenshotGUIContent;
+
 
         private void OnEnable()
         {
@@ -66,13 +71,16 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
             _addHereInSlackMessageProp = serializedObject.FindProperty(nameof(SlackReporter.addHereInSlackMessage));
             _addHereInSlackMessageGUIContent = new GUIContent(s_addHereInSlackMessage, s_addHereInSlackMessageTooltip);
+
+            _withScreenshotProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshot));
+            _withScreenshotGUIContent = new GUIContent(s_withScreenshot, s_withScreenshotTooltip);
         }
 
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            
+
             EditorGUILayout.PropertyField(_descriptionProp, _descriptionGUIContent);
             GUILayout.Space(SpacerPixels);
 
@@ -82,9 +90,12 @@ namespace DeNA.Anjin.Editor.UI.Reporters
             GUILayout.Space(SpacerPixels);
             GUILayout.Label(s_slackMentionSettingsHeader);
             GUILayout.Space(SpacerPixelsUnderHeader);
-            
+
             EditorGUILayout.PropertyField(_mentionSubTeamIDsProp, _mentionSubTeamIDsGUIContent);
             EditorGUILayout.PropertyField(_addHereInSlackMessageProp, _addHereInSlackMessageGUIContent);
+
+            GUILayout.Space(SpacerPixels);
+            EditorGUILayout.PropertyField(_withScreenshotProp, _withScreenshotGUIContent);
 
             serializedObject.ApplyModifiedProperties();
         }
