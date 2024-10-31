@@ -118,8 +118,8 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
-  <dt>Logger</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
-  <dt>Reporter</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
+  <dt>Loggers</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
+  <dt>Reporters</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
 
 #### エラーハンドリング設定
@@ -398,17 +398,6 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 以下のLoggerタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムLoggerを実装して使用することも可能です。
 
 
-### CompositeLogger
-
-複数のLoggerを登録し、そのすべてにログ出力を委譲するLoggerです。
-
-このLoggerのインスタンス（.assetファイル）には以下を設定できます。
-
-<dl>
-  <dt>Loggers</dt><dd>ログ出力を委譲するLoggerのリスト</dd>
-</dl>
-
-
 ### ConsoleLogger
 
 ログをコンソールに出力するLoggerです。
@@ -438,17 +427,6 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 ## ビルトインReporter
 
 以下のReporterタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムReporterを実装して使用することも可能です。
-
-
-### CompositeReporter
-
-複数のReporterを登録し、そのすべてにレポート送信を委譲するReporterです。
-
-このReporterのインスタンス（.assetファイル）には以下を設定できます。
-
-<dl>
-  <dt>Reporters</dt><dd>レポート送信を委譲するReporterのリスト</dd>
-</dl>
 
 
 ### SlackReporter
@@ -506,7 +484,7 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 ### カスタムLogger
 
 カスタムLoggerは、`Anjin.Logers.AbstractLoggerAsset` を継承して作ります。
-`ILogger Logger { get; }` プロパティを実装するだけです。
+`UnityEngine.ILogger` の実装を返すプロパティ `Logger { get; }` を実装する必要があります。
 
 なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
 
