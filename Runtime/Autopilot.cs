@@ -16,9 +16,27 @@ using Assert = UnityEngine.Assertions.Assert;
 namespace DeNA.Anjin
 {
     /// <summary>
+    /// Can be terminated.
+    /// </summary>
+    public interface ITerminatable
+    {
+        /// <summary>
+        /// Terminate autopilot
+        /// </summary>
+        /// <param name="exitCode">Exit code for Unity Editor/ Player-build</param>
+        /// <param name="message">Log message string or terminate message</param>
+        /// <param name="stackTrace">Stack trace when terminate by the log message</param>
+        /// <param name="reporting">Call Reporter if true</param>
+        /// <param name="token">Cancellation token</param>
+        /// <returns>A task awaits termination get completed</returns>
+        public UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
+            bool reporting = true, CancellationToken token = default);
+    }
+
+    /// <summary>
     /// Autopilot main logic
     /// </summary>
-    public class Autopilot : MonoBehaviour
+    public class Autopilot : MonoBehaviour, ITerminatable
     {
         private AbstractLoggerAsset _loggerAsset;
         private ILogger _logger;
@@ -51,7 +69,7 @@ namespace DeNA.Anjin
             // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
             //       Because some agent can throw an error immediately, so reporter can miss the error if
             //       registering logMessageReceived is placed after DispatchByScene.
-            _logMessageHandler = new LogMessageHandler(_settings);
+            _logMessageHandler = new LogMessageHandler(_settings, this);
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             var dispatched = _dispatcher.DispatchByScene(SceneManager.GetActiveScene(), false);
@@ -140,15 +158,7 @@ This time, temporarily generate and use SlackReporter instance.");
             _settings.loggerAsset?.Dispose();
         }
 
-        /// <summary>
-        /// Terminate autopilot
-        /// </summary>
-        /// <param name="exitCode">Exit code for Unity Editor/ Player-build</param>
-        /// <param name="message">Log message string or terminate message</param>
-        /// <param name="stackTrace">Stack trace when terminate by the log message</param>
-        /// <param name="reporting">Call Reporter if true</param>
-        /// <param name="token">Cancellation token</param>
-        /// <returns>A task awaits termination get completed</returns>
+        /// <inheritdoc/>
         public async UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
             bool reporting = true, CancellationToken token = default)
         {
@@ -169,12 +179,6 @@ This time, temporarily generate and use SlackReporter instance.");
             await Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, "Autopilot", token);
         }
 
-        /// <summary>
-        /// Terminate autopilot
-        /// </summary>
-        /// <param name="exitCode">Exit code for Unity Editor</param>
-        /// <param name="logString">Log message string when terminate by the log message</param>
-        /// <param name="stackTrace">Stack trace when terminate by the log message</param>
         [Obsolete("Use " + nameof(TerminateAsync))]
         public void Terminate(ExitCode exitCode, string logString = null, string stackTrace = null)
         {
