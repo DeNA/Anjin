@@ -46,6 +46,7 @@ namespace DeNA.Anjin
         private AutopilotState _state;
         private AutopilotSettings _settings;
         private float _startTime;
+        private bool _isTerminating;
 
         private void Start()
         {
@@ -153,6 +154,7 @@ This time, temporarily generate and use SlackReporter instance.");
             // Clear event listeners.
             // When play mode is stopped by the user, onDestroy calls without TerminateAsync.
 
+            _logger?.Log("Destroy Autopilot object");
             _dispatcher?.Dispose();
             _logMessageHandler?.Dispose();
             _settings.loggerAsset?.Dispose();
@@ -162,6 +164,13 @@ This time, temporarily generate and use SlackReporter instance.");
         public async UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
             bool reporting = true, CancellationToken token = default)
         {
+            if (_isTerminating)
+            {
+                return; // Prevent multiple termination.
+            }
+
+            _isTerminating = true;
+
             if (reporting && _state.IsRunning && _settings.reporter != null)
             {
                 await _settings.reporter.PostReportAsync(message, stackTrace, exitCode, token);
