@@ -87,6 +87,7 @@ usage:
 	@echo "  test_playmode: Run Play Mode tests."
 	@echo "  cover_report: Create code coverage HTML report."
 	@echo "  test: Run test_editmode, test_playmode, and cover_report. Recommended to use with '-k' option."
+	@echo "  test_standalone_player: Run Play Mode tests on standalone player."
 
 # Create Unity project for run UPM package tests. And upgrade and add dependencies for tests.
 # Required install [openupm-cli](https://github.com/openupm/openupm-cli).
@@ -100,6 +101,7 @@ create_project:
 	openupm add -c $(PROJECT_HOME) -f com.unity.test-framework@stable
 	openupm add -c $(PROJECT_HOME) -f com.unity.testtools.codecoverage
 	openupm add -c $(PROJECT_HOME) -f com.cysharp.unitask
+	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.monkey
 	openupm add -c $(PROJECT_HOME) -f com.nowsprinting.test-helper.random
 	openupm add -c $(PROJECT_HOME) -ft $(PACKAGE_NAME)@file:../../
@@ -137,8 +139,14 @@ test_playmode:
 cover_report:
 	$(call cover_report)
 
-# Run Edit Mode and Play Mode tests with coverage and html-report by code coverage package.
-# If you run this target with the `-k` option, if the Edit/Play Mode test fails,
+# Run Edit Mode and Play Mode tests with coverage and html-report by codecoverage package.
+# If you run this target with the `-k` option, if the Edit/ Play Mode test fails,
 # it will run through to Html report generation and return an exit code indicating an error.
 .PHONY: test
 test: test_editmode test_playmode cover_report
+
+# Run Play Mode tests on standalone player
+# Using "test" task instead of "cover" task because the codecoverage package does not support running it on the player.
+.PHONY: test_standalone_player
+test_standalone_player:
+	$(call test,$(STANDALONE_PLAYER))
