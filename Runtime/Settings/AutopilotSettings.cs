@@ -253,9 +253,11 @@ namespace DeNA.Anjin.Settings
 
         private void CreateDefaultLoggerIfNeeded()
         {
-            if (!this.loggerAssets.Any()) // no logger settings.
+            if (!this.LoggerAsset.loggerAssets.Any()) // no logger settings.
             {
-                this.loggerAssets.Add(CreateInstance<ConsoleLoggerAsset>());
+                this.LoggerAsset.loggerAssets = new List<AbstractLoggerAsset> { CreateInstance<ConsoleLoggerAsset>() };
+                // not change field directly.
+
                 this.LoggerAsset.Logger.Log("Create default logger.");
             }
         }
