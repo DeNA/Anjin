@@ -8,7 +8,6 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.Settings;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Utilities
 {
@@ -18,18 +17,19 @@ namespace DeNA.Anjin.Utilities
     public class LogMessageHandler : IDisposable
     {
         private readonly AutopilotSettings _settings;
-        private readonly AbstractReporter _reporter;
+        private readonly ITerminatable _autopilot;
+
         private List<Regex> _ignoreMessagesRegexes;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
-        /// <param name="reporter">Reporter implementation</param>
-        public LogMessageHandler(AutopilotSettings settings, AbstractReporter reporter = null)
+        /// <param name="autopilot">Autopilot instance that termination target</param>
+        public LogMessageHandler(AutopilotSettings settings, ITerminatable autopilot)
         {
             _settings = settings;
-            _reporter = reporter != null ? reporter : _settings.reporter;
+            _autopilot = autopilot;
 
             Application.logMessageReceivedThreaded += this.HandleLog;
         }
@@ -65,22 +65,13 @@ namespace DeNA.Anjin.Utilities
                 _settings.loggerAsset.Logger.Log(type, logString, stackTrace);
             }
 
-            if (_reporter != null)
+            if (type == LogType.Exception)
             {
-                await _reporter.PostReportAsync(logString, stackTrace, type, true);
+                await _autopilot.TerminateAsync(ExitCode.UnCatchExceptions, logString, stackTrace);
             }
-
-            var autopilot = Object.FindObjectOfType<Autopilot>();
-            if (autopilot != null)
+            else
             {
-                if (type == LogType.Exception)
-                {
-                    await autopilot.TerminateAsync(ExitCode.UnCatchExceptions, logString, stackTrace);
-                }
-                else
-                {
-                    await autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
-                }
+                await _autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
             }
         }
 

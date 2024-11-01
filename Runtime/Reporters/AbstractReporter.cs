@@ -8,7 +8,8 @@ using UnityEngine;
 namespace DeNA.Anjin.Reporters
 {
     /// <summary>
-    /// Reporter base class
+    /// Reporter base class.
+    /// Reporter is called on Autopilot termination.
     /// </summary>
     public abstract class AbstractReporter : ScriptableObject
     {
@@ -22,17 +23,15 @@ namespace DeNA.Anjin.Reporters
         /// <summary>
         /// Post report log message, stacktrace and screenshot
         /// </summary>
-        /// <param name="logString">Log message</param>
-        /// <param name="stackTrace">Stack trace</param>
-        /// <param name="type">Log message type</param>
-        /// <param name="withScreenshot">With screenshot</param>
+        /// <param name="message">Log message or terminate message</param>
+        /// <param name="stackTrace">Stack trace (can be null)</param>
+        /// <param name="exitCode">Exit code indicating the reason for termination</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
         public abstract UniTask PostReportAsync(
-            string logString,
+            string message,
             string stackTrace,
-            LogType type,
-            bool withScreenshot,
+            ExitCode exitCode,
             CancellationToken cancellationToken = default
         );
     }

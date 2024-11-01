@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
-using DeNA.Anjin.Settings;
 using UnityEngine;
 
 namespace DeNA.Anjin.TestDoubles
@@ -13,26 +12,22 @@ namespace DeNA.Anjin.TestDoubles
     /// <summary>
     /// A spy for <c cref="AbstractReporter" />
     /// </summary>
-    // [CreateAssetMenu(fileName = "New SpyReporter", menuName = "Anjin/Spy Reporter", order = 34)]
+    // [CreateAssetMenu(fileName = "New SpyReporter", menuName = "Anjin/Spy Reporter", order = 55)]
     public class SpyReporter : AbstractReporter
     {
         public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
-        
+
         public override async UniTask PostReportAsync(
-            string logString,
+            string message,
             string stackTrace,
-            LogType type,
-            bool withScreenshot,
+            ExitCode exitCode,
             CancellationToken cancellationToken = default
         )
         {
             Debug.Log("Reporter called");
             Arguments.Add(new Dictionary<string, string>
             {
-                {"logString", logString},
-                {"stackTrace", stackTrace},
-                {"type", type.ToString()},
-                {"withScreenshot", withScreenshot.ToString()}
+                { "message", message }, { "stackTrace", stackTrace }, { "exitCode", exitCode.ToString() }
             });
             await UniTask.NextFrame(cancellationToken);
         }

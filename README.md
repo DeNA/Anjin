@@ -122,7 +122,7 @@ This item can also be overridden from the commandline (see below).
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
   <dt>JUnit Report Path</dt><dd>Specifies the JUnit format report file output path (optional). If there are zero errors and zero failures, the autopilot run is considered to have completed successfully. </dd>
   <dt>Logger</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
-  <dt>Reporter</dt><dd>Reporter that called when some errors occurred in target application</dd>
+  <dt>Reporter</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
 
 #### Error Handling Settings
@@ -461,12 +461,15 @@ The instance of this Reporter (.asset file) can have the following settings.
         The bot must be invited to the channel.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
+  <dt>Take screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
+  <dt>Normally terminated report</dt><dd>Post a report if normally terminates. Default is off</dd>
+  <dt>Take screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
 </dl>
 
-You can create a bot on the following page:  
+You can create a Slack Bot on the following page:  
 [Slack API: Applications](https://api.slack.com/apps)
 
-The bot needs the following permissions:
+The Slack Bot needs the following permissions:
 
 - chat:write
 - files:write

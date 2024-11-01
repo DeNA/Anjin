@@ -119,7 +119,7 @@ v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
   <dt>Logger</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
-  <dt>Reporter</dt><dd>対象のアプリケーションで発生したエラーを通知するReporterを指定します</dd>
+  <dt>Reporter</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
 
 #### エラーハンドリング設定
@@ -464,13 +464,16 @@ Slackにレポート送信するReporterです。
         コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。
         チャンネルにはBotを招待しておく必要があります。</dd>
   <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます。デフォルトはoff</dd>
+  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます（デフォルト: off）</dd>
+  <dt>Take screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
+  <dt>Normally terminated report</dt><dd>正常終了時にもレポートをポストします（デフォルト: off）</dd>
+  <dt>Take screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
 </dl>
 
-Botは次のページで作成できます。  
+Slack Botは次のページで作成できます。  
 [Slack API: Applications](https://api.slack.com/apps)
 
-Botには次の権限が必要です。
+Slack Botには次の権限が必要です。
 
 - chat:write
 - files:write

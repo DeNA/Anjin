@@ -53,7 +53,7 @@ namespace DeNA.Anjin
             var agents = Object.FindObjectsOfType<AgentInspector>();
             Assume.That(agents, Is.Not.Empty, "Agents are running");
 
-            await autopilot.TerminateAsync(ExitCode.Normally);
+            await autopilot.TerminateAsync(ExitCode.Normally, reporting: false);
             await UniTask.NextFrame(); // wait for destroy
 
             autopilot = Object.FindObjectOfType<Autopilot>(); // re-find after terminated

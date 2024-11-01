@@ -146,7 +146,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             var autopilot = FindObjectOfType<Autopilot>();
             if (autopilot)
             {
-                autopilot.TerminateAsync(ExitCode.Normally).Forget();
+                autopilot.TerminateAsync(ExitCode.Normally, reporting: false).Forget();
             }
         }
 

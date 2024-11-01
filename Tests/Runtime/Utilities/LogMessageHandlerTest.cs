@@ -14,211 +14,189 @@ namespace DeNA.Anjin.Utilities
     [TestFixture]
     public class LogMessageHandlerTest
     {
-        [Test]
-        public async Task HandleLog_LogTypeIsLog_notReported()
-        {
-            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-            sut.HandleLog(string.Empty, string.Empty, LogType.Log);
-            await UniTask.NextFrame();
+        private AutopilotSettings _settings;
+        private SpyTerminatable _spyTerminatable;
+        private LogMessageHandler _sut;
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+        private const string Message = "message";
+        private const string StackTrace = "stack trace";
+
+        [SetUp]
+        public void SetUp()
+        {
+            _settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            _settings.lifespanSec = 5;
+            _settings.ignoreMessages = new string[] { };
+
+            _spyTerminatable = new SpyTerminatable();
+            _sut = new LogMessageHandler(_settings, _spyTerminatable);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _sut.Dispose();
         }
 
         [Test]
-        public async Task HandleLog_LogTypeExceptionHandle_reported()
+        public async Task HandleLog_LogTypeIsLog_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleException = true;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Exception);
+            _sut.HandleLog(Message, StackTrace, LogType.Log);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeExceptionNotHandle_notReported()
+        public async Task HandleLog_LogTypeExceptionHandle_TerminateIsCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleException = false;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Exception);
+            _settings.handleException = true;
+            _sut.HandleLog(Message, StackTrace, LogType.Exception);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
+            Assert.That(_spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.UnCatchExceptions));
+            Assert.That(_spyTerminatable.CapturedMessage, Is.EqualTo(Message));
+            Assert.That(_spyTerminatable.CapturedStackTrace, Is.EqualTo(StackTrace));
+            Assert.That(_spyTerminatable.CapturedReporting, Is.True);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeAssertHandle_reported()
+        public async Task HandleLog_LogTypeExceptionNotHandle_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleAssert = true;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Assert);
+            _settings.handleException = false;
+            _sut.HandleLog(Message, StackTrace, LogType.Exception);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeAssertNotHandle_notReported()
+        public async Task HandleLog_LogTypeAssertHandle_TerminateIsCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleAssert = false;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Assert);
+            _settings.handleAssert = true;
+            _sut.HandleLog(Message, StackTrace, LogType.Assert);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
+            Assert.That(_spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(_spyTerminatable.CapturedMessage, Is.EqualTo(Message));
+            Assert.That(_spyTerminatable.CapturedStackTrace, Is.EqualTo(StackTrace));
+            Assert.That(_spyTerminatable.CapturedReporting, Is.True);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeErrorHandle_reported()
+        public async Task HandleLog_LogTypeAssertNotHandle_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleError = true;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Error);
+            _settings.handleAssert = false;
+            _sut.HandleLog(Message, StackTrace, LogType.Assert);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeErrorNotHandle_notReported()
+        public async Task HandleLog_LogTypeErrorHandle_TerminateIsCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleError = false;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Error);
+            _settings.handleError = true;
+            _sut.HandleLog(Message, StackTrace, LogType.Error);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
+            Assert.That(_spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(_spyTerminatable.CapturedMessage, Is.EqualTo(Message));
+            Assert.That(_spyTerminatable.CapturedStackTrace, Is.EqualTo(StackTrace));
+            Assert.That(_spyTerminatable.CapturedReporting, Is.True);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeWarningHandle_reported()
+        public async Task HandleLog_LogTypeErrorNotHandle_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleWarning = true;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Warning);
+            _settings.handleError = false;
+            _sut.HandleLog(Message, StackTrace, LogType.Error);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_LogTypeWarningNotHandle_notReported()
+        public async Task HandleLog_LogTypeWarningHandle_TerminateIsCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleWarning = false;
-            sut.HandleLog(string.Empty, string.Empty, LogType.Warning);
+            _settings.handleWarning = true;
+            _sut.HandleLog(Message, StackTrace, LogType.Warning);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
+            Assert.That(_spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(_spyTerminatable.CapturedMessage, Is.EqualTo(Message));
+            Assert.That(_spyTerminatable.CapturedStackTrace, Is.EqualTo(StackTrace));
+            Assert.That(_spyTerminatable.CapturedReporting, Is.True);
         }
 
         [Test]
-        public async Task HandleLog_ContainsIgnoreMessage_notReported()
+        public async Task HandleLog_LogTypeWarningNotHandle_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.ignoreMessages = new[] { "ignore" };
-            settings.handleException = true;
-            sut.HandleLog("xxx_ignore_xxx", string.Empty, LogType.Exception);
+            _settings.handleWarning = false;
+            _sut.HandleLog(Message, StackTrace, LogType.Warning);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_MatchIgnoreMessagePattern_notReported()
+        public async Task HandleLog_ContainsIgnoreMessage_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.ignoreMessages = new[] { "ignore.+ignore" };
-            settings.handleException = true;
-            sut.HandleLog("ignore_xxx_ignore", string.Empty, LogType.Exception);
+            _settings.ignoreMessages = new[] { "ignore" };
+            _settings.handleException = true;
+            _sut.HandleLog("xxx_ignore_xxx", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_NotMatchIgnoreMessagePattern_Reported()
+        public async Task HandleLog_MatchIgnoreMessagePattern_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.ignoreMessages = new[] { "ignore.+ignore" };
-            settings.handleException = true;
-            sut.HandleLog("ignore", string.Empty, LogType.Exception);
+            _settings.ignoreMessages = new[] { "ignore.+ignore" };
+            _settings.handleException = true;
+            _sut.HandleLog("ignore_xxx_ignore", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Not.Empty);
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
 
         [Test]
-        public async Task HandleLog_InvalidIgnoreMessagePattern_ThrowArgumentExceptionAndReported()
+        public async Task HandleLog_NotMatchIgnoreMessagePattern_TerminateIsCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
+            _settings.ignoreMessages = new[] { "ignore.+ignore" };
+            _settings.handleException = true;
+            _sut.HandleLog("ignore", string.Empty, LogType.Exception);
+            await UniTask.NextFrame();
 
-            settings.ignoreMessages = new[] { "[a" }; // invalid pattern
-            settings.handleException = true;
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
+        }
 
-            sut.HandleLog("ignore", string.Empty, LogType.Exception);
+        [Test]
+        public async Task HandleLog_InvalidIgnoreMessagePattern_ThrowArgumentExceptionAndTerminateIsCalled()
+        {
+            _settings.ignoreMessages = new[] { "[a" }; // invalid pattern
+            _settings.handleException = true;
+
+            _sut.HandleLog("ignore", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
             LogAssert.Expect(LogType.Exception, "ArgumentException: parsing \"[a\" - Unterminated [] set.");
-            Assert.That(spyReporter.Arguments, Is.Not.Empty); // Report is executed
+            Assert.That(_spyTerminatable.IsCalled, Is.True);
         }
 
         [Test]
-        public async Task HandleLog_StacktraceByLogMessageHandler_notReported()
+        public async Task HandleLog_StacktraceByLogMessageHandler_TerminateIsNotCalled()
         {
-            var settings = CreateEmptyAutopilotSettings();
-            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
-            var sut = new LogMessageHandler(settings, spyReporter);
-
-            settings.handleException = true;
-            sut.HandleLog(string.Empty, "at DeNA.Anjin.Utilities.LogMessageHandler", LogType.Exception);
+            _settings.handleException = true;
+            _sut.HandleLog(string.Empty, "at DeNA.Anjin.Utilities.LogMessageHandler", LogType.Exception);
             await UniTask.NextFrame();
 
-            Assert.That(spyReporter.Arguments, Is.Empty);
-        }
-
-        private static AutopilotSettings CreateEmptyAutopilotSettings()
-        {
-            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            settings.ignoreMessages = new string[] { };
-            return settings;
+            Assert.That(_spyTerminatable.IsCalled, Is.False);
         }
     }
 }
