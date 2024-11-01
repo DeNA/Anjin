@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Threading;
@@ -35,9 +35,19 @@ namespace DeNA.Anjin.Reporters
         public bool addHereInSlackMessage;
 
         /// <summary>
-        /// With screenshot or not
+        /// With take a screenshot or not (on error terminates).
         /// </summary>
-        public bool withScreenshot;
+        public bool withScreenshotOnError = true;
+
+        /// <summary>
+        /// Post a report if normally terminates.
+        /// </summary>
+        public bool postOnNormally;
+
+        /// <summary>
+        /// With take a screenshot or not (on normally terminates).
+        /// </summary>
+        public bool withScreenshotOnNormally;
 
         private readonly ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
 
@@ -49,7 +59,16 @@ namespace DeNA.Anjin.Reporters
             CancellationToken cancellationToken = default
         )
         {
+            if (exitCode == ExitCode.Normally && !postOnNormally)
+            {
+                return;
+            }
+
+            var withScreenshot = exitCode == ExitCode.Normally ? withScreenshotOnNormally : withScreenshotOnError;
+            // TODO: build message body with template and placeholders
+
             OverwriteByCommandlineArguments();
+            // TODO: log warn if slackToken or slackChannels is empty
 
             // NOTE: In _sender.send, switch the execution thread to the main thread, so UniTask.WhenAll is meaningless.
             foreach (var slackChannel in slackChannels.Split(','))
@@ -59,17 +78,29 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await _sender.Send(
-                    slackToken,
-                    slackChannel,
-                    mentionSubTeamIDs.Split(','),
-                    addHereInSlackMessage,
-                    message,
-                    stackTrace,
-                    withScreenshot,
-                    cancellationToken
-                );
+                await PostReportAsync(slackChannel, message, stackTrace, withScreenshot, cancellationToken);
             }
+        }
+
+        private async UniTask PostReportAsync(
+            string slackChannel,
+            string message,
+            string stackTrace,
+            bool withScreenshot,
+            CancellationToken cancellationToken = default
+        )
+        {
+            await _sender.Send(
+                slackToken,
+                slackChannel,
+                mentionSubTeamIDs.Split(','),
+                addHereInSlackMessage,
+                message,
+                stackTrace,
+                withScreenshot,
+                cancellationToken
+            );
+            // TODO: can log slack post url?
         }
 
         private void OverwriteByCommandlineArguments()

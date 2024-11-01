@@ -14,7 +14,6 @@ namespace DeNA.Anjin.Editor.UI.Reporters
     public class SlackReporterEditor : UnityEditor.Editor
     {
         private const float SpacerPixels = 10f;
-        private const float SpacerPixelsUnderHeader = 4f;
 
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Reporter instance");
@@ -31,8 +30,6 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _slackChannelsProp;
         private GUIContent _slackChannelsGUIContent;
 
-        private static readonly string s_slackMentionSettingsHeader = L10n.Tr("Slack Mention Settings");
-
         private static readonly string s_mentionSubTeamIDs = L10n.Tr("Sub Team IDs to Mention");
         private static readonly string s_mentionSubTeamIDsTooltip = L10n.Tr("Sub team IDs to mention (comma separates)");
         private SerializedProperty _mentionSubTeamIDsProp;
@@ -43,11 +40,20 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _addHereInSlackMessageProp;
         private GUIContent _addHereInSlackMessageGUIContent;
 
-        private static readonly string s_withScreenshot = L10n.Tr("Take screenshot");
-        private static readonly string s_withScreenshotTooltip = L10n.Tr("Take screenshot when posting report");
-        private SerializedProperty _withScreenshotProp;
-        private GUIContent _withScreenshotGUIContent;
+        private static readonly string s_withScreenshotOnError = L10n.Tr("Take screenshot");
+        private static readonly string s_withScreenshotOnErrorTooltip = L10n.Tr("Take a screenshot when posting an error terminated report");
+        private SerializedProperty _withScreenshotOnErrorProp;
+        private GUIContent _withScreenshotOnErrorGUIContent;
 
+        private static readonly string s_postOnNormally = L10n.Tr("Normally terminated report");
+        private static readonly string s_postOnNormallyTooltip = L10n.Tr("Post a report if normally terminates.");
+        private SerializedProperty _postOnNormallyProp;
+        private GUIContent _postOnNormallyGUIContent;
+
+        private static readonly string s_withScreenshotOnNormally = L10n.Tr("Take screenshot");
+        private static readonly string s_withScreenshotOnNormallyTooltip = L10n.Tr("Take a screenshot when posting a normally terminated report");
+        private SerializedProperty _withScreenshotOnNormallyProp;
+        private GUIContent _withScreenshotOnNormallyGUIContent;
 
         private void OnEnable()
         {
@@ -72,8 +78,14 @@ namespace DeNA.Anjin.Editor.UI.Reporters
             _addHereInSlackMessageProp = serializedObject.FindProperty(nameof(SlackReporter.addHereInSlackMessage));
             _addHereInSlackMessageGUIContent = new GUIContent(s_addHereInSlackMessage, s_addHereInSlackMessageTooltip);
 
-            _withScreenshotProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshot));
-            _withScreenshotGUIContent = new GUIContent(s_withScreenshot, s_withScreenshotTooltip);
+            _withScreenshotOnErrorProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshotOnError));
+            _withScreenshotOnErrorGUIContent = new GUIContent(s_withScreenshotOnError, s_withScreenshotOnErrorTooltip);
+
+            _postOnNormallyProp = serializedObject.FindProperty(nameof(SlackReporter.postOnNormally));
+            _postOnNormallyGUIContent = new GUIContent(s_postOnNormally, s_postOnNormallyTooltip);
+
+            _withScreenshotOnNormallyProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshotOnNormally));
+            _withScreenshotOnNormallyGUIContent = new GUIContent(s_withScreenshotOnNormally, s_withScreenshotOnNormallyTooltip);
         }
 
 
@@ -88,14 +100,18 @@ namespace DeNA.Anjin.Editor.UI.Reporters
             EditorGUILayout.PropertyField(_slackChannelsProp, _slackChannelsGUIContent);
 
             GUILayout.Space(SpacerPixels);
-            GUILayout.Label(s_slackMentionSettingsHeader);
-            GUILayout.Space(SpacerPixelsUnderHeader);
-
             EditorGUILayout.PropertyField(_mentionSubTeamIDsProp, _mentionSubTeamIDsGUIContent);
             EditorGUILayout.PropertyField(_addHereInSlackMessageProp, _addHereInSlackMessageGUIContent);
 
             GUILayout.Space(SpacerPixels);
-            EditorGUILayout.PropertyField(_withScreenshotProp, _withScreenshotGUIContent);
+            EditorGUILayout.PropertyField(_withScreenshotOnErrorProp, _withScreenshotOnErrorGUIContent);
+
+            GUILayout.Space(SpacerPixels);
+            EditorGUILayout.PropertyField(_postOnNormallyProp, _postOnNormallyGUIContent);
+
+            EditorGUI.BeginDisabledGroup(!_postOnNormallyProp.boolValue);
+            EditorGUILayout.PropertyField(_withScreenshotOnNormallyProp, _withScreenshotOnNormallyGUIContent);
+            EditorGUI.EndDisabledGroup();
 
             serializedObject.ApplyModifiedProperties();
         }

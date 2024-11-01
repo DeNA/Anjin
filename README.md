@@ -461,12 +461,15 @@ The instance of this Reporter (.asset file) can have the following settings.
         The bot must be invited to the channel.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
+  <dt>Take screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
+  <dt>Normally terminated report</dt><dd>Post a report if normally terminates. Default is off</dd>
+  <dt>Take screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
 </dl>
 
-You can create a bot on the following page:  
+You can create a Slack Bot on the following page:  
 [Slack API: Applications](https://api.slack.com/apps)
 
-The bot needs the following permissions:
+The Slack Bot needs the following permissions:
 
 - chat:write
 - files:write

@@ -501,10 +501,26 @@ msgstr "@hereをメッセージにつける"
 msgid "Whether adding @here into Slack messages or not"
 msgstr "Slack通知メッセージに@hereを付けます"
 
-# withScreenshot
+# withScreenshotOnError
 msgid "Take screenshot"
 msgstr "スクリーンショット"
 
-# withScreenshot tooltip
-msgid "Take screenshot when posting report"
-msgstr "スクリーンショットを撮影してレポートに含めます"
+# withScreenshotOnError tooltip
+msgid "Take a screenshot when posting an error terminated report"
+msgstr "エラー終了時にスクリーンショットを撮影します"
+
+# postOnNormally
+msgid "Normally terminated report"
+msgstr "正常終了時にもレポート"
+
+# postOnNormally tooltip
+msgid "Post a report if normally terminates."
+msgstr "正常終了時にもレポートをポストします"
+
+# withScreenshotOnNormally (same as withScreenshotOnError)
+msgid "Take screenshot"
+msgstr "スクリーンショット"
+
+# withScreenshotOnNormally tooltip
+msgid "Take a screenshot when posting a normally terminated report"
+msgstr "正常終了時にスクリーンショットを撮影します"

@@ -464,13 +464,16 @@ Slackにレポート送信するReporterです。
         コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。
         チャンネルにはBotを招待しておく必要があります。</dd>
   <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます。デフォルトはoff</dd>
+  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます（デフォルト: off）</dd>
+  <dt>Take screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
+  <dt>Normally terminated report</dt><dd>正常終了時にもレポートをポストします（デフォルト: off）</dd>
+  <dt>Take screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
 </dl>
 
-Botは次のページで作成できます。  
+Slack Botは次のページで作成できます。  
 [Slack API: Applications](https://api.slack.com/apps)
 
-Botには次の権限が必要です。
+Slack Botには次の権限が必要です。
 
 - chat:write
 - files:write
