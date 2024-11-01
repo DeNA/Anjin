@@ -132,7 +132,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Logger used for this autopilot settings.
         /// </summary>
-        [Obsolete("Use `loggerAssets` field or `LoggerAsset` property instead")]
+        [Obsolete("Use `LoggerAsset` property instead")]
         public AbstractLoggerAsset loggerAsset;
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Reporter that called when some errors occurred
         /// </summary>
-        [Obsolete("Use `reporters` field  or `Reporter` property instead")]
+        [Obsolete("Use `Reporter` property instead")]
         public AbstractReporter reporter;
 
         /// <summary>
