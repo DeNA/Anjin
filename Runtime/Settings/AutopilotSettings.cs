@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DeNA.Anjin.Agents;
+using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace DeNA.Anjin.Settings
@@ -129,12 +132,64 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Logger used for this autopilot settings.
         /// </summary>
+        [Obsolete("Use `loggerAssets` field or `LoggerAsset` property instead")]
         public AbstractLoggerAsset loggerAsset;
+
+        /// <summary>
+        /// List of Loggers used for this autopilot settings.
+        /// </summary>
+        public List<AbstractLoggerAsset> loggerAssets = new List<AbstractLoggerAsset>();
+
+        private CompositeLoggerAsset _compositeLoggerAsset;
+
+        /// <summary>
+        /// Composite Loggers used for this autopilot settings.
+        /// Contains <c>loggerAssets</c> field. Create an instance during the first call.
+        /// </summary>
+        public CompositeLoggerAsset LoggerAsset
+        {
+            get
+            {
+                if (_compositeLoggerAsset == null)
+                {
+                    _compositeLoggerAsset = CreateInstance<CompositeLoggerAsset>();
+                    _compositeLoggerAsset.loggerAssets = this.loggerAssets;
+                }
+
+                return _compositeLoggerAsset;
+            }
+        }
 
         /// <summary>
         /// Reporter that called when some errors occurred
         /// </summary>
+        [Obsolete("Use `reporters` field  or `Reporter` property instead")]
         public AbstractReporter reporter;
+
+        /// <summary>
+        /// List of Reporters to be called on Autopilot terminate.
+        /// </summary>
+        public List<AbstractReporter> reporters = new List<AbstractReporter>();
+
+        private CompositeReporter _compositeReporter;
+
+        /// <summary>
+        /// Composite Reporters to be called on Autopilot terminate.
+        /// Contains <c>reporters</c> field. Create an instance during the first call.
+        /// </summary>
+        public CompositeReporter Reporter
+        {
+            get
+            {
+                if (_compositeReporter == null)
+                {
+                    _compositeReporter = CreateInstance<CompositeReporter>();
+                    _compositeReporter.reporters = this.reporters;
+                }
+
+                return _compositeReporter;
+            }
+        }
 
         /// <summary>
         /// Overwrites specified values in the command line arguments
@@ -180,6 +235,84 @@ namespace DeNA.Anjin.Settings
             {
                 handleWarning = args.HandleWarning.Value();
             }
+        }
+
+        [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeSettings)]
+        private static void Initialize()
+        {
+            var settings = AutopilotState.Instance.settings;
+            Assert.NotNull(settings);
+
+            settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
+            settings.CreateDefaultLoggerIfNeeded();
+
+            var logger = settings.LoggerAsset.Logger;
+            settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert SlackReporter.
+            settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
+        }
+
+        private void CreateDefaultLoggerIfNeeded()
+        {
+            if (!this.LoggerAsset.loggerAssets.Any()) // no logger settings.
+            {
+                this.LoggerAsset.loggerAssets = new List<AbstractLoggerAsset> { CreateInstance<ConsoleLoggerAsset>() };
+                // not change field directly.
+
+                this.LoggerAsset.Logger.Log("Create default logger.");
+            }
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertLoggersFromObsoleteLogger()
+        {
+            if (this.loggerAsset == null || this.loggerAssets.Any())
+            {
+                return;
+            }
+
+            this.loggerAsset.Logger.Log(LogType.Warning, @"Single Logger setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
+This time, temporarily converting.");
+
+            this.LoggerAsset.loggerAssets = new List<AbstractLoggerAsset> { this.loggerAsset };
+            // not change field directly.
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertReportersFromObsoleteReporter(ILogger logger)
+        {
+            if (this.reporter == null || this.reporters.Any())
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"Single Reporter setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
+This time, temporarily converting.");
+
+            this.Reporter.reporters = new List<AbstractReporter> { this.reporter };
+            // not change field directly.
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertSlackReporterFromObsoleteSlackSettings(ILogger logger)
+        {
+            if (string.IsNullOrEmpty(this.slackToken) || string.IsNullOrEmpty(this.slackChannels) ||
+                this.reporters.Any())
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsolete.
+Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+This time, temporarily generate and use SlackReporter instance.");
+
+            var convertedReporter = CreateInstance<SlackReporter>();
+            convertedReporter.slackToken = this.slackToken;
+            convertedReporter.slackChannels = this.slackChannels;
+            convertedReporter.mentionSubTeamIDs = this.mentionSubTeamIDs;
+            convertedReporter.addHereInSlackMessage = this.addHereInSlackMessage;
+            this.reporters.Add(convertedReporter);
         }
     }
 }

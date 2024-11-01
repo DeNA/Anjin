@@ -35,8 +35,8 @@ namespace DeNA.Anjin.Loggers
             var message = TestContext.CurrentContext.Test.Name;
             sut.Logger.Log(message);
 
-            Assert.That(logger1.Logs, Does.Contain(message));
-            Assert.That(logger2.Logs, Does.Contain(message));
+            Assert.That(logger1.Logs, Does.Contain((LogType.Log, message)));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Log, message)));
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace DeNA.Anjin.Loggers
             var message = TestContext.CurrentContext.Test.Name;
             sut.Logger.Log(message);
 
-            Assert.That(logger2.Logs, Does.Contain(message));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Log, message)));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace DeNA.Anjin.Loggers
             var message = TestContext.CurrentContext.Test.Name;
             sut.Logger.Log(message);
 
-            Assert.That(logger2.Logs, Does.Contain(message));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Log, message)));
         }
 
         [Test]
@@ -80,8 +80,8 @@ namespace DeNA.Anjin.Loggers
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
 
-            Assert.That(logger1.Logs, Does.Contain(exception.ToString()));
-            Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
+            Assert.That(logger1.Logs, Does.Contain((LogType.Exception, exception.ToString())));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Exception, exception.ToString())));
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace DeNA.Anjin.Loggers
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
 
-            Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Exception, exception.ToString())));
         }
 
         [Test]
@@ -111,7 +111,7 @@ namespace DeNA.Anjin.Loggers
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
 
-            Assert.That(logger2.Logs, Does.Contain(exception.ToString()));
+            Assert.That(logger2.Logs, Does.Contain((LogType.Exception, exception.ToString())));
         }
 
         [Test]

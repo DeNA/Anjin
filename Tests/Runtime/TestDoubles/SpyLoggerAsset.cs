@@ -31,7 +31,7 @@ namespace DeNA.Anjin.TestDoubles
             }
         }
 
-        public List<string> Logs => _handler.Logs;
+        public List<(LogType logType, string message)> Logs => _handler.Logs;
 
         public override void Dispose()
         {
@@ -40,16 +40,16 @@ namespace DeNA.Anjin.TestDoubles
 
         private class SpyLogHandler : ILogHandler
         {
-            public readonly List<string> Logs = new List<string>();
+            public readonly List<(LogType logType, string message)> Logs = new List<(LogType, string)>();
 
             public void LogFormat(LogType logType, Object context, string format, params object[] args)
             {
-                Logs.Add(string.Format(format, args));
+                Logs.Add((logType, string.Format(format, args)));
             }
 
             public void LogException(Exception exception, Object context)
             {
-                Logs.Add(exception.ToString());
+                Logs.Add((LogType.Exception, exception.ToString()));
             }
         }
     }

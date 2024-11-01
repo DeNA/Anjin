@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Attributes
     public class InitializeOnLaunchAutopilotAttribute : PreserveAttribute
     {
         internal const int InitializeLoggerOrder = -20000;
-        internal const int CovertObsoleteOrder = -10000;
+        internal const int InitializeSettings = -10000;
         internal const int DefaultOrder = 0;
 
         /// <summary>

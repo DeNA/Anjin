@@ -20,7 +20,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         {
             var state = AutopilotState.Instance;
 
-            EditorGUI.BeginDisabledGroup(state.IsRunning || EditorApplication.isPlayingOrWillChangePlaymode);
+            EditorGUI.BeginDisabledGroup(!state.IsRunning || EditorApplication.isPlayingOrWillChangePlaymode);
             if (GUILayout.Button(s_resetButton))
             {
                 state.Reset();
