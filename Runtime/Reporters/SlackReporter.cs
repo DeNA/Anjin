@@ -35,7 +35,13 @@ namespace DeNA.Anjin.Reporters
         public bool addHereInSlackMessage;
 
         /// <summary>
-        /// With take a screenshot or not (on error terminates).
+        /// Message body template (use on error terminates).
+        /// </summary>
+        [Multiline]
+        public string messageBodyTemplateOnError = @"{message}";
+
+        /// <summary>
+        /// With take a screenshot or not (use on error terminates).
         /// </summary>
         public bool withScreenshotOnError = true;
 
@@ -45,7 +51,13 @@ namespace DeNA.Anjin.Reporters
         public bool postOnNormally;
 
         /// <summary>
-        /// With take a screenshot or not (on normally terminates).
+        /// Message body template (use on normally terminates).
+        /// </summary>
+        [Multiline]
+        public string messageBodyTemplateOnNormally = @"{message}";
+
+        /// <summary>
+        /// With take a screenshot or not (use on normally terminates).
         /// </summary>
         public bool withScreenshotOnNormally;
 
@@ -79,8 +91,13 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            var withScreenshot = exitCode == ExitCode.Normally ? withScreenshotOnNormally : withScreenshotOnError;
-            // TODO: build message body with template and placeholders
+            var withScreenshot = (exitCode == ExitCode.Normally)
+                ? withScreenshotOnNormally
+                : withScreenshotOnError;
+            var messageBody = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
+                    ? messageBodyTemplateOnNormally
+                    : messageBodyTemplateOnError,
+                message);
 
             OverwriteByCommandlineArguments();
             if (string.IsNullOrEmpty(slackToken) || string.IsNullOrEmpty(slackChannels))
@@ -97,7 +114,7 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, message, stackTrace, withScreenshot, cancellationToken);
+                await PostReportAsync(slackChannel, messageBody, stackTrace, withScreenshot, cancellationToken);
             }
         }
 

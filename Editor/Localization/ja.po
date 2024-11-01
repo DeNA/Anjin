@@ -501,8 +501,16 @@ msgstr "@hereをメッセージにつける"
 msgid "Whether adding @here into Slack messages or not"
 msgstr "Slack通知メッセージに@hereを付けます"
 
+# messageBodyTemplateOnError
+msgid "Message Body Template"
+msgstr "メッセージ本文テンプレート"
+
+# messageBodyTemplateOnError tooltip
+msgid "Message body template when posting an error terminated report. You can specify placeholders like a "{message}"; see the README for more information."
+msgstr "エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
+
 # withScreenshotOnError
-msgid "Take screenshot"
+msgid "Take Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnError tooltip
@@ -510,15 +518,23 @@ msgid "Take a screenshot when posting an error terminated report"
 msgstr "エラー終了時にスクリーンショットを撮影します"
 
 # postOnNormally
-msgid "Normally terminated report"
+msgid "Normally Terminated Report"
 msgstr "正常終了時にもレポート"
 
 # postOnNormally tooltip
 msgid "Post a report if normally terminates."
 msgstr "正常終了時にもレポートをポストします"
 
+# messageBodyTemplateOnNormally (same as messageBodyTemplateOnError)
+msgid "Message Body Template"
+msgstr "メッセージ本文テンプレート"
+
+# messageBodyTemplateOnError tooltip
+msgid "Message body template when posting a normally terminated report. You can specify placeholders like a "{message}"; see the README for more information."
+msgstr "正常終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
+
 # withScreenshotOnNormally (same as withScreenshotOnError)
-msgid "Take screenshot"
+msgid "Take Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnNormally tooltip
