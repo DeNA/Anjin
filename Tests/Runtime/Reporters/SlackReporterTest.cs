@@ -1,0 +1,107 @@
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
+// This software is released under the MIT License.
+
+using System.Threading.Tasks;
+using DeNA.Anjin.Loggers;
+using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace DeNA.Anjin.Reporters
+{
+    [TestFixture]
+    public class SlackReporterTest
+    {
+        private SpySlackMessageSender _spy;
+        private SlackReporter _sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _sut = ScriptableObject.CreateInstance<SlackReporter>();
+            _sut.mentionSubTeamIDs = string.Empty;
+            _spy = new SpySlackMessageSender();
+            _sut._sender = _spy;
+
+            // for log output test
+            AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            AutopilotState.Instance.settings!.LoggerAsset.loggerAssets.Add(
+                ScriptableObject.CreateInstance<ConsoleLoggerAsset>());
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            AutopilotState.Instance.Reset();
+        }
+
+        [Test]
+        public async Task PostReportAsync_OnError_Sent()
+        {
+            _sut.slackToken = "token";
+            _sut.slackChannels = "dev,qa"; // two channels
+            _sut.mentionSubTeamIDs = "alpha,bravo";
+            _sut.addHereInSlackMessage = true;
+            _sut.withScreenshotOnError = false;
+            _sut.withScreenshotOnNormally = true; // dummy
+            await _sut.PostReportAsync("message", "stack trace", ExitCode.AutopilotFailed);
+
+            Assert.That(_spy.CalledList.Count, Is.EqualTo(2));
+            Assert.That(_spy.CalledList[0].SlackToken, Is.EqualTo("token"));
+            Assert.That(_spy.CalledList[0].SlackChannel, Is.EqualTo("dev"));
+            Assert.That(_spy.CalledList[1].SlackChannel, Is.EqualTo("qa"));
+            Assert.That(_spy.CalledList[0].MentionSubTeamIDs, Is.EquivalentTo(new[] { "alpha", "bravo" }));
+            Assert.That(_spy.CalledList[0].AddHereInSlackMessage, Is.True);
+            Assert.That(_spy.CalledList[0].LogString, Is.EqualTo("message"));
+            Assert.That(_spy.CalledList[0].StackTrace, Is.EqualTo("stack trace"));
+            Assert.That(_spy.CalledList[0].WithScreenshot, Is.False); // use withScreenshotOnError
+        }
+
+        [Test]
+        public async Task PostReportAsync_OnNormallyAndPostOnNormally_Sent()
+        {
+            _sut.slackToken = "token";
+            _sut.slackChannels = "dev";
+            _sut.postOnNormally = true;
+            _sut.withScreenshotOnNormally = true;
+            _sut.withScreenshotOnError = false; // dummy
+            await _sut.PostReportAsync(string.Empty, string.Empty, ExitCode.Normally);
+
+            Assert.That(_spy.CalledList.Count, Is.EqualTo(1));
+            Assert.That(_spy.CalledList[0].WithScreenshot, Is.True); // use withScreenshotOnNormally
+        }
+
+        [Test]
+        public async Task PostReportAsync_OnNormallyAndNotPostOnNormally_NotSent()
+        {
+            _sut.postOnNormally = false;
+            await _sut.PostReportAsync(string.Empty, string.Empty, ExitCode.Normally);
+
+            Assert.That(_spy.CalledList, Is.Empty);
+        }
+
+        [Test]
+        public async Task PostReportAsync_NoSlackToken_NotSentAndLogWarning()
+        {
+            _sut.slackToken = string.Empty;
+            _sut.slackChannels = "dev,qa";
+            await _sut.PostReportAsync(string.Empty, string.Empty, ExitCode.AutopilotFailed);
+
+            Assert.That(_spy.CalledList, Is.Empty);
+            LogAssert.Expect(LogType.Warning, "Slack token or channels is empty");
+        }
+
+        [Test]
+        public async Task PostReportAsync_NoSlackChannels_NotSentAndLogWarning()
+        {
+            _sut.slackToken = "token";
+            _sut.slackChannels = string.Empty;
+            await _sut.PostReportAsync(string.Empty, string.Empty, ExitCode.AutopilotFailed);
+
+            Assert.That(_spy.CalledList, Is.Empty);
+            LogAssert.Expect(LogType.Warning, "Slack token or channels is empty");
+        }
+    }
+}

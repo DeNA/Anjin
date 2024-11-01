@@ -4,8 +4,6 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-
 namespace DeNA.Anjin.TestDoubles
 {
     public class SpyTerminatable : ITerminatable
@@ -24,6 +22,7 @@ namespace DeNA.Anjin.TestDoubles
             CapturedMessage = message;
             CapturedStackTrace = stackTrace;
             CapturedReporting = reporting;
+            await UniTask.CompletedTask;
         }
     }
 }

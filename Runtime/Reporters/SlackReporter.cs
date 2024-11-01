@@ -49,7 +49,22 @@ namespace DeNA.Anjin.Reporters
         /// </summary>
         public bool withScreenshotOnNormally;
 
-        private readonly ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
+        internal ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
+
+        private static ILogger Logger
+        {
+            get
+            {
+                var settings = AutopilotState.Instance.settings;
+                if (settings != null)
+                {
+                    return settings.LoggerAsset.Logger;
+                }
+
+                Debug.LogWarning("Autopilot is not running"); // impossible to reach here
+                return null;
+            }
+        }
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
@@ -68,7 +83,11 @@ namespace DeNA.Anjin.Reporters
             // TODO: build message body with template and placeholders
 
             OverwriteByCommandlineArguments();
-            // TODO: log warn if slackToken or slackChannels is empty
+            if (string.IsNullOrEmpty(slackToken) || string.IsNullOrEmpty(slackChannels))
+            {
+                Logger?.Log(LogType.Warning, "Slack token or channels is empty");
+                return;
+            }
 
             // NOTE: In _sender.send, switch the execution thread to the main thread, so UniTask.WhenAll is meaningless.
             foreach (var slackChannel in slackChannels.Split(','))
@@ -100,7 +119,7 @@ namespace DeNA.Anjin.Reporters
                 withScreenshot,
                 cancellationToken
             );
-            // TODO: can log slack post url?
+            Logger?.Log($"Slack message sent to {slackChannel}");
         }
 
         private void OverwriteByCommandlineArguments()
