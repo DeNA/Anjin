@@ -29,7 +29,7 @@ namespace DeNA.Anjin
         /// <param name="reporting">Call Reporter if true</param>
         /// <param name="token">Cancellation token</param>
         /// <returns>A task awaits termination get completed</returns>
-        public UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
+        UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
             bool reporting = true, CancellationToken token = default);
     }
 
