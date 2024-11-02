@@ -119,7 +119,7 @@ namespace DeNA.Anjin.Editor
             // Exit Unity when returning from play mode to edit mode.
             // Because it may freeze when exiting without going through edit mode.
             var exitCode = (int)AutopilotState.Instance.exitCode;
-            Debug.Log($"Exit Unity-editor by autopilot, exit code={exitCode}");
+            Debug.Log($"Exit Unity-editor by autopilot, exit code: {(int)exitCode}");
             EditorApplication.Exit(exitCode);
         }
     }

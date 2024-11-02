@@ -229,7 +229,7 @@ namespace DeNA.Anjin
                 // Play mode tests
                 if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
                 {
-                    throw new AssertionException($"{caller} failed with exit code {exitCode}");
+                    throw new AssertionException($"{caller} failed with exit code {(int)exitCode}");
                 }
 #endif
                 return; // Only terminate autopilot run if starting from play mode.
@@ -251,7 +251,7 @@ namespace DeNA.Anjin
             else
             {
                 // Player build launch from commandline
-                logger.Log($"Exit Unity-player by {caller}, exit code={exitCode}");
+                logger.Log($"Exit Unity-player by {caller}, exit code: {(int)exitCode}");
                 Application.Quit((int)exitCode);
             }
         }
