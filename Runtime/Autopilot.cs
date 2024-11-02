@@ -145,10 +145,10 @@ namespace DeNA.Anjin
                 JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, message, stackTrace, time);
             }
 
-            DestroyImmediate(this.gameObject);
+            Destroy(this.gameObject);
 
             _logger.Log("Terminate Autopilot");
-            await Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, "Autopilot", token);
+            Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, "Autopilot").Forget();
         }
 
         [Obsolete("Use " + nameof(TerminateAsync))]

@@ -217,8 +217,8 @@ namespace DeNA.Anjin
 #endif
         }
 
-        internal static async UniTask TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
-            ExitCode exitCode, string caller, CancellationToken token = default)
+        internal static async UniTaskVoid TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
+            ExitCode exitCode, string caller)
         {
             state.settings = null;
             state.exitCode = exitCode;
@@ -242,7 +242,7 @@ namespace DeNA.Anjin
 
                 // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
                 // SEE: https://github.com/DeNA/Anjin/issues/20
-                await UniTask.NextFrame(token);
+                await UniTask.NextFrame();
 #if UNITY_EDITOR
                 EditorApplication.isPlaying = false;
                 // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
