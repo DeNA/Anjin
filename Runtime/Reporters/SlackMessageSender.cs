@@ -77,7 +77,7 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            var title = Title(logString, mentionSubTeamIDs, addHereInSlackMessage);
+            var title = CreateTitle(logString, mentionSubTeamIDs, addHereInSlackMessage);
 
             await UniTask.SwitchToMainThread();
 
@@ -118,13 +118,13 @@ namespace DeNA.Anjin.Reporters
 
             if (stackTrace != null && stackTrace.Length > 0)
             {
-                var body = Body(logString, stackTrace);
+                var body = CreateStackTrace(stackTrace);
                 await _slackAPI.Post(slackToken, slackChannel, body, postTitleTask.Ts, cancellationToken);
             }
         }
 
 
-        private static string Title(string logString, IEnumerable<string> mentionSubTeamIDs, bool withHere)
+        private static string CreateTitle(string logString, IEnumerable<string> mentionSubTeamIDs, bool withHere)
         {
             var sb = new StringBuilder();
             foreach (var s in mentionSubTeamIDs)
@@ -146,9 +146,10 @@ namespace DeNA.Anjin.Reporters
         }
 
 
-        private static string Body(string logString, string stackTrace)
+        private static string CreateStackTrace( string stackTrace)
         {
-            return $"{logString}\n\n```{stackTrace}```";
+            return $"```{stackTrace}```";
+            // TODO: Split every 4k characters and quote.
         }
 
         private class CoroutineRunner : MonoBehaviour
