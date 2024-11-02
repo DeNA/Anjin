@@ -443,10 +443,12 @@ Slackにレポート送信するReporterです。
   <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
   <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます（デフォルト: off）</dd>
   <dt>Message Body Template</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
-  <dt>Take screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
+  <dt>Color</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色</dd>
+  <dt>Screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
   <dt>Normally terminated report</dt><dd>正常終了時にもレポートをポストします（デフォルト: off）</dd>
   <dt>Message Body Template</dt><dd>正常終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
-  <dt>Take screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
+  <dt>Color</dt><dd>正常終了時に送信するメッセージのアタッチメントに指定する色</dd>
+  <dt>Screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
 </dl>
 
 Slack Botは次のページで作成できます。  

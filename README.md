@@ -438,10 +438,12 @@ The instance of this Reporter (.asset file) can have the following settings.
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
   <dt>Message Body Template</dt>Message body template when posting an error terminated report. You can specify placeholders like a "{message}".<dd></dd>
-  <dt>Take screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
+  <dt>Color</dt><dd>Attachment color when posting an error terminated report.</dd>
+  <dt>Screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
   <dt>Normally terminated report</dt><dd>Post a report if normally terminates. Default is off</dd>
   <dt>Message Body Template</dt><dd>Message body template when posting a normally terminated report. You can specify placeholders like a "{message}".</dd>
-  <dt>Take screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
+  <dt>Color</dt><dd>Attachment color when posting a normally terminated report.</dd>
+  <dt>Screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
 </dl>
 
 You can create a Slack Bot on the following page:  

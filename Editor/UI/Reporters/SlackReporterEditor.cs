@@ -46,7 +46,12 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _messageBodyTemplateOnErrorProp;
         private GUIContent _messageBodyTemplateOnErrorGUIContent;
 
-        private static readonly string s_withScreenshotOnError = L10n.Tr("Take Screenshot");
+        private static readonly string s_colorOnError = L10n.Tr("Color");
+        private static readonly string s_colorOnErrorTooltip = L10n.Tr("Attachment color when posting an error terminated report");
+        private SerializedProperty _colorOnErrorProp;
+        private GUIContent _colorOnErrorGUIContent;
+
+        private static readonly string s_withScreenshotOnError = L10n.Tr("Screenshot");
         private static readonly string s_withScreenshotOnErrorTooltip = L10n.Tr("Take a screenshot when posting an error terminated report");
         private SerializedProperty _withScreenshotOnErrorProp;
         private GUIContent _withScreenshotOnErrorGUIContent;
@@ -61,7 +66,12 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _messageBodyTemplateOnNormallyProp;
         private GUIContent _messageBodyTemplateOnNormallyGUIContent;
 
-        private static readonly string s_withScreenshotOnNormally = L10n.Tr("Take Screenshot");
+        private static readonly string s_colorOnNormally = L10n.Tr("Color");
+        private static readonly string s_colorOnNormallyTooltip = L10n.Tr("Attachment color when posting a normally terminated report");
+        private SerializedProperty _colorOnNormallyProp;
+        private GUIContent _colorOnNormallyGUIContent;
+
+        private static readonly string s_withScreenshotOnNormally = L10n.Tr("Screenshot");
         private static readonly string s_withScreenshotOnNormallyTooltip = L10n.Tr("Take a screenshot when posting a normally terminated report");
         private SerializedProperty _withScreenshotOnNormallyProp;
         private GUIContent _withScreenshotOnNormallyGUIContent;
@@ -93,6 +103,9 @@ namespace DeNA.Anjin.Editor.UI.Reporters
             _messageBodyTemplateOnErrorProp = serializedObject.FindProperty(nameof(SlackReporter.messageBodyTemplateOnError));
             _messageBodyTemplateOnErrorGUIContent = new GUIContent(s_messageBodyTemplateOnError, s_messageBodyTemplateOnErrorTooltip);
 
+            _colorOnErrorProp = serializedObject.FindProperty(nameof(SlackReporter.colorOnError));
+            _colorOnErrorGUIContent = new GUIContent(s_colorOnError, s_colorOnErrorTooltip);
+
             _withScreenshotOnErrorProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshotOnError));
             _withScreenshotOnErrorGUIContent = new GUIContent(s_withScreenshotOnError, s_withScreenshotOnErrorTooltip);
 
@@ -102,9 +115,14 @@ namespace DeNA.Anjin.Editor.UI.Reporters
             _messageBodyTemplateOnNormallyProp = serializedObject.FindProperty(nameof(SlackReporter.messageBodyTemplateOnNormally));
             _messageBodyTemplateOnNormallyGUIContent = new GUIContent(s_messageBodyTemplateOnNormally, s_messageBodyTemplateOnNormallyTooltip);
 
+            _colorOnNormallyProp = serializedObject.FindProperty(nameof(SlackReporter.colorOnNormally));
+            _colorOnNormallyGUIContent = new GUIContent(s_colorOnNormally, s_colorOnNormallyTooltip);
+
             _withScreenshotOnNormallyProp = serializedObject.FindProperty(nameof(SlackReporter.withScreenshotOnNormally));
             _withScreenshotOnNormallyGUIContent = new GUIContent(s_withScreenshotOnNormally, s_withScreenshotOnNormallyTooltip);
             // @formatter:on
+
+            serializedObject.UpdateIfRequiredOrScript();
         }
 
         public override void OnInspectorGUI()
@@ -123,6 +141,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
             GUILayout.Space(SpacerPixels);
             EditorGUILayout.PropertyField(_messageBodyTemplateOnErrorProp, _messageBodyTemplateOnErrorGUIContent);
+            EditorGUILayout.PropertyField(_colorOnErrorProp, _colorOnErrorGUIContent);
             EditorGUILayout.PropertyField(_withScreenshotOnErrorProp, _withScreenshotOnErrorGUIContent);
 
             GUILayout.Space(SpacerPixels);
@@ -130,6 +149,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
             EditorGUI.BeginDisabledGroup(!_postOnNormallyProp.boolValue);
             EditorGUILayout.PropertyField(_messageBodyTemplateOnNormallyProp, _messageBodyTemplateOnNormallyGUIContent);
+            EditorGUILayout.PropertyField(_colorOnNormallyProp, _colorOnNormallyGUIContent);
             EditorGUILayout.PropertyField(_withScreenshotOnNormallyProp, _withScreenshotOnNormallyGUIContent);
             EditorGUI.EndDisabledGroup();
 

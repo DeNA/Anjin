@@ -41,6 +41,11 @@ namespace DeNA.Anjin.Reporters
         public string messageBodyTemplateOnError = @"{message}";
 
         /// <summary>
+        /// Attachment color (use on error terminates).
+        /// </summary>
+        public Color colorOnError = new Color(0.86f, 0.21f, 0.27f);
+
+        /// <summary>
         /// With take a screenshot or not (use on error terminates).
         /// </summary>
         public bool withScreenshotOnError = true;
@@ -55,6 +60,11 @@ namespace DeNA.Anjin.Reporters
         /// </summary>
         [Multiline]
         public string messageBodyTemplateOnNormally = @"{message}";
+
+        /// <summary>
+        /// Attachment color (use on normally terminates).
+        /// </summary>
+        public Color colorOnNormally = new Color(0.16f, 0.65f, 0.27f);
 
         /// <summary>
         /// With take a screenshot or not (use on normally terminates).

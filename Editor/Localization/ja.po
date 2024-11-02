@@ -517,8 +517,16 @@ msgstr "メッセージ本文テンプレート"
 msgid "Message body template when posting an error terminated report. You can specify placeholders like a "{message}"; see the README for more information."
 msgstr "エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
+# colorOnError
+msgid "Color"
+msgstr "色"
+
+# colorOnError tooltip
+msgid "Attachment color when posting an error terminated report"
+msgstr "エラー終了時に送信するメッセージのアタッチメントに指定する色"
+
 # withScreenshotOnError
-msgid "Take Screenshot"
+msgid "Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnError tooltip
@@ -537,12 +545,20 @@ msgstr "正常終了時にもレポートをポストします"
 msgid "Message Body Template"
 msgstr "メッセージ本文テンプレート"
 
-# messageBodyTemplateOnError tooltip
+# messageBodyTemplateOnNormally tooltip
 msgid "Message body template when posting a normally terminated report. You can specify placeholders like a "{message}"; see the README for more information."
 msgstr "正常終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
+# colorOnNormally
+msgid "Color"
+msgstr "色"
+
+# colorOnNormally tooltip
+msgid "Attachment color when posting a normally terminated report"
+msgstr "正常終了時に送信するメッセージのアタッチメントに指定する色"
+
 # withScreenshotOnNormally (same as withScreenshotOnError)
-msgid "Take Screenshot"
+msgid "Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnNormally tooltip
