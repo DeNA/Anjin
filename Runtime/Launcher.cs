@@ -11,8 +11,8 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using NUnit.Framework;
 using UnityEngine;
+using Assert = UnityEngine.Assertions.Assert;
 using Object = UnityEngine.Object;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
