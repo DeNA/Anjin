@@ -20,7 +20,7 @@ namespace DeNA.Anjin.Reporters
         /// You can specify placeholders:
         ///     - {message}: Message with terminate (e.g., error log message)
         ///     - {settings}: Name of running AutopilotSettings
-        ///     - {env.KEY}: Environment variable
+        ///     - {env.KEY}: Environment variables
         /// </param>
         /// <param name="message">Replace placeholder "{message}" in the template with this string</param>
         /// <returns>Messages that replaced placeholders in the template</returns>

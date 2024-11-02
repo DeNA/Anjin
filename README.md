@@ -437,8 +437,10 @@ The instance of this Reporter (.asset file) can have the following settings.
         The bot must be invited to the channel.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
   <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
+  <dt>Message Body Template</dt>Message body template when posting an error terminated report. You can specify placeholders like a "{message}".<dd></dd>
   <dt>Take screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
   <dt>Normally terminated report</dt><dd>Post a report if normally terminates. Default is off</dd>
+  <dt>Message Body Template</dt><dd>Message body template when posting a normally terminated report. You can specify placeholders like a "{message}".</dd>
   <dt>Take screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
 </dl>
 
@@ -449,6 +451,12 @@ The Slack Bot needs the following permissions:
 
 - chat:write
 - files:write
+
+The placeholders you can include in the message body template are:
+
+- "{message}": Message with terminate (e.g., error log message)
+- "{settings}": Name of running AutopilotSettings
+- "{env.KEY}": Environment variables
 
 
 

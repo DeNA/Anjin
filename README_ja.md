@@ -442,8 +442,10 @@ Slackにレポート送信するReporterです。
         チャンネルにはBotを招待しておく必要があります。</dd>
   <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
   <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます（デフォルト: off）</dd>
+  <dt>Message Body Template</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
   <dt>Take screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
   <dt>Normally terminated report</dt><dd>正常終了時にもレポートをポストします（デフォルト: off）</dd>
+  <dt>Message Body Template</dt><dd>正常終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
   <dt>Take screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
 </dl>
 
@@ -454,6 +456,12 @@ Slack Botには次の権限が必要です。
 
 - chat:write
 - files:write
+
+メッセージ本文のテンプレートに記述できるプレースホルダーは次のとおりです。
+
+- "{message}": 終了要因メッセージ（エラーログのメッセージなど）
+- "{settings}": 実行中の AutopilotSettings 名
+- "{env.KEY}": 環境変数
 
 
 
