@@ -3,8 +3,8 @@
 
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
+using TestHelper.Attributes;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Reporters
 {
@@ -31,11 +31,11 @@ namespace DeNA.Anjin.Reporters
         }
 
         [Test]
-        [UnityPlatform(exclude = new[] { RuntimePlatform.WindowsEditor, RuntimePlatform.WindowsPlayer })]
+        [IgnoreWindowMode("Need command line arguments. see Makefile")]
         public void BuildWithTemplate_EnvKey_ReplacesEnvironmentVariable()
         {
-            var actual = MessageBuilder.BuildWithTemplate("Environment variable SHELL: {env.SHELL}.", null);
-            Assert.That(actual, Is.EqualTo("Environment variable SHELL: /bin/bash."));
+            var actual = MessageBuilder.BuildWithTemplate("Environment variable STR_ENV: {env.STR_ENV}.", null);
+            Assert.That(actual, Is.EqualTo("Environment variable STR_ENV: STRING_BY_ENVIRONMENT_VARIABLE."));
         }
     }
 }
