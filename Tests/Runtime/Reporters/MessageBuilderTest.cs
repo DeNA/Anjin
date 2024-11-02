@@ -20,8 +20,9 @@ namespace DeNA.Anjin.Reporters
         [Test]
         public void BuildWithTemplate_Settings_ReplacesSettingsName()
         {
-            AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            AutopilotState.Instance.settings!.name = "Settings for test";
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.name = "Settings for test";
+            AutopilotState.Instance.settings = settings;
 
             var actual = MessageBuilder.BuildWithTemplate("Autopilot settings: {settings}.", null);
             Assert.That(actual, Is.EqualTo("Autopilot settings: Settings for test."));

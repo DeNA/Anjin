@@ -26,9 +26,9 @@ namespace DeNA.Anjin.Reporters
             _sut._sender = _spy;
 
             // for log output test
-            AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            AutopilotState.Instance.settings!.LoggerAsset.loggerAssets.Add(
-                ScriptableObject.CreateInstance<ConsoleLoggerAsset>());
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.LoggerAsset.loggerAssets.Add(ScriptableObject.CreateInstance<ConsoleLoggerAsset>());
+            AutopilotState.Instance.settings = settings;
         }
 
         [TearDown]
