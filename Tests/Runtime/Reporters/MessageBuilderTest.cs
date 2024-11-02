@@ -32,7 +32,8 @@ namespace DeNA.Anjin.Reporters
         }
 
         [Test]
-        [IgnoreWindowMode("Need command line arguments. see Makefile")]
+        [IgnoreWindowMode("This test requires environment variables. see Makefile")]
+        [Category("IgnoreCI")] // This test requires environment variables.
         public void BuildWithTemplate_EnvKey_ReplacesEnvironmentVariable()
         {
             var actual = MessageBuilder.BuildWithTemplate("Environment variable STR_ENV: {env.STR_ENV}.", null);

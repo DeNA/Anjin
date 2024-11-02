@@ -42,7 +42,7 @@ namespace DeNA.Anjin.Reporters
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "message", "```STACKTRACE```" },
                     { "ts", "1" }
                 },
             };
@@ -76,7 +76,7 @@ namespace DeNA.Anjin.Reporters
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "message", "```STACKTRACE```" },
                     { "ts", "1" }
                 },
             };
@@ -115,7 +115,7 @@ namespace DeNA.Anjin.Reporters
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "message", "```STACKTRACE```" },
                     { "ts", "1" }
                 },
             };
@@ -149,7 +149,7 @@ namespace DeNA.Anjin.Reporters
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "message", "```STACKTRACE```" },
                     { "ts", "1" }
                 },
             };
