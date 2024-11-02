@@ -18,6 +18,9 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this setting instance");
 
+        private static readonly string s_name = L10n.Tr("Name");
+        private static readonly string s_nameTooltip = L10n.Tr("Custom name of this setting used by Reporter. If omitted, the asset file name is used.");
+
         private static readonly string s_agentAssignmentHeader = L10n.Tr("Agent Assignment");
         private static readonly string s_sceneAgentMaps = L10n.Tr("Scene Agent Mapping");
         private static readonly string s_sceneAgentMapsTooltip = L10n.Tr("Scene to Agent assign mapping");
@@ -30,6 +33,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_autopilotRunSettingsHeader = L10n.Tr("Autopilot Run Settings");
         private static readonly string s_lifespanSec = L10n.Tr("Lifespan Sec");
         private static readonly string s_lifespanSecTooltip = L10n.Tr("Autopilot running lifespan [sec]. When specified zero, so unlimited running");
+
         private static readonly string s_randomSeed = L10n.Tr("Random Seed");
         private static readonly string s_randomSeedTooltip = L10n.Tr("Random using the specified seed value");
         private static readonly string s_timeScale = L10n.Tr("Time Scale");
@@ -69,6 +73,8 @@ namespace DeNA.Anjin.Editor.UI.Settings
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.name)),
+                new GUIContent(s_name, s_nameTooltip));
 
             DrawHeader(s_agentAssignmentHeader);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.sceneAgentMaps)),

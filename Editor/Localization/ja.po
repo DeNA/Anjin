@@ -23,6 +23,14 @@ msgstr "説明"
 msgid "Description about this setting instance"
 msgstr "このAutopilotSettingsインスタンスの説明"
 
+# name
+msgid "Name"
+msgstr "名前"
+
+# description tooltip
+msgid "Custom name of this setting used by Reporter. If omitted, the asset file name is used."
+msgstr "このAutopilotSettingsインスタンスの名前。Reporterで使用されます。省略時はアセットファイル名がデフォルトとして使用されます"
+
 # Header: Agent Assignment
 msgid "Agent Assignment"
 msgstr "Agent割り当て設定"

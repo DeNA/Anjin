@@ -27,7 +27,8 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Scene
         /// </summary>
-        [ScenePicker("Scene")] public string scenePath;
+        [ScenePicker("Scene")]
+        public string scenePath;
 
         /// <summary>
         /// Agent
@@ -47,8 +48,21 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Description about this setting instance
         /// </summary>
-        [Multiline] public string description;
+        [Multiline]
+        public string description;
 #endif
+
+        /// <summary>
+        /// Custom name of this setting used by Reporter.
+        /// When using it from within code, use the <code>Name</code> property.
+        /// </summary>
+        public new string name;
+
+        /// <summary>
+        /// Name of this setting used by Reporter.
+        /// If omitted, the asset file name is used.
+        /// </summary>
+        public string Name => string.IsNullOrEmpty(this.name) ? base.name : this.name;
 
         /// <summary>
         /// Scene to Agent assign mapping
