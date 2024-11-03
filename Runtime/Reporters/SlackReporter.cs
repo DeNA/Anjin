@@ -3,6 +3,7 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
 
@@ -101,13 +102,12 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            var withScreenshot = (exitCode == ExitCode.Normally)
-                ? withScreenshotOnNormally
-                : withScreenshotOnError;
             var messageBody = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
                     ? messageBodyTemplateOnNormally
                     : messageBodyTemplateOnError,
                 message);
+            var color = (exitCode == ExitCode.Normally) ? colorOnNormally : colorOnError;
+            var withScreenshot = (exitCode == ExitCode.Normally) ? withScreenshotOnNormally : withScreenshotOnError;
 
             OverwriteByCommandlineArguments();
             if (string.IsNullOrEmpty(slackToken) || string.IsNullOrEmpty(slackChannels))
@@ -124,7 +124,7 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, messageBody, stackTrace, withScreenshot, cancellationToken);
+                await PostReportAsync(slackChannel, messageBody, stackTrace, color, withScreenshot, cancellationToken);
             }
         }
 
@@ -132,6 +132,7 @@ namespace DeNA.Anjin.Reporters
             string slackChannel,
             string message,
             string stackTrace,
+            Color color,
             bool withScreenshot,
             CancellationToken cancellationToken = default
         )
@@ -143,6 +144,7 @@ namespace DeNA.Anjin.Reporters
                 addHereInSlackMessage,
                 message,
                 stackTrace,
+                color,
                 withScreenshot,
                 cancellationToken
             );

@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace DeNA.Anjin.Reporters
+namespace DeNA.Anjin.Reporters.Slack
 {
     /// <summary>
     /// An interface for Slack message senders. The derived class of this interface must define message format, and
@@ -23,8 +23,9 @@ namespace DeNA.Anjin.Reporters
         /// <param name="slackChannel">Slack Channel to send notification</param>
         /// <param name="mentionSubTeamIDs">Sub team IDs to mention</param>
         /// <param name="addHereInSlackMessage">Whether adding @here or not</param>
-        /// <param name="logString">Log message</param>
+        /// <param name="message">Log message</param>
         /// <param name="stackTrace">Stack trace</param>
+        /// <param name="color">Attachment color</param>
         /// <param name="withScreenshot">With screenshot</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
@@ -33,8 +34,9 @@ namespace DeNA.Anjin.Reporters
             string slackChannel,
             IEnumerable<string> mentionSubTeamIDs,
             bool addHereInSlackMessage,
-            string logString,
+            string message,
             string stackTrace,
+            Color color,
             bool withScreenshot,
             CancellationToken cancellationToken = default
         );
@@ -66,8 +68,9 @@ namespace DeNA.Anjin.Reporters
             string slackChannel,
             IEnumerable<string> mentionSubTeamIDs,
             bool addHereInSlackMessage,
-            string logString,
+            string message,
             string stackTrace,
+            Color color,
             bool withScreenshot,
             CancellationToken cancellationToken = default
         )
@@ -77,15 +80,16 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            var title = CreateTitle(logString, mentionSubTeamIDs, addHereInSlackMessage);
+            var lead = CreateLead(mentionSubTeamIDs, addHereInSlackMessage);
 
             await UniTask.SwitchToMainThread();
 
             var postTitleTask = await _slackAPI.Post(
                 slackToken,
                 slackChannel,
-                title,
-                cancellationToken: cancellationToken
+                lead,
+                message,
+                color
             );
             if (!postTitleTask.Success)
             {
@@ -107,8 +111,7 @@ namespace DeNA.Anjin.Reporters
                     slackToken,
                     slackChannel,
                     withoutAlpha.EncodeToPNG(),
-                    postTitleTask.Ts,
-                    cancellationToken
+                    postTitleTask.Ts
                 );
                 if (!postScreenshotTask.Success)
                 {
@@ -116,15 +119,14 @@ namespace DeNA.Anjin.Reporters
                 }
             }
 
-            if (stackTrace != null && stackTrace.Length > 0)
+            if (!string.IsNullOrEmpty(stackTrace))
             {
-                var body = CreateStackTrace(stackTrace);
-                await _slackAPI.Post(slackToken, slackChannel, body, postTitleTask.Ts, cancellationToken);
+                await _slackAPI.PostWithoutAttachments(slackToken, slackChannel, stackTrace, postTitleTask.Ts);
             }
         }
 
 
-        private static string CreateTitle(string logString, IEnumerable<string> mentionSubTeamIDs, bool withHere)
+        private static string CreateLead(IEnumerable<string> mentionSubTeamIDs, bool withHere)
         {
             var sb = new StringBuilder();
             foreach (var s in mentionSubTeamIDs)
@@ -141,15 +143,7 @@ namespace DeNA.Anjin.Reporters
                 sb.Append("<!here> ");
             }
 
-            sb.Append(logString);
             return sb.ToString();
-        }
-
-
-        private static string CreateStackTrace( string stackTrace)
-        {
-            return $"```{stackTrace}```";
-            // TODO: Split every 4k characters and quote.
         }
 
         private class CoroutineRunner : MonoBehaviour

@@ -1,13 +1,14 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Reporters.Slack.Payloads.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace DeNA.Anjin.Reporters
+namespace DeNA.Anjin.Reporters.Slack
 {
     /// <summary>
     /// Slack post message API response
@@ -48,25 +49,57 @@ namespace DeNA.Anjin.Reporters
         /// </summary>
         /// <param name="token">Slack token</param>
         /// <param name="channel">Send target channels</param>
-        /// <param name="text">Message body</param>
+        /// <param name="lead">Lead text (out of attachment)</param>
+        /// <param name="message">Message body text (into attachment)</param>
+        /// <param name="color">Attachment color</param>
         /// <param name="ts">Thread timestamp</param>
-        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, string text,
-            string ts = null, CancellationToken cancellationToken = default)
+        public virtual async UniTask<SlackResponse> Post(string token, string channel, string lead, string message,
+            Color color, string ts = null)
         {
             const string URL = URLBase + "chat.postMessage";
-            var form = new WWWForm();
-            form.AddField("token", token);
-            form.AddField("channel", channel);
-            form.AddField("text", text);
-            form.AddField("link_names", "1");
-            if (ts != null)
-            {
-                form.AddField("thread_ts", ts);
-            }
+            var payload = Payload.CreatePayload(
+                channel,
+                lead,
+                new[]
+                {
+                    Attachment.CreateAttachment(
+                        new[]
+                        {
+                            ContextBlock.CreateContextBlock(
+                                new[] { Text.CreateMarkdownText(message) }
+                            )
+                        },
+                        color
+                    )
+                },
+                ts
+            );
 
-            return await Post(URL, form);
+            return await Post(URL, token, payload);
+        }
+
+        /// <summary>
+        /// Post text message to thread.
+        /// Without attachments.
+        /// </summary>
+        /// <param name="token">Slack token</param>
+        /// <param name="channel">Send target channels</param>
+        /// <param name="text">Text (out of attachment)</param>
+        /// <param name="ts">Thread timestamp</param>
+        /// <returns></returns>
+        public virtual async UniTask<SlackResponse> PostWithoutAttachments(string token, string channel, string text,
+            string ts = null)
+        {
+            const string URL = URLBase + "chat.postMessage";
+            var payload = Payload.CreatePayload(
+                channel,
+                text,
+                null,
+                ts
+            );
+
+            return await Post(URL, token, payload);
         }
 
         /// <summary>
@@ -76,10 +109,9 @@ namespace DeNA.Anjin.Reporters
         /// <param name="channel">Send target channels</param>
         /// <param name="image">Image (screenshot)</param>
         /// <param name="ts">Thread timestamp</param>
-        /// <param name="cancellationToken">Cancellation token</param>
         /// <returns></returns>
         public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image,
-            string ts = null, CancellationToken cancellationToken = default)
+            string ts = null)
         {
             const string URL = URLBase + "files.upload";
             var form = new WWWForm();
@@ -94,10 +126,49 @@ namespace DeNA.Anjin.Reporters
             return await Post(URL, form);
         }
 
+        [Obsolete]
         private static async UniTask<SlackResponse> Post(string url, WWWForm form)
         {
             using (var www = UnityWebRequest.Post(url, form))
             {
+                await www.SendWebRequest();
+
+#if UNITY_2020_2_OR_NEWER
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false, null);
+                }
+#else
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false, null);
+                }
+#endif
+
+                if (www.downloadHandler.text.Contains("\"ok\":false"))
+                {
+                    Debug.LogWarning($"{www.downloadHandler.text}");
+                    return new SlackResponse(false, null);
+                }
+
+                string ts = null;
+                var tsMatch = new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(www.downloadHandler.text);
+                if (tsMatch.Success && tsMatch.Length > 0)
+                {
+                    ts = tsMatch.Groups[1].Value;
+                }
+
+                return new SlackResponse(true, ts);
+            }
+        }
+
+        private static async UniTask<SlackResponse> Post(string url, string token, Payload payload)
+        {
+            using (var www = UnityWebRequest.Post(url, payload.ToJson(), "application/json; charset=utf-8"))
+            {
+                www.SetRequestHeader("Authorization", $"Bearer {token}");
                 await www.SendWebRequest();
 
 #if UNITY_2020_2_OR_NEWER

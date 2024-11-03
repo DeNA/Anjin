@@ -56,7 +56,7 @@ namespace DeNA.Anjin.Reporters
             Assert.That(_spy.CalledList[1].SlackChannel, Is.EqualTo("qa"));
             Assert.That(_spy.CalledList[0].MentionSubTeamIDs, Is.EquivalentTo(new[] { "alpha", "bravo" }));
             Assert.That(_spy.CalledList[0].AddHereInSlackMessage, Is.True);
-            Assert.That(_spy.CalledList[0].LogString, Is.EqualTo("Error terminate with message")); // use OnNormally
+            Assert.That(_spy.CalledList[0].Message, Is.EqualTo("Error terminate with message")); // use OnNormally
             Assert.That(_spy.CalledList[0].StackTrace, Is.EqualTo("stack trace"));
             Assert.That(_spy.CalledList[0].WithScreenshot, Is.False); // use OnError
         }
@@ -74,7 +74,7 @@ namespace DeNA.Anjin.Reporters
             await _sut.PostReportAsync("message", string.Empty, ExitCode.Normally);
 
             Assert.That(_spy.CalledList.Count, Is.EqualTo(1));
-            Assert.That(_spy.CalledList[0].LogString, Is.EqualTo("Normally terminate with message")); // use OnNormally
+            Assert.That(_spy.CalledList[0].Message, Is.EqualTo("Normally terminate with message")); // use OnNormally
             Assert.That(_spy.CalledList[0].WithScreenshot, Is.True); // use OnNormally
         }
 
