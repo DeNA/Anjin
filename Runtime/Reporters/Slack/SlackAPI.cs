@@ -166,8 +166,14 @@ namespace DeNA.Anjin.Reporters.Slack
 
         private static async UniTask<SlackResponse> Post(string url, string token, Payload payload)
         {
+#if UNITY_2022_2_OR_NEWER
             using (var www = UnityWebRequest.Post(url, payload.ToJson(), "application/json; charset=utf-8"))
             {
+#else
+            using (var www = UnityWebRequest.Post(url, payload.ToJson()))
+            {
+                www.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
+#endif
                 www.SetRequestHeader("Authorization", $"Bearer {token}");
                 await www.SendWebRequest();
 
