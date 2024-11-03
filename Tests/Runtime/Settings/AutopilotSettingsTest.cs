@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using DeNA.Anjin.Agents;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using DeNA.Anjin.TestDoubles;
@@ -228,6 +229,47 @@ This time, temporarily generate and use SlackReporter instance.")));
             settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
             Assert.That(settings.reporters.Count, Is.EqualTo(1));
             Assert.That(settings.reporters, Does.Contain(existReporter));
+        }
+
+        [Test]
+        public void ConvertSceneCrossingAgentsFromObsoleteObserverAgent_HasObserverAgent_IncludeToCrossSceneAgents()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            var legacyObserverAgent = ScriptableObject.CreateInstance<SpyAgent>();
+            settings.observerAgent = legacyObserverAgent;
+
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(spyLogger.Logger);
+            Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
+            Assert.That(settings.sceneCrossingAgents, Has.Member(legacyObserverAgent));
+
+            Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
+                @"ObserverAgent setting in AutopilotSettings has been obsolete.
+Please delete the value using Debug Mode in the Inspector window. And using the SceneCrossingAgents.
+This time, temporarily converting.")));
+        }
+
+        [Test]
+        public void
+            ConvertSceneCrossingAgentsFromObsoleteObserverAgent_HasNotObserverAgent_NotIncludeToCrossSceneAgents()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            // Not set observerAgent
+
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(Debug.unityLogger);
+            Assert.That(settings.sceneCrossingAgents, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertSceneCrossingAgentsFromObsoleteObserverAgent_ExistAgent_NotIncludeToCrossSceneAgents()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneCrossingAgents.Add(ScriptableObject.CreateInstance<DoNothingAgent>()); // already exists
+            settings.observerAgent = ScriptableObject.CreateInstance<SpyAgent>();
+
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(Debug.unityLogger);
+            Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
+            Assert.That(settings.sceneCrossingAgents, Has.No.InstanceOf<SpyAgent>());
         }
     }
 }

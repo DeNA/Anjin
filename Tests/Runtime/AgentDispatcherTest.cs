@@ -1,8 +1,6 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -19,7 +17,6 @@ using UnityEngine.TestTools;
 namespace DeNA.Anjin
 {
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
-    [SuppressMessage("ApiDesign", "RS0030")]
     public class AgentDispatcherTest
     {
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
@@ -37,13 +34,6 @@ namespace DeNA.Anjin
         public void TearDown()
         {
             _dispatcher?.Dispose();
-        }
-
-        private static AutopilotSettings CreateAutopilotSettings()
-        {
-            var testSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            testSettings.sceneAgentMaps = new List<SceneAgentMap>();
-            return testSettings;
         }
 
         private static SpyAliveCountAgent CreateSpyAliveCountAgent(string name = nameof(SpyAliveCountAgent))
@@ -66,7 +56,7 @@ namespace DeNA.Anjin
         public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
             const string AgentName = "Mapped Agent";
-            var settings = CreateAutopilotSettings();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
                 scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
@@ -85,7 +75,7 @@ namespace DeNA.Anjin
         public async Task DispatchByScene_DispatchFallbackAgent()
         {
             const string AgentName = "Fallback Agent";
-            var settings = CreateAutopilotSettings();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.fallbackAgent = CreateSpyAliveCountAgent(AgentName);
             SetUpDispatcher(settings);
 
@@ -100,7 +90,7 @@ namespace DeNA.Anjin
         [CreateScene]
         public async Task DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
         {
-            var settings = CreateAutopilotSettings();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             SetUpDispatcher(settings);
 
             await SceneManagerHelper.LoadSceneAsync(TestScenePath);
@@ -111,26 +101,10 @@ namespace DeNA.Anjin
 
         [Test]
         [CreateScene]
-        public async Task DispatchByScene_DispatchObserverAgent()
-        {
-            const string AgentName = "Observer Agent";
-            var settings = CreateAutopilotSettings();
-            settings.observerAgent = CreateSpyAliveCountAgent(AgentName);
-            SetUpDispatcher(settings);
-
-            await SceneManagerHelper.LoadSceneAsync(TestScenePath);
-
-            var gameObject = GameObject.Find(AgentName);
-            Assert.That(gameObject, Is.Not.Null);
-            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
-        }
-
-        [Test]
-        [CreateScene]
         public async Task DispatchByScene_ReActivateScene_NotCreateDuplicateAgents()
         {
             const string AgentName = "Mapped Agent";
-            var settings = CreateAutopilotSettings();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.sceneAgentMaps.Add(new SceneAgentMap
             {
                 scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
@@ -151,12 +125,29 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        [CreateScene]
+        public void DispatchSceneCrossingAgents_DispatchAgent()
+        {
+            const string AgentName = "Scene Crossing Agent";
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneCrossingAgents.Add(CreateSpyAliveCountAgent(AgentName));
+            SetUpDispatcher(settings);
+
+            _dispatcher.DispatchSceneCrossingAgents();
+
+            var gameObject = GameObject.Find(AgentName);
+            Assert.That(gameObject, Is.Not.Null);
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
+        }
+
+        [Test]
         public async Task Dispose_DestroyAllRunningAgents()
         {
-            var settings = CreateAutopilotSettings();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
             settings.fallbackAgent = CreateSpyAliveCountAgent("Fallback Agent");
-            settings.observerAgent = CreateSpyAliveCountAgent("Observer Agent");
+            settings.sceneCrossingAgents.Add(CreateSpyAliveCountAgent("Scene Crossing Agent"));
             SetUpDispatcher(settings);
+            _dispatcher.DispatchSceneCrossingAgents();
             await SceneManagerHelper.LoadSceneAsync(TestScenePath);
 
             _dispatcher.Dispose();

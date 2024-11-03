@@ -24,6 +24,11 @@ namespace DeNA.Anjin
         /// <param name="fallback">Use fallback agent if true</param>
         /// <returns>True: Agent dispatched</returns>
         bool DispatchByScene(Scene scene, bool fallback = true);
+
+        /// <summary>
+        /// Dispatch scene crossing Agents. 
+        /// </summary>
+        void DispatchSceneCrossingAgents();
     }
 
     /// <inheritdoc/>
@@ -44,6 +49,7 @@ namespace DeNA.Anjin
             _settings = settings;
             _logger = logger;
             _randomFactory = randomFactory;
+
             SceneManager.sceneLoaded += this.DispatchByScene;
         }
 
@@ -91,28 +97,36 @@ namespace DeNA.Anjin
                 }
             }
 
-            if (agent)
+            if (!agent)
             {
-                DispatchAgent(agent);
+                return false;
             }
 
-            if (_settings.observerAgent != null)
-            {
-                DispatchAgent(_settings.observerAgent);
-                // Note: The ObserverAgent is not made to DontDestroyOnLoad, to start every time.
-                //      Because it is a source of bugs to force the implementation of DontDestroyOnLoad to the descendants of the Composite.
-            }
-
-            return agent != null; // Returns Agent dispatched or not.
+            DispatchAgent(agent);
+            return true;
         }
 
-        private void DispatchAgent(AbstractAgent agent)
+        /// <inheritdoc/>
+        public void DispatchSceneCrossingAgents()
+        {
+            _settings.sceneCrossingAgents.ForEach(agent =>
+            {
+                DispatchAgent(agent, true);
+            });
+        }
+
+        private void DispatchAgent(AbstractAgent agent, bool dontDestroyOnLoad = false)
         {
             var agentName = agent.name;
             agent.Logger = _logger;
             agent.Random = _randomFactory.CreateRandom();
 
             var inspector = new GameObject(agentName).AddComponent<AgentInspector>();
+            if (dontDestroyOnLoad)
+            {
+                Object.DontDestroyOnLoad(inspector.gameObject);
+            }
+
             var token = inspector.gameObject.GetCancellationTokenOnDestroy();
             _logger.Log($"Dispatch agent: {agentName}");
             agent.Run(token).Forget(); // Agent also dies when GameObject is destroyed

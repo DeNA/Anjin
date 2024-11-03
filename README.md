@@ -103,14 +103,12 @@ If a Scene does not exist in the list, the Agent set in `Fallback Agent` will be
 For example, if you want `UGUIMonkeyAgent` to work for all Scenes, set `Scene Agent Maps` to empty, and set
 Set the `Fallback Agent` to an `UGUIMonkeyAgent`'s .asset file.
 
-##### Observer Agent
+##### Scene Crossing Agents
 
-Set the Agents to always be launched in parallel, independent of `Scene Agent Maps` and `Fallback Agent`.
-As of v1.0.0, `EmergencyExitAgent` is assumed to be used.
-If you need to launch multiple Agents in parallel, use `ParallelCompositeAgent`.
+Set the Agents to run by scene crossing, independent of `Scene Agent Maps` and `Fallback Agent`.
 
-Note that the Agents set here will be destroyed and created each time a new Scene is loaded.
-It is **NOT** set to `DontDestroyOnLoad`.
+The specified agents will have the same lifespan as Autopilot (i.e., use `DontDestroyOnLoad`)
+for specifying, e.g., `LogMessageHandlerAgent` and `UGUIEmergencyExitAgent`.
 
 #### Autopilot Run Settings
 
@@ -385,7 +383,7 @@ An Agent that monitors the appearance of the `EmergencyExitAnnotations` componen
 This can be used in games that contain behavior that is irregular in the execution of the test scenario, for example, communication errors or "return to title screen" buttons that are triggered by a daybreak.
 
 It should always be started at the same time as other Agents (that actually perform game operations).
-This can be accomplished with `ParallelCompositeAgent`, but it is easier to set it up as an `ObserverAgent` in AutopilotSettings.
+This can be accomplished with `ParallelCompositeAgent`, but it is easier to set it up as an `Scene Crossing Agents` in AutopilotSettings.
 
 
 

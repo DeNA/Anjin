@@ -101,13 +101,12 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
 たとえば全てのSceneで `UGUIMonkeyAgent` が動くようにしたければ、`Scene Agent Maps` は空に、
 `Fallback Agent` には `UGUIMonkeyAgent` の.assetファイルを設定します。
 
-##### オブザーバーAgent
+##### Scene横断Agents
 
-`Scene Agent Maps`と`Fallback Agent`とは独立して、常に並列に起動されるAgentを設定します。
-v1.0.0時点では `EmergencyExitAgent` の使用を想定しています。
-複数のAgentを並列起動する必要があるときは `ParallelCompositeAgent` を使用してください。
+`Scene Agent Maps` および `Fallback Agent`とは独立して、Sceneを横断して実行されるAgentを設定します。
 
-なお、ここに設定されたAgentは `DontDestroyOnLoad` **ではなく**、新しいSceneがロードされる度に破棄・生成される点に注意してください。
+指定されたAgentの寿命はオートパイロット本体と同じになります（つまり、`DontDestroyOnLoad` を使用します）。
+たとえば、`LogMessageHandlerAgent` や `UGUIEmergencyExitAgent` などを指定します。
 
 #### オートパイロット実行設定
 
@@ -389,7 +388,7 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 たとえば通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなる振る舞いが含まれるゲームで利用できます。
 
 常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
-`ParallelCompositeAgent` でも実現できますが、AutopilotSettingsに `Observer Agent` として設定するほうが簡単です。
+`ParallelCompositeAgent` でも実現できますが、AutopilotSettingsの `Scene Crossing Agents` に追加するほうが簡単です。
 
 
 

@@ -68,6 +68,7 @@ namespace DeNA.Anjin
             _logMessageHandler = new LogMessageHandler(_settings, this);
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
+            _dispatcher.DispatchSceneCrossingAgents();
             var dispatched = _dispatcher.DispatchByScene(SceneManager.GetActiveScene(), false);
             if (!dispatched)
             {
