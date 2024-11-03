@@ -27,6 +27,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 "CHANNEL",
                 Array.Empty<string>(),
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
                 Color.magenta,
@@ -40,7 +41,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "lead", "" },
+                    { "text", "LEAD" },
                     { "message", "MESSAGE" },
                     { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
                     { "ts", null }
@@ -67,6 +68,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 "CHANNEL",
                 new[] { "MENTION1", "MENTION2" },
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
                 Color.magenta,
@@ -80,7 +82,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "lead", "<!subteam^MENTION1> <!subteam^MENTION2> " },
+                    { "text", "<!subteam^MENTION1> <!subteam^MENTION2> LEAD" },
                     { "message", "MESSAGE" },
                     { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
                     { "ts", null }
@@ -108,6 +110,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 "CHANNEL",
                 new[] { "MENTION1", "MENTION2" },
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
                 Color.magenta,
@@ -121,7 +124,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "lead", "<!subteam^MENTION1> <!subteam^MENTION2> " },
+                    { "text", "<!subteam^MENTION1> <!subteam^MENTION2> LEAD" },
                     { "message", "MESSAGE" },
                     { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
                     { "ts", null }
@@ -130,7 +133,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "lead", null },
+                    { "text", null },
                     { "message", "IMAGE" },
                     { "color", "RGBA(0.000, 0.000, 0.000, 0.000)" }, // default
                     { "ts", "1" }
@@ -157,6 +160,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 "CHANNEL",
                 Array.Empty<string>(),
                 true,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
                 Color.magenta,
@@ -170,7 +174,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "lead", "<!here> " },
+                    { "text", "<!here> LEAD" },
                     { "message", "MESSAGE" },
                     { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
                     { "ts", null }

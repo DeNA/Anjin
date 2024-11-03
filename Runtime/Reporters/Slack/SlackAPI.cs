@@ -49,18 +49,18 @@ namespace DeNA.Anjin.Reporters.Slack
         /// </summary>
         /// <param name="token">Slack token</param>
         /// <param name="channel">Send target channels</param>
-        /// <param name="lead">Lead text (out of attachment)</param>
+        /// <param name="text">Lead text (out of attachment)</param>
         /// <param name="message">Message body text (into attachment)</param>
         /// <param name="color">Attachment color</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, string lead, string message,
+        public virtual async UniTask<SlackResponse> Post(string token, string channel, string text, string message,
             Color color, string ts = null)
         {
             const string URL = URLBase + "chat.postMessage";
             var payload = Payload.CreatePayload(
                 channel,
-                lead,
+                text,
                 new[]
                 {
                     Attachment.CreateAttachment(

@@ -67,6 +67,12 @@ namespace DeNA.Anjin.Reporters
             _sut.slackToken = "token";
             _sut.slackChannels = "dev";
             _sut.postOnNormally = true;
+            _sut.mentionSubTeamIDsOnNormally = "charlie";
+            _sut.mentionSubTeamIDs = "alpha,bravo"; // dummy
+            _sut.addHereInSlackMessageOnNormally = true;
+            _sut.addHereInSlackMessage = false; // dummy
+            _sut.leadTextOnNormally = "Normally terminate lead";
+            _sut.leadTextOnError = "Not use this"; // dummy
             _sut.messageBodyTemplateOnNormally = "Normally terminate with {message}";
             _sut.messageBodyTemplateOnError = "Not use this"; // dummy
             _sut.withScreenshotOnNormally = true;
@@ -74,6 +80,9 @@ namespace DeNA.Anjin.Reporters
             await _sut.PostReportAsync("message", string.Empty, ExitCode.Normally);
 
             Assert.That(_spy.CalledList.Count, Is.EqualTo(1));
+            Assert.That(_spy.CalledList[0].MentionSubTeamIDs, Is.EquivalentTo(new[] { "charlie" }));
+            Assert.That(_spy.CalledList[0].AddHereInSlackMessage, Is.True);
+            Assert.That(_spy.CalledList[0].Lead, Is.EqualTo("Normally terminate lead")); // use OnNormally
             Assert.That(_spy.CalledList[0].Message, Is.EqualTo("Normally terminate with message")); // use OnNormally
             Assert.That(_spy.CalledList[0].WithScreenshot, Is.True); // use OnNormally
         }

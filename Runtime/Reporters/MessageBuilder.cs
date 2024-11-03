@@ -24,7 +24,7 @@ namespace DeNA.Anjin.Reporters
         /// </param>
         /// <param name="message">Replace placeholder "{message}" in the template with this string</param>
         /// <returns>Messages that replaced placeholders in the template</returns>
-        public static string BuildWithTemplate(string template, string message)
+        public static string BuildWithTemplate(string template, string message = null)
         {
             var settings = AutopilotState.Instance.settings;
             var placeholders = GetPlaceholders().ToList();

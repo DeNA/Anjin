@@ -478,43 +478,51 @@ msgid "Slack Token"
 msgstr "Slackトークン"
 
 # slackToken tooltip
-msgid "Slack API token"
-msgstr "Slack通知に使用するWeb APIトークン（省略時は通知されない）"
+msgid "Slack API token. If omitted, it will not be sent."
+msgstr "Slack通知に使用するWeb APIトークン（省略時は送信されません）"
 
 # slackChannels
 msgid "Slack Channels"
 msgstr "Slackチャンネル"
 
 # slackChannels tooltip
-msgid "Slack channels to send notification"
-msgstr "Slack通知を送るチャンネル（省略時は通知されない。現時点では1チャンネルのみ有効ですが、将来的にはカンマ区切りで複数指定対応予定）"
+msgid "Comma-separated Slack channels to post. If omitted, it will not be sent."
+msgstr "Slack通知を送るチャンネルをカンマ区切りで指定します（省略時は送信されません）"
 
-# Header: Slack Mention Settings
-msgid "Slack Mention Settings"
-msgstr "Slackメンション設定"
+# Header: Error Report Settings
+msgid "Error Report Settings"
+msgstr "エラーレポート設定"
 
 # mentionSubTeamIDs
-msgid "Sub Team IDs to Mention"
-msgstr "メンション宛先"
+msgid "Mention Sub Team IDs"
+msgstr "メンション宛先チームID"
 
 # mentionSubTeamIDs tooltip
-msgid "Sub team IDs to mention (comma separates)"
-msgstr "Slack通知メッセージでメンションするチームのIDをカンマ区切りで指定します"
+msgid "Comma-separated sub team IDs to mention when posting error reports."
+msgstr "エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します"
 
 # addHereInSlackMessage
-msgid "Add @here Into Slack Message"
-msgstr "@hereをメッセージにつける"
+msgid "Add @here"
+msgstr "@hereをつける"
 
 # addHereInSlackMessage tooltip
-msgid "Whether adding @here into Slack messages or not"
-msgstr "Slack通知メッセージに@hereを付けます"
+msgid "Add @here to the post when posting error reports."
+msgstr "エラー終了時に送信する通知に@hereを付けます"
+
+# leadTextOnError
+msgid "Lead Text"
+msgstr "リード文"
+
+# leadTextOnError tooltip
+msgid "Lead text for error reports. It is used in OS notifications. You can specify placeholders like a \"{message}\"; see the README for more information."
+msgstr "エラー終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
 # messageBodyTemplateOnError
-msgid "Message Body Template"
-msgstr "メッセージ本文テンプレート"
+msgid "Message"
+msgstr "メッセージ"
 
 # messageBodyTemplateOnError tooltip
-msgid "Message body template when posting an error terminated report. You can specify placeholders like a "{message}"; see the README for more information."
+msgid "Message body template for error reports. You can specify placeholders like a \"{message}\"; see the README for more information."
 msgstr "エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
 # colorOnError
@@ -522,7 +530,7 @@ msgid "Color"
 msgstr "色"
 
 # colorOnError tooltip
-msgid "Attachment color when posting an error terminated report"
+msgid "Attachments color for error reports."
 msgstr "エラー終了時に送信するメッセージのアタッチメントに指定する色"
 
 # withScreenshotOnError
@@ -530,23 +538,51 @@ msgid "Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnError tooltip
-msgid "Take a screenshot when posting an error terminated report"
+msgid "Take a screenshot for error reports."
 msgstr "エラー終了時にスクリーンショットを撮影します"
 
+# Header: Completion Report Settings
+msgid "Completion Report Settings"
+msgstr "正常終了レポート設定"
+
 # postOnNormally
-msgid "Normally Terminated Report"
-msgstr "正常終了時にもレポート"
+msgid "Post if completes"
+msgstr "正常終了時にも送信"
 
 # postOnNormally tooltip
-msgid "Post a report if normally terminates."
-msgstr "正常終了時にもレポートをポストします"
+msgid "Also post a report if completed autopilot normally."
+msgstr "正常終了時にもレポートを送信します"
+
+# mentionSubTeamIDs (same as mentionSubTeamIDsOnError)
+msgid "Mention Sub Team IDs"
+msgstr "メンション宛先チームID"
+
+# mentionSubTeamIDs tooltip
+msgid "Comma-separated sub team IDs to mention when posting completion reports."
+msgstr "正常終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します"
+
+# addHereInSlackMessage (same as addHereInSlackMessageOnError)
+msgid "Add @here"
+msgstr "@hereをつける"
+
+# addHereInSlackMessage tooltip
+msgid "Add @here to the post when posting completion reports."
+msgstr "正常終了時に送信する通知に@hereを付けます"
+
+# leadTextOnError (same as leadTextOnErrorOnError)
+msgid "Lead Text"
+msgstr "リード文"
+
+# leadTextOnError tooltip
+msgid "Lead text for completion reports. It is used in OS notifications. You can specify placeholders like a \"{message}\"; see the README for more information."
+msgstr "正常終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
 # messageBodyTemplateOnNormally (same as messageBodyTemplateOnError)
-msgid "Message Body Template"
-msgstr "メッセージ本文テンプレート"
+msgid "Message"
+msgstr "メッセージ"
 
 # messageBodyTemplateOnNormally tooltip
-msgid "Message body template when posting a normally terminated report. You can specify placeholders like a "{message}"; see the README for more information."
+msgid "Message body template for completion reports. You can specify placeholders like a \"{message}\"; see the README for more information."
 msgstr "正常終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます。詳細はREADMEを参照してください"
 
 # colorOnNormally
@@ -554,7 +590,7 @@ msgid "Color"
 msgstr "色"
 
 # colorOnNormally tooltip
-msgid "Attachment color when posting a normally terminated report"
+msgid "Attachments color for completion reports."
 msgstr "正常終了時に送信するメッセージのアタッチメントに指定する色"
 
 # withScreenshotOnNormally (same as withScreenshotOnError)
@@ -562,5 +598,5 @@ msgid "Screenshot"
 msgstr "スクリーンショット"
 
 # withScreenshotOnNormally tooltip
-msgid "Take a screenshot when posting a normally terminated report"
+msgid "Take a screenshot for completion reports."
 msgstr "正常終了時にスクリーンショットを撮影します"

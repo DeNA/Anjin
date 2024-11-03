@@ -23,7 +23,8 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <param name="slackChannel">Slack Channel to send notification</param>
         /// <param name="mentionSubTeamIDs">Sub team IDs to mention</param>
         /// <param name="addHereInSlackMessage">Whether adding @here or not</param>
-        /// <param name="message">Log message</param>
+        /// <param name="lead">Lead text (out of attachment)</param>
+        /// <param name="message">Message body text (into attachment)</param>
         /// <param name="stackTrace">Stack trace</param>
         /// <param name="color">Attachment color</param>
         /// <param name="withScreenshot">With screenshot</param>
@@ -34,6 +35,7 @@ namespace DeNA.Anjin.Reporters.Slack
             string slackChannel,
             IEnumerable<string> mentionSubTeamIDs,
             bool addHereInSlackMessage,
+            string lead,
             string message,
             string stackTrace,
             Color color,
@@ -68,6 +70,7 @@ namespace DeNA.Anjin.Reporters.Slack
             string slackChannel,
             IEnumerable<string> mentionSubTeamIDs,
             bool addHereInSlackMessage,
+            string lead,
             string message,
             string stackTrace,
             Color color,
@@ -80,14 +83,14 @@ namespace DeNA.Anjin.Reporters.Slack
                 return;
             }
 
-            var lead = CreateLead(mentionSubTeamIDs, addHereInSlackMessage);
+            var text = CreateLead(lead, mentionSubTeamIDs, addHereInSlackMessage);
 
             await UniTask.SwitchToMainThread();
 
             var postTitleTask = await _slackAPI.Post(
                 slackToken,
                 slackChannel,
-                lead,
+                text,
                 message,
                 color
             );
@@ -126,7 +129,7 @@ namespace DeNA.Anjin.Reporters.Slack
         }
 
 
-        private static string CreateLead(IEnumerable<string> mentionSubTeamIDs, bool withHere)
+        private static string CreateLead(string lead, IEnumerable<string> mentionSubTeamIDs, bool withHere)
         {
             var sb = new StringBuilder();
             foreach (var s in mentionSubTeamIDs)
@@ -141,6 +144,11 @@ namespace DeNA.Anjin.Reporters.Slack
             if (withHere)
             {
                 sb.Append("<!here> ");
+            }
+
+            if (!string.IsNullOrEmpty(lead))
+            {
+                sb.Append(lead);
             }
 
             return sb.ToString();

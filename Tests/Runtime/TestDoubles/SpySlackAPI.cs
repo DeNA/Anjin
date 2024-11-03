@@ -12,13 +12,13 @@ namespace DeNA.Anjin.TestDoubles
     {
         public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
 
-        public override async UniTask<SlackResponse> Post(string token, string channel, string lead, string message,
+        public override async UniTask<SlackResponse> Post(string token, string channel, string text, string message,
             Color color, string ts = null)
         {
             var args = new Dictionary<string, string>();
             args.Add("token", token);
             args.Add("channel", channel);
-            args.Add("lead", lead);
+            args.Add("text", text);
             args.Add("message", message);
             args.Add("color", color.ToString());
             args.Add("ts", ts);

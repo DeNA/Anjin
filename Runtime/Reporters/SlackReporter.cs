@@ -16,59 +16,81 @@ namespace DeNA.Anjin.Reporters
     public class SlackReporter : AbstractReporter
     {
         /// <summary>
-        /// Slack API token
+        /// Slack API token.
         /// </summary>
         public string slackToken;
 
         /// <summary>
-        /// Slack channels to send notification (comma separated)
+        /// Comma-separated Slack channels to post. If omitted, it will not be sent.
         /// </summary>
         public string slackChannels;
 
         /// <summary>
-        /// Sub team IDs to mention (comma separated)
+        /// Comma-separated sub team IDs to mention when posting error reports.
         /// </summary>
         public string mentionSubTeamIDs;
 
         /// <summary>
-        /// Whether adding @here or not
+        /// Add @here to the post when posting error reports.
         /// </summary>
         public bool addHereInSlackMessage;
 
         /// <summary>
-        /// Message body template (use on error terminates).
+        /// Lead text for error reports. It is used in OS notifications.
         /// </summary>
         [Multiline]
-        public string messageBodyTemplateOnError = @"{message}";
+        public string leadTextOnError = "{settings} occurred an error.";
 
         /// <summary>
-        /// Attachment color (use on error terminates).
+        /// Message body template for error reports.
         /// </summary>
-        public Color colorOnError = new Color(0.86f, 0.21f, 0.27f);
+        [Multiline]
+        public string messageBodyTemplateOnError = "{message}";
 
         /// <summary>
-        /// With take a screenshot or not (use on error terminates).
+        /// Attachments color for error reports.
+        /// </summary>
+        public Color colorOnError = new Color(0.64f, 0.01f, 0f);
+
+        /// <summary>
+        /// Take a screenshot for error reports.
         /// </summary>
         public bool withScreenshotOnError = true;
 
         /// <summary>
-        /// Post a report if normally terminates.
+        /// Also post a report if completed autopilot normally.
         /// </summary>
         public bool postOnNormally;
 
         /// <summary>
-        /// Message body template (use on normally terminates).
+        /// Comma-separated sub team IDs to mention when posting completion reports.
+        /// </summary>
+        public string mentionSubTeamIDsOnNormally;
+
+        /// <summary>
+        /// Add @here to the post when posting completion reports.
+        /// </summary>
+        public bool addHereInSlackMessageOnNormally;
+
+        /// <summary>
+        /// Lead text for completion reports.
         /// </summary>
         [Multiline]
-        public string messageBodyTemplateOnNormally = @"{message}";
+        public string leadTextOnNormally = "{settings} completed normally.";
 
         /// <summary>
-        /// Attachment color (use on normally terminates).
+        /// Message body template for completion reports.
         /// </summary>
-        public Color colorOnNormally = new Color(0.16f, 0.65f, 0.27f);
+        [Multiline]
+        public string messageBodyTemplateOnNormally = "{message}";
 
         /// <summary>
-        /// With take a screenshot or not (use on normally terminates).
+        /// Attachments color for completion reports.
+        /// </summary>
+        public Color colorOnNormally = new Color(0.24f, 0.65f, 0.34f);
+
+        /// <summary>
+        /// Take a screenshot for completion reports.
         /// </summary>
         public bool withScreenshotOnNormally;
 
@@ -102,6 +124,15 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
+            var mention = (exitCode == ExitCode.Normally)
+                ? mentionSubTeamIDsOnNormally
+                : mentionSubTeamIDs;
+            var here = (exitCode == ExitCode.Normally)
+                ? addHereInSlackMessageOnNormally
+                : addHereInSlackMessage;
+            var lead = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
+                ? leadTextOnNormally
+                : leadTextOnError);
             var messageBody = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
                     ? messageBodyTemplateOnNormally
                     : messageBodyTemplateOnError,
@@ -124,12 +155,16 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, messageBody, stackTrace, color, withScreenshot, cancellationToken);
+                await PostReportAsync(slackChannel, mention, here, lead, messageBody, stackTrace, color, withScreenshot,
+                    cancellationToken);
             }
         }
 
         private async UniTask PostReportAsync(
             string slackChannel,
+            string mention,
+            bool here,
+            string lead,
             string message,
             string stackTrace,
             Color color,
@@ -140,8 +175,9 @@ namespace DeNA.Anjin.Reporters
             await _sender.Send(
                 slackToken,
                 slackChannel,
-                mentionSubTeamIDs.Split(','),
-                addHereInSlackMessage,
+                mention.Split(','),
+                here,
+                lead,
                 message,
                 stackTrace,
                 color,

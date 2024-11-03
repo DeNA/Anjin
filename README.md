@@ -435,15 +435,13 @@ The instance of this Reporter (.asset file) can have the following settings.
   <dt>Slack Channels</dt><dd>Channels to send notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
         This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.
         The bot must be invited to the channel.</dd>
-  <dt>Mention Sub Team IDs</dt><dd>Comma Separated Team IDs to mention in notification message</dd>
-  <dt>Add Here In Slack Message</dt><dd>Add @here to notification message. Default is off</dd>
-  <dt>Message Body Template</dt>Message body template when posting an error terminated report. You can specify placeholders like a "{message}".<dd></dd>
-  <dt>Color</dt><dd>Attachment color when posting an error terminated report.</dd>
-  <dt>Screenshot</dt><dd>Take a screenshot when posting an error terminated report. Default is on</dd>
-  <dt>Normally terminated report</dt><dd>Post a report if normally terminates. Default is off</dd>
-  <dt>Message Body Template</dt><dd>Message body template when posting a normally terminated report. You can specify placeholders like a "{message}".</dd>
-  <dt>Color</dt><dd>Attachment color when posting a normally terminated report.</dd>
-  <dt>Screenshot</dt><dd>Take a screenshot when posting a normally terminated report. Default is off</dd>
+  <dt>Mention Sub Team IDs</dt><dd>Comma-separated sub team IDs to mention when posting error reports.</dd>
+  <dt>Add @here</dt><dd>Add @here to the post when posting error reports.</dd>
+  <dt>Lead Text</dt><dd>Lead text for error reports. It is used in OS notifications. You can specify placeholders like a "{message}".</dd>
+  <dt>Message</dt><dd>Message body template for error reports. You can specify placeholders like a "{message}".</dd>
+  <dt>Color</dt><dd>Attachments color for error reports.</dd>
+  <dt>Screenshot</dt><dd>Take a screenshot for error reports. Default is on.</dd>
+  <dt>Post if completes</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
 </dl>
 
 You can create a Slack Bot on the following page:  
@@ -454,7 +452,7 @@ The Slack Bot needs the following permissions:
 - chat:write
 - files:write
 
-The placeholders you can include in the message body template are:
+The placeholders you can include in the lead and message body template are:
 
 - "{message}": Message with terminate (e.g., error log message)
 - "{settings}": Name of running AutopilotSettings
