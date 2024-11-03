@@ -96,6 +96,9 @@ namespace DeNA.Anjin
                 throw new InvalidOperationException("Autopilot is already running");
             }
 
+            // Apply commandline arguments
+            settings.OverrideByCommandLineArguments(new Arguments());
+
             state.launchFrom = LaunchType.Commandline;
             state.settings = settings;
         }

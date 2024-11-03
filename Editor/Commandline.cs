@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Reflection;
 using DeNA.Anjin.Settings;
 using UnityEditor;
