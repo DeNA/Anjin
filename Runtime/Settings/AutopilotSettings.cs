@@ -264,6 +264,9 @@ namespace DeNA.Anjin.Settings
                 // not change field directly.
 
                 this.LoggerAsset.Logger.Log("Create default logger.");
+#if UNITY_EDITOR
+                EditorUtility.SetDirty(this);
+#endif
             }
         }
 
@@ -295,6 +298,9 @@ Please delete the reference using Debug Mode in the Inspector window. And add to
 This time, temporarily converting.");
 
             this.reporters.Add(this.reporter);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         [Obsolete("Remove this method when bump major version")]
@@ -321,6 +327,9 @@ This time, temporarily generate and use SlackReporter instance.";
             SaveConvertedObject(convertedReporter);
 #endif
             this.reporters.Add(convertedReporter);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         private void SaveConvertedObject(Object obj)
