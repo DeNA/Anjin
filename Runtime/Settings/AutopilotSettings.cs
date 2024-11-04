@@ -376,6 +376,9 @@ This time, temporarily converting.";
             SaveConvertedObject(convertedReporter);
 #endif
             this.Reporter.reporters.Add(convertedReporter);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         private void SaveConvertedObject(Object obj)
