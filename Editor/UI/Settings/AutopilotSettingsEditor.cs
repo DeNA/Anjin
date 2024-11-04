@@ -25,7 +25,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_fallbackAgentTooltip = L10n.Tr("Agent for when not assigned");
 
         private static readonly string s_sceneCrossingAgents = L10n.Tr("Scene Crossing Agents");
-        private static readonly string s_sceneCrossingAgentsTooltip = L10n.Tr("Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., LogMessageHandlerAgent and UGUIEmergencyExitAgent.");
+        private static readonly string s_sceneCrossingAgentsTooltip = L10n.Tr("Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., ErrorHandlerAgent and UGUIEmergencyExitAgent.");
 
         private static readonly string s_autopilotRunSettingsHeader = L10n.Tr("Autopilot Run Settings");
         private static readonly string s_lifespanSec = L10n.Tr("Lifespan Sec");

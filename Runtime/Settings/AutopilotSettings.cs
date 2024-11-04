@@ -69,7 +69,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Agents running by scene crossing.
         /// The specified agents will have the same lifespan as <c>Autopilot</c> (i.e., use <c>DontDestroyOnLoad</c>)
-        /// for specifying, e.g., <c>LogMessageHandlerAgent</c>, <c>UGUIEmergencyExitAgent</c>.
+        /// for specifying, e.g., <c>ErrorHandlerAgent</c>, <c>UGUIEmergencyExitAgent</c>.
         /// </summary>
         public List<AbstractAgent> sceneCrossingAgents = new List<AbstractAgent>();
 

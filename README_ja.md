@@ -106,7 +106,7 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
 `Scene Agent Maps` および `Fallback Agent`とは独立して、Sceneを横断して実行されるAgentを設定します。
 
 指定されたAgentの寿命はオートパイロット本体と同じになります（つまり、`DontDestroyOnLoad` を使用します）。
-たとえば、`LogMessageHandlerAgent` や `UGUIEmergencyExitAgent` などを指定します。
+たとえば、`ErrorHandlerAgent` や `UGUIEmergencyExitAgent` などを指定します。
 
 #### オートパイロット実行設定
 

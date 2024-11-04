@@ -108,7 +108,7 @@ Set the `Fallback Agent` to an `UGUIMonkeyAgent`'s .asset file.
 Set the Agents to run by scene crossing, independent of `Scene Agent Maps` and `Fallback Agent`.
 
 The specified agents will have the same lifespan as Autopilot (i.e., use `DontDestroyOnLoad`)
-for specifying, e.g., `LogMessageHandlerAgent` and `UGUIEmergencyExitAgent`.
+for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 
 #### Autopilot Run Settings
 

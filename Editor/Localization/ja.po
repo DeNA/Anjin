@@ -48,8 +48,8 @@ msgid "Scene Crossing Agents"
 msgstr "Scene横断Agents"
 
 # sceneCrossingAgents tooltip
-msgid "Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., LogMessageHandlerAgent and UGUIEmergencyExitAgent."
-msgstr "Sceneを横断して実行されるAgent。指定されたAgentの寿命は Autopilot と同じになります（つまり、DontDestroyOnLoad を使用します）。たとえば、LogMessageHandlerAgent や UGUIEmergencyExitAgent などを指定します"
+msgid "Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., ErrorHandlerAgent and UGUIEmergencyExitAgent."
+msgstr "Sceneを横断して実行されるAgent。指定されたAgentの寿命は Autopilot と同じになります（つまり、DontDestroyOnLoad を使用します）。たとえば、ErrorHandlerAgent や UGUIEmergencyExitAgent などを指定します"
 
 # Header: Autopilot Run Settings
 msgid "Autopilot Run Settings"
