@@ -98,9 +98,8 @@ namespace DeNA.Anjin.Settings
             settings.loggerAsset = legacyLogger; // already exists
 
             settings.ConvertLoggersFromObsoleteLogger();
-            Assert.That(settings.loggerAssets.Count, Is.EqualTo(0)); // Not added directly to the field
-            Assert.That(settings.LoggerAsset.loggerAssets.Count, Is.EqualTo(1));
-            Assert.That(settings.LoggerAsset.loggerAssets, Has.Member(legacyLogger));
+            Assert.That(settings.loggerAssets.Count, Is.EqualTo(1));
+            Assert.That(settings.loggerAssets, Has.Member(legacyLogger));
 
             Assert.That(legacyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Logger setting in AutopilotSettings has been obsolete.
@@ -139,9 +138,8 @@ This time, temporarily converting.")));
 
             var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
             settings.ConvertReportersFromObsoleteReporter(spyLogger.Logger);
-            Assert.That(settings.reporters.Count, Is.EqualTo(0)); // Not added directly to the field
-            Assert.That(settings.Reporter.reporters.Count, Is.EqualTo(1));
-            Assert.That(settings.Reporter.reporters, Has.Member(legacyReporter));
+            Assert.That(settings.reporters.Count, Is.EqualTo(1));
+            Assert.That(settings.reporters, Has.Member(legacyReporter));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Reporter setting in AutopilotSettings has been obsolete.
