@@ -116,7 +116,6 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
   <dt>Lifespan</dt><dd>実行時間上限を秒で指定します。デフォルトは300秒、0を指定すると無制限に動作します</dd>
   <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。</dd>
   <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
-  <dt>JUnit Report Path</dt><dd>JUnit形式のレポートファイル出力パスを指定します（省略可）。オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。</dd>
   <dt>Loggers</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
   <dt>Reporters</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
@@ -204,7 +203,6 @@ $(UNITY) \
   <dt>LIFESPAN_SEC</dt><dd>実行時間上限を秒で指定します</dd>
   <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
-  <dt>JUNIT_REPORT_PATH</dt><dd>JUnit形式のレポートファイル出力パスを指定します</dd>
   <dt>HANDLE_EXCEPTION</dt><dd>例外を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
   <dt>HANDLE_ERROR</dt><dd>エラーを検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
   <dt>HANDLE_ASSERT</dt><dd>アサート違反を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
@@ -426,6 +424,19 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 ## ビルトインReporter
 
 以下のReporterタイプが用意されています。これらをそのまま使用することも、ゲームタイトル固有のカスタムReporterを実装して使用することも可能です。
+
+
+### JUnitXmlReporter
+
+JUnit XMLフォーマットのレポートファイルを出力するReporterです。
+オートパイロット実行の成否は、Unityエディターの終了コードでなくこのファイルを見て判断するのが確実です。errors, failuresともに0件であれば正常終了と判断できます。
+
+このReporterのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>出力ファイルパス</dt><dd>JUnit XMLレポートファイルの出力パス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+        コマンドライン引数 <code>-JUNIT_REPORT_PATH</code> で上書きできます。</dd>
+</dl>
 
 
 ### SlackReporter

@@ -466,7 +466,7 @@ msgstr "Reporters"
 #: Editor/UI/Reporters/JUnitXmlReporterEditor.cs
 
 # outputPath
-msgid "Output Path"
+msgid "Output File Path"
 msgstr "出力ファイルパス"
 
 # outputPath tooltip

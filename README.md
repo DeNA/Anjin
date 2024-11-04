@@ -118,7 +118,6 @@ This item can also be overridden from the commandline (see below).
   <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation</dd>
   <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. </dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
-  <dt>JUnit Report Path</dt><dd>Specifies the JUnit format report file output path (optional). If there are zero errors and zero failures, the autopilot run is considered to have completed successfully. </dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
@@ -201,7 +200,6 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>LIFESPAN_SEC</dt><dd>Specifies the execution time limit in seconds</dd>
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
-  <dt>JUNIT_REPORT_PATH</dt><dd>Specifies the JUnit-style report file output path</dd>
   <dt>HANDLE_EXCEPTION</dt><dd>Overwrites whether to report when an exception occurs with TRUE/FALSE</dd>
   <dt>HANDLE_ERROR</dt><dd>Overwrites whether to report when an error message is detected with TRUE/FALSE</dd>
   <dt>HANDLE_ASSERT</dt><dd>Overwrites whether to report when an assert message is detected with TRUE/FALSE</dd>
@@ -387,7 +385,7 @@ This can be accomplished with `ParallelCompositeAgent`, but it is easier to set 
 
 
 
-## Built-in Logger
+## Built-in Loggers
 
 The following Logger types are provided. These can be used as they are, or game-title-specific custom Loggers can be implemented and used.
 
@@ -418,9 +416,22 @@ The instance of this Logger (.asset file) can have the following settings.
 
 
 
-## Built-in Reporter
+## Built-in Reporters
 
 The following Reporter types are provided. These can be used as they are, or game-title-specific custom Reporters can be implemented and used.
+
+
+### JUnitXmlReporter
+
+A reporter that outputs report files in JUnit XML format.
+If there are zero errors and zero failures, the autopilot run is considered to have completed successfully.
+
+The instance of this Reporter (.asset file) can have the following settings.
+
+<dl>
+  <dt>Output File Path</dt><dd>JUnit XML report file output path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+        This setting can be overwritten with the command line argument <code>-JUNIT_REPORT_PATH</code>.</dd>
+</dl>
 
 
 ### SlackReporter
