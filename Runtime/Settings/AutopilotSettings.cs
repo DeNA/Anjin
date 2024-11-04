@@ -301,20 +301,25 @@ This time, temporarily converting.");
         internal void ConvertSlackReporterFromObsoleteSlackSettings(ILogger logger)
         {
             if (string.IsNullOrEmpty(this.slackToken) || string.IsNullOrEmpty(this.slackChannels) ||
-                this.reporters.Any())
+                this.reporters.Any(x => x.GetType() == typeof(SlackReporter)))
             {
                 return;
             }
 
-            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsolete.
+            const string AutoConvertingMessage = @"Slack settings in AutopilotSettings has been obsolete.
 Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.");
+This time, temporarily generate and use SlackReporter instance.";
+            logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedReporter = CreateInstance<SlackReporter>();
             convertedReporter.slackToken = this.slackToken;
             convertedReporter.slackChannels = this.slackChannels;
             convertedReporter.mentionSubTeamIDs = this.mentionSubTeamIDs;
             convertedReporter.addHereInSlackMessage = this.addHereInSlackMessage;
+#if UNITY_EDITOR
+            convertedReporter.description = AutoConvertingMessage;
+            SaveConvertedObject(convertedReporter);
+#endif
             this.reporters.Add(convertedReporter);
         }
 

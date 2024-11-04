@@ -6,7 +6,6 @@ using DeNA.Anjin.Reporters;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Settings
 {
@@ -220,14 +219,15 @@ This time, temporarily generate and use SlackReporter instance.")));
         [Test]
         public void ConvertSlackReporterFromObsoleteSlackSettings_ExistReporter_NotGenerateSlackReporter()
         {
+            var existReporter = ScriptableObject.CreateInstance<SlackReporter>();
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            settings.reporters.Add(ScriptableObject.CreateInstance<CompositeReporter>()); // already exists
+            settings.reporters.Add(existReporter); // already exists
             settings.slackToken = "token";
             settings.slackChannels = "channels";
 
             settings.ConvertSlackReporterFromObsoleteSlackSettings(Debug.unityLogger);
             Assert.That(settings.reporters.Count, Is.EqualTo(1));
-            Assert.That(settings.reporters, Has.No.InstanceOf<SlackReporter>());
+            Assert.That(settings.reporters, Does.Contain(existReporter));
         }
     }
 }
