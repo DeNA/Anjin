@@ -39,9 +39,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_timeScale = L10n.Tr("Time Scale");
         private static readonly string s_timeScaleTooltip = L10n.Tr("Time.timeScale on running Autopilot");
 
-        private static readonly string s_junitReportPath = L10n.Tr("JUnit Report Path");
-        private static readonly string s_junitReportPathTooltip = L10n.Tr("JUnit report output path");
-
         private static readonly string s_loggers = L10n.Tr("Loggers");
         private static readonly string s_loggersTooltip = L10n.Tr("List of Loggers used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
 
@@ -91,8 +88,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_randomSeed, s_randomSeedTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.timeScale)),
                 new GUIContent(s_timeScale, s_timeScaleTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.junitReportPath)),
-                new GUIContent(s_junitReportPath, s_junitReportPathTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.loggerAssets)),
                 new GUIContent(s_loggers, s_loggersTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporters)),

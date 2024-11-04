@@ -87,14 +87,6 @@ msgstr "タイムスケール"
 msgid "Time.timeScale on running Autopilot"
 msgstr "Time.timeScaleを指定します"
 
-# junitReportPath
-msgid "JUnit Report Path"
-msgstr "JUnitレポート出力パス"
-
-# junitReportPath tooltip
-msgid "JUnit report output path"
-msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
-
 # logger
 msgid "Loggers"
 msgstr "Loggers"

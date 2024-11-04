@@ -42,7 +42,6 @@ namespace DeNA.Anjin
         private LogMessageHandler _logMessageHandler;
         private AutopilotState _state;
         private AutopilotSettings _settings;
-        private float _startTime;
         private bool _isTerminating;
 
         private void Start()
@@ -85,7 +84,6 @@ namespace DeNA.Anjin
                 Time.timeScale = _settings.timeScale;
             }
 
-            _startTime = Time.realtimeSinceStartup;
             _logger.Log("Launched autopilot");
         }
 
@@ -138,12 +136,6 @@ namespace DeNA.Anjin
             if (reporting && _state.IsRunning && _settings.Reporter != null)
             {
                 await _settings.Reporter.PostReportAsync(message, stackTrace, exitCode, token);
-            }
-
-            if (_state.settings != null && !string.IsNullOrEmpty(_state.settings.junitReportPath))
-            {
-                var time = Time.realtimeSinceStartup - _startTime;
-                JUnitReporter.Output(_state.settings.junitReportPath, (int)exitCode, message, stackTrace, time);
             }
 
             Destroy(this.gameObject);

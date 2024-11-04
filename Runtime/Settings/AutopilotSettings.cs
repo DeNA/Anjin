@@ -105,6 +105,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// JUnit report output path
         /// </summary>
+        [Obsolete("Use JUnitXmlReporter instead")]
         public string junitReportPath;
 
         /// <summary>
@@ -238,11 +239,6 @@ namespace DeNA.Anjin.Settings
                 timeScale = args.TimeScale.Value();
             }
 
-            if (args.JUnitReportPath.IsCaptured())
-            {
-                junitReportPath = args.JUnitReportPath.Value();
-            }
-
             if (args.HandleException.IsCaptured())
             {
                 handleException = args.HandleException.Value();
@@ -276,8 +272,9 @@ namespace DeNA.Anjin.Settings
             settings.CreateDefaultLoggerIfNeeded();
 
             var logger = settings.LoggerAsset.Logger;
-            settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert SlackReporter.
+            settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert other Reporters.
             settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
+            settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(logger);
 
             settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger);   // Note: before convert other Agents.
         }
@@ -356,6 +353,29 @@ This time, temporarily generate and use SlackReporter instance.";
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(ILogger logger)
+        {
+            if (string.IsNullOrEmpty(this.junitReportPath) ||
+                this.reporters.Any(x => x.GetType() == typeof(JUnitXmlReporter)))
+            {
+                return;
+            }
+
+            const string AutoConvertingMessage = @"JUnitReportPath setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And create a JUnitXmlReporter asset file.
+This time, temporarily converting.";
+            logger.Log(LogType.Warning, AutoConvertingMessage);
+
+            var convertedReporter = CreateInstance<JUnitXmlReporter>();
+            convertedReporter.outputPath = this.junitReportPath;
+#if UNITY_EDITOR
+            convertedReporter.description = AutoConvertingMessage;
+            SaveConvertedObject(convertedReporter);
+#endif
+            this.Reporter.reporters.Add(convertedReporter);
         }
 
         private void SaveConvertedObject(Object obj)
