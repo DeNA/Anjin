@@ -70,7 +70,10 @@ namespace DeNA.Anjin.Reporters
 
         internal static string GetOutputPath(string outputPathField, Arguments args = null)
         {
-            args ??= new Arguments();
+            if (args==null)
+            {
+                args = new Arguments();
+            }
 
             string path;
             if (args.JUnitReportPath.IsCaptured())

@@ -279,7 +279,7 @@ namespace DeNA.Anjin.Reporters
             await sut.PostReportAsync("MESSAGE", "STACK TRACE", ExitCode.UnCatchExceptions);
             Assert.That(outputPath, Does.Exist);
 
-            var actual = await File.ReadAllTextAsync(outputPath);
+            var actual = File.ReadAllText(outputPath);
             var expected = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <testsuites name=""DeNA.Anjin""
             disabled=""0""
