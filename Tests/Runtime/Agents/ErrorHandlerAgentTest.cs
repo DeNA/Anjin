@@ -1,22 +1,21 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace DeNA.Anjin.Utilities
+namespace DeNA.Anjin.Agents
 {
     [TestFixture]
-    public class LogMessageHandlerTest
+    public class ErrorHandlerAgentTest
     {
-        private AutopilotSettings _settings;
         private SpyTerminatable _spyTerminatable;
-        private LogMessageHandler _sut;
+        private SpyLoggerAsset _spyLoggerAsset;
+        private ErrorHandlerAgent _sut;
 
         private const string Message = "message";
         private const string StackTrace = "stack trace";
@@ -24,18 +23,12 @@ namespace DeNA.Anjin.Utilities
         [SetUp]
         public void SetUp()
         {
-            _settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            _settings.lifespanSec = 5;
-            _settings.ignoreMessages = new string[] { };
-
             _spyTerminatable = new SpyTerminatable();
-            _sut = new LogMessageHandler(_settings, _spyTerminatable);
-        }
+            _spyLoggerAsset = ScriptableObject.CreateInstance<SpyLoggerAsset>();
 
-        [TearDown]
-        public void TearDown()
-        {
-            _sut.Dispose();
+            _sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            _sut.Logger = _spyLoggerAsset.Logger;
+            _sut._autopilot = _spyTerminatable;
         }
 
         [Test]
@@ -50,7 +43,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeExceptionHandle_TerminateIsCalled()
         {
-            _settings.handleException = true;
+            _sut.handleException = true;
             _sut.HandleLog(Message, StackTrace, LogType.Exception);
             await UniTask.NextFrame();
 
@@ -64,7 +57,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeExceptionNotHandle_TerminateIsNotCalled()
         {
-            _settings.handleException = false;
+            _sut.handleException = false;
             _sut.HandleLog(Message, StackTrace, LogType.Exception);
             await UniTask.NextFrame();
 
@@ -74,7 +67,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeAssertHandle_TerminateIsCalled()
         {
-            _settings.handleAssert = true;
+            _sut.handleAssert = true;
             _sut.HandleLog(Message, StackTrace, LogType.Assert);
             await UniTask.NextFrame();
 
@@ -88,7 +81,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeAssertNotHandle_TerminateIsNotCalled()
         {
-            _settings.handleAssert = false;
+            _sut.handleAssert = false;
             _sut.HandleLog(Message, StackTrace, LogType.Assert);
             await UniTask.NextFrame();
 
@@ -98,7 +91,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeErrorHandle_TerminateIsCalled()
         {
-            _settings.handleError = true;
+            _sut.handleError = true;
             _sut.HandleLog(Message, StackTrace, LogType.Error);
             await UniTask.NextFrame();
 
@@ -112,7 +105,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeErrorNotHandle_TerminateIsNotCalled()
         {
-            _settings.handleError = false;
+            _sut.handleError = false;
             _sut.HandleLog(Message, StackTrace, LogType.Error);
             await UniTask.NextFrame();
 
@@ -122,7 +115,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeWarningHandle_TerminateIsCalled()
         {
-            _settings.handleWarning = true;
+            _sut.handleWarning = true;
             _sut.HandleLog(Message, StackTrace, LogType.Warning);
             await UniTask.NextFrame();
 
@@ -136,7 +129,7 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_LogTypeWarningNotHandle_TerminateIsNotCalled()
         {
-            _settings.handleWarning = false;
+            _sut.handleWarning = false;
             _sut.HandleLog(Message, StackTrace, LogType.Warning);
             await UniTask.NextFrame();
 
@@ -146,8 +139,8 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_ContainsIgnoreMessage_TerminateIsNotCalled()
         {
-            _settings.ignoreMessages = new[] { "ignore" };
-            _settings.handleException = true;
+            _sut.ignoreMessages = new[] { "ignore" };
+            _sut.handleException = true;
             _sut.HandleLog("xxx_ignore_xxx", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
@@ -157,8 +150,8 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_MatchIgnoreMessagePattern_TerminateIsNotCalled()
         {
-            _settings.ignoreMessages = new[] { "ignore.+ignore" };
-            _settings.handleException = true;
+            _sut.ignoreMessages = new[] { "ignore.+ignore" };
+            _sut.handleException = true;
             _sut.HandleLog("ignore_xxx_ignore", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
@@ -168,8 +161,8 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_NotMatchIgnoreMessagePattern_TerminateIsCalled()
         {
-            _settings.ignoreMessages = new[] { "ignore.+ignore" };
-            _settings.handleException = true;
+            _sut.ignoreMessages = new[] { "ignore.+ignore" };
+            _sut.handleException = true;
             _sut.HandleLog("ignore", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
 
@@ -179,8 +172,8 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_InvalidIgnoreMessagePattern_ThrowArgumentExceptionAndTerminateIsCalled()
         {
-            _settings.ignoreMessages = new[] { "[a" }; // invalid pattern
-            _settings.handleException = true;
+            _sut.ignoreMessages = new[] { "[a" }; // invalid pattern
+            _sut.handleException = true;
 
             _sut.HandleLog("ignore", string.Empty, LogType.Exception);
             await UniTask.NextFrame();
@@ -192,11 +185,89 @@ namespace DeNA.Anjin.Utilities
         [Test]
         public async Task HandleLog_StacktraceByLogMessageHandler_TerminateIsNotCalled()
         {
-            _settings.handleException = true;
-            _sut.HandleLog(string.Empty, "at DeNA.Anjin.Utilities.LogMessageHandler", LogType.Exception);
+            _sut.handleException = true;
+            _sut.HandleLog(string.Empty, "at DeNA.Anjin.Agents.ErrorHandlerAgent", LogType.Exception);
             await UniTask.NextFrame();
 
             Assert.That(_spyTerminatable.IsCalled, Is.False);
+        }
+
+        [Test]
+        public void OverwriteByCommandLineArguments_NotSpecify_SameAsDefault()
+        {
+            var sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            Assume.That(sut.handleException, Is.True);
+            Assume.That(sut.handleError, Is.True);
+            Assume.That(sut.handleAssert, Is.True);
+            Assume.That(sut.handleWarning, Is.False);
+
+            sut.OverwriteByCommandLineArguments(new StubArguments()
+            {
+                _handleException = new StubArgument<bool>(), // Not captured
+                _handleError = new StubArgument<bool>(), // Not captured
+                _handleAssert = new StubArgument<bool>(), // Not captured
+                _handleWarning = new StubArgument<bool>(), // Not captured
+            });
+            Assert.That(sut.handleException, Is.True);
+            Assert.That(sut.handleError, Is.True);
+            Assert.That(sut.handleAssert, Is.True);
+            Assert.That(sut.handleWarning, Is.False);
+        }
+
+        [Test]
+        public void OverwriteByCommandLineArguments_SpecifyHandleException_Changed()
+        {
+            var sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            sut.OverwriteByCommandLineArguments(new StubArguments()
+            {
+                _handleException = new StubArgument<bool>(captured: true, value: false), // flip value
+                _handleError = new StubArgument<bool>(),
+                _handleAssert = new StubArgument<bool>(),
+                _handleWarning = new StubArgument<bool>(),
+            });
+            Assert.That(sut.handleException, Is.False);
+        }
+
+        [Test]
+        public void OverwriteByCommandLineArguments_SpecifyHandleError_Changed()
+        {
+            var sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            sut.OverwriteByCommandLineArguments(new StubArguments()
+            {
+                _handleException = new StubArgument<bool>(),
+                _handleError = new StubArgument<bool>(captured: true, value: false), // flip value
+                _handleAssert = new StubArgument<bool>(),
+                _handleWarning = new StubArgument<bool>(),
+            });
+            Assert.That(sut.handleError, Is.False);
+        }
+
+        [Test]
+        public void OverwriteByCommandLineArguments_SpecifyHandleAssert_Changed()
+        {
+            var sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            sut.OverwriteByCommandLineArguments(new StubArguments()
+            {
+                _handleException = new StubArgument<bool>(),
+                _handleError = new StubArgument<bool>(),
+                _handleAssert = new StubArgument<bool>(captured: true, value: false), // flip value
+                _handleWarning = new StubArgument<bool>(),
+            });
+            Assert.That(sut.handleAssert, Is.False);
+        }
+
+        [Test]
+        public void OverwriteByCommandLineArguments_SpecifyHandleWarning_Changed()
+        {
+            var sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            sut.OverwriteByCommandLineArguments(new StubArguments()
+            {
+                _handleException = new StubArgument<bool>(),
+                _handleError = new StubArgument<bool>(),
+                _handleAssert = new StubArgument<bool>(),
+                _handleWarning = new StubArgument<bool>(captured: true, value: true), // flip value
+            });
+            Assert.That(sut.handleWarning, Is.True);
         }
     }
 }

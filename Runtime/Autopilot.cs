@@ -39,7 +39,6 @@ namespace DeNA.Anjin
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
-        private LogMessageHandler _logMessageHandler;
         private AutopilotState _state;
         private AutopilotSettings _settings;
         private bool _isTerminating;
@@ -60,11 +59,6 @@ namespace DeNA.Anjin
 
             _randomFactory = new RandomFactory(seed);
             _logger.Log($"Random seed is {seed}");
-
-            // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
-            //       Because some agent can throw an error immediately, so reporter can miss the error if
-            //       registering logMessageReceived is placed after DispatchByScene.
-            _logMessageHandler = new LogMessageHandler(_settings, this);
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchSceneCrossingAgents();
@@ -118,7 +112,6 @@ namespace DeNA.Anjin
 
             _logger?.Log("Destroy Autopilot object");
             _dispatcher?.Dispose();
-            _logMessageHandler?.Dispose();
             _settings.LoggerAsset?.Dispose();
         }
 
