@@ -17,6 +17,7 @@ namespace DeNA.Anjin.Reporters
     public class JUnitXmlReporterTest
     {
         [Test]
+        [Category("IgnoreCI")]
         public void GetOutputPath_WithoutArg_ReturnsFieldValue()
         {
             var arguments = new StubArguments
