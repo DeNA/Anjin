@@ -471,6 +471,17 @@ msgid "Reporters"
 msgstr "Reporters"
 
 
+#: Editor/UI/Reporters/JUnitXmlReporterEditor.cs
+
+# outputPath
+msgid "Output Path"
+msgstr "出力ファイルパス"
+
+# outputPath tooltip
+msgid "Relative path from the project root directory. When run on player, it will be the Application.persistentDataPath."
+msgstr "プロジェクトルートからの相対パスを指定します。プレイヤー実行の際は Application.persistentDataPath が起点となります"
+
+
 #: Editor/UI/Reporters/SlackReporterEditor.cs
 
 # slackToken
