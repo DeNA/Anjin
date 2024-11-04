@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
@@ -10,6 +11,10 @@ using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Settings
 {
@@ -313,6 +318,20 @@ This time, temporarily generate and use SlackReporter instance.");
             convertedReporter.mentionSubTeamIDs = this.mentionSubTeamIDs;
             convertedReporter.addHereInSlackMessage = this.addHereInSlackMessage;
             this.reporters.Add(convertedReporter);
+        }
+
+        private void SaveConvertedObject(Object obj)
+        {
+#if UNITY_EDITOR
+            var settingsPath = AssetDatabase.GetAssetPath(this);
+            if (string.IsNullOrEmpty(settingsPath))
+            {
+                return;
+            }
+
+            var dir = Path.GetDirectoryName(settingsPath) ?? "Assets";
+            AssetDatabase.CreateAsset(obj, Path.Combine(dir, $"New {obj.GetType().Name}.asset"));
+#endif
         }
     }
 }
