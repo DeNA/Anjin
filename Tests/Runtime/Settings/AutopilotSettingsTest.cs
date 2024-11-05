@@ -18,10 +18,6 @@ namespace DeNA.Anjin.Settings
             sut.lifespanSec = 5;
             sut.randomSeed = "1";
             sut.timeScale = 1.0f;
-            sut.handleException = true;
-            sut.handleError = true;
-            sut.handleAssert = true;
-            sut.handleWarning = true;
             return sut;
         }
 
@@ -32,10 +28,6 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(), // Not captured
                 _randomSeed = new StubArgument<string>(), // Not captured
                 _timeScale = new StubArgument<float>(), // Not captured
-                _handleException = new StubArgument<bool>(), // Not captured
-                _handleError = new StubArgument<bool>(), // Not captured
-                _handleAssert = new StubArgument<bool>(), // Not captured
-                _handleWarning = new StubArgument<bool>(), // Not captured
             };
             return arguments;
         }
@@ -49,10 +41,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(5));
             Assert.That(sut.randomSeed, Is.EqualTo("1"));
             Assert.That(sut.timeScale, Is.EqualTo(1.0f));
-            Assert.That(sut.handleException, Is.True);
-            Assert.That(sut.handleError, Is.True);
-            Assert.That(sut.handleAssert, Is.True);
-            Assert.That(sut.handleWarning, Is.True);
         }
 
         private static Arguments CreateCapturedArguments()
@@ -62,10 +50,6 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(true, 2),
                 _randomSeed = new StubArgument<string>(true, ""),
                 _timeScale = new StubArgument<float>(true, 2.5f),
-                _handleException = new StubArgument<bool>(true, false),
-                _handleError = new StubArgument<bool>(true, false),
-                _handleAssert = new StubArgument<bool>(true, false),
-                _handleWarning = new StubArgument<bool>(true, false),
             };
             return arguments;
         }
@@ -79,10 +63,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(2));
             Assert.That(sut.randomSeed, Is.EqualTo(""));
             Assert.That(sut.timeScale, Is.EqualTo(2.5f));
-            Assert.That(sut.handleException, Is.False);
-            Assert.That(sut.handleError, Is.False);
-            Assert.That(sut.handleAssert, Is.False);
-            Assert.That(sut.handleWarning, Is.False);
         }
 
         [Test]
@@ -308,6 +288,71 @@ This time, temporarily converting.")));
             settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(Debug.unityLogger);
             Assert.That(settings.Reporter.reporters.Count, Is.EqualTo(1));
             Assert.That(settings.Reporter.reporters, Does.Contain(existReporter));
+        }
+
+        [TestCase(true, false, false, false)]
+        [TestCase(false, true, false, false)]
+        [TestCase(false, false, true, false)]
+        [TestCase(false, false, false, true)]
+        public void ConvertErrorHandlerAgentFromObsoleteSettings_HasAnyHandlingFlag_GenerateErrorHandlerAgent(
+            bool handleException,
+            bool handleError,
+            bool handleAssert,
+            bool handleWarning)
+        {
+            var ignoreMessages = new string[] { "message1", "message2" };
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.handleException = handleException;
+            settings.handleError = handleError;
+            settings.handleAssert = handleAssert;
+            settings.handleWarning = handleWarning;
+            settings.ignoreMessages = ignoreMessages;
+
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.ConvertErrorHandlerAgentFromObsoleteSettings(spyLogger.Logger);
+
+            Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
+            var errorHandlerAgent = settings.sceneCrossingAgents[0] as ErrorHandlerAgent;
+            Assert.That(errorHandlerAgent, Is.Not.Null);
+            Assert.That(errorHandlerAgent.handleException, Is.EqualTo(handleException));
+            Assert.That(errorHandlerAgent.handleError, Is.EqualTo(handleError));
+            Assert.That(errorHandlerAgent.handleAssert, Is.EqualTo(handleAssert));
+            Assert.That(errorHandlerAgent.handleWarning, Is.EqualTo(handleWarning));
+            Assert.That(errorHandlerAgent.ignoreMessages, Is.EqualTo(ignoreMessages));
+
+            Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
+                @"Error handling settings in AutopilotSettings has been obsolete.
+Please delete the value using Debug Mode in the Inspector window. And create an ErrorHandlerAgent asset file.
+This time, temporarily generate and use ErrorHandlerAgent instance.")));
+        }
+
+        [Test]
+        public void ConvertErrorHandlerAgentFromObsoleteSettings_HasNotHandlingFlags_NotGenerateErrorHandlerAgent()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.handleException = false;
+            settings.handleError = false;
+            settings.handleAssert = false;
+            settings.handleWarning = false;
+
+            settings.ConvertErrorHandlerAgentFromObsoleteSettings(Debug.unityLogger);
+            Assert.That(settings.sceneCrossingAgents, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertErrorHandlerAgentFromObsoleteSettings_ExistErrorHandlerAgent_NotGenerateErrorHandlerAgent()
+        {
+            var existAgent = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneCrossingAgents.Add(existAgent); // already exists
+            settings.handleException = true;
+            settings.handleError = false;
+            settings.handleAssert = false;
+            settings.handleWarning = false;
+
+            settings.ConvertErrorHandlerAgentFromObsoleteSettings(Debug.unityLogger);
+            Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
+            Assert.That(settings.sceneCrossingAgents, Does.Contain(existAgent));
         }
     }
 }
