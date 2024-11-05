@@ -430,7 +430,7 @@ The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
   <dt>Output File Path</dt><dd>JUnit XML report file output path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
-        This setting can be overwritten with the command line argument <code>-JUNIT_REPORT_PATH</code>.</dd>
+        It can be overwritten with the command line argument <code>-JUNIT_REPORT_PATH</code>, but be careful if multiple JUnitXmlReporters are defined, they will all be overwritten with the same value.</dd>
 </dl>
 
 

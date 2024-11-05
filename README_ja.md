@@ -435,7 +435,7 @@ JUnit XMLフォーマットのレポートファイルを出力するReporterで
 
 <dl>
   <dt>出力ファイルパス</dt><dd>JUnit XMLレポートファイルの出力パス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
-        コマンドライン引数 <code>-JUNIT_REPORT_PATH</code> で上書きできます。</dd>
+        コマンドライン引数 <code>-JUNIT_REPORT_PATH</code> で上書きできますが、複数のJUnitXmlReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
 </dl>
 
 
