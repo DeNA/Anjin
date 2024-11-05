@@ -21,9 +21,10 @@ namespace DeNA.Anjin.Settings.ArgumentCapture
 
             if (string.IsNullOrEmpty(captureString))
             {
-                Debug.Log($"Argument not found. key: {key}");
                 return (false, default(T));
             }
+
+            Debug.Log($"Capture commandline argument: {key}");
 
             switch (typeof(T))
             {

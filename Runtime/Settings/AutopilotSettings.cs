@@ -270,6 +270,8 @@ namespace DeNA.Anjin.Settings
             var settings = AutopilotState.Instance.settings;
             Assert.IsNotNull(settings);
 
+            settings.OverwriteByCommandLineArguments(new Arguments());
+
             settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();
 
