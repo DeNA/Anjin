@@ -45,18 +45,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_reporters = L10n.Tr("Reporters");
         private static readonly string s_reportersTooltip = L10n.Tr("List of Reporters to be called on Autopilot terminate.");
 
-        private static readonly string s_errorHandlingSettingsHeader = L10n.Tr("Error Handling Settings");
-        private static readonly string s_handleException = L10n.Tr("Handle Exception");
-        private static readonly string s_handleExceptionTooltip = L10n.Tr("Notify when Exception detected in log");
-        private static readonly string s_handleError = L10n.Tr("Handle Error");
-        private static readonly string s_handleErrorTooltip = L10n.Tr("Notify when Error detected in log");
-        private static readonly string s_handleAssert = L10n.Tr("Handle Assert");
-        private static readonly string s_handleAssertTooltip = L10n.Tr("Notify when Assert detected in log");
-        private static readonly string s_handleWarning = L10n.Tr("Handle Warning");
-        private static readonly string s_handleWarningTooltip = L10n.Tr("Notify when Warning detected in log");
-        private static readonly string s_ignoreMessages = L10n.Tr("Ignore Messages");
-        private static readonly string s_ignoreMessagesTooltip = L10n.Tr("Do not send notifications when log messages contain this string");
-
         private static readonly string s_runButton = L10n.Tr("Run");
         private static readonly string s_stopButton = L10n.Tr("Stop");
         private const float SpacerPixels = 10f;
@@ -92,18 +80,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_loggers, s_loggersTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.reporters)),
                 new GUIContent(s_reporters, s_reportersTooltip));
-
-            DrawHeader(s_errorHandlingSettingsHeader);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleException)),
-                new GUIContent(s_handleException, s_handleExceptionTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleError)),
-                new GUIContent(s_handleError, s_handleErrorTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleAssert)),
-                new GUIContent(s_handleAssert, s_handleAssertTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.handleWarning)),
-                new GUIContent(s_handleWarning, s_handleWarningTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.ignoreMessages)),
-                new GUIContent(s_ignoreMessages, s_ignoreMessagesTooltip), true);
 
             serializedObject.ApplyModifiedProperties();
 

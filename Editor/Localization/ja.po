@@ -103,50 +103,6 @@ msgstr "Reporters"
 msgid "List of Reporters to be called on Autopilot terminate."
 msgstr "オートパイロット終了時に通知を行なうReporterを指定します"
 
-# Header: Error Handling Settings
-msgid "Error Handling Settings"
-msgstr "エラーハンドリング設定"
-
-# handleException
-msgid "Handle Exception"
-msgstr "例外を報告する"
-
-# handleException tooltip
-msgid "Notify when Exception detected in log"
-msgstr "例外ログを検知したらSlack通知します"
-
-# handleError
-msgid "Handle Error"
-msgstr "エラーを報告する"
-
-# handleError tooltip
-msgid "Notify when Error detected in log"
-msgstr "エラーログを検知したらSlack通知します"
-
-# handleAssert
-msgid "Handle Assert"
-msgstr "アサートを報告する"
-
-# handleAssert tooltip
-msgid "Notify when Assert detected in log"
-msgstr "アサートログを検知したらSlack通知します"
-
-# handleWarning
-msgid "Handle Warning"
-msgstr "警告を報告する"
-
-# handleWarning tooltip
-msgid "Notify when Warning detected in log"
-msgstr "警告ログを検知したらSlack通知します"
-
-# ignoreMessages
-msgid "Ignore Messages"
-msgstr "無視するメッセージ"
-
-# ignoreMessages tooltip
-msgid "Do not send notifications when log messages contain this string"
-msgstr "ログメッセージの中にこの文字列が含まれていたらSlack通知を行ないません"
-
 # Autopilot実行ボタン
 msgid "Run"
 msgstr "実行"
@@ -384,6 +340,7 @@ msgstr "ステレオキャプチャモード"
 msgid "The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified"
 msgstr "ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません"
 
+
 #: Editor/UI/Agents/UGUIPlaybackAgentEditor.cs
 
 # recordedJson
@@ -393,6 +350,49 @@ msgstr "操作を記録したJSONファイル"
 # recordedJson tooltip
 msgid "JSON file recorded by AutomatedQA package"
 msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したjsonファイルを設定します"
+
+
+#: Editor/UI/Agents/ErrorHandlerAgent.cs
+
+# handleException
+msgid "Handle Exception"
+msgstr "例外を捕捉"
+
+# handleException tooltip
+msgid "Autopilot terminates when an Exception is detected in the log"
+msgstr "例外ログを検知したとき、オートパイロットを停止します"
+
+# handleError
+msgid "Handle Error"
+msgstr "エラーを捕捉"
+
+# handleError tooltip
+msgid "Autopilot terminates when an Error is detected in the log"
+msgstr "エラーログを検知したとき、オートパイロットを停止します"
+
+# handleAssert
+msgid "Handle Assert"
+msgstr "アサートを捕捉"
+
+# handleAssert tooltip
+msgid "Autopilot terminates when an Assert is detected in the log"
+msgstr "アサートログを検知したとき、オートパイロットを停止します"
+
+# handleWarning
+msgid "Handle Warning"
+msgstr "警告を捕捉"
+
+# handleWarning tooltip
+msgid "Autopilot terminates when an Warning is detected in the log"
+msgstr "警告ログを検知したとき、オートパイロットを停止します"
+
+# ignoreMessages
+msgid "Ignore Messages"
+msgstr "無視するメッセージ"
+
+# ignoreMessages tooltip
+msgid "Log messages containing the specified strings will be ignored from the stop condition. Regex is also available; escape is a single backslash (\)."
+msgstr "指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (\) です"
 
 
 #: Editor/UI/Loggers/ 共通

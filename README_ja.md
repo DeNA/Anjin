@@ -120,18 +120,6 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
   <dt>Reporters</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
 
-#### エラーハンドリング設定
-
-異常系ログメッセージを捕捉してReporterで通知するフィルタを設定します。
-
-<dl>
-  <dt>handle Exception</dt><dd>例外を検知したらReporterで通知します</dd>
-  <dt>handle Error</dt><dd>エラーを検知したらReporterで通知します</dd>
-  <dt>handle Assert</dt><dd>アサート違反を検知したらReporterで通知します</dd>
-  <dt>handle Warning</dt><dd>警告を検知したらReporterで通知します</dd>
-  <dt>Ignore Messages</dt><dd>ここに設定した文字列を含むメッセージはReporterで通知しません。正規表現も使用可能で、エスケープはバックスラッシュ1文字（`\`）です</dd>
-</dl>
-
 
 ### Agent設定ファイル（.asset）の生成
 
@@ -203,10 +191,6 @@ $(UNITY) \
   <dt>LIFESPAN_SEC</dt><dd>実行時間上限を秒で指定します</dd>
   <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
-  <dt>HANDLE_EXCEPTION</dt><dd>例外を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
-  <dt>HANDLE_ERROR</dt><dd>エラーを検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
-  <dt>HANDLE_ASSERT</dt><dd>アサート違反を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
-  <dt>HANDLE_WARNING</dt><dd>警告を検知したときに通知を行なうかを TRUE/ FALSEで上書きします</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
@@ -380,6 +364,28 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 </dl>
 
 
+### ErrorHandlerAgent
+
+異常系ログメッセージを捕捉してオートパイロットの実行を停止するAgentです。
+
+常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
+`ParallelCompositeAgent` でも実現できますが、AutopilotSettingsに `Scene Crossing Agents` として設定するほうが簡単です。
+
+このAgentのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>Handle Exception</dt><dd>例外ログを検知したとき、オートパイロットを停止します。
+        コマンドライン引数 <code>-HANDLE_EXCEPTION</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
+  <dt>Handle Error</dt><dd>エラーログを検知したとき、オートパイロットを停止します。
+        コマンドライン引数 <code>-HANDLE_ERROR</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
+  <dt>Handle Assert</dt><dd>アサートログを検知したとき、オートパイロットを停止します。
+        コマンドライン引数 <code>-HANDLE_ASSERT</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
+  <dt>Handle Warning</dt><dd>警告ログを検知したとき、オートパイロットを停止します。
+        コマンドライン引数 <code>-HANDLE_WARNING</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
+  <dt>Ignore Messages</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です</dd>
+</dl>
+
+
 ### EmergencyExitAgent
 
 `DeNA.Anjin.Annotations` アセンブリに含まれる `EmergencyExitAnnotations` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。
@@ -414,7 +420,7 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 <dl>
   <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
-        コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているときに指定すると、すべての出力パスが上書きされますので注意してください。</dd>
+        コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
   <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
 </dl>
@@ -447,15 +453,15 @@ Slackにレポート送信するReporterです。
 
 <dl>
   <dt>Slack Token</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
-        コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできます。</dd>
+        コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>Slack Channels</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
-        コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。
-        チャンネルにはBotを招待しておく必要があります。</dd>
+        なお、チャンネルにはBotを招待しておく必要があります。
+        コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>Mention Sub Team IDs</dt><dd>エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します</dd>
   <dt>Add @here</dt><dd>エラー終了時に送信する通知に@hereを付けます</dd>
   <dt>Lead Text</dt><dd>エラー終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます</dd>
   <dt>Message</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
-  <dt>Color</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色</dd>
+  <dt>Color</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色（デフォルト：Slackの "danger" と同じ赤色）</dd>
   <dt>Screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
   <dt>Normally terminated report</dt><dd>正常終了時にもレポートを送信します（デフォルト: off）</dd>
 </dl>
@@ -740,7 +746,7 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 > [!WARNING]  
 > Anjinパッケージ内のテストを実行するためには、次のパッケージのインストールが必要です。
 > - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
-> - [Test Helper](https://github.com/nowsprinting/test-helper) package v1.0.0 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.7.2 or later
 
 テスト専用のUnityプロジェクトを生成し、Unityバージョンを指定してテストを実行するには、次のコマンドを実行します。
 
