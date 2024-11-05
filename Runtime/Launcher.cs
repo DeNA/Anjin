@@ -97,7 +97,7 @@ namespace DeNA.Anjin
             }
 
             // Apply commandline arguments
-            settings.OverrideByCommandLineArguments(new Arguments());
+            settings.OverwriteByCommandLineArguments(new Arguments());
 
             state.launchFrom = LaunchType.Commandline;
             state.settings = settings;

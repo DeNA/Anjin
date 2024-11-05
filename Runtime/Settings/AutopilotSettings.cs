@@ -221,7 +221,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Overwrites specified values in the command line arguments
         /// </summary>
-        internal void OverrideByCommandLineArguments(Arguments args)
+        internal void OverwriteByCommandLineArguments(Arguments args)
         {
             if (args.RandomSeed.IsCaptured())
             {

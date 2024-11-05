@@ -56,7 +56,7 @@ namespace DeNA.Anjin.Editor
             EditorSceneManager.playModeStartScene = myWantedStartScene;
 
             // Apply commandline arguments
-            settings.OverrideByCommandLineArguments(new Arguments());
+            settings.OverwriteByCommandLineArguments(new Arguments());
 
             // Register event handler for terminate autopilot
             EditorApplication.playModeStateChanged += OnChangePlayModeState;
