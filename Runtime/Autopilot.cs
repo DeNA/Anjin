@@ -134,9 +134,9 @@ namespace DeNA.Anjin
 
             _isTerminating = true;
 
-            if (reporting && _state.IsRunning && _settings.reporter != null)
+            if (reporting && _state.IsRunning && _settings.Reporter != null)
             {
-                await _settings.reporter.PostReportAsync(message, stackTrace, exitCode, token);
+                await _settings.Reporter.PostReportAsync(message, stackTrace, exitCode, token);
             }
 
             if (_state.settings != null && !string.IsNullOrEmpty(_state.settings.junitReportPath))

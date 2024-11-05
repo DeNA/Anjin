@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
@@ -10,6 +11,10 @@ using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using UnityEngine;
 using UnityEngine.Assertions;
+using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin.Settings
 {
@@ -132,7 +137,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Logger used for this autopilot settings.
         /// </summary>
-        [Obsolete("Use `loggerAssets` field or `LoggerAsset` property instead")]
+        [Obsolete("Use `LoggerAsset` property instead")]
         public AbstractLoggerAsset loggerAsset;
 
         /// <summary>
@@ -163,7 +168,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Reporter that called when some errors occurred
         /// </summary>
-        [Obsolete("Use `reporters` field  or `Reporter` property instead")]
+        [Obsolete("Use `Reporter` property instead")]
         public AbstractReporter reporter;
 
         /// <summary>
@@ -259,6 +264,9 @@ namespace DeNA.Anjin.Settings
                 // not change field directly.
 
                 this.LoggerAsset.Logger.Log("Create default logger.");
+#if UNITY_EDITOR
+                EditorUtility.SetDirty(this);
+#endif
             }
         }
 
@@ -274,8 +282,7 @@ namespace DeNA.Anjin.Settings
 Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
 This time, temporarily converting.");
 
-            this.LoggerAsset.loggerAssets = new List<AbstractLoggerAsset> { this.loggerAsset };
-            // not change field directly.
+            this.loggerAssets.Add(this.loggerAsset);
         }
 
         [Obsolete("Remove this method when bump major version")]
@@ -290,29 +297,53 @@ This time, temporarily converting.");
 Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
 This time, temporarily converting.");
 
-            this.Reporter.reporters = new List<AbstractReporter> { this.reporter };
-            // not change field directly.
+            this.reporters.Add(this.reporter);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         [Obsolete("Remove this method when bump major version")]
         internal void ConvertSlackReporterFromObsoleteSlackSettings(ILogger logger)
         {
             if (string.IsNullOrEmpty(this.slackToken) || string.IsNullOrEmpty(this.slackChannels) ||
-                this.reporters.Any())
+                this.reporters.Any(x => x.GetType() == typeof(SlackReporter)))
             {
                 return;
             }
 
-            logger.Log(LogType.Warning, @"Slack settings in AutopilotSettings has been obsolete.
+            const string AutoConvertingMessage = @"Slack settings in AutopilotSettings has been obsolete.
 Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.");
+This time, temporarily generate and use SlackReporter instance.";
+            logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedReporter = CreateInstance<SlackReporter>();
             convertedReporter.slackToken = this.slackToken;
             convertedReporter.slackChannels = this.slackChannels;
             convertedReporter.mentionSubTeamIDs = this.mentionSubTeamIDs;
             convertedReporter.addHereInSlackMessage = this.addHereInSlackMessage;
+#if UNITY_EDITOR
+            convertedReporter.description = AutoConvertingMessage;
+            SaveConvertedObject(convertedReporter);
+#endif
             this.reporters.Add(convertedReporter);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
+        }
+
+        private void SaveConvertedObject(Object obj)
+        {
+#if UNITY_EDITOR
+            var settingsPath = AssetDatabase.GetAssetPath(this);
+            if (string.IsNullOrEmpty(settingsPath))
+            {
+                return;
+            }
+
+            var dir = Path.GetDirectoryName(settingsPath) ?? "Assets";
+            AssetDatabase.CreateAsset(obj, Path.Combine(dir, $"New {obj.GetType().Name}.asset"));
+#endif
         }
     }
 }
