@@ -11,8 +11,8 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
-using NUnit.Framework;
 using UnityEngine;
+using Assert = UnityEngine.Assertions.Assert;
 using Object = UnityEngine.Object;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
@@ -220,8 +220,8 @@ namespace DeNA.Anjin
 #endif
         }
 
-        internal static async UniTask TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
-            ExitCode exitCode, string caller, CancellationToken token = default)
+        internal static async UniTaskVoid TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
+            ExitCode exitCode, string caller)
         {
             state.settings = null;
             state.exitCode = exitCode;
@@ -232,7 +232,7 @@ namespace DeNA.Anjin
                 // Play mode tests
                 if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
                 {
-                    throw new AssertionException($"{caller} failed with exit code {exitCode}");
+                    throw new AssertionException($"{caller} failed with exit code {(int)exitCode}");
                 }
 #endif
                 return; // Only terminate autopilot run if starting from play mode.
@@ -245,7 +245,7 @@ namespace DeNA.Anjin
 
                 // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
                 // SEE: https://github.com/DeNA/Anjin/issues/20
-                await UniTask.NextFrame(token);
+                await UniTask.NextFrame();
 #if UNITY_EDITOR
                 EditorApplication.isPlaying = false;
                 // Note: If launched from the command line, `DeNA.Anjin.Editor.Commandline.OnChangePlayModeState()` will be called, and the Unity editor will be terminated.
@@ -254,7 +254,7 @@ namespace DeNA.Anjin
             else
             {
                 // Player build launch from commandline
-                logger.Log($"Exit Unity-player by {caller}, exit code={exitCode}");
+                logger.Log($"Exit Unity-player by {caller}, exit code: {(int)exitCode}");
                 Application.Quit((int)exitCode);
             }
         }

@@ -8,8 +8,8 @@ using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
-using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Settings
 {
@@ -241,7 +241,7 @@ namespace DeNA.Anjin.Settings
         private static void Initialize()
         {
             var settings = AutopilotState.Instance.settings;
-            Assert.NotNull(settings);
+            Assert.IsNotNull(settings);
 
             settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();
