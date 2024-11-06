@@ -276,6 +276,8 @@ namespace DeNA.Anjin.Settings
             var logger = settings.LoggerAsset.Logger;
             settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert SlackReporter.
             settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
+
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger);   // Note: before convert other Agents.
         }
 
         private void CreateDefaultLoggerIfNeeded()
