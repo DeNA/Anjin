@@ -314,10 +314,14 @@ This time, temporarily converting.")));
             Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
             var errorHandlerAgent = settings.sceneCrossingAgents[0] as ErrorHandlerAgent;
             Assert.That(errorHandlerAgent, Is.Not.Null);
-            Assert.That(errorHandlerAgent.handleException, Is.EqualTo(handleException));
-            Assert.That(errorHandlerAgent.handleError, Is.EqualTo(handleError));
-            Assert.That(errorHandlerAgent.handleAssert, Is.EqualTo(handleAssert));
-            Assert.That(errorHandlerAgent.handleWarning, Is.EqualTo(handleWarning));
+            Assert.That(errorHandlerAgent.handleException,
+                Is.EqualTo(handleException ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore));
+            Assert.That(errorHandlerAgent.handleError,
+                Is.EqualTo(handleError ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore));
+            Assert.That(errorHandlerAgent.handleAssert,
+                Is.EqualTo(handleAssert ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore));
+            Assert.That(errorHandlerAgent.handleWarning,
+                Is.EqualTo(handleWarning ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore));
             Assert.That(errorHandlerAgent.ignoreMessages, Is.EqualTo(ignoreMessages));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,

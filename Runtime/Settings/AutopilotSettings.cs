@@ -414,10 +414,10 @@ This time, temporarily generate and use ErrorHandlerAgent instance.";
             logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedAgent = CreateInstance<ErrorHandlerAgent>();
-            convertedAgent.handleException = this.handleException;
-            convertedAgent.handleError = this.handleError;
-            convertedAgent.handleAssert = this.handleAssert;
-            convertedAgent.handleWarning = this.handleWarning;
+            convertedAgent.handleException = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleException);
+            convertedAgent.handleError = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleError);
+            convertedAgent.handleAssert = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleAssert);
+            convertedAgent.handleWarning = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleWarning);
             convertedAgent.ignoreMessages = this.ignoreMessages;
 #if UNITY_EDITOR
             convertedAgent.description = AutoConvertingMessage;

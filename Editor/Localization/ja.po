@@ -359,32 +359,32 @@ msgid "Handle Exception"
 msgstr "例外を捕捉"
 
 # handleException tooltip
-msgid "Autopilot terminates when an Exception is detected in the log"
-msgstr "例外ログを検知したとき、オートパイロットを停止します"
+msgid "Specify an Autopilot terminates or only reports when an Exception is detected in the log"
+msgstr "例外ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します"
 
 # handleError
 msgid "Handle Error"
-msgstr "エラーを捕捉"
+msgstr "エラーを検知"
 
 # handleError tooltip
-msgid "Autopilot terminates when an Error is detected in the log"
-msgstr "エラーログを検知したとき、オートパイロットを停止します"
+msgid "Specify an Autopilot terminates or only reports when an Error is detected in the log"
+msgstr "エラーログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します"
 
 # handleAssert
 msgid "Handle Assert"
-msgstr "アサートを捕捉"
+msgstr "アサートを検知"
 
 # handleAssert tooltip
-msgid "Autopilot terminates when an Assert is detected in the log"
-msgstr "アサートログを検知したとき、オートパイロットを停止します"
+msgid "Specify an Autopilot terminates or only reports when an Assert is detected in the log"
+msgstr "アサートログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します"
 
 # handleWarning
 msgid "Handle Warning"
-msgstr "警告を捕捉"
+msgstr "警告を検知"
 
 # handleWarning tooltip
-msgid "Autopilot terminates when an Warning is detected in the log"
-msgstr "警告ログを検知したとき、オートパイロットを停止します"
+msgid "Specify an Autopilot terminates or only reports when an Warning is detected in the log"
+msgstr "警告ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します"
 
 # ignoreMessages
 msgid "Ignore Messages"

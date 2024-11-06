@@ -22,22 +22,22 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private GUIContent _descriptionLabel;
 
         private static readonly string s_handleException = L10n.Tr("Handle Exception");
-        private static readonly string s_handleExceptionTooltip = L10n.Tr("Autopilot terminates when an Exception is detected in the log");
+        private static readonly string s_handleExceptionTooltip = L10n.Tr("Specify an Autopilot terminates or only reports when an Exception is detected in the log");
         private SerializedProperty _handleExceptionProp;
         private GUIContent _handleExceptionLabel;
 
         private static readonly string s_handleError = L10n.Tr("Handle Error");
-        private static readonly string s_handleErrorTooltip = L10n.Tr("Autopilot terminates when an Error is detected in the log");
+        private static readonly string s_handleErrorTooltip = L10n.Tr("Specify an Autopilot terminates or only reports when an Error is detected in the log");
         private SerializedProperty _handleErrorProp;
         private GUIContent _handleErrorLabel;
 
         private static readonly string s_handleAssert = L10n.Tr("Handle Assert");
-        private static readonly string s_handleAssertTooltip = L10n.Tr("Autopilot terminates when an Assert is detected in the log");
+        private static readonly string s_handleAssertTooltip = L10n.Tr("Specify an Autopilot terminates or only reports when an Assert is detected in the log");
         private SerializedProperty _handleAssertProp;
         private GUIContent _handleAssertLabel;
 
         private static readonly string s_handleWarning = L10n.Tr("Handle Warning");
-        private static readonly string s_handleWarningTooltip = L10n.Tr("Autopilot terminates when an Warning is detected in the log");
+        private static readonly string s_handleWarningTooltip = L10n.Tr("Specify an Autopilot terminates or only reports when an Warning is detected in the log");
         private SerializedProperty _handleWarningProp;
         private GUIContent _handleWarningLabel;
 

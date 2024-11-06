@@ -364,18 +364,19 @@ This Agent instance (.asset file) can contain the following.
 An Agent that detects abnormal log messages and terminates the Autopilot running.
 
 It should always be started at the same time as other Agents (that actually perform game operations).
-This can be accomplished with `ParallelCompositeAgent`, but it is easier to set it up as an `Scene Crossing Agents` in AutopilotSettings.
+Generally, you add to `Scene Crossing Agents` in `AutopilotSettings`.
+If you want to change the settings for each Scene, use with `ParallelCompositeAgent`.
 
 This Agent instance (.asset file) can contain the following.
 
 <dl>
-  <dt>Handle Exception</dt><dd>Autopilot terminates when an Exception is detected in the log.
+  <dt>Handle Exception</dt><dd>Specify an Autopilot terminates or only reports when an Exception is detected in the log.
         It can be overwritten with the command line argument <code>-HANDLE_EXCEPTION</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
-  <dt>Handle Error</dt><dd>Autopilot terminates when an Error is detected in the log.
+  <dt>Handle Error</dt><dd>Specify an Autopilot terminates or only reports when an Error is detected in the log.
         It can be overwritten with the command line argument <code>-HANDLE_ERROR</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
-  <dt>Handle Assert</dt><dd>Autopilot terminates when an Assert is detected in the log.
+  <dt>Handle Assert</dt><dd>Specify an Autopilot terminates or only reports when an Assert is detected in the log.
         It can be overwritten with the command line argument <code>-HANDLE_ASSERT</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
-  <dt>Handle Warning</dt><dd>Autopilot terminates when an Warning is detected in the log.
+  <dt>Handle Warning</dt><dd>Specify an Autopilot terminates or only reports when an Warning is detected in the log.
         It can be overwritten with the command line argument <code>-HANDLE_WARNING</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
   <dt>Ignore Messages</dt><dd>Log messages containing the specified strings will be ignored from the stop condition. Regex is also available; escape is a single backslash (`\`).</dd>
 </dl>

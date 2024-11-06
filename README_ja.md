@@ -366,23 +366,24 @@ SerialCompositeAgentと組み合わせることで、一連の操作を何周も
 
 ### ErrorHandlerAgent
 
-異常系ログメッセージを捕捉してオートパイロットの実行を停止するAgentです。
+異常系のログメッセージを捕捉してオートパイロットの実行を停止するAgentです。
 
 常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
-`ParallelCompositeAgent` でも実現できますが、AutopilotSettingsに `Scene Crossing Agents` として設定するほうが簡単です。
+一般的には、`AutopilotSettings` の `Scene Crossing Agents` に追加します。
+Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合わせて使用します。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Handle Exception</dt><dd>例外ログを検知したとき、オートパイロットを停止します。
+  <dt>Handle Exception</dt><dd>例外ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_EXCEPTION</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Error</dt><dd>エラーログを検知したとき、オートパイロットを停止します。
+  <dt>Handle Error</dt><dd>エラーログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_ERROR</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Assert</dt><dd>アサートログを検知したとき、オートパイロットを停止します。
+  <dt>Handle Assert</dt><dd>アサートログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_ASSERT</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Warning</dt><dd>警告ログを検知したとき、オートパイロットを停止します。
+  <dt>Handle Warning</dt><dd>警告ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_WARNING</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Ignore Messages</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です</dd>
+  <dt>Ignore Messages</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です。</dd>
 </dl>
 
 

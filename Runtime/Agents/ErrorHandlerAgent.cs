@@ -9,9 +9,28 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Agents
 {
+    public enum HandlingBehavior
+    {
+        /// <summary>
+        /// Ignore this log type.
+        /// </summary>
+        Ignore,
+
+        /// <summary>
+        /// Reporting only when handle this log type.
+        /// </summary>
+        ReportOnly,
+
+        /// <summary>
+        /// Terminate Autopilot when handle this log type.
+        /// </summary>
+        TerminateAutopilot,
+    }
+
     /// <summary>
     /// Error log handling using <c>Application.logMessageReceived</c>.
     /// </summary>
@@ -19,45 +38,43 @@ namespace DeNA.Anjin.Agents
     public class ErrorHandlerAgent : AbstractAgent
     {
         /// <summary>
-        /// Slack notification when Exception detected in log
+        /// Autopilot terminates and/or reports when an Exception is detected in the log.
         /// </summary>
-        public bool handleException = true;
+        public HandlingBehavior handleException = HandlingBehavior.TerminateAutopilot;
 
         /// <summary>
-        /// Slack notification when Error detected in log
+        /// Autopilot terminates and/or reports when an Error is detected in the log.
         /// </summary>
-        public bool handleError = true;
+        public HandlingBehavior handleError = HandlingBehavior.TerminateAutopilot;
 
         /// <summary>
-        /// Slack notification when Assert detected in log
+        /// Autopilot terminates and/or reports when an Assert is detected in the log.
         /// </summary>
-        public bool handleAssert = true;
+        public HandlingBehavior handleAssert = HandlingBehavior.TerminateAutopilot;
 
         /// <summary>
-        /// Slack notification when Warning detected in log
+        /// Autopilot terminates and/or reports when an Warning is detected in the log.
         /// </summary>
-        public bool handleWarning;
+        public HandlingBehavior handleWarning = HandlingBehavior.Ignore;
 
         /// <summary>
         /// Do not send Slack notifications when log messages contain this string
         /// </summary>
         public string[] ignoreMessages = new string[] { };
 
-        internal ITerminatable _autopilot;
+        internal ITerminatable _autopilot; // can inject for testing
         private List<Regex> _ignoreMessagesRegexes;
+        private CancellationToken _token;
 
         public override async UniTask Run(CancellationToken token)
         {
+            this._token = token;
+
             try
             {
                 Logger.Log($"Enter {this.name}.Run()");
 
                 OverwriteByCommandLineArguments(new Arguments());
-
-                if (_autopilot == null)
-                {
-                    _autopilot = FindObjectOfType<Autopilot>();
-                }
 
                 Application.logMessageReceivedThreaded += this.HandleLog;
 
@@ -78,7 +95,8 @@ namespace DeNA.Anjin.Agents
         /// <param name="type">Log message type</param>
         internal async void HandleLog(string logString, string stackTrace, LogType type)
         {
-            if (IsIgnoreMessage(logString, stackTrace, type))
+            var handlingBehavior = JudgeHandlingBehavior(logString, stackTrace, type);
+            if (handlingBehavior == HandlingBehavior.Ignore)
             {
                 return;
             }
@@ -88,60 +106,66 @@ namespace DeNA.Anjin.Agents
 
             Logger.Log(type, logString, stackTrace);
 
-            if (type == LogType.Exception)
+            var exitCode = type == LogType.Exception ? ExitCode.UnCatchExceptions : ExitCode.AutopilotFailed;
+            if (handlingBehavior == HandlingBehavior.ReportOnly)
             {
-                await _autopilot.TerminateAsync(ExitCode.UnCatchExceptions, logString, stackTrace);
+                var settings = AutopilotState.Instance.settings;
+                Assert.IsNotNull(settings);
+                await settings.Reporter.PostReportAsync(logString, stackTrace, exitCode, this._token);
             }
             else
             {
-                await _autopilot.TerminateAsync(ExitCode.AutopilotFailed, logString, stackTrace);
+                if (_autopilot == null)
+                {
+                    _autopilot = FindObjectOfType<Autopilot>();
+                    Assert.IsNotNull(_autopilot);
+                }
+
+                await _autopilot.TerminateAsync(exitCode, logString, stackTrace, token: this._token);
             }
         }
 
-        private bool IsIgnoreMessage(string logString, string stackTrace, LogType type)
+        private HandlingBehavior JudgeHandlingBehavior(string logString, string stackTrace, LogType type)
         {
             if (type == LogType.Log)
             {
-                return true;
-            }
-
-            if (type == LogType.Exception && !this.handleException)
-            {
-                return true;
-            }
-
-            if (type == LogType.Assert && !this.handleAssert)
-            {
-                return true;
-            }
-
-            if (type == LogType.Error && !this.handleError)
-            {
-                return true;
-            }
-
-            if (type == LogType.Warning && !this.handleWarning)
-            {
-                return true;
-            }
-
-            if (this._ignoreMessagesRegexes == null)
-            {
-                this._ignoreMessagesRegexes = CreateIgnoreMessageRegexes();
-            }
-
-            if (this._ignoreMessagesRegexes.Exists(regex => regex.IsMatch(logString)))
-            {
-                return true;
+                return HandlingBehavior.Ignore;
             }
 
             if (stackTrace.Contains(nameof(ErrorHandlerAgent)) || stackTrace.Contains(nameof(SlackAPI)))
             {
                 Debug.Log($"Ignore looped message: {logString}");
-                return true;
+                return HandlingBehavior.Ignore;
             }
 
-            return false;
+            if (IsIgnoreMessage(logString))
+            {
+                return HandlingBehavior.Ignore;
+            }
+
+            switch (type)
+            {
+                case LogType.Exception:
+                    return this.handleException;
+                case LogType.Error:
+                    return this.handleError;
+                case LogType.Assert:
+                    return this.handleAssert;
+                case LogType.Warning:
+                    return this.handleWarning;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
+        private bool IsIgnoreMessage(string logString)
+        {
+            if (this._ignoreMessagesRegexes == null)
+            {
+                this._ignoreMessagesRegexes = CreateIgnoreMessageRegexes();
+            }
+
+            return this._ignoreMessagesRegexes.Exists(regex => regex.IsMatch(logString));
         }
 
         private List<Regex> CreateIgnoreMessageRegexes()
@@ -170,23 +194,28 @@ namespace DeNA.Anjin.Agents
         {
             if (args.HandleException.IsCaptured())
             {
-                this.handleException = args.HandleException.Value();
+                this.handleException = HandlingBehaviorFrom(args.HandleException.Value());
             }
 
             if (args.HandleError.IsCaptured())
             {
-                this.handleError = args.HandleError.Value();
+                this.handleError = HandlingBehaviorFrom(args.HandleError.Value());
             }
 
             if (args.HandleAssert.IsCaptured())
             {
-                this.handleAssert = args.HandleAssert.Value();
+                this.handleAssert = HandlingBehaviorFrom(args.HandleAssert.Value());
             }
 
             if (args.HandleWarning.IsCaptured())
             {
-                this.handleWarning = args.HandleWarning.Value();
+                this.handleWarning = HandlingBehaviorFrom(args.HandleWarning.Value());
             }
+        }
+
+        internal static HandlingBehavior HandlingBehaviorFrom(bool value)
+        {
+            return value ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore;
         }
     }
 }
