@@ -63,7 +63,15 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Parallel running agent using on every scene, for using observer (e.g., EmergencyExitAgent)
         /// </summary>
+        [Obsolete("Use crossSceneAgents instead")]
         public AbstractAgent observerAgent;
+
+        /// <summary>
+        /// Agents running by scene crossing.
+        /// The specified agents will have the same lifespan as <c>Autopilot</c> (i.e., use <c>DontDestroyOnLoad</c>)
+        /// for specifying, e.g., <c>ErrorHandlerAgent</c>, <c>UGUIEmergencyExitAgent</c>.
+        /// </summary>
+        public List<AbstractAgent> sceneCrossingAgents = new List<AbstractAgent>();
 
         /// <summary>
         /// Autopilot running lifespan [sec]. When specified zero, so unlimited running
@@ -344,6 +352,21 @@ This time, temporarily generate and use SlackReporter instance.";
             var dir = Path.GetDirectoryName(settingsPath) ?? "Assets";
             AssetDatabase.CreateAsset(obj, Path.Combine(dir, $"New {obj.GetType().Name}.asset"));
 #endif
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertSceneCrossingAgentsFromObsoleteObserverAgent(ILogger logger)
+        {
+            if (this.observerAgent == null || this.sceneCrossingAgents.Any())
+            {
+                return;
+            }
+
+            logger.Log(LogType.Warning, @"ObserverAgent setting in AutopilotSettings has been obsolete.
+Please delete the value using Debug Mode in the Inspector window. And using the SceneCrossingAgents.
+This time, temporarily converting.");
+
+            this.sceneCrossingAgents.Add(this.observerAgent);
         }
     }
 }

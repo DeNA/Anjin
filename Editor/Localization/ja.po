@@ -43,13 +43,13 @@ msgstr "フォールバックAgent"
 msgid "Agent for when not assigned"
 msgstr "割り当てのないSceneのときに使われるAgent"
 
-# observerAgent
-msgid "Observer Agent"
-msgstr "オブザーバーAgent"
+# sceneCrossingAgents
+msgid "Scene Crossing Agents"
+msgstr "Scene横断Agents"
 
-# observerAgent tooltip
-msgid "Parallel running agent using on every scene, for using observer (e.g., EmergencyExitAgent)"
-msgstr "Sceneに関わらず並列実行されるAgent。一般的にはEmergencyExitAgentを割り当てます"
+# sceneCrossingAgents tooltip
+msgid "Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., ErrorHandlerAgent and UGUIEmergencyExitAgent."
+msgstr "Sceneを横断して実行されるAgent。指定されたAgentの寿命は Autopilot と同じになります（つまり、DontDestroyOnLoad を使用します）。たとえば、ErrorHandlerAgent や UGUIEmergencyExitAgent などを指定します"
 
 # Header: Autopilot Run Settings
 msgid "Autopilot Run Settings"
