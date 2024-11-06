@@ -23,7 +23,8 @@ namespace DeNA.Anjin.Settings.ArgumentCapture
         }
 
         [Test]
-        [IgnoreWindowMode("Need command line arguments. see Makefile")]
+        [IgnoreWindowMode("This test requires environment variables. see Makefile")]
+        [Category("IgnoreCI")] // This test requires environment variables.
         public void String_inEnvironmentVariable_gotValue()
         {
             var arg = new Argument<string>("STR_ENV");

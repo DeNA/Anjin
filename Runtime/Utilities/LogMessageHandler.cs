@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
+using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
 

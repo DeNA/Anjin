@@ -3,6 +3,7 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
 
@@ -15,41 +16,100 @@ namespace DeNA.Anjin.Reporters
     public class SlackReporter : AbstractReporter
     {
         /// <summary>
-        /// Slack API token
+        /// Slack API token.
         /// </summary>
         public string slackToken;
 
         /// <summary>
-        /// Slack channels to send notification (comma separated)
+        /// Comma-separated Slack channels to post. If omitted, it will not be sent.
         /// </summary>
         public string slackChannels;
 
         /// <summary>
-        /// Sub team IDs to mention (comma separated)
+        /// Comma-separated sub team IDs to mention when posting error reports.
         /// </summary>
         public string mentionSubTeamIDs;
 
         /// <summary>
-        /// Whether adding @here or not
+        /// Add @here to the post when posting error reports.
         /// </summary>
         public bool addHereInSlackMessage;
 
         /// <summary>
-        /// With take a screenshot or not (on error terminates).
+        /// Lead text for error reports. It is used in OS notifications.
+        /// </summary>
+        [Multiline]
+        public string leadTextOnError = "{settings} occurred an error.";
+
+        /// <summary>
+        /// Message body template for error reports.
+        /// </summary>
+        [Multiline]
+        public string messageBodyTemplateOnError = "{message}";
+
+        /// <summary>
+        /// Attachments color for error reports.
+        /// </summary>
+        public Color colorOnError = new Color(0.64f, 0.01f, 0f);
+
+        /// <summary>
+        /// Take a screenshot for error reports.
         /// </summary>
         public bool withScreenshotOnError = true;
 
         /// <summary>
-        /// Post a report if normally terminates.
+        /// Also post a report if completed autopilot normally.
         /// </summary>
         public bool postOnNormally;
 
         /// <summary>
-        /// With take a screenshot or not (on normally terminates).
+        /// Comma-separated sub team IDs to mention when posting completion reports.
+        /// </summary>
+        public string mentionSubTeamIDsOnNormally;
+
+        /// <summary>
+        /// Add @here to the post when posting completion reports.
+        /// </summary>
+        public bool addHereInSlackMessageOnNormally;
+
+        /// <summary>
+        /// Lead text for completion reports.
+        /// </summary>
+        [Multiline]
+        public string leadTextOnNormally = "{settings} completed normally.";
+
+        /// <summary>
+        /// Message body template for completion reports.
+        /// </summary>
+        [Multiline]
+        public string messageBodyTemplateOnNormally = "{message}";
+
+        /// <summary>
+        /// Attachments color for completion reports.
+        /// </summary>
+        public Color colorOnNormally = new Color(0.24f, 0.65f, 0.34f);
+
+        /// <summary>
+        /// Take a screenshot for completion reports.
         /// </summary>
         public bool withScreenshotOnNormally;
 
-        private readonly ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
+        internal ISlackMessageSender _sender = new SlackMessageSender(new SlackAPI());
+
+        private static ILogger Logger
+        {
+            get
+            {
+                var settings = AutopilotState.Instance.settings;
+                if (settings != null)
+                {
+                    return settings.LoggerAsset.Logger;
+                }
+
+                Debug.LogWarning("Autopilot is not running"); // impossible to reach here
+                return null;
+            }
+        }
 
         /// <inheritdoc />
         public override async UniTask PostReportAsync(
@@ -64,11 +124,28 @@ namespace DeNA.Anjin.Reporters
                 return;
             }
 
-            var withScreenshot = exitCode == ExitCode.Normally ? withScreenshotOnNormally : withScreenshotOnError;
-            // TODO: build message body with template and placeholders
+            var mention = (exitCode == ExitCode.Normally)
+                ? mentionSubTeamIDsOnNormally
+                : mentionSubTeamIDs;
+            var here = (exitCode == ExitCode.Normally)
+                ? addHereInSlackMessageOnNormally
+                : addHereInSlackMessage;
+            var lead = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
+                ? leadTextOnNormally
+                : leadTextOnError);
+            var messageBody = MessageBuilder.BuildWithTemplate((exitCode == ExitCode.Normally)
+                    ? messageBodyTemplateOnNormally
+                    : messageBodyTemplateOnError,
+                message);
+            var color = (exitCode == ExitCode.Normally) ? colorOnNormally : colorOnError;
+            var withScreenshot = (exitCode == ExitCode.Normally) ? withScreenshotOnNormally : withScreenshotOnError;
 
             OverwriteByCommandlineArguments();
-            // TODO: log warn if slackToken or slackChannels is empty
+            if (string.IsNullOrEmpty(slackToken) || string.IsNullOrEmpty(slackChannels))
+            {
+                Logger?.Log(LogType.Warning, "Slack token or channels is empty");
+                return;
+            }
 
             // NOTE: In _sender.send, switch the execution thread to the main thread, so UniTask.WhenAll is meaningless.
             foreach (var slackChannel in slackChannels.Split(','))
@@ -78,14 +155,19 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, message, stackTrace, withScreenshot, cancellationToken);
+                await PostReportAsync(slackChannel, mention, here, lead, messageBody, stackTrace, color, withScreenshot,
+                    cancellationToken);
             }
         }
 
         private async UniTask PostReportAsync(
             string slackChannel,
+            string mention,
+            bool here,
+            string lead,
             string message,
             string stackTrace,
+            Color color,
             bool withScreenshot,
             CancellationToken cancellationToken = default
         )
@@ -93,14 +175,16 @@ namespace DeNA.Anjin.Reporters
             await _sender.Send(
                 slackToken,
                 slackChannel,
-                mentionSubTeamIDs.Split(','),
-                addHereInSlackMessage,
+                mention.Split(','),
+                here,
+                lead,
                 message,
                 stackTrace,
+                color,
                 withScreenshot,
                 cancellationToken
             );
-            // TODO: can log slack post url?
+            Logger?.Log($"Slack message sent to {slackChannel}");
         }
 
         private void OverwriteByCommandlineArguments()

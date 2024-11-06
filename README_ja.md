@@ -440,11 +440,13 @@ Slackにレポート送信するReporterです。
   <dt>Slack Channels</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
         コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできます。
         チャンネルにはBotを招待しておく必要があります。</dd>
-  <dt>Mention Sub Team IDs</dt><dd>通知メッセージでメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add Here In Slack Message</dt><dd>通知メッセージに@hereを付けます（デフォルト: off）</dd>
-  <dt>Take screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
-  <dt>Normally terminated report</dt><dd>正常終了時にもレポートをポストします（デフォルト: off）</dd>
-  <dt>Take screenshot</dt><dd>正常終了時にスクリーンショットを撮影します（デフォルト: off）</dd>
+  <dt>Mention Sub Team IDs</dt><dd>エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します</dd>
+  <dt>Add @here</dt><dd>エラー終了時に送信する通知に@hereを付けます</dd>
+  <dt>Lead Text</dt><dd>エラー終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます</dd>
+  <dt>Message</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
+  <dt>Color</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色</dd>
+  <dt>Screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
+  <dt>Normally terminated report</dt><dd>正常終了時にもレポートを送信します（デフォルト: off）</dd>
 </dl>
 
 Slack Botは次のページで作成できます。  
@@ -454,6 +456,12 @@ Slack Botには次の権限が必要です。
 
 - chat:write
 - files:write
+
+リード及びメッセージ本文のテンプレートに記述できるプレースホルダーは次のとおりです。
+
+- "{message}": 終了要因メッセージ（エラーログのメッセージなど）
+- "{settings}": 実行中の AutopilotSettings 名
+- "{env.KEY}": 環境変数
 
 
 

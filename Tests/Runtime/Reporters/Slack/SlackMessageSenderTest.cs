@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using TestHelper.Attributes;
+using UnityEngine;
 
-namespace DeNA.Anjin.Reporters
+namespace DeNA.Anjin.Reporters.Slack
 {
     [TestFixture]
     public class SlackMessageSenderTest
@@ -26,8 +27,10 @@ namespace DeNA.Anjin.Reporters
                 "CHANNEL",
                 Array.Empty<string>(),
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
+                Color.magenta,
                 false
             );
 
@@ -36,19 +39,24 @@ namespace DeNA.Anjin.Reporters
             {
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" }, { "channel", "CHANNEL" }, { "message", "MESSAGE" }, { "ts", null }
+                    { "token", "TOKEN" },
+                    { "channel", "CHANNEL" },
+                    { "text", "LEAD" },
+                    { "message", "MESSAGE" },
+                    { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
+                    { "ts", null }
                 },
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" },
+                    { "token", "TOKEN" }, //
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "text", "STACKTRACE" },
                     { "ts", "1" }
                 },
             };
             Assert.That(actual, Is.EqualTo(expected), Format(actual));
         }
-        
+
         [Test]
         public async Task WithMention()
         {
@@ -58,10 +66,12 @@ namespace DeNA.Anjin.Reporters
             await sender.Send(
                 "TOKEN",
                 "CHANNEL",
-                new []{"MENTION1", "MENTION2"},
+                new[] { "MENTION1", "MENTION2" },
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
+                Color.magenta,
                 false
             );
 
@@ -70,19 +80,24 @@ namespace DeNA.Anjin.Reporters
             {
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" }, { "channel", "CHANNEL" }, { "message", "<!subteam^MENTION1> <!subteam^MENTION2> MESSAGE" }, { "ts", null }
+                    { "token", "TOKEN" },
+                    { "channel", "CHANNEL" },
+                    { "text", "<!subteam^MENTION1> <!subteam^MENTION2> LEAD" },
+                    { "message", "MESSAGE" },
+                    { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
+                    { "ts", null }
                 },
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" },
+                    { "token", "TOKEN" }, // 
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "text", "STACKTRACE" },
                     { "ts", "1" }
                 },
             };
             Assert.That(actual, Is.EqualTo(expected), Format(actual));
         }
-        
+
         [Test]
         [FocusGameView]
         public async Task WithScreenshot()
@@ -93,10 +108,12 @@ namespace DeNA.Anjin.Reporters
             await sender.Send(
                 "TOKEN",
                 "CHANNEL",
-                new []{"MENTION1", "MENTION2"},
+                new[] { "MENTION1", "MENTION2" },
                 false,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
+                Color.magenta,
                 true
             );
 
@@ -105,23 +122,33 @@ namespace DeNA.Anjin.Reporters
             {
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" }, { "channel", "CHANNEL" }, { "message", "<!subteam^MENTION1> <!subteam^MENTION2> MESSAGE" }, { "ts", null }
-                },
-                new Dictionary<string, string>
-                {
-                    { "token", "TOKEN" }, { "channel", "CHANNEL" }, { "message", "IMAGE" }, { "ts", "1" }
+                    { "token", "TOKEN" },
+                    { "channel", "CHANNEL" },
+                    { "text", "<!subteam^MENTION1> <!subteam^MENTION2> LEAD" },
+                    { "message", "MESSAGE" },
+                    { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
+                    { "ts", null }
                 },
                 new Dictionary<string, string>
                 {
                     { "token", "TOKEN" },
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "text", null },
+                    { "message", "IMAGE" },
+                    { "color", "RGBA(0.000, 0.000, 0.000, 0.000)" }, // default
+                    { "ts", "1" }
+                },
+                new Dictionary<string, string>
+                {
+                    { "token", "TOKEN" }, // 
+                    { "channel", "CHANNEL" },
+                    { "text", "STACKTRACE" },
                     { "ts", "1" }
                 },
             };
             Assert.That(actual, Is.EqualTo(expected));
         }
-        
+
         [Test]
         public async Task WithAtHere()
         {
@@ -133,8 +160,10 @@ namespace DeNA.Anjin.Reporters
                 "CHANNEL",
                 Array.Empty<string>(),
                 true,
+                "LEAD",
                 "MESSAGE",
                 "STACKTRACE",
+                Color.magenta,
                 false
             );
 
@@ -143,19 +172,23 @@ namespace DeNA.Anjin.Reporters
             {
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" }, { "channel", "CHANNEL" }, { "message", "<!here> MESSAGE" }, { "ts", null }
+                    { "token", "TOKEN" },
+                    { "channel", "CHANNEL" },
+                    { "text", "<!here> LEAD" },
+                    { "message", "MESSAGE" },
+                    { "color", "RGBA(1.000, 0.000, 1.000, 1.000)" },
+                    { "ts", null }
                 },
                 new Dictionary<string, string>
                 {
-                    { "token", "TOKEN" },
+                    { "token", "TOKEN" }, //
                     { "channel", "CHANNEL" },
-                    { "message", "MESSAGE\n\n```STACKTRACE```" },
+                    { "text", "STACKTRACE" },
                     { "ts", "1" }
                 },
             };
             Assert.That(actual, Is.EqualTo(expected), Format(actual));
         }
-
 
         private static string Format(List<Dictionary<string, string>> dicts)
         {
@@ -175,8 +208,10 @@ namespace DeNA.Anjin.Reporters
                     sb.Append(value);
                     sb.AppendLine(",");
                 }
+
                 sb.AppendLine("\t},");
             }
+
             sb.AppendLine("]");
             return sb.ToString();
         }
