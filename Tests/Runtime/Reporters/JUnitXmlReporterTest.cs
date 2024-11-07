@@ -268,7 +268,7 @@ namespace DeNA.Anjin.Reporters
         public async Task PostReportAsync_Error()
         {
             AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            // AutopilotState.Instance.settings.name = "TEST CASE NAME"; // TODO: fix after merge #95
+            AutopilotState.Instance.settings.name = TestContext.CurrentContext.Test.Name;
 
             JUnitXmlReporter.Initialize();
             var startDatetime = DateTime.Now; // Note: same as the value that JUnitXmlReporter has, maybe.
@@ -310,7 +310,7 @@ namespace DeNA.Anjin.Reporters
                         </testcase>
             </testsuite>
 </testsuites>"
-                .Replace("REPLACE_TESTCASE_NAME", "") // TODO: fix after merge #95
+                .Replace("REPLACE_TESTCASE_NAME", TestContext.CurrentContext.Test.Name)
                 .Replace("REPLACE_TIMESTAMP", startDatetime.ToString("yyyy-MM-ddTHH:mm:ss"))
                 .Replace("REPLACE_TIME", "0");
 

@@ -58,7 +58,7 @@ namespace DeNA.Anjin.Reporters
                 Directory.CreateDirectory(directory);
             }
 
-            var testCaseName = settings.name; // TODO: change to Name property after merge #95
+            var testCaseName = settings.Name;
             var time = Time.unscaledTime - s_startTime;
             var testCase = CreateTestCase(testCaseName, time, message, stackTrace, exitCode);
             var testSuite = CreateTestSuite("DeNA.Anjin", s_startDatetime, testCase);
@@ -70,7 +70,7 @@ namespace DeNA.Anjin.Reporters
 
         internal static string GetOutputPath(string outputPathField, Arguments args = null)
         {
-            if (args==null)
+            if (args == null)
             {
                 args = new Arguments();
             }
