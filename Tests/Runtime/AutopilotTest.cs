@@ -69,6 +69,7 @@ namespace DeNA.Anjin
             autopilotSettings.lifespanSec = 1;
 
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
+            await UniTask.NextFrame(); // wait flushing log for subsequence tests
 
             LogAssert.Expect(LogType.Log, "Launched autopilot"); // using console logger
         }

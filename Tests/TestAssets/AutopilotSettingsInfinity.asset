@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: "\u4E3B\u306BAutopilot\u8D77\u52D5\u30C6\u30B9\u30C8\u7528\nlifespan=0
     (infinity)"
+  name: 
   sceneAgentMaps: []
   fallbackAgent: {fileID: 0}
   observerAgent: {fileID: 0}
+  sceneCrossingAgents: []
   lifespanSec: 0
   randomSeed: 0
   timeScale: 1
@@ -40,4 +42,6 @@ MonoBehaviour:
   - EGL_BAD_NATIVE_WINDOW
   - EGL_BAD_ALLOC
   loggerAsset: {fileID: 0}
+  loggerAssets: []
   reporter: {fileID: 0}
+  reporters: []

@@ -43,10 +43,10 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
-        public void OverrideByCommandLineArguments_HasNotCommandlineArguments_KeepScriptableObjectValues()
+        public void OverwriteByCommandLineArguments_HasNotCommandlineArguments_KeepScriptableObjectValues()
         {
             var sut = CreateAutopilotSettings();
-            sut.OverrideByCommandLineArguments(CreateNotCapturedArguments());
+            sut.OverwriteByCommandLineArguments(CreateNotCapturedArguments());
 
             Assert.That(sut.lifespanSec, Is.EqualTo(5));
             Assert.That(sut.randomSeed, Is.EqualTo("1"));
@@ -75,10 +75,10 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
-        public void OverrideByCommandLineArguments_HasCommandlineArguments_OverwriteValues()
+        public void OverwriteByCommandLineArguments_HasCommandlineArguments_OverwriteValues()
         {
             var sut = CreateAutopilotSettings();
-            sut.OverrideByCommandLineArguments(CreateCapturedArguments());
+            sut.OverwriteByCommandLineArguments(CreateCapturedArguments());
 
             Assert.That(sut.lifespanSec, Is.EqualTo(2));
             Assert.That(sut.randomSeed, Is.EqualTo(""));

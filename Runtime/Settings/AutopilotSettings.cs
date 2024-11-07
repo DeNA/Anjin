@@ -221,7 +221,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Overwrites specified values in the command line arguments
         /// </summary>
-        internal void OverrideByCommandLineArguments(Arguments args)
+        internal void OverwriteByCommandLineArguments(Arguments args)
         {
             if (args.RandomSeed.IsCaptured())
             {
@@ -270,12 +270,16 @@ namespace DeNA.Anjin.Settings
             var settings = AutopilotState.Instance.settings;
             Assert.IsNotNull(settings);
 
+            settings.OverwriteByCommandLineArguments(new Arguments());
+
             settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();
 
             var logger = settings.LoggerAsset.Logger;
             settings.ConvertReportersFromObsoleteReporter(logger); // Note: before convert SlackReporter.
             settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
+
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger);   // Note: before convert other Agents.
         }
 
         private void CreateDefaultLoggerIfNeeded()
