@@ -1,0 +1,34 @@
+# Copyright (c) 2023-2024 DeNA Co., Ltd.
+# This software is released under the MIT License.
+
+name: Check pull requests for conflicts
+
+on:
+  pull_request_target:
+    types: [ opened, synchronize, reopened ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  conflibot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: wktk/conflibot@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          exclude: ""
