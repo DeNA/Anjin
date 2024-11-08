@@ -87,14 +87,6 @@ msgstr "タイムスケール"
 msgid "Time.timeScale on running Autopilot"
 msgstr "Time.timeScaleを指定します"
 
-# junitReportPath
-msgid "JUnit Report Path"
-msgstr "JUnitレポート出力パス"
-
-# junitReportPath tooltip
-msgid "JUnit report output path"
-msgstr "JUnit形式のレポートファイル出力パス（省略時は出力されない）"
-
 # logger
 msgid "Loggers"
 msgstr "Loggers"
@@ -469,6 +461,17 @@ msgstr "このReporterインスタンスの説明"
 #: Editor/UI/Reporters/CompositeReporterEditor.cs
 msgid "Reporters"
 msgstr "Reporters"
+
+
+#: Editor/UI/Reporters/JUnitXmlReporterEditor.cs
+
+# outputPath
+msgid "Output File Path"
+msgstr "出力ファイルパス"
+
+# outputPath tooltip
+msgid "Relative path from the project root directory. When run on player, it will be the Application.persistentDataPath."
+msgstr "プロジェクトルートからの相対パスを指定します。プレイヤー実行の際は Application.persistentDataPath が起点となります"
 
 
 #: Editor/UI/Reporters/SlackReporterEditor.cs

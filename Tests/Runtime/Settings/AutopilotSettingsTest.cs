@@ -18,7 +18,6 @@ namespace DeNA.Anjin.Settings
             sut.lifespanSec = 5;
             sut.randomSeed = "1";
             sut.timeScale = 1.0f;
-            sut.junitReportPath = "path/to/junit_report.xml";
             sut.handleException = true;
             sut.handleError = true;
             sut.handleAssert = true;
@@ -33,7 +32,6 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(), // Not captured
                 _randomSeed = new StubArgument<string>(), // Not captured
                 _timeScale = new StubArgument<float>(), // Not captured
-                _jUnitReportPath = new StubArgument<string>(), // Not captured
                 _handleException = new StubArgument<bool>(), // Not captured
                 _handleError = new StubArgument<bool>(), // Not captured
                 _handleAssert = new StubArgument<bool>(), // Not captured
@@ -51,7 +49,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(5));
             Assert.That(sut.randomSeed, Is.EqualTo("1"));
             Assert.That(sut.timeScale, Is.EqualTo(1.0f));
-            Assert.That(sut.junitReportPath, Is.EqualTo("path/to/junit_report.xml"));
             Assert.That(sut.handleException, Is.True);
             Assert.That(sut.handleError, Is.True);
             Assert.That(sut.handleAssert, Is.True);
@@ -65,7 +62,6 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(true, 2),
                 _randomSeed = new StubArgument<string>(true, ""),
                 _timeScale = new StubArgument<float>(true, 2.5f),
-                _jUnitReportPath = new StubArgument<string>(true, "/path/to/another_junit_report.xml"),
                 _handleException = new StubArgument<bool>(true, false),
                 _handleError = new StubArgument<bool>(true, false),
                 _handleAssert = new StubArgument<bool>(true, false),
@@ -83,7 +79,6 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(2));
             Assert.That(sut.randomSeed, Is.EqualTo(""));
             Assert.That(sut.timeScale, Is.EqualTo(2.5f));
-            Assert.That(sut.junitReportPath, Is.EqualTo("/path/to/another_junit_report.xml"));
             Assert.That(sut.handleException, Is.False);
             Assert.That(sut.handleError, Is.False);
             Assert.That(sut.handleAssert, Is.False);
@@ -270,6 +265,49 @@ This time, temporarily converting.")));
             settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(Debug.unityLogger);
             Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
             Assert.That(settings.sceneCrossingAgents, Has.No.InstanceOf<SpyAgent>());
+        }
+
+        [Test]
+        public void ConvertJUnitXmlReporterFromObsoleteJUnitReportPath_HasJUnitReportPath_GenerateJUnitXmlReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.junitReportPath = "Path/To/JUnitReport.xml";
+
+            var spyLogger = ScriptableObject.CreateInstance<SpyLoggerAsset>();
+            settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(spyLogger.Logger);
+
+            Assert.That(settings.Reporter.reporters.Count, Is.EqualTo(1));
+            var reporter = settings.Reporter.reporters[0] as JUnitXmlReporter;
+            Assert.That(reporter, Is.Not.Null);
+            Assert.That(reporter.outputPath, Is.EqualTo(settings.junitReportPath));
+
+            Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
+                @"JUnitReportPath setting in AutopilotSettings has been obsolete.
+Please delete the reference using Debug Mode in the Inspector window. And create a JUnitXmlReporter asset file.
+This time, temporarily converting.")));
+        }
+
+        [Test]
+        public void ConvertJUnitXmlReporterFromObsoleteJUnitReportPath_HasNotJUnitReportPath_NotGenerateReporter()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            // Not set junitReportPath
+
+            settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(Debug.unityLogger);
+            Assert.That(settings.Reporter.reporters, Is.Empty);
+        }
+
+        [Test]
+        public void ConvertJUnitXmlReporterFromObsoleteJUnitReportPath_ExistReporter_NotGenerateReporter()
+        {
+            var existReporter = ScriptableObject.CreateInstance<JUnitXmlReporter>();
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.Reporter.reporters.Add(existReporter); // already exists
+            settings.junitReportPath = "Path/To/JUnitReport.xml";
+
+            settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(Debug.unityLogger);
+            Assert.That(settings.Reporter.reporters.Count, Is.EqualTo(1));
+            Assert.That(settings.Reporter.reporters, Does.Contain(existReporter));
         }
     }
 }
