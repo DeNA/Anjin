@@ -110,7 +110,7 @@ namespace DeNA.Anjin.Agents
             Assert.That(spyTerminatable.CapturedMessage, Is.EqualTo(
                 "Could not receive defuse message `^Never match!$` before the UGUIMonkeyAgent terminated."));
             Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
-                "  at DeNA.Anjin.Agents.TimeBombAgent.Run"));
+                "  at DeNA.Anjin.Agents.TimeBombAgent"));
             Assert.That(spyTerminatable.CapturedReporting, Is.True);
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");

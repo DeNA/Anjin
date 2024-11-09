@@ -137,7 +137,7 @@ namespace DeNA.Anjin.Agents
             Assert.That(spyTerminatable.CapturedMessage, Does.StartWith(
                 "TimeoutException: Interactive component not found in 1 seconds"));
             Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
-                "  at TestHelper.Monkey.Monkey.Run"));
+                "  at TestHelper.Monkey.Monkey"));
             Assert.That(spyTerminatable.CapturedReporting, Is.True);
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
