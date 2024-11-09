@@ -12,7 +12,6 @@ using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
-using Assert = UnityEngine.Assertions.Assert;
 using Object = UnityEngine.Object;
 #if UNITY_INCLUDE_TESTS
 using NUnit.Framework;
@@ -67,7 +66,10 @@ namespace DeNA.Anjin
 #else
             var settings = Resources.Load<AutopilotSettings>(settingsPath);
 #endif
-            Assert.IsNotNull(settings, $"Autopilot settings not found: {settingsPath}");
+            if (settings == null)
+            {
+                throw new ArgumentException($"Autopilot settings not found: {settingsPath}");
+            }
 
             await LaunchAutopilotAsync(settings, token);
         }

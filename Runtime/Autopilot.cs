@@ -10,7 +10,6 @@ using DeNA.Anjin.Utilities;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace DeNA.Anjin
 {
@@ -67,7 +66,10 @@ namespace DeNA.Anjin
         {
             _state = AutopilotState.Instance;
             _settings = _state.settings;
-            Assert.IsNotNull(_settings);
+            if (_settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             _logger = _settings.LoggerAsset.Logger;
             // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.

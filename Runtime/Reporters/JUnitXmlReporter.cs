@@ -10,7 +10,6 @@ using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Reporters
 {
@@ -43,7 +42,10 @@ namespace DeNA.Anjin.Reporters
             CancellationToken cancellationToken = default)
         {
             var settings = AutopilotState.Instance.settings;
-            Assert.IsNotNull(settings, "Autopilot is not running");
+            if (settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             var path = GetOutputPath(this.outputPath, new Arguments());
             if (string.IsNullOrEmpty(path))

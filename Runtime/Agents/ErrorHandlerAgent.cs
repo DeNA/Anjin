@@ -9,7 +9,6 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Agents
 {
@@ -110,7 +109,11 @@ namespace DeNA.Anjin.Agents
             if (handlingBehavior == HandlingBehavior.ReportOnly)
             {
                 var settings = AutopilotState.Instance.settings;
-                Assert.IsNotNull(settings);
+                if (settings == null)
+                {
+                    throw new InvalidOperationException("Autopilot is not running");
+                }
+
                 await settings.Reporter.PostReportAsync(logString, stackTrace, exitCode, this._token);
             }
             else

@@ -10,7 +10,6 @@ using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -249,7 +248,10 @@ namespace DeNA.Anjin.Settings
         private static void Initialize()
         {
             var settings = AutopilotState.Instance.settings;
-            Assert.IsNotNull(settings);
+            if (settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             settings.OverwriteByCommandLineArguments(new Arguments());
 
