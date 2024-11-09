@@ -58,9 +58,9 @@ namespace DeNA.Anjin.Agents
         private static IEnumerable<TestCaseData> LogTypeTestCase()
         {
             yield return new TestCaseData(LogType.Exception, ExitCode.UnCatchExceptions);
-            yield return new TestCaseData(LogType.Error, ExitCode.AutopilotFailed);
-            yield return new TestCaseData(LogType.Assert, ExitCode.AutopilotFailed);
-            yield return new TestCaseData(LogType.Warning, ExitCode.AutopilotFailed);
+            yield return new TestCaseData(LogType.Error, ExitCode.DetectErrorsInLog);
+            yield return new TestCaseData(LogType.Assert, ExitCode.DetectErrorsInLog);
+            yield return new TestCaseData(LogType.Warning, ExitCode.DetectErrorsInLog);
         }
 
         private void SetHandlingBehavior(LogType logType, HandlingBehavior handlingBehavior)

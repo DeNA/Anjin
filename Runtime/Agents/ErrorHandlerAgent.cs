@@ -105,7 +105,7 @@ namespace DeNA.Anjin.Agents
 
             Logger.Log(type, logString, stackTrace);
 
-            var exitCode = type == LogType.Exception ? ExitCode.UnCatchExceptions : ExitCode.AutopilotFailed;
+            var exitCode = type == LogType.Exception ? ExitCode.UnCatchExceptions : ExitCode.DetectErrorsInLog;
             if (handlingBehavior == HandlingBehavior.ReportOnly)
             {
                 var settings = AutopilotState.Instance.settings;

@@ -77,7 +77,7 @@ namespace DeNA.Anjin.Reporters
                 new XAttribute("status", "Failed"),
                 new XElement("error",
                     new XAttribute("message", message),
-                    new XAttribute("type", ""),
+                    new XAttribute("type", "UnCatchExceptions"),
                     new XCData(stackTrace)
                 )
             );
@@ -102,7 +102,7 @@ namespace DeNA.Anjin.Reporters
                 new XAttribute("status", "Failed"),
                 new XElement("failure",
                     new XAttribute("message", message),
-                    new XAttribute("type", ""),
+                    new XAttribute("type", "AutopilotFailed"),
                     new XCData(stackTrace)
                 )
             );
@@ -305,7 +305,7 @@ namespace DeNA.Anjin.Reporters
                                     status=""Failed""
                                     >
                                     <error message=""MESSAGE""
-                                           type=""""
+                                           type=""UnCatchExceptions""
                                             ><![CDATA[STACK TRACE]]></error>
                         </testcase>
             </testsuite>
