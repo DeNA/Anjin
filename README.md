@@ -110,6 +110,9 @@ Set the Agents to run by scene crossing, independent of `Scene Agent Maps` and `
 The specified agents will have the same lifespan as Autopilot (i.e., use `DontDestroyOnLoad`)
 for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 
+> [!WARNING]  
+> Recommend set an [ErrorHandlerAgent](#ErrorHandlerAgent) to interrupt Autopilot if an exception occurs during execution.
+
 #### Autopilot Run Settings
 
 This item can also be overridden from the commandline (see below).
@@ -280,6 +283,9 @@ A screenshot of the operation by Automated QA is stored under `Application.persi
 The `Application.persistentDataPath` for each platform can be found in the Unity manual at
 [Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html).
 
+> [!WARNING]  
+> If you want to terminate the autopilot when detecting playback failures (e.g., the target Button is not found), enable `Error` in the [ErrorHandlerAgent](#ErrorHandlerAgent) setting.
+
 
 ### DoNothingAgent
 
@@ -380,6 +386,9 @@ This Agent instance (.asset file) can contain the following.
         It can be overwritten with the command line argument <code>-HANDLE_WARNING</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
   <dt>Ignore Messages</dt><dd>Log messages containing the specified strings will be ignored from the stop condition. Regex is also available; escape is a single backslash (`\`).</dd>
 </dl>
+
+> [!NOTE]  
+> Recommend enabling a `Handle Exception` to interrupt Autopilot if an exception occurs during execution.
 
 
 ### EmergencyExitAgent

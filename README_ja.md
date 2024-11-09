@@ -108,6 +108,9 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
 指定されたAgentの寿命はオートパイロット本体と同じになります（つまり、`DontDestroyOnLoad` を使用します）。
 たとえば、`ErrorHandlerAgent` や `UGUIEmergencyExitAgent` などを指定します。
 
+> [!WARNING]  
+> 実行中に例外が発生した時点でオートパイロットを中断するために、[ErrorHandlerAgent](#ErrorHandlerAgent) の設定をお勧めします。
+
 #### オートパイロット実行設定
 
 この項目は、コマンドラインから上書きもできます（後述）。
@@ -285,6 +288,9 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 [Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
 を参照してください。
 
+> [!WARNING]  
+> 再生の失敗（対象のボタンが見つからないなど）を検知してオートパイロットを停止するには、[ErrorHandlerAgent](#ErrorHandlerAgent) の設定で `Error` を有効にしてください。
+
 
 ### DoNothingAgent
 
@@ -385,6 +391,9 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
         コマンドライン引数 <code>-HANDLE_WARNING</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>Ignore Messages</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です。</dd>
 </dl>
+
+> [!NOTE]  
+> 実行中に例外が発生した時点でオートパイロットを中断するために、`Handle Exception` の有効化をお勧めします。
 
 
 ### EmergencyExitAgent
