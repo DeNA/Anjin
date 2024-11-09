@@ -112,11 +112,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         // ReSharper disable once MemberCanBeMadeStatic.Global
         internal void Stop()
         {
-            var autopilot = FindObjectOfType<Autopilot>();
-            if (autopilot)
-            {
-                autopilot.TerminateAsync(ExitCode.Normally, reporting: false).Forget();
-            }
+            Autopilot.Instance.TerminateAsync(ExitCode.Normally, reporting: false).Forget();
         }
 
         internal void Launch()

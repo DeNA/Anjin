@@ -2,6 +2,7 @@
 // This software is released under the MIT License.
 
 using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public string defuseMessage;
 
+        internal ITerminatable _autopilot; // can inject for testing
         private Regex DefuseMessageRegex => new Regex(defuseMessage);
         private CancellationTokenSource _cts;
 
@@ -51,7 +53,7 @@ namespace DeNA.Anjin.Agents
                 {
                     _cts?.Cancel();
                 }
-                catch (ObjectDisposedException e)
+                catch (ObjectDisposedException)
                 {
                     // ignored
                 }
@@ -78,10 +80,17 @@ namespace DeNA.Anjin.Agents
                             // Note: This Agent does not consume pseudo-random numbers, so passed on as is.
                             await agent.Run(linkedCts.Token);
 
-                            throw new TimeoutException(
-                                $"Could not receive defuse message `{defuseMessage}` before the agent terminated.");
+                            // If the working Agent exits first, the TimeBombAgent will fail.
+                            var message =
+                                $"Could not receive defuse message `{defuseMessage}` before the {agent.name} terminated.";
+                            Logger.Log(message);
+                            _autopilot = _autopilot ?? Autopilot.Instance;
+                            // ReSharper disable once MethodSupportsCancellation
+                            _autopilot.TerminateAsync(ExitCode.AutopilotFailed, message,
+                                    new StackTrace(true).ToString())
+                                .Forget(); // Note: Do not use this Agent's CancellationToken.
                         }
-                        catch (OperationCanceledException e)
+                        catch (OperationCanceledException)
                         {
                             if (token.IsCancellationRequested) // The parent was cancelled.
                             {

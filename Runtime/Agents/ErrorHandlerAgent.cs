@@ -115,12 +115,7 @@ namespace DeNA.Anjin.Agents
             }
             else
             {
-                if (_autopilot == null)
-                {
-                    _autopilot = FindObjectOfType<Autopilot>();
-                    Assert.IsNotNull(_autopilot);
-                }
-
+                _autopilot = _autopilot ?? Autopilot.Instance;
                 await _autopilot.TerminateAsync(exitCode, logString, stackTrace, token: this._token);
             }
         }

@@ -7,6 +7,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Assert = UnityEngine.Assertions.Assert;
@@ -42,6 +43,25 @@ namespace DeNA.Anjin
         private AutopilotState _state;
         private AutopilotSettings _settings;
         private bool _isTerminating;
+
+        /// <summary>
+        /// Returns the running Autopilot instance.
+        /// No caching.
+        /// </summary>
+        [NotNull]
+        public static Autopilot Instance
+        {
+            get
+            {
+                var autopilot = FindObjectOfType<Autopilot>();
+                if (autopilot == null)
+                {
+                    throw new InvalidOperationException("Autopilot instance not found");
+                }
+
+                return autopilot;
+            }
+        }
 
         private void Start()
         {

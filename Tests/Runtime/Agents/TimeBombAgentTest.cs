@@ -1,10 +1,11 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.TestComponents;
+using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using TestHelper.Attributes;
@@ -17,6 +18,12 @@ namespace DeNA.Anjin.Agents
     public class TimeBombAgentTest
     {
         private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/OutGameTutorial.unity";
+
+        [SetUp]
+        public void SetUp()
+        {
+            OutGameTutorialButton.ResetTutorialCompleted();
+        }
 
         private static UGUIMonkeyAgent CreateMonkeyAgent(long lifespanSec)
         {
@@ -85,24 +92,26 @@ namespace DeNA.Anjin.Agents
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task Run_NotDefuse_ThrowsTimeoutException()
+        public async Task Run_NotDefuse_AutopilotFailed()
         {
             var monkeyAgent = CreateMonkeyAgent(1);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
+            var spyTerminatable = new SpyTerminatable();
+            agent._autopilot = spyTerminatable;
 
             using (var cts = new CancellationTokenSource())
             {
-                try
-                {
-                    await agent.Run(cts.Token);
-                    Assert.Fail("Should throw TimeoutException");
-                }
-                catch (TimeoutException e)
-                {
-                    Assert.That(e.Message, Is.EqualTo(
-                        "Could not receive defuse message `^Never match!$` before the agent terminated."));
-                }
+                await agent.Run(cts.Token);
+                await UniTask.NextFrame();
             }
+
+            Assert.That(spyTerminatable.IsCalled, Is.True);
+            Assert.That(spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(spyTerminatable.CapturedMessage, Is.EqualTo(
+                "Could not receive defuse message `^Never match!$` before the UGUIMonkeyAgent terminated."));
+            Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
+                "  at DeNA.Anjin.Agents.TimeBombAgent.Run"));
+            Assert.That(spyTerminatable.CapturedReporting, Is.True);
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Enter {monkeyAgent.name}.Run()");
