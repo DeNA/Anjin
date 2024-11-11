@@ -263,9 +263,6 @@ See **Anjin Annotations** below for more information.
 
 This is an Agent that playback uGUI operations with the Recorded Playback feature of the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package.
 
-> [!NOTE]  
-> The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
-
 The following can be set in an instance (.asset file) of this Agent.
 
 <dl>
@@ -284,7 +281,12 @@ The `Application.persistentDataPath` for each platform can be found in the Unity
 [Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html).
 
 > [!WARNING]  
-> If you want to terminate the autopilot when detecting playback failures (e.g., the target Button is not found), enable `Error` in the [ErrorHandlerAgent](#ErrorHandlerAgent) setting.
+> The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.
+> 1. Add [ErrorHandlerAgent](#ErrorHandlerAgent) and set `Handle Error` to `Terminate Autopilot`.
+> 2. Add [ConsoleLogger](#ConsoleLogger) and set `Filter LogType` to `Error` or higher.
+
+> [!NOTE]  
+> The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 
 ### DoNothingAgent

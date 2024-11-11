@@ -266,9 +266,6 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 
 [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest)パッケージのRecorded Playback機能でレコーディングしたuGUI操作を再生するAgentです。
 
-> [!NOTE]  
-> Automated QAパッケージはプレビュー段階のため、破壊的変更や、パッケージ自体の開発中止・廃止もありえる点、ご注意ください。
-
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
@@ -289,7 +286,12 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 を参照してください。
 
 > [!WARNING]  
-> 再生の失敗（対象のボタンが見つからないなど）を検知してオートパイロットを停止するには、[ErrorHandlerAgent](#ErrorHandlerAgent) の設定で `Error` を有効にしてください。
+> Automated QAパッケージは、再生に失敗（対象のボタンが見つからないなど）したときコンソールに `LogType.Error` を出力します。これを検知してオートパイロットを停止するには、次の設定が必要です。
+> 1. [ErrorHandlerAgent](#ErrorHandlerAgent) を追加し、`Handle Error` を `Terminate Autopilot` に設定します
+> 2. [ConsoleLogger](#ConsoleLogger) を追加し、`Filter LogType` に `Error` 以上を設定します
+
+> [!NOTE]  
+> Automated QAパッケージはプレビュー段階のため、破壊的変更や、パッケージ自体の開発中止・廃止もありえる点、ご注意ください。
 
 
 ### DoNothingAgent
