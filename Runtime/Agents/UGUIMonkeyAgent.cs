@@ -95,6 +95,8 @@ namespace DeNA.Anjin.Agents
         public ScreenCapture.StereoScreenCaptureMode screenshotStereoCaptureMode =
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
+        internal ITerminatable _autopilot; // can inject for testing
+
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
         {
@@ -133,6 +135,15 @@ namespace DeNA.Anjin.Agents
             try
             {
                 await Monkey.Run(config, token);
+            }
+            catch (TimeoutException e)
+            {
+                var message = $"{e.GetType().Name}: {e.Message}";
+                Logger.Log(message);
+                _autopilot = _autopilot ?? Autopilot.Instance;
+                // ReSharper disable once MethodSupportsCancellation
+                _autopilot.TerminateAsync(ExitCode.AutopilotFailed, message, e.StackTrace)
+                    .Forget(); // Note: Do not use this Agent's CancellationToken.
             }
             finally
             {

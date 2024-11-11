@@ -12,6 +12,11 @@ namespace DeNA.Anjin.TestComponents
     {
         private static bool s_tutorialCompleted;
 
+        public static void ResetTutorialCompleted()
+        {
+            s_tutorialCompleted = false;
+        }
+
         private void Awake()
         {
             var button = GetComponent<Button>();

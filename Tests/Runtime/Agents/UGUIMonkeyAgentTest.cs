@@ -6,6 +6,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Strategies;
+using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using TestHelper.Attributes;
@@ -92,8 +94,11 @@ namespace DeNA.Anjin.Agents
             agent.name = AgentName;
             agent.lifespanSec = 1;
             agent.delayMillis = 100;
+            agent.touchAndHoldDelayMillis = 100;
             agent.screenshotEnabled = true;
             agent.defaultScreenshotFilenamePrefix = true; // Use default prefix
+
+            TwoTieredCounterStrategy.ResetPrefixCounters();
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
@@ -102,6 +107,41 @@ namespace DeNA.Anjin.Agents
             }
 
             Assert.That(path, Does.Exist);
+        }
+
+        [Test]
+        [FocusGameView]
+        [LoadScene("Packages/com.dena.anjin/Tests/TestScenes/Empty.unity")]
+        public async Task Run_TimeoutExceptionOccurred_AutopilotFailed()
+        {
+            var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
+            agent.Logger = Debug.unityLogger;
+            agent.Random = new RandomFactory(0).CreateRandom();
+            agent.name = TestContext.CurrentContext.Test.Name;
+            agent.lifespanSec = 5;
+            agent.delayMillis = 100;
+            agent.touchAndHoldDelayMillis = 100;
+            agent.secondsToErrorForNoInteractiveComponent = 1; // TimeoutException occurred after 1 second
+
+            var spyTerminatable = new SpyTerminatable();
+            agent._autopilot = spyTerminatable;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                await agent.Run(cts.Token);
+                await UniTask.NextFrame();
+            }
+
+            Assert.That(spyTerminatable.IsCalled, Is.True);
+            Assert.That(spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(spyTerminatable.CapturedMessage, Does.StartWith(
+                "TimeoutException: Interactive component not found in 1 seconds"));
+            Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
+                "  at TestHelper.Monkey.Monkey"));
+            Assert.That(spyTerminatable.CapturedReporting, Is.True);
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
     }
 }

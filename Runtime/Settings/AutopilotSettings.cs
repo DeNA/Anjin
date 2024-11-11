@@ -10,7 +10,6 @@ using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -135,26 +134,31 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Slack notification when Exception detected in log
         /// </summary>
-        public bool handleException = true;
+        [Obsolete("Use ErrorHandlerAgent instead")]
+        public bool handleException;
 
         /// <summary>
         /// Slack notification when Error detected in log
         /// </summary>
-        public bool handleError = true;
+        [Obsolete("Use ErrorHandlerAgent instead")]
+        public bool handleError;
 
         /// <summary>
         /// Slack notification when Assert detected in log
         /// </summary>
-        public bool handleAssert = true;
+        [Obsolete("Use ErrorHandlerAgent instead")]
+        public bool handleAssert;
 
         /// <summary>
         /// Slack notification when Warning detected in log
         /// </summary>
+        [Obsolete("Use ErrorHandlerAgent instead")]
         public bool handleWarning;
 
         /// <summary>
         /// Do not send Slack notifications when log messages contain this string
         /// </summary>
+        [Obsolete("Use ErrorHandlerAgent instead")]
         public string[] ignoreMessages;
 
         /// <summary>
@@ -238,33 +242,16 @@ namespace DeNA.Anjin.Settings
             {
                 timeScale = args.TimeScale.Value();
             }
-
-            if (args.HandleException.IsCaptured())
-            {
-                handleException = args.HandleException.Value();
-            }
-
-            if (args.HandleError.IsCaptured())
-            {
-                handleError = args.HandleError.Value();
-            }
-
-            if (args.HandleAssert.IsCaptured())
-            {
-                handleAssert = args.HandleAssert.Value();
-            }
-
-            if (args.HandleWarning.IsCaptured())
-            {
-                handleWarning = args.HandleWarning.Value();
-            }
         }
 
         [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeSettings)]
         private static void Initialize()
         {
             var settings = AutopilotState.Instance.settings;
-            Assert.IsNotNull(settings);
+            if (settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             settings.OverwriteByCommandLineArguments(new Arguments());
 
@@ -276,7 +263,8 @@ namespace DeNA.Anjin.Settings
             settings.ConvertSlackReporterFromObsoleteSlackSettings(logger);
             settings.ConvertJUnitXmlReporterFromObsoleteJUnitReportPath(logger);
 
-            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger);   // Note: before convert other Agents.
+            settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger); // Note: before convert other Agents.
+            settings.ConvertErrorHandlerAgentFromObsoleteSettings(logger);
         }
 
         private void CreateDefaultLoggerIfNeeded()
@@ -408,6 +396,39 @@ Please delete the value using Debug Mode in the Inspector window. And using the 
 This time, temporarily converting.");
 
             this.sceneCrossingAgents.Add(this.observerAgent);
+        }
+
+        [Obsolete("Remove this method when bump major version")]
+        internal void ConvertErrorHandlerAgentFromObsoleteSettings(ILogger logger)
+        {
+            if ((!this.handleException && !this.handleError && !this.handleAssert && !this.handleWarning) ||
+                this.sceneCrossingAgents.Any(x => x.GetType() == typeof(ErrorHandlerAgent)))
+            {
+                return;
+                // Note:
+                //  If all are off, no conversion will occur.
+                //  No conversion will be performed when creating a new AutopilotSettings because all default values are false.
+            }
+
+            const string AutoConvertingMessage = @"Error handling settings in AutopilotSettings has been obsolete.
+Please delete the value using Debug Mode in the Inspector window. And create an ErrorHandlerAgent asset file.
+This time, temporarily generate and use ErrorHandlerAgent instance.";
+            logger.Log(LogType.Warning, AutoConvertingMessage);
+
+            var convertedAgent = CreateInstance<ErrorHandlerAgent>();
+            convertedAgent.handleException = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleException);
+            convertedAgent.handleError = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleError);
+            convertedAgent.handleAssert = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleAssert);
+            convertedAgent.handleWarning = ErrorHandlerAgent.HandlingBehaviorFrom(this.handleWarning);
+            convertedAgent.ignoreMessages = this.ignoreMessages;
+#if UNITY_EDITOR
+            convertedAgent.description = AutoConvertingMessage;
+            SaveConvertedObject(convertedAgent);
+#endif
+            this.sceneCrossingAgents.Add(convertedAgent);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
     }
 }

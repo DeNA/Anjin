@@ -110,6 +110,9 @@ Set the Agents to run by scene crossing, independent of `Scene Agent Maps` and `
 The specified agents will have the same lifespan as Autopilot (i.e., use `DontDestroyOnLoad`)
 for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 
+> [!WARNING]  
+> Recommend set an [ErrorHandlerAgent](#ErrorHandlerAgent) to interrupt Autopilot if an exception occurs during execution.
+
 #### Autopilot Run Settings
 
 This item can also be overridden from the commandline (see below).
@@ -120,18 +123,6 @@ This item can also be overridden from the commandline (see below).
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
-</dl>
-
-#### Error Handling Settings
-
-Set up a filter to catch abnormal log messages and notify using Reporter.
-
-<dl>
-  <dt>Handle Exception</dt><dd>Report when exception is detected in log</dd>
-  <dt>Handle Error</dt><dd>Report when error message is detected in log</dd>
-  <dt>Handle Assert</dt><dd>Report when assert message is detected in log</dd>
-  <dt>Handle Warning</dt><dd>Report when warning message is detected in log</dd>
-  <dt>Ignore Messages</dt><dd>Log messages containing this string will not be reported. Regex is also available, and escape is a single backslash (`\`).</dd>
 </dl>
 
 
@@ -200,10 +191,6 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>LIFESPAN_SEC</dt><dd>Specifies the execution time limit in seconds</dd>
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
-  <dt>HANDLE_EXCEPTION</dt><dd>Overwrites whether to report when an exception occurs with TRUE/FALSE</dd>
-  <dt>HANDLE_ERROR</dt><dd>Overwrites whether to report when an error message is detected with TRUE/FALSE</dd>
-  <dt>HANDLE_ASSERT</dt><dd>Overwrites whether to report when an assert message is detected with TRUE/FALSE</dd>
-  <dt>HANDLE_WARNING</dt><dd>Overwrites whether to report when an warning message is detected with TRUE/FALSE</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
@@ -276,9 +263,6 @@ See **Anjin Annotations** below for more information.
 
 This is an Agent that playback uGUI operations with the Recorded Playback feature of the [Automated QA](https://docs.unity3d.com/Packages/com.unity.automated-testing@latest) package.
 
-> [!NOTE]  
-> The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
-
 The following can be set in an instance (.asset file) of this Agent.
 
 <dl>
@@ -295,6 +279,14 @@ Therefore, please be careful to record in units of Scenes.
 A screenshot of the operation by Automated QA is stored under `Application.persistentDataPath/Anjin`.
 The `Application.persistentDataPath` for each platform can be found in the Unity manual at
 [Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html).
+
+> [!WARNING]  
+> The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.
+> 1. Add [ErrorHandlerAgent](#ErrorHandlerAgent) and set `Handle Error` to `Terminate Autopilot`.
+> 2. Add [ConsoleLogger](#ConsoleLogger) and set `Filter LogType` to `Error` or higher.
+
+> [!NOTE]  
+> The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 
 ### DoNothingAgent
@@ -375,6 +367,32 @@ This Agent instance (.asset file) can contain the following.
 </dl>
 
 
+### ErrorHandlerAgent
+
+An Agent that detects abnormal log messages and terminates the Autopilot running.
+
+It should always be started at the same time as other Agents (that actually perform game operations).
+Generally, you add to `Scene Crossing Agents` in `AutopilotSettings`.
+If you want to change the settings for each Scene, use with `ParallelCompositeAgent`.
+
+This Agent instance (.asset file) can contain the following.
+
+<dl>
+  <dt>Handle Exception</dt><dd>Specify an Autopilot terminates or only reports when an Exception is detected in the log.
+        It can be overwritten with the command line argument <code>-HANDLE_EXCEPTION</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
+  <dt>Handle Error</dt><dd>Specify an Autopilot terminates or only reports when an Error is detected in the log.
+        It can be overwritten with the command line argument <code>-HANDLE_ERROR</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
+  <dt>Handle Assert</dt><dd>Specify an Autopilot terminates or only reports when an Assert is detected in the log.
+        It can be overwritten with the command line argument <code>-HANDLE_ASSERT</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
+  <dt>Handle Warning</dt><dd>Specify an Autopilot terminates or only reports when an Warning is detected in the log.
+        It can be overwritten with the command line argument <code>-HANDLE_WARNING</code>, but be careful if multiple ErrorHandlerAgents are defined, they will all be overwritten with the same value.</dd>
+  <dt>Ignore Messages</dt><dd>Log messages containing the specified strings will be ignored from the stop condition. Regex is also available; escape is a single backslash (`\`).</dd>
+</dl>
+
+> [!NOTE]  
+> Recommend enabling a `Handle Exception` to interrupt Autopilot if an exception occurs during execution.
+
+
 ### EmergencyExitAgent
 
 An Agent that monitors the appearance of the `EmergencyExitAnnotations` component in the `DeNA.Anjin.Annotations` assembly and clicks on it as soon as it appears.
@@ -409,7 +427,7 @@ The instance of this Logger (.asset file) can have the following settings.
 
 <dl>
   <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
-        This setting can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but if multiple File Loggers are defined, they will all be overwritten with the same path.</dd>
+        It can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but be careful if multiple FileLoggers are defined, they will all be overwritten with the same value.</dd>
   <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
   <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
 </dl>
@@ -442,15 +460,15 @@ The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
   <dt>Slack Token</dt><dd>OAuth token of Slack Bot used for notifications. If omitted, no notifications will be sent.
-        This setting can be overwritten with the command line argument <code>-SLACK_TOKEN</code>.</dd>
+        It can be overwritten with the command line argument <code>-SLACK_TOKEN</code>, but be careful if multiple SlackReporters are defined, they will all be overwritten with the same value.</dd>
   <dt>Slack Channels</dt><dd>Channels to send notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
-        This setting can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>.
-        The bot must be invited to the channel.</dd>
+        Note that the bot must be invited to the channel.
+        It can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>, but be careful if multiple SlackReporters are defined, they will all be overwritten with the same value.</dd>
   <dt>Mention Sub Team IDs</dt><dd>Comma-separated sub team IDs to mention when posting error reports.</dd>
   <dt>Add @here</dt><dd>Add @here to the post when posting error reports.</dd>
   <dt>Lead Text</dt><dd>Lead text for error reports. It is used in OS notifications. You can specify placeholders like a "{message}".</dd>
   <dt>Message</dt><dd>Message body template for error reports. You can specify placeholders like a "{message}".</dd>
-  <dt>Color</dt><dd>Attachments color for error reports.</dd>
+  <dt>Color</dt><dd>Attachments color for error reports. Default color is same as Slack's "danger" red.</dd>
   <dt>Screenshot</dt><dd>Take a screenshot for error reports. Default is on.</dd>
   <dt>Post if completes</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
 </dl>
@@ -728,7 +746,7 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 > [!WARNING]  
 > Required install packages for running tests (when adding to the `testables` in package.json), as follows:
 > - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
-> - [Test Helper](https://github.com/nowsprinting/test-helper) package v1.0.0 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.7.2 or later
 
 Generate a temporary project and run tests on each Unity version from the command line.
 

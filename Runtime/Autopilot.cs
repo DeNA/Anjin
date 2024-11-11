@@ -7,9 +7,9 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Assert = UnityEngine.Assertions.Assert;
 
 namespace DeNA.Anjin
 {
@@ -39,16 +39,37 @@ namespace DeNA.Anjin
         private ILogger _logger;
         private RandomFactory _randomFactory;
         private IAgentDispatcher _dispatcher;
-        private LogMessageHandler _logMessageHandler;
         private AutopilotState _state;
         private AutopilotSettings _settings;
         private bool _isTerminating;
+
+        /// <summary>
+        /// Returns the running Autopilot instance.
+        /// No caching.
+        /// </summary>
+        [NotNull]
+        public static Autopilot Instance
+        {
+            get
+            {
+                var autopilot = FindObjectOfType<Autopilot>();
+                if (autopilot == null)
+                {
+                    throw new InvalidOperationException("Autopilot instance not found");
+                }
+
+                return autopilot;
+            }
+        }
 
         private void Start()
         {
             _state = AutopilotState.Instance;
             _settings = _state.settings;
-            Assert.IsNotNull(_settings);
+            if (_settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             _logger = _settings.LoggerAsset.Logger;
             // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.
@@ -60,11 +81,6 @@ namespace DeNA.Anjin
 
             _randomFactory = new RandomFactory(seed);
             _logger.Log($"Random seed is {seed}");
-
-            // NOTE: Registering logMessageReceived must be placed before DispatchByScene.
-            //       Because some agent can throw an error immediately, so reporter can miss the error if
-            //       registering logMessageReceived is placed after DispatchByScene.
-            _logMessageHandler = new LogMessageHandler(_settings, this);
 
             _dispatcher = new AgentDispatcher(_settings, _logger, _randomFactory);
             _dispatcher.DispatchSceneCrossingAgents();
@@ -118,7 +134,6 @@ namespace DeNA.Anjin
 
             _logger?.Log("Destroy Autopilot object");
             _dispatcher?.Dispose();
-            _logMessageHandler?.Dispose();
             _settings.LoggerAsset?.Dispose();
         }
 

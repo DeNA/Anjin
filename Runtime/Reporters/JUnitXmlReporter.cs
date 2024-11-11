@@ -10,7 +10,6 @@ using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace DeNA.Anjin.Reporters
 {
@@ -43,7 +42,10 @@ namespace DeNA.Anjin.Reporters
             CancellationToken cancellationToken = default)
         {
             var settings = AutopilotState.Instance.settings;
-            Assert.IsNotNull(settings, "Autopilot is not running");
+            if (settings == null)
+            {
+                throw new InvalidOperationException("Autopilot is not running");
+            }
 
             var path = GetOutputPath(this.outputPath, new Arguments());
             if (string.IsNullOrEmpty(path))
@@ -106,16 +108,17 @@ namespace DeNA.Anjin.Reporters
                 case ExitCode.Normally:
                     break;
                 case ExitCode.UnCatchExceptions:
+                case ExitCode.DetectErrorsInLog:
+                case ExitCode.AutopilotLaunchingFailed:
                     element.Add(new XElement("error",
                         new XAttribute("message", message),
-                        new XAttribute("type", ""),
+                        new XAttribute("type", exitCode.ToString()),
                         new XCData(stackTrace)));
                     break;
                 case ExitCode.AutopilotFailed:
-                case ExitCode.AutopilotLaunchingFailed:
                     element.Add(new XElement("failure",
                         new XAttribute("message", message),
-                        new XAttribute("type", ""),
+                        new XAttribute("type", exitCode.ToString()),
                         new XCData(stackTrace)));
                     break;
                 default:

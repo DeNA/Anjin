@@ -26,9 +26,9 @@ MonoBehaviour:
   slackChannels: 
   mentionSubTeamIDs: 
   addHereInSlackMessage: 0
-  handleException: 1
-  handleError: 1
-  handleAssert: 1
+  handleException: 0
+  handleError: 0
+  handleAssert: 0
   handleWarning: 0
   ignoreMessages:
   - 'Assertion failed on expression: ''task.rasterData.vertexBuffer == NULL'''

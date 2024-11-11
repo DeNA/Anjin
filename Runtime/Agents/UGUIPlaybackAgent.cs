@@ -41,6 +41,7 @@ namespace DeNA.Anjin.Agents
             try
             {
                 await Play(recordedJson, token);
+                // Note: If playback is not possible, AQA will output a LogError and exit. You must handle LogError with the ErrorHandlerAgent.
             }
             finally
             {

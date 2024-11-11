@@ -1,21 +1,20 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters;
-using UnityEngine;
 
 namespace DeNA.Anjin.TestDoubles
 {
     /// <summary>
     /// A spy for <c cref="AbstractReporter" />
     /// </summary>
-    // [CreateAssetMenu(fileName = "New SpyReporter", menuName = "Anjin/Spy Reporter", order = 55)]
     public class SpyReporter : AbstractReporter
     {
-        public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
+        public bool IsCalled { get; private set; }
+        public Dictionary<string, string> Arguments { get; } = new Dictionary<string, string>();
 
         public override async UniTask PostReportAsync(
             string message,
@@ -24,11 +23,10 @@ namespace DeNA.Anjin.TestDoubles
             CancellationToken cancellationToken = default
         )
         {
-            Debug.Log("Reporter called");
-            Arguments.Add(new Dictionary<string, string>
-            {
-                { "message", message }, { "stackTrace", stackTrace }, { "exitCode", exitCode.ToString() }
-            });
+            this.IsCalled = true;
+            Arguments.Add("message", message);
+            Arguments.Add("stackTrace", stackTrace);
+            Arguments.Add("exitCode", exitCode.ToString());
             await UniTask.NextFrame(cancellationToken);
         }
     }
