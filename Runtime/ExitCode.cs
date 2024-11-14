@@ -9,28 +9,35 @@ namespace DeNA.Anjin
     public enum ExitCode
     {
         /// <summary>
-        /// Normally terminate.
+        /// Normally terminated.
         /// </summary>
         Normally = 0,
 
         /// <summary>
-        /// Terminate by uncaught exceptions.
+        /// Terminated by uncaught exceptions.
         /// </summary>
         UnCatchExceptions = 1,
 
         /// <summary>
-        /// Terminate by <c>ErrorHandlerAgent</c>.
+        /// Terminated by <c>ErrorHandlerAgent</c>.
         /// </summary>
         DetectErrorsInLog,
 
         /// <summary>
-        /// Terminate by Autopilot launching failure.
+        /// Terminated by Autopilot launching failure.
         /// </summary>
         AutopilotLaunchingFailed,
 
         /// <summary>
-        /// Terminate by Autopilot scenario running failure.
+        /// Terminated by Autopilot scenario running failure.
         /// </summary>
         AutopilotFailed,
+
+        /// <summary>
+        /// Terminated by Autopilot lifespan expired.
+        /// By default, the exit code at expiration will be <c>Normally</c>.
+        /// This exit code is only used if set by the user.
+        /// </summary>
+        AutopilotLifespanExpired,
     }
 }

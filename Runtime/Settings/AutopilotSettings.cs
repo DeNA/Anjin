@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -33,6 +33,29 @@ namespace DeNA.Anjin.Settings
         /// Agent
         /// </summary>
         public AbstractAgent agent;
+    }
+
+    /// <summary>
+    /// Autopilot exit code options when lifespan expired.
+    /// </summary>
+    public enum ExitCodeWhenLifespanExpired
+    {
+        /// <summary>
+        /// Normally terminated.
+        /// </summary>
+        Normally = ExitCode.Normally,
+
+        /// <summary>
+        /// Terminated by Autopilot lifespan expired.
+        /// By default, the exit code at expiration will be <c>Normally</c>.
+        /// This exit code is only used if set by the user.
+        /// </summary>
+        AutopilotLifespanExpired = ExitCode.AutopilotLifespanExpired,
+
+        /// <summary>
+        /// Specify custom exit code.
+        /// </summary>
+        Custom = 1024,
     }
 
     /// <summary>
@@ -87,17 +110,47 @@ namespace DeNA.Anjin.Settings
         public List<AbstractAgent> sceneCrossingAgents = new List<AbstractAgent>();
 
         /// <summary>
-        /// Autopilot running lifespan [sec]. When specified zero, so unlimited running
+        /// Autopilot running lifespan [sec]. When specified zero, so unlimited running.
         /// </summary>
         public int lifespanSec = 300;
 
         /// <summary>
-        /// Random using the specified seed value
+        /// Autopilot exit code options when lifespan expired.
+        /// </summary>
+        public ExitCodeWhenLifespanExpired exitCode = Settings.ExitCodeWhenLifespanExpired.Normally;
+
+        /// <summary>
+        /// Custom exit code to be used if selected <code>Custom</code> for <c>exitCode</c>.
+        /// Please enter an integer value.
+        /// </summary>
+        public string customExitCode;
+
+        public ExitCode ExitCodeWhenLifespanExpired
+        {
+            get
+            {
+                if (exitCode == Settings.ExitCodeWhenLifespanExpired.Custom)
+                {
+                    return (ExitCode)int.Parse(customExitCode);
+                }
+
+                return (ExitCode)exitCode;
+            }
+        }
+
+        /// <summary>
+        /// Message used by Reporter when lifespan expired.
+        /// </summary>
+        public string exitMessage = "Autopilot has reached the end of its lifespan.";
+
+        /// <summary>
+        /// Random using the specified seed value.
+        /// Please enter an integer value or empty.
         /// </summary>
         public string randomSeed;
 
         /// <summary>
-        /// Time.timeScale
+        /// Time.timeScale.
         /// </summary>
         public float timeScale = 1.0f;
 
