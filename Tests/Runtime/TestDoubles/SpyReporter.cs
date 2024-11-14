@@ -13,7 +13,8 @@ namespace DeNA.Anjin.TestDoubles
     /// </summary>
     public class SpyReporter : AbstractReporter
     {
-        public bool IsCalled { get; private set; }
+        public int CallCount { get; private set; }
+        public bool IsCalled => CallCount > 0;
         public Dictionary<string, string> Arguments { get; } = new Dictionary<string, string>();
 
         public override async UniTask PostReportAsync(
@@ -23,7 +24,7 @@ namespace DeNA.Anjin.TestDoubles
             CancellationToken cancellationToken = default
         )
         {
-            this.IsCalled = true;
+            this.CallCount++;
             Arguments.Add("message", message);
             Arguments.Add("stackTrace", stackTrace);
             Arguments.Add("exitCode", exitCode.ToString());

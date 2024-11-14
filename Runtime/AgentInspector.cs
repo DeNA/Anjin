@@ -14,5 +14,10 @@ namespace DeNA.Anjin
     /// </remarks>
     public class AgentInspector : MonoBehaviour
     {
+        /// <summary>
+        /// Returns the running Agent instance array.
+        /// No caching.
+        /// </summary>
+        public static AgentInspector[] Instances => FindObjectsOfType<AgentInspector>();
     }
 }

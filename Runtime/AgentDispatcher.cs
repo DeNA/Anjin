@@ -55,8 +55,7 @@ namespace DeNA.Anjin
 
         public void Dispose()
         {
-            var inspectors = Object.FindObjectsOfType<AgentInspector>();
-            foreach (var inspector in inspectors)
+            foreach (var inspector in AgentInspector.Instances)
             {
                 _logger.Log($"Destroy running agent: {inspector.gameObject.name}");
                 Object.Destroy(inspector.gameObject);
