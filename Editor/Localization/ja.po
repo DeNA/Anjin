@@ -31,8 +31,8 @@ msgstr "名前"
 msgid "Custom name of this setting used by Reporter. If omitted, the asset file name is used."
 msgstr "このAutopilotSettingsインスタンスの名前。Reporterで使用されます。省略時はアセットファイル名がデフォルトとして使用されます"
 
-# Header: Agent Assignment
-msgid "Agent Assignment"
+# Header: Agent Assignment Settings
+msgid "Agent Assignment Settings"
 msgstr "Agent割り当て設定"
 
 # sceneAgentMapping
@@ -59,17 +59,45 @@ msgstr "Scene横断Agents"
 msgid "Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., ErrorHandlerAgent and UGUIEmergencyExitAgent."
 msgstr "Sceneを横断して実行されるAgent。指定されたAgentの寿命は Autopilot と同じになります（つまり、DontDestroyOnLoad を使用します）。たとえば、ErrorHandlerAgent や UGUIEmergencyExitAgent などを指定します"
 
-# Header: Autopilot Run Settings
-msgid "Autopilot Run Settings"
-msgstr "オートパイロット実行設定"
+# Header: Autopilot Lifespan Settings
+msgid "Autopilot Lifespan Settings"
+msgstr "オートパイロット実行時間設定"
 
 # lifespanSec
-msgid "Lifespan Sec"
+msgid "Lifespan [sec]"
 msgstr "実行時間［秒］"
 
 # lifespanSec tooltip
-msgid "Autopilot running lifespan [sec]. When specified zero, so unlimited running"
+msgid "Autopilot running lifespan [sec]. When specified zero, so unlimited running."
 msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
+
+# exitCode
+msgid "Exit Code"
+msgstr "終了コード"
+
+# exitCode tooltip
+msgid "Autopilot exit code options when lifespan expired."
+msgstr "実行時間を経過したときの終了コード"
+
+# customExitCode
+msgid "Custom Exit Code"
+msgstr "カスタム終了コード"
+
+# customExitCode tooltip
+msgid "Specify the exit code as an integer value."
+msgstr "終了コードを整数値で指定します"
+
+# exitMessage
+msgid "Message"
+msgstr "メッセージ"
+
+# exitMessage tooltip
+msgid "Message sent by the Reporter when lifespan expired."
+msgstr "実行時間を経過したときにReporterから送信されるメッセージ"
+
+# Header: Autopilot Run Settings
+msgid "Autopilot Run Settings"
+msgstr "オートパイロット実行設定"
 
 # randomSeed
 msgid "Random Seed"
@@ -133,11 +161,11 @@ msgstr "このAgentインスタンスの説明"
 #: Editor/UI/Agents/DoNothingAgentEditor.cs
 
 # lifespanSec (same as AutopilotSettingsEditor.cs)
-msgid "Lifespan Sec"
+msgid "Lifespan [sec]"
 msgstr "実行時間［秒］"
 
 # lifespanSec tooltip
-msgid "Agent running lifespan [sec]. When specified zero, so unlimited running"
+msgid "Agent running lifespan [sec]. When specified zero, so unlimited running."
 msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
 
 
@@ -207,15 +235,15 @@ msgstr "連続実行するAgentを指定します"
 #: Editor/UI/Agents/UGUIMonkeyAgentEditor.cs
 
 # lifespanSec (same as DoNothingAgentEditor.cs)
-msgid "Lifespan Sec"
+msgid "Lifespan [sec]"
 msgstr "実行時間［秒］"
 
 # lifespanSec tooltip (same as DoNothingAgentEditor.cs)
-msgid "Agent running lifespan [sec]. When specified zero, so unlimited running"
+msgid "Agent running lifespan [sec]. When specified zero, so unlimited running."
 msgstr "実行時間上限を秒で指定します。0を指定すると無制限に動作します"
 
 # delayMillis
-msgid "Delay Millis"
+msgid "Delay [millis]"
 msgstr "操作間隔［ミリ秒］"
 
 # delayMillis tooltip

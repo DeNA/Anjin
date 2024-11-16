@@ -36,7 +36,7 @@ namespace DeNA.Anjin.Settings
         public void ExitCodeWhenLifespanExpired_NotCustom_ReturnsExitCode()
         {
             var settings = CreateAutopilotSettings();
-            settings.exitCode = ExitCodeWhenLifespanExpired.AutopilotLifespanExpired;
+            settings.exitCode = ExitCodeWhenLifespanExpired.LifespanExpired;
             settings.customExitCode = "100"; // dummy
 
             Assert.That(settings.ExitCode, Is.EqualTo(ExitCode.AutopilotLifespanExpired));

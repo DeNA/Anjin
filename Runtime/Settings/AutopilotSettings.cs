@@ -50,7 +50,7 @@ namespace DeNA.Anjin.Settings
         /// By default, the exit code at expiration will be <c>Normally</c>.
         /// This exit code is only used if set by the user.
         /// </summary>
-        AutopilotLifespanExpired = ExitCode.AutopilotLifespanExpired,
+        LifespanExpired = ExitCode.AutopilotLifespanExpired,
 
         /// <summary>
         /// Specify custom exit code.
@@ -121,7 +121,7 @@ namespace DeNA.Anjin.Settings
         public ExitCodeWhenLifespanExpired exitCode = ExitCodeWhenLifespanExpired.Normally;
 
         /// <summary>
-        /// Custom exit code to be used if selected <code>Custom</code> for <c>exitCode</c>.
+        /// Custom exit code to be used if <code>Custom</code> is selected for <c>exitCode</c>.
         /// Please enter an integer value.
         /// </summary>
         public string customExitCode;
@@ -144,7 +144,8 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Message used by Reporter when lifespan expired.
         /// </summary>
-        public string exitMessage = "Autopilot has reached the end of its lifespan.";
+        [Multiline]
+        public string exitMessage = "Autopilot lifespan expired.";
 
         /// <summary>
         /// Random using the specified seed value.
