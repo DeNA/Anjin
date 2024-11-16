@@ -97,6 +97,9 @@ namespace DeNA.Anjin.Reporters
         internal static XElement CreateTestCase(string name, float time, string message, string stackTrace,
             ExitCode exitCode)
         {
+            message = message ?? string.Empty;
+            stackTrace = stackTrace ?? string.Empty;
+
             var element = new XElement("testcase",
                 new XAttribute("name", name),
                 new XAttribute("classname", "DeNA.Anjin.Autopilot"),
@@ -116,13 +119,18 @@ namespace DeNA.Anjin.Reporters
                         new XCData(stackTrace)));
                     break;
                 case ExitCode.AutopilotFailed:
+                case ExitCode.AutopilotLifespanExpired:
                     element.Add(new XElement("failure",
                         new XAttribute("message", message),
                         new XAttribute("type", exitCode.ToString()),
                         new XCData(stackTrace)));
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(exitCode), exitCode, null);
+                    element.Add(new XElement("failure",
+                        new XAttribute("message", message),
+                        new XAttribute("type", (int)exitCode),
+                        new XCData(stackTrace)));
+                    break;
             }
 
             return element;
