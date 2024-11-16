@@ -116,8 +116,9 @@ namespace DeNA.Anjin.Settings
 
         /// <summary>
         /// Autopilot exit code options when lifespan expired.
+        /// When using it from within code, use the <code>ExitCode</code> property.
         /// </summary>
-        public ExitCodeWhenLifespanExpired exitCode = Settings.ExitCodeWhenLifespanExpired.Normally;
+        public ExitCodeWhenLifespanExpired exitCode = ExitCodeWhenLifespanExpired.Normally;
 
         /// <summary>
         /// Custom exit code to be used if selected <code>Custom</code> for <c>exitCode</c>.
@@ -125,13 +126,15 @@ namespace DeNA.Anjin.Settings
         /// </summary>
         public string customExitCode;
 
-        public ExitCode ExitCodeWhenLifespanExpired
+        public ExitCode ExitCode
         {
             get
             {
-                if (exitCode == Settings.ExitCodeWhenLifespanExpired.Custom)
+                if (exitCode == ExitCodeWhenLifespanExpired.Custom)
                 {
-                    return (ExitCode)int.Parse(customExitCode);
+                    return int.TryParse(customExitCode, out var intExitCode)
+                        ? (ExitCode)intExitCode
+                        : (ExitCode)exitCode;
                 }
 
                 return (ExitCode)exitCode;

@@ -40,6 +40,44 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        public async Task Lifespan_Expire_CallTerminateAsync()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(1);
+            settings.reporters.Add(spyReporter);
+            settings.exitCode = ExitCodeWhenLifespanExpired.Normally;
+            settings.customExitCode = "100"; // dummy
+            settings.exitMessage = "Lifespan expired";
+
+            await Launcher.LaunchAutopilotAsync(settings);
+            await UniTask.NextFrame(); // wait reporter
+
+            Assert.That(spyReporter.IsCalled, Is.True);
+            Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo(ExitCode.Normally.ToString()));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("Lifespan expired"));
+        }
+
+        [Test]
+        public async Task Lifespan_Expire_CallTerminateAsyncWithExitCodeAndMessage()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(1);
+            settings.reporters.Add(spyReporter);
+            settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
+            settings.customExitCode = "100";
+            settings.exitMessage = "Lifespan expired";
+
+            await Launcher.LaunchAutopilotAsync(settings);
+            await UniTask.NextFrame(); // wait reporter
+
+            Assert.That(spyReporter.IsCalled, Is.True);
+            Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo("100"));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("Lifespan expired"));
+
+            LogAssert.Expect(LogType.Exception, "AssertionException: Autopilot failed with exit code 100");
+        }
+
+        [Test]
         public async Task TerminateAsync_DestroyedAutopilotAndAgentObjects()
         {
             var settings = CreateAutopilotSettings(2);

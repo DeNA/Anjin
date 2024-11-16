@@ -94,7 +94,7 @@ namespace DeNA.Anjin
             {
                 StartCoroutine(Lifespan(
                     _settings.lifespanSec,
-                    _settings.ExitCodeWhenLifespanExpired,
+                    _settings.ExitCode,
                     _settings.exitMessage));
             }
 

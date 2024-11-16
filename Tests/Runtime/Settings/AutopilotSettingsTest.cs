@@ -33,6 +33,36 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
+        public void ExitCodeWhenLifespanExpired_NotCustom_ReturnsExitCode()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.exitCode = ExitCodeWhenLifespanExpired.AutopilotLifespanExpired;
+            settings.customExitCode = "100"; // dummy
+
+            Assert.That(settings.ExitCode, Is.EqualTo(ExitCode.AutopilotLifespanExpired));
+        }
+
+        [Test]
+        public void ExitCodeWhenLifespanExpired_Custom_ReturnsCustomExitCode()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
+            settings.customExitCode = "100";
+
+            Assert.That(settings.ExitCode, Is.EqualTo((ExitCode)100));
+        }
+
+        [Test]
+        public void ExitCodeWhenLifespanExpired_CustomButNotValid_ReturnsExitCodeWhenLifespanExpiredCustom()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
+            settings.customExitCode = "not valid";
+
+            Assert.That(settings.ExitCode, Is.EqualTo((ExitCode)ExitCodeWhenLifespanExpired.Custom));
+        }
+
+        [Test]
         public void OverwriteByCommandLineArguments_HasNotCommandlineArguments_KeepScriptableObjectValues()
         {
             var sut = CreateAutopilotSettings();
