@@ -402,8 +402,8 @@ msgid "Exit Code"
 msgstr "終了コード"
 
 # exitCode tooltip
-msgid "Exit code used when terminated by this Agent."
-msgstr "このAgentによって停止するときの終了コード"
+msgid "Select the exit code used when this agent terminates the Autopilot."
+msgstr "このAgentがオートパイロットを停止するときに使用される終了コードを選択します"
 
 # customExitCode
 msgid "Custom Exit Code"
@@ -418,8 +418,8 @@ msgid "Message"
 msgstr "メッセージ"
 
 # exitMessage tooltip
-msgid "Message sent by the Reporter when terminated."
-msgstr "停止するときReporterから送信されるメッセージ"
+msgid "Message sent by the Reporter when this agent terminates the Autopilot."
+msgstr "オートパイロットを停止するとき、Reporterから送信されるメッセージ"
 
 
 #: Editor/UI/Loggers/ 共通

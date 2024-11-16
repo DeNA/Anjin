@@ -18,11 +18,11 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this agent instance");
 
         private static readonly string s_exitCode = L10n.Tr("Exit Code");
-        private static readonly string s_exitCodeTooltip = L10n.Tr("Exit code used when terminated by this Agent.");
+        private static readonly string s_exitCodeTooltip = L10n.Tr("Select the exit code used when this agent terminates the Autopilot.");
         private static readonly string s_customExitCode = L10n.Tr("Custom Exit Code");
         private static readonly string s_customExitCodeTooltip = L10n.Tr("Input exit code by integer value.");
         private static readonly string s_exitMessage = L10n.Tr("Message");
-        private static readonly string s_exitMessageTooltip = L10n.Tr("Message sent by the Reporter when terminated.");
+        private static readonly string s_exitMessageTooltip = L10n.Tr("Message sent by the Reporter when this agent terminates the Autopilot.");
         // @formatter:on
 
         private const float SpacerPixels = 10f;
