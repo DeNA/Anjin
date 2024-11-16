@@ -33,7 +33,7 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
-        public void ExitCodeWhenLifespanExpired_NotCustom_ReturnsExitCode()
+        public void ExitCode_NotCustom_ReturnsExitCode()
         {
             var settings = CreateAutopilotSettings();
             settings.exitCode = ExitCodeWhenLifespanExpired.LifespanExpired;
@@ -43,7 +43,7 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
-        public void ExitCodeWhenLifespanExpired_Custom_ReturnsCustomExitCode()
+        public void ExitCode_Custom_ReturnsCustomExitCode()
         {
             var settings = CreateAutopilotSettings();
             settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
@@ -53,7 +53,7 @@ namespace DeNA.Anjin.Settings
         }
 
         [Test]
-        public void ExitCodeWhenLifespanExpired_CustomButNotValid_ReturnsExitCodeWhenLifespanExpiredCustom()
+        public void ExitCode_CustomButNotValid_ReturnsExitCodeWhenLifespanExpiredCustom()
         {
             var settings = CreateAutopilotSettings();
             settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
