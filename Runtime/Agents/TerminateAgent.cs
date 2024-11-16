@@ -3,6 +3,7 @@
 
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Attributes;
 using UnityEngine;
 
 namespace DeNA.Anjin.Agents
@@ -69,6 +70,19 @@ namespace DeNA.Anjin.Agents
         [Multiline]
         public string exitMessage = "Terminated by TerminateAgent";
 
+        internal ITerminatable _autopilot; // can inject for testing
+
+        [InitializeOnLaunchAutopilot]
+        private static void ResetInstances()
+        {
+            // Reset runtime instances
+            var agents = Resources.FindObjectsOfTypeAll<TerminateAgent>();
+            foreach (var agent in agents)
+            {
+                agent._autopilot = null;
+            }
+        }
+
         /// <inheritdoc/>
         public override async UniTask Run(CancellationToken token)
         {
@@ -76,13 +90,18 @@ namespace DeNA.Anjin.Agents
             {
                 Logger.Log($"Enter {this.name}.Run()");
 
-                var autopilot = Autopilot.Instance;
-                await autopilot.TerminateAsync(ExitCode, exitMessage, token: token);
+                _autopilot = _autopilot ?? Autopilot.Instance;
+
+                // ReSharper disable once MethodSupportsCancellation
+                _autopilot.TerminateAsync(ExitCode, exitMessage).Forget();
+                // Note: Do not use this Agent's CancellationToken.
             }
             finally
             {
                 Logger.Log($"Exit {this.name}.Run()");
             }
+
+            await UniTask.CompletedTask;
         }
     }
 }
