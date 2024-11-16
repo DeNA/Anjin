@@ -53,7 +53,7 @@ namespace DeNA.Anjin.Settings
         LifespanExpired = ExitCode.AutopilotLifespanExpired,
 
         /// <summary>
-        /// Specify custom exit code.
+        /// Input custom exit code by integer value.
         /// </summary>
         Custom = 1024,
     }
@@ -142,7 +142,7 @@ namespace DeNA.Anjin.Settings
         }
 
         /// <summary>
-        /// Message used by Reporter when lifespan expired.
+        /// Message used by Reporter.
         /// </summary>
         [Multiline]
         public string exitMessage = "Autopilot lifespan expired.";
