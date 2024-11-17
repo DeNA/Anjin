@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
@@ -18,9 +17,12 @@ namespace DeNA.Anjin.Agents
     [CreateAssetMenu(fileName = "New UGUIEmergencyExitAgent", menuName = "Anjin/uGUI Emergency Exit Agent", order = 51)]
     public class UGUIEmergencyExitAgent : AbstractAgent
     {
+        /// <summary>
+        /// Interval in milliseconds to check for the appearance of the <c>EmergencyExitAnnotation</c> component.
+        /// </summary>
+        public int intervalMillis = 1000;
+
         /// <inheritdoc />
-        [SuppressMessage("Blocker Bug", "S2190:Recursion should not be infinite")]
-        [SuppressMessage("ReSharper", "FunctionNeverReturns")]
         public override async UniTask Run(CancellationToken token)
         {
             Logger.Log($"Enter {this.name}.Run()");
@@ -45,7 +47,7 @@ namespace DeNA.Anjin.Agents
                         }
                     }
 
-                    await UniTask.NextFrame(token);
+                    await UniTask.Delay(intervalMillis, ignoreTimeScale: true, cancellationToken: token);
                 }
             }
             finally
@@ -54,12 +56,11 @@ namespace DeNA.Anjin.Agents
             }
         }
 
-        [SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
         private void ClickEmergencyExitButton(EmergencyExitAnnotation emergencyExitAnnotation)
         {
-            Logger.Log($"Click emergency exit button: {emergencyExitAnnotation.name}");
-
             var gameObject = emergencyExitAnnotation.gameObject;
+            Logger.Log($"Click emergency exit button: {gameObject.name}");
+
             var button = gameObject.GetComponent<Button>();
             button.OnPointerClick(new PointerEventData(EventSystem.current));
             // Note: Button.OnPointerClick() does not look at PointerEventData coordinates.
