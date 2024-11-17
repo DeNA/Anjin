@@ -1,11 +1,15 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
+using DeNA.Anjin.Strategies;
+using TestHelper.Monkey.Operators;
+using TestHelper.Monkey.ScreenshotFilenameStrategies;
+using TestHelper.RuntimeInternals;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace DeNA.Anjin.Agents
@@ -22,14 +26,24 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public int intervalMillis = 1000;
 
+        /// <summary>
+        /// Take a screenshot when click the EmergencyExit button.
+        /// </summary>
+        public bool screenshot;
+
+        private static IClickOperator ClickOperator => new UGUIClickOperator();
+        private IScreenshotFilenameStrategy _filenameStrategy;
+
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
         {
             Logger.Log($"Enter {this.name}.Run()");
+            this._filenameStrategy = new TwoTieredCounterStrategy(this.name);
 
-            var selectables = new Selectable[20];
             try
             {
+                var selectables = new Selectable[20];
+
                 while (true) // Note: This agent is not terminate myself
                 {
                     var allSelectableCount = Selectable.allSelectableCount;
@@ -43,7 +57,7 @@ namespace DeNA.Anjin.Agents
                     {
                         if (selectables[i].TryGetComponent<EmergencyExitAnnotation>(out var emergencyExit))
                         {
-                            ClickEmergencyExitButton(emergencyExit);
+                            await ClickEmergencyExitButton(emergencyExit, token);
                         }
                     }
 
@@ -56,14 +70,26 @@ namespace DeNA.Anjin.Agents
             }
         }
 
-        private void ClickEmergencyExitButton(EmergencyExitAnnotation emergencyExitAnnotation)
+        private async UniTask ClickEmergencyExitButton(EmergencyExitAnnotation emergencyExit,
+            CancellationToken cancellationToken = default)
         {
-            var gameObject = emergencyExitAnnotation.gameObject;
-            Logger.Log($"Click emergency exit button: {gameObject.name}");
+            var button = emergencyExit.gameObject.GetComponent<Button>();
+            if (!ClickOperator.CanOperate(button))
+            {
+                return;
+            }
 
-            var button = gameObject.GetComponent<Button>();
-            button.OnPointerClick(new PointerEventData(EventSystem.current));
-            // Note: Button.OnPointerClick() does not look at PointerEventData coordinates.
+            var message = new StringBuilder($"Click emergency exit button: {button.gameObject.name}");
+            if (screenshot)
+            {
+                var filename = _filenameStrategy.GetFilename();
+                await ScreenshotHelper.TakeScreenshot(filename: filename).ToUniTask(button);
+                message.Append($" ({filename})");
+            }
+
+            Logger.Log(message.ToString());
+
+            await ClickOperator.OperateAsync(button, cancellationToken);
         }
     }
 }

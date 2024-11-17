@@ -214,6 +214,14 @@ msgstr "間隔［ミリ秒］"
 msgid "Interval in milliseconds to check for the appearance of the EmergencyExitAnnotation component."
 msgstr "EmergencyExitAnnotationコンポーネントの出現を確認する間隔をミリ秒で指定します"
 
+# screenshot
+msgid "Screenshot"
+msgstr "スクリーンショット"
+
+# screenshot tooltip
+msgid "Take a screenshot when click the EmergencyExit button."
+msgstr "EmergencyExitボタンクリック時にスクリーンショットを撮影します"
+
 
 #: Editor/UI/Agents/UGUIMonkeyAgentEditor.cs
 

@@ -25,6 +25,11 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private static readonly string s_intervalMillisTooltip = L10n.Tr("Interval in milliseconds to check for the appearance of the EmergencyExitAnnotation component.");
         private SerializedProperty _intervalMillisProp;
         private GUIContent _intervalMillisLabel;
+
+        private static readonly string s_screenshot = L10n.Tr("Screenshot");
+        private static readonly string s_screenshotTooltip = L10n.Tr("Take a screenshot when click the EmergencyExit button.");
+        private SerializedProperty _screenshotProp;
+        private GUIContent _screenshotLabel;
         // @formatter:on
 
         private void OnEnable()
@@ -39,6 +44,9 @@ namespace DeNA.Anjin.Editor.UI.Agents
 
             _intervalMillisProp = serializedObject.FindProperty(nameof(UGUIEmergencyExitAgent.intervalMillis));
             _intervalMillisLabel = new GUIContent(s_intervalMillis, s_intervalMillisTooltip);
+
+            _screenshotProp = serializedObject.FindProperty(nameof(UGUIEmergencyExitAgent.screenshot));
+            _screenshotLabel = new GUIContent(s_screenshot, s_screenshotTooltip);
         }
 
         /// <inheritdoc/>
@@ -50,6 +58,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
             GUILayout.Space(SpacerPixels);
 
             EditorGUILayout.PropertyField(_intervalMillisProp, _intervalMillisLabel);
+            EditorGUILayout.PropertyField(_screenshotProp, _screenshotLabel);
 
             serializedObject.ApplyModifiedProperties();
         }
