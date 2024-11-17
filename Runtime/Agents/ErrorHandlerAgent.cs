@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Reporters.Slack;
 using DeNA.Anjin.Settings;
 using UnityEngine;
@@ -64,6 +65,19 @@ namespace DeNA.Anjin.Agents
         internal ITerminatable _autopilot; // can inject for testing
         private List<Regex> _ignoreMessagesRegexes;
         private CancellationToken _token;
+
+        [InitializeOnLaunchAutopilot]
+        private static void ResetInstances()
+        {
+            // Reset runtime instances
+            var agents = Resources.FindObjectsOfTypeAll<ErrorHandlerAgent>();
+            foreach (var agent in agents)
+            {
+                agent._autopilot = null;
+                agent._ignoreMessagesRegexes = null;
+                agent._token = default;
+            }
+        }
 
         public override async UniTask Run(CancellationToken token)
         {
