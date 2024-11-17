@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using DeNA.Anjin.Agents;
@@ -10,8 +10,8 @@ namespace DeNA.Anjin.Editor.UI.Agents
     /// <summary>
     /// Editor GUI for DoNothingAgent
     /// </summary>
-    [CustomEditor(typeof(EmergencyExitAgent))]
-    public class EmergencyExitAgentEditor : UnityEditor.Editor
+    [CustomEditor(typeof(UGUIEmergencyExitAgent))]
+    public class UGUIEmergencyExitAgentEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this agent instance");
@@ -21,7 +21,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
         {
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(EmergencyExitAgent.description)),
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(UGUIEmergencyExitAgent.description)),
                 new GUIContent(s_description, s_descriptionTooltip));
 
             serializedObject.ApplyModifiedProperties();

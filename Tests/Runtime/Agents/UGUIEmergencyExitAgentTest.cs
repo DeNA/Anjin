@@ -17,12 +17,12 @@ using Object = UnityEngine.Object;
 namespace DeNA.Anjin.Agents
 {
     [SuppressMessage("ReSharper", "ConvertToUsingDeclaration")]
-    public class EmergencyExitAgentTest
+    public class UGUIEmergencyExitAgentTest
     {
         [Test]
         public async Task Run_cancelTask_stopAgent()
         {
-            var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
+            var agent = ScriptableObject.CreateInstance<UGUIEmergencyExitAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
@@ -52,7 +52,7 @@ namespace DeNA.Anjin.Agents
         [Test]
         public async Task Run_existEmergencyExitButton_ClickEmergencyExitButton()
         {
-            var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
+            var agent = ScriptableObject.CreateInstance<UGUIEmergencyExitAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);
@@ -80,7 +80,7 @@ namespace DeNA.Anjin.Agents
         [Test]
         public async Task Run_existNotInteractableEmergencyExitButton_DoesNotClickEmergencyExitButton()
         {
-            var agent = ScriptableObject.CreateInstance<EmergencyExitAgent>();
+            var agent = ScriptableObject.CreateInstance<UGUIEmergencyExitAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
             agent.name = nameof(Run_cancelTask_stopAgent);

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -12,11 +12,11 @@ using UnityEngine.UI;
 namespace DeNA.Anjin.Agents
 {
     /// <summary>
-    /// Search and click <c>EmergencyExit</c> annotation component.
-    /// This agent will not be terminate and will continue to be observe.
+    /// Wait for the <c>EmergencyExitAnnotation</c> component to appear and click attached <c>UnityEngine.UI.Button</c>.
+    /// This Agent will not be terminated and will continue to be observed.
     /// </summary>
-    [CreateAssetMenu(fileName = "New EmergencyExitAgent", menuName = "Anjin/Emergency Exit Agent", order = 21)]
-    public class EmergencyExitAgent : AbstractAgent
+    [CreateAssetMenu(fileName = "New UGUIEmergencyExitAgent", menuName = "Anjin/uGUI Emergency Exit Agent", order = 51)]
+    public class UGUIEmergencyExitAgent : AbstractAgent
     {
         /// <inheritdoc />
         [SuppressMessage("Blocker Bug", "S2190:Recursion should not be infinite")]
