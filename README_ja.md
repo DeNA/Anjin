@@ -398,13 +398,21 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
 > 実行中に例外が発生した時点でオートパイロットを中断するために、`Handle Exception` の有効化をお勧めします。
 
 
-### EmergencyExitAgent
+### UGUIEmergencyExitAgent
 
-`DeNA.Anjin.Annotations` アセンブリに含まれる `EmergencyExitAnnotations` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。
+Sceneに含まれる `EmergencyExitAnnotations` コンポーネントの出現を監視し、表示されたら即クリックするAgentです。
 たとえば通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなる振る舞いが含まれるゲームで利用できます。
 
 常に、他の（実際にゲーム操作を行なう）Agentと同時に起動しておく必要があります。
-`ParallelCompositeAgent` でも実現できますが、AutopilotSettingsの `Scene Crossing Agents` に追加するほうが簡単です。
+一般的には、`AutopilotSettings` の `Scene Crossing Agents` に追加します。
+Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合わせて使用します。
+
+このAgentのインスタンス（.assetファイル）には以下を設定できます。
+
+<dl>
+  <dt>間隔</dt><dd>EmergencyExitAnnotationコンポーネントの出現を確認する間隔をミリ秒で指定します</dd>
+  <dt>スクリーンショット</dt><dd>EmergencyExitボタンクリック時にスクリーンショットを撮影します</dd>
+</dl>
 
 
 
@@ -584,7 +592,7 @@ Anjinの操作を制御するためのアノテーションを定義していま
 
 ### EmergencyExitAnnotations
 
-このコンポーネントがアタッチされた`Button`が表示されると、`EmergencyExitAgent`はすぐにクリックを試みます。
+このコンポーネントがアタッチされた`Button`が表示されると、`UGUIEmergencyExitAgent`はすぐにクリックを試みます。
 通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなるボタンに付けることを想定しています。
 
 
