@@ -118,9 +118,9 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 <dl>
   <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation.
         This item can also be overridden from the commandline (see below).</dd>
-  <dt>Exit Code</dt><dd>Autopilot exit code options when lifespan expired.</dd>
+  <dt>Exit Code</dt><dd>Select the exit code used when Autopilot lifespan expires.</dd>
   <dt>Custom Exit Code</dt><dd>Specify the exit code as an integer value.</dd>
-  <dt>Message</dt><dd>Message sent by the Reporter when lifespan expired.</dd>
+  <dt>Message</dt><dd>Message sent by the Reporter when Autopilot lifespan expires.</dd>
 </dl>
 
 #### Autopilot Run Settings

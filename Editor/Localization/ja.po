@@ -76,8 +76,8 @@ msgid "Exit Code"
 msgstr "終了コード"
 
 # exitCode tooltip
-msgid "Exit code used when lifespan expired."
-msgstr "実行時間を経過したときの終了コード"
+msgid "Select the exit code used when Autopilot lifespan expires."
+msgstr "オートパイロットの実行時間が満了したときに使用される終了コードを選択します"
 
 # customExitCode
 msgid "Custom Exit Code"
@@ -92,8 +92,8 @@ msgid "Message"
 msgstr "メッセージ"
 
 # exitMessage tooltip
-msgid "Message sent by the Reporter when lifespan expired."
-msgstr "実行時間を経過したときにReporterから送信されるメッセージ"
+msgid "Message sent by the Reporter when Autopilot lifespan expires."
+msgstr "オートパイロットの実行時間が満了したとき、Reporterから送信されるメッセージ"
 
 # Header: Autopilot Run Settings
 msgid "Autopilot Run Settings"
