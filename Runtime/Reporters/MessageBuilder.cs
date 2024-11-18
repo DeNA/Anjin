@@ -4,7 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using DeNA.Anjin.Settings;
+#if ENABLED_MPPM
+using Unity.Multiplayer.Playmode;
+#endif
 
 namespace DeNA.Anjin.Reporters
 {
@@ -21,6 +25,7 @@ namespace DeNA.Anjin.Reporters
         ///     - {message}: Message with terminate (e.g., error log message)
         ///     - {settings}: Name of running AutopilotSettings
         ///     - {env.KEY}: Environment variables
+        ///     - {mppm-tags}: Tags of the Multiplayer Play Mode package
         /// </param>
         /// <param name="message">Replace placeholder "{message}" in the template with this string</param>
         /// <returns>Messages that replaced placeholders in the template</returns>
@@ -30,6 +35,9 @@ namespace DeNA.Anjin.Reporters
             var placeholders = GetPlaceholders().ToList();
             placeholders.Add(("{message}", message));
             placeholders.Add(("{settings}", settings ? settings.Name : "null"));
+#if ENABLED_MPPM
+            placeholders.Add(("{mppm-tags}", ArrayToString(CurrentPlayer.ReadOnlyTags())));
+#endif
 
             var replacedMessage = template;
             placeholders.ForEach(placeholder =>
@@ -47,6 +55,22 @@ namespace DeNA.Anjin.Reporters
             {
                 yield return ("{env." + key + "}", env[key] as string);
             }
+        }
+
+        private static string ArrayToString(string[] tags)
+        {
+            var builder = new StringBuilder();
+            foreach (var tag in tags)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Append(" ");
+                }
+
+                builder.Append($"`{tag}`");
+            }
+
+            return builder.ToString();
         }
     }
 }

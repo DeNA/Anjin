@@ -4,6 +4,7 @@
     "references": [
         "DeNA.Anjin.Annotations",
         "Unity.AutomatedQA",
+        "Unity.Multiplayer.Playmode",
         "UniTask",
         "TestHelper.Monkey",
         "TestHelper.Monkey.Annotations",
