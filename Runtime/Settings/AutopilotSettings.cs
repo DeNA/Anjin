@@ -265,6 +265,10 @@ namespace DeNA.Anjin.Settings
 
             settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger); // Note: before convert other Agents.
             settings.ConvertErrorHandlerAgentFromObsoleteSettings(logger);
+
+#if UNITY_EDITOR
+            AssetDatabase.SaveAssetIfDirty(settings);
+#endif
         }
 
         private void CreateDefaultLoggerIfNeeded()
@@ -275,9 +279,6 @@ namespace DeNA.Anjin.Settings
                 // not change field directly.
 
                 this.LoggerAsset.Logger.Log("Create default logger.");
-#if UNITY_EDITOR
-                EditorUtility.SetDirty(this);
-#endif
             }
         }
 
@@ -294,6 +295,9 @@ Please delete the reference using Debug Mode in the Inspector window. And add to
 This time, temporarily converting.");
 
             this.loggerAssets.Add(this.loggerAsset);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         [Obsolete("Remove this method when bump major version")]
@@ -337,6 +341,7 @@ This time, temporarily generate and use SlackReporter instance.";
             convertedReporter.description = AutoConvertingMessage;
             SaveConvertedObject(convertedReporter);
 #endif
+
             this.reporters.Add(convertedReporter);
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
@@ -363,15 +368,16 @@ This time, temporarily converting.";
             convertedReporter.description = AutoConvertingMessage;
             SaveConvertedObject(convertedReporter);
 #endif
+
             this.Reporter.reporters.Add(convertedReporter);
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
         }
 
+#if UNITY_EDITOR
         private void SaveConvertedObject(Object obj)
         {
-#if UNITY_EDITOR
             var settingsPath = AssetDatabase.GetAssetPath(this);
             if (string.IsNullOrEmpty(settingsPath))
             {
@@ -380,8 +386,8 @@ This time, temporarily converting.";
 
             var dir = Path.GetDirectoryName(settingsPath) ?? "Assets";
             AssetDatabase.CreateAsset(obj, Path.Combine(dir, $"New {obj.GetType().Name}.asset"));
-#endif
         }
+#endif
 
         [Obsolete("Remove this method when bump major version")]
         internal void ConvertSceneCrossingAgentsFromObsoleteObserverAgent(ILogger logger)
@@ -396,6 +402,9 @@ Please delete the value using Debug Mode in the Inspector window. And using the 
 This time, temporarily converting.");
 
             this.sceneCrossingAgents.Add(this.observerAgent);
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         [Obsolete("Remove this method when bump major version")]
@@ -425,6 +434,7 @@ This time, temporarily generate and use ErrorHandlerAgent instance.";
             convertedAgent.description = AutoConvertingMessage;
             SaveConvertedObject(convertedAgent);
 #endif
+
             this.sceneCrossingAgents.Add(convertedAgent);
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
