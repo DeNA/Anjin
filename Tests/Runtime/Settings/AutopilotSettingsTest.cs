@@ -79,8 +79,8 @@ namespace DeNA.Anjin.Settings
 
             Assert.That(legacyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Logger setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
-This time, temporarily converting.")));
+Now, automatically converted it to Logger*s*.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]
@@ -120,8 +120,8 @@ This time, temporarily converting.")));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Reporter setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
-This time, temporarily converting.")));
+Now, automatically converted it to Reporter*s*.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]
@@ -172,8 +172,8 @@ This time, temporarily converting.")));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Slack settings in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.")));
+Now, automatically converted it to SlackReporter asset file.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]
@@ -227,8 +227,8 @@ This time, temporarily generate and use SlackReporter instance.")));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"ObserverAgent setting in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And using the SceneCrossingAgents.
-This time, temporarily converting.")));
+Now, automatically converted it to SceneCrossingAgents.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]
@@ -271,8 +271,8 @@ This time, temporarily converting.")));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"JUnitReportPath setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And create a JUnitXmlReporter asset file.
-This time, temporarily converting.")));
+Now, automatically converted it to JUnitXmlReporter asset file.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]
@@ -339,8 +339,8 @@ This time, temporarily converting.")));
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Error handling settings in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And create an ErrorHandlerAgent asset file.
-This time, temporarily generate and use ErrorHandlerAgent instance.")));
+Now, automatically converted it to ErrorHandlerAgent asset file.
+Check it out and commit it to your VCS.")));
         }
 
         [Test]

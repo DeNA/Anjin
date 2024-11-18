@@ -291,8 +291,8 @@ namespace DeNA.Anjin.Settings
             }
 
             this.loggerAsset.Logger.Log(LogType.Warning, @"Single Logger setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And add to the list Loggers.
-This time, temporarily converting.");
+Now, automatically converted it to Logger*s*.
+Check it out and commit it to your VCS.");
 
             this.loggerAssets.Add(this.loggerAsset);
             this.loggerAsset = null;
@@ -310,8 +310,8 @@ This time, temporarily converting.");
             }
 
             logger.Log(LogType.Warning, @"Single Reporter setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And add to the list Reporters.
-This time, temporarily converting.");
+Now, automatically converted it to Reporter*s*.
+Check it out and commit it to your VCS.");
 
             this.reporters.Add(this.reporter);
             this.reporter = null;
@@ -330,8 +330,8 @@ This time, temporarily converting.");
             }
 
             const string AutoConvertingMessage = @"Slack settings in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
-This time, temporarily generate and use SlackReporter instance.";
+Now, automatically converted it to SlackReporter asset file.
+Check it out and commit it to your VCS.";
             logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedReporter = CreateInstance<SlackReporter>();
@@ -364,8 +364,8 @@ This time, temporarily generate and use SlackReporter instance.";
             }
 
             const string AutoConvertingMessage = @"JUnitReportPath setting in AutopilotSettings has been obsolete.
-Please delete the reference using Debug Mode in the Inspector window. And create a JUnitXmlReporter asset file.
-This time, temporarily converting.";
+Now, automatically converted it to JUnitXmlReporter asset file.
+Check it out and commit it to your VCS.";
             logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedReporter = CreateInstance<JUnitXmlReporter>();
@@ -405,8 +405,8 @@ This time, temporarily converting.";
             }
 
             logger.Log(LogType.Warning, @"ObserverAgent setting in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And using the SceneCrossingAgents.
-This time, temporarily converting.");
+Now, automatically converted it to SceneCrossingAgents.
+Check it out and commit it to your VCS.");
 
             this.sceneCrossingAgents.Add(this.observerAgent);
             this.observerAgent = null;
@@ -428,8 +428,8 @@ This time, temporarily converting.");
             }
 
             const string AutoConvertingMessage = @"Error handling settings in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And create an ErrorHandlerAgent asset file.
-This time, temporarily generate and use ErrorHandlerAgent instance.";
+Now, automatically converted it to ErrorHandlerAgent asset file.
+Check it out and commit it to your VCS.";
             logger.Log(LogType.Warning, AutoConvertingMessage);
 
             var convertedAgent = CreateInstance<ErrorHandlerAgent>();
