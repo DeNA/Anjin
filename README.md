@@ -486,6 +486,7 @@ The placeholders you can include in the lead and message body template are:
 - "{message}": Message with terminate (e.g., error log message)
 - "{settings}": Name of running AutopilotSettings
 - "{env.KEY}": Environment variables
+- "{mppm-tags}": Tags of the [Multiplayer Play Mode](https://docs.unity3d.com/Packages/com.unity.multiplayer.playmode@latest) package
 
 
 
