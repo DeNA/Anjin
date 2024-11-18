@@ -295,6 +295,7 @@ Please delete the reference using Debug Mode in the Inspector window. And add to
 This time, temporarily converting.");
 
             this.loggerAssets.Add(this.loggerAsset);
+            this.loggerAsset = null;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
@@ -313,6 +314,7 @@ Please delete the reference using Debug Mode in the Inspector window. And add to
 This time, temporarily converting.");
 
             this.reporters.Add(this.reporter);
+            this.reporter = null;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
@@ -343,6 +345,10 @@ This time, temporarily generate and use SlackReporter instance.";
 #endif
 
             this.reporters.Add(convertedReporter);
+            this.slackToken = null;
+            this.slackChannels = null;
+            this.mentionSubTeamIDs = null;
+            this.addHereInSlackMessage = false;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
@@ -370,6 +376,7 @@ This time, temporarily converting.";
 #endif
 
             this.Reporter.reporters.Add(convertedReporter);
+            this.junitReportPath = null;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
@@ -402,6 +409,7 @@ Please delete the value using Debug Mode in the Inspector window. And using the 
 This time, temporarily converting.");
 
             this.sceneCrossingAgents.Add(this.observerAgent);
+            this.observerAgent = null;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif
@@ -436,6 +444,11 @@ This time, temporarily generate and use ErrorHandlerAgent instance.";
 #endif
 
             this.sceneCrossingAgents.Add(convertedAgent);
+            this.handleException = false;
+            this.handleError = false;
+            this.handleAssert = false;
+            this.handleWarning = false;
+            this.ignoreMessages = null;
 #if UNITY_EDITOR
             EditorUtility.SetDirty(this);
 #endif

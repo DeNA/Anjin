@@ -75,6 +75,7 @@ namespace DeNA.Anjin.Settings
             settings.ConvertLoggersFromObsoleteLogger();
             Assert.That(settings.loggerAssets.Count, Is.EqualTo(1));
             Assert.That(settings.loggerAssets, Has.Member(legacyLogger));
+            Assert.That(settings.loggerAsset, Is.Null);
 
             Assert.That(legacyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Logger setting in AutopilotSettings has been obsolete.
@@ -115,6 +116,7 @@ This time, temporarily converting.")));
             settings.ConvertReportersFromObsoleteReporter(spyLogger.Logger);
             Assert.That(settings.reporters.Count, Is.EqualTo(1));
             Assert.That(settings.reporters, Has.Member(legacyReporter));
+            Assert.That(settings.reporter, Is.Null);
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Single Reporter setting in AutopilotSettings has been obsolete.
@@ -159,10 +161,14 @@ This time, temporarily converting.")));
             Assert.That(settings.reporters.Count, Is.EqualTo(1));
             var slackReporter = settings.reporters[0] as SlackReporter;
             Assert.That(slackReporter, Is.Not.Null);
-            Assert.That(slackReporter.slackToken, Is.EqualTo(settings.slackToken));
-            Assert.That(slackReporter.slackChannels, Is.EqualTo(settings.slackChannels));
-            Assert.That(slackReporter.mentionSubTeamIDs, Is.EqualTo(settings.mentionSubTeamIDs));
-            Assert.That(slackReporter.addHereInSlackMessage, Is.EqualTo(settings.addHereInSlackMessage));
+            Assert.That(slackReporter.slackToken, Is.EqualTo("token"));
+            Assert.That(slackReporter.slackChannels, Is.EqualTo("channels"));
+            Assert.That(slackReporter.mentionSubTeamIDs, Is.EqualTo("subteam"));
+            Assert.That(slackReporter.addHereInSlackMessage, Is.True);
+            Assert.That(settings.slackToken, Is.Null);
+            Assert.That(settings.slackChannels, Is.Null);
+            Assert.That(settings.mentionSubTeamIDs, Is.Null);
+            Assert.That(settings.addHereInSlackMessage, Is.False);
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Slack settings in AutopilotSettings has been obsolete.
@@ -217,6 +223,7 @@ This time, temporarily generate and use SlackReporter instance.")));
             settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(spyLogger.Logger);
             Assert.That(settings.sceneCrossingAgents.Count, Is.EqualTo(1));
             Assert.That(settings.sceneCrossingAgents, Has.Member(legacyObserverAgent));
+            Assert.That(settings.observerAgent, Is.Null);
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"ObserverAgent setting in AutopilotSettings has been obsolete.
@@ -259,7 +266,8 @@ This time, temporarily converting.")));
             Assert.That(settings.Reporter.reporters.Count, Is.EqualTo(1));
             var reporter = settings.Reporter.reporters[0] as JUnitXmlReporter;
             Assert.That(reporter, Is.Not.Null);
-            Assert.That(reporter.outputPath, Is.EqualTo(settings.junitReportPath));
+            Assert.That(reporter.outputPath, Is.EqualTo("Path/To/JUnitReport.xml"));
+            Assert.That(settings.junitReportPath, Is.Null);
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"JUnitReportPath setting in AutopilotSettings has been obsolete.
@@ -323,6 +331,11 @@ This time, temporarily converting.")));
             Assert.That(errorHandlerAgent.handleWarning,
                 Is.EqualTo(handleWarning ? HandlingBehavior.TerminateAutopilot : HandlingBehavior.Ignore));
             Assert.That(errorHandlerAgent.ignoreMessages, Is.EqualTo(ignoreMessages));
+            Assert.That(settings.handleException, Is.False);
+            Assert.That(settings.handleError, Is.False);
+            Assert.That(settings.handleAssert, Is.False);
+            Assert.That(settings.handleWarning, Is.False);
+            Assert.That(settings.ignoreMessages, Is.Null);
 
             Assert.That(spyLogger.Logs, Has.Member((LogType.Warning,
                 @"Error handling settings in AutopilotSettings has been obsolete.
