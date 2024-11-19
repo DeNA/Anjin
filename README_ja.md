@@ -733,21 +733,17 @@ Compiler Error at Library\PackageCache\com.dena.anjin@1.0.1\Runtime\Reporters\Sl
 Unityエディターが生成するPackages/packages-lock.jsonの中身を確認するか、お使いのIDEのコード定義ジャンプ機能で `UniTask.WaitForEndOfFrame()` のソースファイルがどこにあるかを確認するなどして、古いUniTaskがインストールされている原因を突き止められます。
 
 
-### 実行中に "settings has been obsolete" 警告が出る
+### 起動時に "settings has been obsolete" 警告が出る
 
 たとえば次のような警告メッセージが出力されることがあります。
 
 ```
 Slack settings in AutopilotSettings has been obsolete.
-Please delete the value using Debug Mode in the Inspector window. And create a SlackReporter asset file.
+Now, automatically converted it to SlackReporter asset file. Check it out and commit it to your VCS.
 ```
 
-すでに新しい設定方法（上例では `SlackReporter` ）に移行済みであっても、廃止されたフィールドに値が残っていることを警告されています。
-設定ファイルをInspectorウィンドウで開き、**Debug Mode** に切り替えることで廃止されたフィールドを編集できます。
-
-Inspectorウィンドウの操作については、Unityマニュアルの
-[Inspector の使用 - Unity マニュアル](https://docs.unity3d.com/ja/current/Manual/InspectorOptions.html)
-を参照してください。
+これは、廃止された設定項目を新しい設定方法（上例では `SlackReporter` ）に自動変換したことを示しています。
+設定ファイルが更新されていますので、確認してVCS（Gitなど）にコミットしてください。
 
 
 
