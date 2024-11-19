@@ -4,6 +4,7 @@
     "references": [
         "DeNA.Anjin.Annotations",
         "Unity.AutomatedQA",
+        "Unity.Multiplayer.Playmode",
         "UniTask",
         "TestHelper.Monkey",
         "TestHelper.Monkey.Annotations",
@@ -19,6 +20,12 @@
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS || DENA_AUTOPILOT_ENABLE"
     ],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.multiplayer.playmode",
+            "expression": "",
+            "define": "ENABLED_MPPM"
+        }
+    ],
     "noEngineReferences": false
 }

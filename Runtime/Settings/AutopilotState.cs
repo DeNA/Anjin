@@ -22,17 +22,21 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Launch type
         /// </summary>
-        [HideInInspector] public LaunchType launchFrom = LaunchType.NotSet;
+        [HideInInspector]
+        public LaunchType launchFrom = LaunchType.NotSet;
 
         /// <summary>
         /// Run autopilot settings instance
         /// </summary>
-        [HideInInspector] [CanBeNull] public AutopilotSettings settings;
+        [HideInInspector]
+        [CanBeNull]
+        public AutopilotSettings settings;
 
         /// <summary>
         /// Exit code when terminate autopilot from commandline interface
         /// </summary>
-        [HideInInspector] public ExitCode exitCode;
+        [HideInInspector]
+        public ExitCode exitCode;
 
         /// <summary>
         /// Reset run state
@@ -42,6 +46,9 @@ namespace DeNA.Anjin.Settings
             launchFrom = LaunchType.NotSet;
             settings = null;
             exitCode = ExitCode.Normally;
+#if UNITY_EDITOR
+            AssetDatabase.SaveAssetIfDirty(this); // Note: Sync with virtual players of MPPM package
+#endif
         }
 
         /// <summary>
@@ -59,7 +66,8 @@ namespace DeNA.Anjin.Settings
             }
         }
 
-        [NonSerialized] private static AutopilotState s_instance;
+        [NonSerialized]
+        private static AutopilotState s_instance;
 
         /// <summary>
         /// <c>AutopilotState</c> instance

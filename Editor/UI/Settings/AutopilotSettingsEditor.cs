@@ -145,6 +145,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             else
             {
                 state.launchFrom = LaunchType.EditMode;
+                AssetDatabase.SaveAssetIfDirty(state); // Note: Sync with virtual players of MPPM package
                 EditorApplication.isPlaying = true;
             }
         }

@@ -521,6 +521,7 @@ Slack Botには次の権限が必要です。
 - "{message}": 終了要因メッセージ（エラーログのメッセージなど）
 - "{settings}": 実行中の AutopilotSettings 名
 - "{env.KEY}": 環境変数
+- "{mppm-tags}": [Multiplayer Play Mode](https://docs.unity3d.com/Packages/com.unity.multiplayer.playmode@latest) パッケージのタグ
 
 
 

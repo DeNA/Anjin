@@ -224,6 +224,9 @@ namespace DeNA.Anjin
         {
             state.settings = null;
             state.exitCode = exitCode;
+#if UNITY_EDITOR
+            AssetDatabase.SaveAssetIfDirty(state); // Note: Sync with virtual players of MPPM package
+#endif
 
             if (state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
             {
