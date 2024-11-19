@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Attributes;
 using UnityEngine;
 
 namespace DeNA.Anjin.Agents
@@ -32,8 +33,35 @@ namespace DeNA.Anjin.Agents
         public string defuseMessage;
 
         internal ITerminatable _autopilot; // can inject for testing
-        private Regex DefuseMessageRegex => new Regex(defuseMessage);
         private CancellationTokenSource _cts;
+        private Regex _defuseMessageRegex;
+
+        private Regex DefuseMessageRegex
+        {
+            get
+            {
+                if (_defuseMessageRegex == null)
+                {
+                    _defuseMessageRegex = new Regex(defuseMessage);
+                }
+
+                return _defuseMessageRegex;
+            }
+            set { _defuseMessageRegex = value; }
+        }
+
+        [InitializeOnLaunchAutopilot]
+        private static void ResetInstances()
+        {
+            // Reset runtime instances
+            var agents = Resources.FindObjectsOfTypeAll<TimeBombAgent>();
+            foreach (var agent in agents)
+            {
+                agent._autopilot = null;
+                agent._cts = null;
+                agent.DefuseMessageRegex = null;
+            }
+        }
 
         private void OnEnable()
         {

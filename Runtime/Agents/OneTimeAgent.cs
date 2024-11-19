@@ -26,7 +26,7 @@ namespace DeNA.Anjin.Agents
         public static void ResetExecutedFlag()
         {
             // Reset runtime instances
-            var oneTimeAgents = FindObjectsOfType<OneTimeAgent>();
+            var oneTimeAgents = Resources.FindObjectsOfTypeAll<OneTimeAgent>();
             foreach (var current in oneTimeAgents)
             {
                 current.WasExecuted = false;

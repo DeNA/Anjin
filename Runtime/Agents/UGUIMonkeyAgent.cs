@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Strategies;
 using DeNA.Anjin.Utilities;
 using TestHelper.Monkey;
@@ -96,6 +97,17 @@ namespace DeNA.Anjin.Agents
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
         internal ITerminatable _autopilot; // can inject for testing
+
+        [InitializeOnLaunchAutopilot]
+        private static void ResetInstances()
+        {
+            // Reset runtime instances
+            var agents = Resources.FindObjectsOfTypeAll<UGUIMonkeyAgent>();
+            foreach (var agent in agents)
+            {
+                agent._autopilot = null;
+            }
+        }
 
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
