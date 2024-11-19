@@ -415,13 +415,21 @@ This Agent instance (.asset file) can contain the following.
 > Recommend enabling a `Handle Exception` to interrupt Autopilot if an exception occurs during execution.
 
 
-### EmergencyExitAgent
+### UGUIEmergencyExitAgent
 
-An Agent that monitors the appearance of the `EmergencyExitAnnotations` component in the `DeNA.Anjin.Annotations` assembly and clicks on it as soon as it appears.
-This can be used in games that contain behavior that is irregular in the execution of the test scenario, for example, communication errors or "return to title screen" buttons that are triggered by a daybreak.
+An Agent that monitors the appearance of the `EmergencyExitAnnotations` component in the Scene and clicks on it as soon as it appears.
+This can be used in games that contain behavior that is irregular in the execution of the test scenario, for example, communication errors or "Return to Title Screen" buttons that are triggered by a daybreak.
 
 It should always be started at the same time as other Agents (that actually perform game operations).
-This can be accomplished with `ParallelCompositeAgent`, but it is easier to set it up as an `Scene Crossing Agents` in AutopilotSettings.
+Generally, you add to `Scene Crossing Agents` in `AutopilotSettings`.
+If you want to change the settings for each Scene, use with `ParallelCompositeAgent`.
+
+This Agent instance (.asset file) can contain the following.
+
+<dl>
+  <dt>Interval</dt><dd>Interval in milliseconds to check for the appearance of the EmergencyExitAnnotation component.</dd>
+  <dt>Screenshot</dt><dd>Take a screenshot when click the EmergencyExit button.</dd>
+</dl>
 
 
 
@@ -600,7 +608,7 @@ The `GameObject` to which this component is attached avoids manipulation by the 
 
 ### EmergencyExitAnnotations
 
-When a `Button` to which this component is attached appears, the `EmergencyExitAgent` will immediately attempt to click on it.
+When a `Button` to which this component is attached appears, the `UGUIEmergencyExitAgent` will immediately attempt to click on it.
 It is intended to be attached to buttons that are irregular in the execution of the test scenario, such as the "return to title screen" button due to a communication error or a daybreak.
 
 
