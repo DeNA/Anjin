@@ -423,6 +423,33 @@ msgid "Log messages containing the specified strings will be ignored from the st
 msgstr "指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (\) です"
 
 
+#: Editor/UI/Agents/TerminateAgentEditor.cs
+
+# exitCode
+msgid "Exit Code"
+msgstr "終了コード"
+
+# exitCode tooltip
+msgid "Select the exit code used when this agent terminates the Autopilot."
+msgstr "このAgentがオートパイロットを停止するときに使用される終了コードを選択します"
+
+# customExitCode
+msgid "Custom Exit Code"
+msgstr "カスタム終了コード"
+
+# customExitCode tooltip
+msgid "Input exit code by integer value."
+msgstr "終了コードを整数値で入力します"
+
+# exitMessage
+msgid "Message"
+msgstr "メッセージ"
+
+# exitMessage tooltip
+msgid "Message sent by the Reporter when this agent terminates the Autopilot."
+msgstr "オートパイロットを停止するとき、Reporterから送信されるメッセージ"
+
+
 #: Editor/UI/Loggers/ 共通
 
 # description (same as AutopilotSettingsEditor.cs)

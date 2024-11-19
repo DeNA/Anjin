@@ -309,6 +309,19 @@ The following settings can be configured for this Agent instance (.asset file).
 </dl>
 
 
+### TerminateAgent
+
+Terminates the Autopilot running. It is intended to be executed after the goal of a test scenario is achieved.
+
+The following settings can be configured for this Agent instance (.asset file).
+
+<dl>
+  <dt>Exit Code</dt><dd>Select the exit code used when this agent terminates the Autopilot.</dd>
+  <dt>Custom Exit Code</dt><dd>Input exit code by integer value.</dd>
+  <dt>Message</dt><dd>Message sent by the Reporter when this agent terminates the Autopilot.</dd>
+</dl>
+
+
 ### ParallelCompositeAgent
 
 An Agent that executes multiple Agents in parallel.
