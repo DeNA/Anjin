@@ -665,7 +665,15 @@ It can specify the same arguments as when running in the editor.
 
 ## Troubleshooting
 
-### Autopilot runs on its own in play mode.
+### Autopilot is stopped, but the Run button in AutopilotSettings does not appear
+
+The `AutopilotState.asset` that persists in Anjin's execution state may be in an incorrect state.
+Open it in the inspector and click the **Reset** button.
+
+If this does not solve the problem, try deleting `AutopilotState.asset`.
+
+
+### Autopilot runs on its own in play mode
 
 The `AutopilotState.asset` that persists in Anjin's execution state may be in an incorrect state.
 Open it in the inspector and click the **Reset** button.
