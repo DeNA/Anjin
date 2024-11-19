@@ -40,16 +40,54 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        public async Task TerminateAsync_Normally_DestroyedAutopilotAndAgentObjects()
+        public async Task Lifespan_Expire_CallTerminateAsync()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(1);
+            settings.reporters.Add(spyReporter);
+            settings.exitCode = ExitCodeWhenLifespanExpired.Normally;
+            settings.customExitCode = "100"; // dummy
+            settings.exitMessage = "Lifespan expired";
+
+            await Launcher.LaunchAutopilotAsync(settings);
+            await UniTask.NextFrame(); // wait reporter
+
+            Assert.That(spyReporter.IsCalled, Is.True);
+            Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo(ExitCode.Normally.ToString()));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("Lifespan expired"));
+        }
+
+        [Test]
+        public async Task Lifespan_Expire_CallTerminateAsyncWithExitCodeAndMessage()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(1);
+            settings.reporters.Add(spyReporter);
+            settings.exitCode = ExitCodeWhenLifespanExpired.Custom;
+            settings.customExitCode = "100";
+            settings.exitMessage = "Lifespan expired";
+
+            await Launcher.LaunchAutopilotAsync(settings);
+            await UniTask.NextFrame(); // wait reporter
+
+            Assert.That(spyReporter.IsCalled, Is.True);
+            Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo("100"));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("Lifespan expired"));
+
+            LogAssert.Expect(LogType.Exception, "AssertionException: Autopilot failed with exit code 100");
+        }
+
+        [Test]
+        public async Task TerminateAsync_DestroyedAutopilotAndAgentObjects()
         {
             var settings = CreateAutopilotSettings(2);
             Launcher.LaunchAutopilotAsync(settings).Forget();
             await UniTask.Delay(500); // wait for launch
 
-            var autopilot = Object.FindObjectOfType<Autopilot>();
+            var autopilot = Autopilot.Instance;
             Assume.That(autopilot, Is.Not.Null, "Autopilot is running");
 
-            var agents = Object.FindObjectsOfType<AgentInspector>();
+            var agents = AgentInspector.Instances;
             Assume.That(agents, Is.Not.Empty, "Agents are running");
 
             await autopilot.TerminateAsync(ExitCode.Normally, reporting: false);
@@ -58,8 +96,62 @@ namespace DeNA.Anjin
             autopilot = Object.FindObjectOfType<Autopilot>(); // re-find after terminated
             Assert.That(autopilot, Is.Null, "Autopilot was destroyed");
 
-            agents = Object.FindObjectsOfType<AgentInspector>(); // re-find after terminated
+            agents = AgentInspector.Instances; // re-find after terminated
             Assert.That(agents, Is.Empty, "Agents were destroyed");
+        }
+
+        [Test]
+        public async Task TerminateAsync_DuplicateCalls()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(2);
+            settings.reporters.Add(spyReporter);
+            Launcher.LaunchAutopilotAsync(settings).Forget();
+            await UniTask.Delay(500); // wait for launch
+
+            var autopilot = Autopilot.Instance;
+            autopilot.TerminateAsync(ExitCode.Normally, "1st call", null, true).Forget();
+            autopilot.TerminateAsync(ExitCode.Normally, "2nd call", null, true).Forget();
+            await UniTask.DelayFrame(2); // wait for destroy
+
+            autopilot = Object.FindObjectOfType<Autopilot>(); // re-find after terminated
+            Assert.That(autopilot, Is.Null, "Autopilot was destroyed");
+
+            Assert.That(spyReporter.CallCount, Is.EqualTo(1));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("1st call"));
+        }
+
+        [Test]
+        public async Task TerminateAsync_NoReporting_NotCallReporter()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(2);
+            settings.reporters.Add(spyReporter);
+            Launcher.LaunchAutopilotAsync(settings).Forget();
+            await UniTask.Delay(500); // wait for launch
+
+            var autopilot = Autopilot.Instance;
+            await autopilot.TerminateAsync(ExitCode.Normally, null, null, false);
+
+            Assert.That(spyReporter.IsCalled, Is.False);
+        }
+
+        [Test]
+        public async Task TerminateAsync_Reporting_CallReporter()
+        {
+            var spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
+            var settings = CreateAutopilotSettings(2);
+            settings.reporters.Add(spyReporter);
+            Launcher.LaunchAutopilotAsync(settings).Forget();
+            await UniTask.Delay(500); // wait for launch
+
+            var autopilot = Autopilot.Instance;
+            await autopilot.TerminateAsync(ExitCode.Normally, "message", "stack trace", true);
+
+            Assert.That(spyReporter.IsCalled, Is.True);
+            Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo("Normally"));
+            Assert.That(spyReporter.Arguments["message"], Is.EqualTo("message"));
+            Assert.That(spyReporter.Arguments["stackTrace"], Is.EqualTo("stack trace"));
         }
 
         [Test]

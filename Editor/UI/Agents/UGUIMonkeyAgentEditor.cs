@@ -21,15 +21,15 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private SerializedProperty _descriptionProp;
         private GUIContent _descriptionGUIContent;
 
-        private static readonly string s_lifespanSec = L10n.Tr("Lifespan Sec");
+        private static readonly string s_lifespanSec = L10n.Tr("Lifespan [sec]");
 
         private static readonly string s_lifespanSecTooltip =
-            L10n.Tr("Agent running lifespan [sec]. When specified zero, so unlimited running");
+            L10n.Tr("Agent running lifespan [sec]. When specified zero, so unlimited running.");
 
         private SerializedProperty _lifespanProp;
         private GUIContent _lifespanGUIContent;
 
-        private static readonly string s_delayMillis = L10n.Tr("Delay Millis");
+        private static readonly string s_delayMillis = L10n.Tr("Delay [millis]");
         private static readonly string s_delayMillisTooltip = L10n.Tr("Delay time between random operations [ms]");
         private SerializedProperty _delayMillisProp;
         private GUIContent _delayMillisGUIContent;

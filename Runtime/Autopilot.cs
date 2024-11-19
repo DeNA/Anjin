@@ -92,7 +92,10 @@ namespace DeNA.Anjin
 
             if (_settings.lifespanSec > 0)
             {
-                StartCoroutine(Lifespan(_settings.lifespanSec));
+                StartCoroutine(Lifespan(
+                    _settings.lifespanSec,
+                    _settings.ExitCode,
+                    _settings.exitMessage));
             }
 
             if (Math.Abs(_settings.timeScale - 1.0f) > 0.001 && _settings.timeScale > 0) // 0 is ignored
@@ -118,13 +121,10 @@ namespace DeNA.Anjin
         /// <summary>
         /// Terminate when ran specified time.
         /// </summary>
-        /// <param name="timeoutSec"></param>
-        /// <returns></returns>
-        private IEnumerator Lifespan(int timeoutSec)
+        private IEnumerator Lifespan(int timeoutSec, ExitCode exitCode, string message)
         {
             yield return new WaitForSecondsRealtime(timeoutSec);
-            yield return UniTask.ToCoroutine(() =>
-                TerminateAsync(ExitCode.Normally, "Autopilot has reached the end of its lifespan."));
+            yield return UniTask.ToCoroutine(() => TerminateAsync(exitCode, message));
         }
 
         private void OnDestroy()

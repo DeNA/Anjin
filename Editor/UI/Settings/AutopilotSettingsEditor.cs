@@ -21,7 +21,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_name = L10n.Tr("Name");
         private static readonly string s_nameTooltip = L10n.Tr("Custom name of this setting used by Reporter. If omitted, the asset file name is used.");
 
-        private static readonly string s_agentAssignmentHeader = L10n.Tr("Agent Assignment");
+        private static readonly string s_agentAssignmentHeader = L10n.Tr("Agent Assignment Settings");
         private static readonly string s_sceneAgentMaps = L10n.Tr("Scene Agent Mapping");
         private static readonly string s_sceneAgentMapsTooltip = L10n.Tr("Scene to Agent assign mapping");
         private static readonly string s_fallbackAgent = L10n.Tr("Fallback Agent");
@@ -30,10 +30,17 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_sceneCrossingAgents = L10n.Tr("Scene Crossing Agents");
         private static readonly string s_sceneCrossingAgentsTooltip = L10n.Tr("Agents running by scene crossing. The specified agents will have the same lifespan as Autopilot (i.e., use DontDestroyOnLoad) for specifying, e.g., ErrorHandlerAgent and UGUIEmergencyExitAgent.");
 
-        private static readonly string s_autopilotRunSettingsHeader = L10n.Tr("Autopilot Run Settings");
-        private static readonly string s_lifespanSec = L10n.Tr("Lifespan Sec");
-        private static readonly string s_lifespanSecTooltip = L10n.Tr("Autopilot running lifespan [sec]. When specified zero, so unlimited running");
+        private static readonly string s_autopilotLifespanSettingsHeader = L10n.Tr("Autopilot Lifespan Settings");
+        private static readonly string s_lifespanSec = L10n.Tr("Lifespan [sec]");
+        private static readonly string s_lifespanSecTooltip = L10n.Tr("Autopilot running lifespan [sec]. When specified zero, so unlimited running.");
+        private static readonly string s_exitCode = L10n.Tr("Exit Code");
+        private static readonly string s_exitCodeTooltip = L10n.Tr("Select the exit code used when Autopilot lifespan expires.");
+        private static readonly string s_customExitCode = L10n.Tr("Custom Exit Code");
+        private static readonly string s_customExitCodeTooltip = L10n.Tr("Input exit code by integer value.");
+        private static readonly string s_exitMessage = L10n.Tr("Message");
+        private static readonly string s_exitMessageTooltip = L10n.Tr("Message sent by the Reporter when Autopilot lifespan expires.");
 
+        private static readonly string s_autopilotRunSettingsHeader = L10n.Tr("Autopilot Run Settings");
         private static readonly string s_randomSeed = L10n.Tr("Random Seed");
         private static readonly string s_randomSeedTooltip = L10n.Tr("Random using the specified seed value");
         private static readonly string s_timeScale = L10n.Tr("Time Scale");
@@ -69,9 +76,19 @@ namespace DeNA.Anjin.Editor.UI.Settings
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.sceneCrossingAgents)),
                 new GUIContent(s_sceneCrossingAgents, s_sceneCrossingAgentsTooltip));
 
-            DrawHeader(s_autopilotRunSettingsHeader);
+            DrawHeader(s_autopilotLifespanSettingsHeader);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.lifespanSec)),
                 new GUIContent(s_lifespanSec, s_lifespanSecTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.exitCode)),
+                new GUIContent(s_exitCode, s_exitCodeTooltip));
+            EditorGUI.BeginDisabledGroup(((AutopilotSettings)target).exitCode != ExitCodeWhenLifespanExpired.Custom);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.customExitCode)),
+                new GUIContent(s_customExitCode, s_customExitCodeTooltip));
+            EditorGUI.EndDisabledGroup();
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.exitMessage)),
+                new GUIContent(s_exitMessage, s_exitMessageTooltip));
+
+            DrawHeader(s_autopilotRunSettingsHeader);
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.randomSeed)),
                 new GUIContent(s_randomSeed, s_randomSeedTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.timeScale)),

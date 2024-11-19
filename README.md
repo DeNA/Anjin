@@ -113,14 +113,23 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 > [!WARNING]  
 > Recommend set an [ErrorHandlerAgent](#ErrorHandlerAgent) to interrupt Autopilot if an exception occurs during execution.
 
-#### Autopilot Run Settings
-
-This item can also be overridden from the commandline (see below).
+#### Autopilot Lifespan Settings
 
 <dl>
-  <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation</dd>
-  <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. </dd>
-  <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0</dd>
+  <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation.
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Exit Code</dt><dd>Select the exit code used when Autopilot lifespan expires.</dd>
+  <dt>Custom Exit Code</dt><dd>Specify the exit code as an integer value.</dd>
+  <dt>Message</dt><dd>Message sent by the Reporter when Autopilot lifespan expires.</dd>
+</dl>
+
+#### Autopilot Run Settings
+
+<dl>
+  <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. 
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0.
+        This item can also be overridden from the commandline (see below).</dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
@@ -237,8 +246,8 @@ This Agent implementation uses open source [test-helper.monkey](https://github.c
 An instance of this Agent (.asset file) can contain the following.
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
-  <dt>Delay Millis</dt><dd>Wait interval [milliseconds] between random operations</dd>
+  <dt>Lifespan</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
+  <dt>Delay</dt><dd>Wait interval [milliseconds] between random operations</dd>
   <dt>Secs Searching Components</dt><dd>Seconds to determine that an error has occurred when an object that can be interacted with does not exist</dd>
   <dt>Touch and Hold Millis</dt><dd>Delay time for touch-and-hold [ms]</dd>
   <dt>Enable Gizmos</dt><dd>Show Gizmos on GameView during running monkey test if true</dd>
@@ -296,7 +305,7 @@ An Agent that does nothing.
 The following settings can be configured for this Agent instance (.asset file).
 
 <dl>
-  <dt>Lifespan Sec</dt><dd>Specifies the do nothing time in seconds. 0 means unlimited time to do nothing. If 0 is specified, an unlimited amount of time for no action is taken. It will not do anything until the next Scene is switched.</dd>
+  <dt>Lifespan</dt><dd>Specifies the do nothing time in seconds. 0 means unlimited time to do nothing. If 0 is specified, an unlimited amount of time for no action is taken. It will not do anything until the next Scene is switched.</dd>
 </dl>
 
 
