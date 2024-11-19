@@ -112,7 +112,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
         // ReSharper disable once MemberCanBeMadeStatic.Global
         internal void Stop()
         {
-            EditorApplication.playModeStateChanged -= OnChangePlayModeState;
             Autopilot.Instance.TerminateAsync(ExitCode.Normally, reporting: false).Forget();
         }
 
@@ -131,24 +130,6 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 state.launchFrom = LaunchType.EditMode;
                 EditorApplication.isPlaying = true;
             }
-
-            EditorApplication.playModeStateChanged += OnChangePlayModeState;
-        }
-
-        /// <summary>
-        /// Teardown when Play Mode is stopped while the Autopilot is running.
-        /// </summary>
-        private static void OnChangePlayModeState(PlayModeStateChange playModeStateChange)
-        {
-            if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
-            {
-                return;
-            }
-
-            EditorApplication.playModeStateChanged -= OnChangePlayModeState;
-
-            Debug.LogWarning("Play Mode is stopped while the Autopilot is running");
-            AutopilotState.Instance.Reset();
         }
     }
 }

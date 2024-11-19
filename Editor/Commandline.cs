@@ -55,9 +55,6 @@ namespace DeNA.Anjin.Editor
             // Set first open Scene
             EditorSceneManager.playModeStartScene = myWantedStartScene;
 
-            // Register event handler for terminate autopilot
-            EditorApplication.playModeStateChanged += OnChangePlayModeState;
-
             // Activate autopilot and enter play mode
             var state = AutopilotState.Instance;
             state.launchFrom = LaunchType.Commandline;
@@ -96,27 +93,6 @@ namespace DeNA.Anjin.Editor
                 : "UnityEditor.PlayModeView";
             var gameView = assembly.GetType(viewClass);
             EditorWindow.GetWindow(gameView, false, null, true);
-        }
-
-        /// <summary>
-        /// Stop autopilot on play mode exit event when run on Unity editor.
-        /// Not called when invoked from play mode (not registered in event listener).
-        /// </summary>
-        /// <param name="playModeStateChange"></param>
-        private static void OnChangePlayModeState(PlayModeStateChange playModeStateChange)
-        {
-            if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
-            {
-                return;
-            }
-
-            EditorApplication.playModeStateChanged -= OnChangePlayModeState;
-
-            // Exit Unity when returning from play mode to edit mode.
-            // Because it may freeze when exiting without going through edit mode.
-            var exitCode = (int)AutopilotState.Instance.exitCode;
-            Debug.Log($"Exit Unity-editor by autopilot, exit code: {(int)exitCode}");
-            EditorApplication.Exit(exitCode);
         }
     }
 }
