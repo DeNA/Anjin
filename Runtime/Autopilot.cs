@@ -10,6 +10,9 @@ using DeNA.Anjin.Utilities;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DeNA.Anjin
 {
@@ -70,6 +73,17 @@ namespace DeNA.Anjin
             {
                 throw new InvalidOperationException("Autopilot is not running");
             }
+
+#if UNITY_EDITOR
+            if (_state.launchFrom == LaunchType.Commandline)
+            {
+                EditorApplication.playModeStateChanged += OnExitPlayModeToTerminateEditor;
+            }
+            else
+            {
+                EditorApplication.playModeStateChanged += OnExitPlayModeToTeardown;
+            }
+#endif
 
             _logger = _settings.LoggerAsset.Logger;
             // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.
@@ -148,6 +162,13 @@ namespace DeNA.Anjin
 
             _isTerminating = true;
 
+#if UNITY_EDITOR
+            if (_state.launchFrom != LaunchType.Commandline)
+            {
+                EditorApplication.playModeStateChanged -= OnExitPlayModeToTeardown;
+            }
+#endif
+
             if (reporting && _state.IsRunning && _settings.Reporter != null)
             {
                 await _settings.Reporter.PostReportAsync(message, stackTrace, exitCode, token);
@@ -164,5 +185,44 @@ namespace DeNA.Anjin
         {
             TerminateAsync(exitCode, logString, stackTrace).Forget();
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Stop autopilot on play mode exit event when run on Unity editor.
+        /// Not called when invoked from play mode (not registered in event listener).
+        /// </summary>
+        private static void OnExitPlayModeToTerminateEditor(PlayModeStateChange playModeStateChange)
+        {
+            if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
+            {
+                return;
+            }
+
+            EditorApplication.playModeStateChanged -= OnExitPlayModeToTerminateEditor;
+
+            // Exit Unity when returning from play mode to edit mode.
+            // Because it may freeze when exiting without going through edit mode.
+            var exitCode = (int)AutopilotState.Instance.exitCode;
+            Debug.Log($"Exit Unity-editor by autopilot, exit code: {exitCode}");
+            EditorApplication.Exit(exitCode);
+        }
+
+        /// <summary>
+        /// Teardown when Play Mode is stopped while the Autopilot is running.
+        /// </summary>
+        private static void OnExitPlayModeToTeardown(PlayModeStateChange playModeStateChange)
+        {
+            if (playModeStateChange != PlayModeStateChange.EnteredEditMode)
+            {
+                return;
+            }
+
+            EditorApplication.playModeStateChanged -= OnExitPlayModeToTeardown;
+
+            // Teardown when Play Mode is stopped while the Autopilot is running.
+            Debug.LogWarning("Play Mode is stopped while the Autopilot is running");
+            AutopilotState.Instance.Reset();
+        }
+#endif
     }
 }

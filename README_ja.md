@@ -707,6 +707,14 @@ $(ROM) -LAUNCH_AUTOPILOT_SETTINGS Path/To/AutopilotSettings
 
 ## トラブルシューティング
 
+### オートパイロットは停止しているのに AutopilotSettings の Run ボタンが表示されない
+
+Anjinの実行状態を永続化している `AutopilotState.asset` が不正な状態になっている恐れがあります。
+インスペクタで開いて**Reset**ボタンをクリックしてください。
+
+それでも解決しない場合、 `AutopilotState.asset` を削除してみてください。
+
+
 ### プロジェクトを再生モードにすると勝手にオートパイロットが動いてしまう
 
 Anjinの実行状態を永続化している `AutopilotState.asset` が不正な状態になっている恐れがあります。
