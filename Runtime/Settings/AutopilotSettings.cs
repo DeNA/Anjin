@@ -159,6 +159,50 @@ namespace DeNA.Anjin.Settings
         public float timeScale = 1.0f;
 
         /// <summary>
+        /// Output files root directory used by Agents, Loggers, and Reporters.
+        /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY".
+        /// When a relative path is specified:
+        ///     - In editor, relative to the root of the project.
+        ///     - On player, relative to the <c>Application.persistentDataPath</c>.
+        /// When using it from within code, use the <code>OutputRootDirectory</code> property.
+        /// </summary>
+        public string outputRootDirectory;
+
+        /// <summary>
+        /// Output files root directory used by Agents, Loggers, and Reporters.
+        /// This property is returns absolute path.
+        /// </summary>
+        public string OutputRootDirectory { get; }
+        // TODO:
+
+        /// <summary>
+        /// Screenshots output directory used by Agents.
+        /// This item can be overridden by the command line argument "-SCREENSHOTS_DIRECTORY".
+        /// When a relative path is specified, relative to the <c>outputRootDirectory</c>.
+        /// When using it from within code, use the <code>ScreenshotsDirectory</code> property.
+        /// </summary>
+        public string screenshotsDirectory = "Screenshots";
+
+        /// <summary>
+        /// Screenshots output directory used by Agents.
+        /// This property is returns absolute path.
+        /// </summary>
+        public string ScreenshotsDirectory { get; }
+        // TODO:
+
+        /// <summary>
+        /// Clean screenshots output directory when launch Autopilot.
+        /// When using it from within code, use the <code>CleanScreenshotsDirectory</code> property.
+        /// </summary>
+        public bool cleanScreenshotsDirectory;
+
+        /// <summary>
+        /// Clean screenshots output directory when launch Autopilot.
+        /// </summary>
+        public bool CleanScreenshotsDirectory =>
+            cleanScreenshotsDirectory && !string.IsNullOrEmpty(screenshotsDirectory);
+
+        /// <summary>
         /// JUnit report output path
         /// </summary>
         [Obsolete("Use JUnitXmlReporter instead")]

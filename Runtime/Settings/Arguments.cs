@@ -45,6 +45,16 @@ namespace DeNA.Anjin.Settings
         public virtual IArgument<float> TimeScale => new Argument<float>("TIME_SCALE", 1.0f);
 
         /// <summary>
+        /// Output files root directory used by Agents, Loggers, and Reporters (optional).
+        /// </summary>
+        public virtual IArgument<string> OutputRootDirectory => new Argument<string>("OUTPUT_ROOT_DIRECTORY");
+
+        /// <summary>
+        /// Screenshots output directory used by Agents (optional).
+        /// </summary>
+        public virtual IArgument<string> ScreenshotsDirectory => new Argument<string>("SCREENSHOTS_DIRECTORY");
+
+        /// <summary>
         /// Specifies the JUnit format report file output path (optional).
         /// 
         /// If there are zero errors and zero failures, the autopilot run is considered to have completed successfully.
