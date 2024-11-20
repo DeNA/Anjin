@@ -114,6 +114,7 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
+        [FocusGameView]
         [CreateScene]
         public async Task Run_EnableScreenshot_SaveScreenshotToFile()
         {
