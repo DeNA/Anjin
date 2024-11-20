@@ -224,7 +224,7 @@ namespace DeNA.Anjin
         {
             state.settings = null;
             state.exitCode = exitCode;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_2020_3_OR_NEWER
             AssetDatabase.SaveAssetIfDirty(state); // Note: Sync with virtual players of MPPM package
 #endif
 
