@@ -46,7 +46,7 @@ namespace DeNA.Anjin.Settings
             launchFrom = LaunchType.NotSet;
             settings = null;
             exitCode = ExitCode.Normally;
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_2020_3_OR_NEWER
             AssetDatabase.SaveAssetIfDirty(this); // Note: Sync with virtual players of MPPM package
 #endif
         }

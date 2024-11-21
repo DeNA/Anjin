@@ -323,7 +323,7 @@ namespace DeNA.Anjin.Settings
             settings.ConvertSceneCrossingAgentsFromObsoleteObserverAgent(logger); // Note: before convert other Agents.
             settings.ConvertErrorHandlerAgentFromObsoleteSettings(logger);
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UNITY_2020_3_OR_NEWER
             AssetDatabase.SaveAssetIfDirty(settings);
 #endif
         }
