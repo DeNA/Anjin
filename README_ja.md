@@ -468,7 +468,7 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
 このLoggerのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+  <dt>出力ファイルパス</dt><dd>ログファイルの出力先パスを指定します。相対パスが指定されたとき、<code>AutopilotSettings.outputRootPath</code>が起点となります。
         コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
   <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
@@ -489,7 +489,7 @@ JUnit XMLフォーマットのレポートファイルを出力するReporterで
 このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>出力ファイルパス</dt><dd>JUnit XMLレポートファイルの出力パス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+  <dt>出力ファイルパス</dt><dd>JUnit XML形式ファイルの出力先パスを指定します。相対パスが指定されたとき、<code>AutopilotSettings.outputRootPath</code>が起点となります。
         コマンドライン引数 <code>-JUNIT_REPORT_PATH</code> で上書きできますが、複数のJUnitXmlReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
 </dl>
 

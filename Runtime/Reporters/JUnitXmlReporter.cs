@@ -22,7 +22,8 @@ namespace DeNA.Anjin.Reporters
     {
         /// <summary>
         /// Output path for JUnit XML format file.
-        /// Note: relative path from the project root directory. When run on player, it will be the <c>Application.persistentDataPath</c>.
+        /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-JUNIT_REPORT_PATH".
         /// </summary>
         public string outputPath;
 
@@ -84,7 +85,10 @@ namespace DeNA.Anjin.Reporters
             }
             else if (!string.IsNullOrEmpty(outputPathField))
             {
-                path = PathUtils.GetAbsolutePath(outputPathField);
+                var outputRootPath = AutopilotState.Instance.settings != null
+                    ? AutopilotState.Instance.settings.OutputRootPath
+                    : string.Empty;
+                path = PathUtils.GetAbsolutePath(outputPathField, outputRootPath);
             }
             else
             {

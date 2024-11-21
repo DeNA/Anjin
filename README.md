@@ -463,7 +463,7 @@ A Logger that outputs to a specified file.
 The instance of this Logger (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+  <dt>Output File Path</dt><dd>Output path for log file path. When a relative path is specified, relative to the <code>AutopilotSettings.outputRootPath</code>.
         It can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but be careful if multiple FileLoggers are defined, they will all be overwritten with the same value.</dd>
   <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
   <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
@@ -484,7 +484,7 @@ If there are zero errors and zero failures, the autopilot run is considered to h
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>JUnit XML report file output path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+  <dt>Output File Path</dt><dd>Output path for JUnit XML format file. When a relative path is specified, relative to the <code>AutopilotSettings.outputRootPath</code>.
         It can be overwritten with the command line argument <code>-JUNIT_REPORT_PATH</code>, but be careful if multiple JUnitXmlReporters are defined, they will all be overwritten with the same value.</dd>
 </dl>
 

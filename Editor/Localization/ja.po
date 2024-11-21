@@ -533,8 +533,8 @@ msgid "Output File Path"
 msgstr "出力ファイルパス"
 
 # Output Path tooltip
-msgid "Log output file path. Specify relative path from project root or absolute path."
-msgstr "ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します"
+msgid "Output path for log file path. When a relative path is specified, relative to the AutopilotSettings.outputRootPath."
+msgstr "ログファイルの出力先パスを指定します。相対パスが指定されたとき、AutopilotSettings.outputRootPath が起点となります"
 
 # Timestamp
 msgid "Timestamp"
@@ -568,8 +568,8 @@ msgid "Output File Path"
 msgstr "出力ファイルパス"
 
 # outputPath tooltip
-msgid "Relative path from the project root directory. When run on player, it will be the Application.persistentDataPath."
-msgstr "プロジェクトルートからの相対パスを指定します。プレイヤー実行の際は Application.persistentDataPath が起点となります"
+msgid "Output path for JUnit XML format file. When a relative path is specified, relative to the AutopilotSettings.outputRootPath."
+msgstr "JUnit XML形式ファイルの出力先パスを指定します。相対パスが指定されたとき、AutopilotSettings.outputRootPath が起点となります"
 
 
 #: Editor/UI/Reporters/SlackReporterEditor.cs

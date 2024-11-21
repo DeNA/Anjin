@@ -9,6 +9,7 @@ using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
+using DeNA.Anjin.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -170,7 +171,9 @@ namespace DeNA.Anjin.Settings
         /// Output files root directory path used by Agents, Loggers, and Reporters.
         /// This property is returns absolute path.
         /// </summary>
-        public string OutputRootPath { get; } // TODO:
+        public string OutputRootPath => Application.isEditor
+            ? Path.GetFullPath(!string.IsNullOrEmpty(this.outputRootPath) ? this.outputRootPath : ".")
+            : PathUtils.GetAbsolutePath(this.outputRootPath, Application.persistentDataPath);
 
         /// <summary>
         /// Screenshots output directory path used by Agents.
@@ -184,7 +187,7 @@ namespace DeNA.Anjin.Settings
         /// Screenshots output directory path used by Agents.
         /// This property is returns absolute path.
         /// </summary>
-        public string ScreenshotsPath { get; } // TODO:
+        public string ScreenshotsPath => PathUtils.GetAbsolutePath(this.screenshotsPath, this.OutputRootPath);
 
         /// <summary>
         /// Clean screenshots under <c>screenshotsPath</c> when launching Autopilot.
@@ -332,6 +335,37 @@ namespace DeNA.Anjin.Settings
             {
                 timeScale = args.TimeScale.Value();
             }
+
+            if (args.OutputRootPath.IsCaptured())
+            {
+                outputRootPath = args.OutputRootPath.Value();
+            }
+
+            if (args.ScreenshotsPath.IsCaptured())
+            {
+                screenshotsPath = args.ScreenshotsPath.Value();
+            }
+        }
+
+        internal void InitializeOutputDirectories()
+        {
+            var outputRootDirectory = this.OutputRootPath;
+            if (!Directory.Exists(outputRootDirectory))
+            {
+                Directory.CreateDirectory(outputRootDirectory);
+            }
+
+            var screenshotsDirectory = this.ScreenshotsPath;
+            if (this.cleanScreenshots && !string.IsNullOrEmpty(this.screenshotsPath) &&
+                Directory.Exists(screenshotsDirectory))
+            {
+                Directory.Delete(screenshotsDirectory, true);
+            }
+
+            if (!Directory.Exists(screenshotsDirectory))
+            {
+                Directory.CreateDirectory(screenshotsDirectory);
+            }
         }
 
         [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeSettings)]
@@ -344,6 +378,7 @@ namespace DeNA.Anjin.Settings
             }
 
             settings.OverwriteByCommandLineArguments(new Arguments());
+            settings.InitializeOutputDirectories();
 
             settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();

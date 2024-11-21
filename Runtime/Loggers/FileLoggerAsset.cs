@@ -23,8 +23,9 @@ namespace DeNA.Anjin.Loggers
     public class FileLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
-        /// Log output file path.
-        /// Note: relative path from the project root directory. When run on player, it will be the Application.persistentDataPath.
+        /// Output path for log file path.
+        /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-FILE_LOGGER_OUTPUT_PATH".
         /// </summary>
         public string outputPath;
 
@@ -59,7 +60,10 @@ namespace DeNA.Anjin.Loggers
                 }
                 else if (!string.IsNullOrEmpty(outputPath))
                 {
-                    path = PathUtils.GetAbsolutePath(outputPath);
+                    var outputRootPath = AutopilotState.Instance.settings != null
+                        ? AutopilotState.Instance.settings.OutputRootPath
+                        : string.Empty;
+                    path = PathUtils.GetAbsolutePath(outputPath, outputRootPath);
                 }
                 else
                 {

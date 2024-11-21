@@ -22,7 +22,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _descriptionProp;
 
         private static readonly string s_outputPath = L10n.Tr("Output File Path");
-        private static readonly string s_outputPathTooltip = L10n.Tr("Relative path from the project root directory. When run on player, it will be the Application.persistentDataPath.");
+        private static readonly string s_outputPathTooltip = L10n.Tr("Output path for JUnit XML format file. When a relative path is specified, relative to the AutopilotSettings.outputRootPath.");
         private GUIContent _outputPathLabel;
         private SerializedProperty _outputPathProp;
         // @formatter:on

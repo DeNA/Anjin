@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.IO;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
@@ -18,6 +19,8 @@ namespace DeNA.Anjin.Settings
             sut.lifespanSec = 5;
             sut.randomSeed = "1";
             sut.timeScale = 1.0f;
+            sut.outputRootPath = "Path/To/Output";
+            sut.screenshotsPath = "Path/To/Screenshots";
             return sut;
         }
 
@@ -28,6 +31,8 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(), // Not captured
                 _randomSeed = new StubArgument<string>(), // Not captured
                 _timeScale = new StubArgument<float>(), // Not captured
+                _outputRootPath = new StubArgument<string>(), // Not captured
+                _screenshotsPath = new StubArgument<string>(), // Not captured
             };
             return arguments;
         }
@@ -71,6 +76,8 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(5));
             Assert.That(sut.randomSeed, Is.EqualTo("1"));
             Assert.That(sut.timeScale, Is.EqualTo(1.0f));
+            Assert.That(sut.outputRootPath, Is.EqualTo("Path/To/Output"));
+            Assert.That(sut.screenshotsPath, Is.EqualTo("Path/To/Screenshots"));
         }
 
         private static Arguments CreateCapturedArguments()
@@ -80,6 +87,8 @@ namespace DeNA.Anjin.Settings
                 _lifespanSec = new StubArgument<int>(true, 2),
                 _randomSeed = new StubArgument<string>(true, ""),
                 _timeScale = new StubArgument<float>(true, 2.5f),
+                _outputRootPath = new StubArgument<string>(true, "/OutputRootPath/Specified/Commandline"),
+                _screenshotsPath = new StubArgument<string>(true, "/ScreenshotPath/Specified/Commandline"),
             };
             return arguments;
         }
@@ -93,6 +102,115 @@ namespace DeNA.Anjin.Settings
             Assert.That(sut.lifespanSec, Is.EqualTo(2));
             Assert.That(sut.randomSeed, Is.EqualTo(""));
             Assert.That(sut.timeScale, Is.EqualTo(2.5f));
+            Assert.That(sut.outputRootPath, Is.EqualTo("/OutputRootPath/Specified/Commandline"));
+            Assert.That(sut.screenshotsPath, Is.EqualTo("/ScreenshotPath/Specified/Commandline"));
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_ExistDirectories_NotCreateDirectories()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = "Relative/Path/To/Screenshots";
+
+            if (!Directory.Exists(sut.ScreenshotsPath))
+            {
+                Directory.CreateDirectory(sut.ScreenshotsPath); // outputRootPath directory will also be created.
+            }
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
+            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_NotExistDirectories_CreateDirectories()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = "Relative/Path/To/Screenshots";
+
+            if (Directory.Exists(sut.OutputRootPath))
+            {
+                Directory.Delete(sut.OutputRootPath, true);
+            }
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
+            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_CleanExistScreenshotsDirectory_CleanScreenshotsDirectory()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = "Relative/Path/To/Screenshots";
+            sut.cleanScreenshots = true;
+
+            if (!Directory.Exists(sut.ScreenshotsPath))
+            {
+                Directory.CreateDirectory(sut.ScreenshotsPath); // outputRootPath directory will also be created.
+            }
+
+            var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
+            File.WriteAllText(file, "This file is to be deleted.");
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
+            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
+            Assert.That(new FileInfo(file), Does.Not.Exist); //cleaned
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_NotCleanScreenshotsDirectory_NotCleanScreenshotsDirectory()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = "Relative/Path/To/Screenshots";
+            sut.cleanScreenshots = false;
+
+            if (!Directory.Exists(sut.ScreenshotsPath))
+            {
+                Directory.CreateDirectory(sut.ScreenshotsPath); // outputRootPath directory will also be created.
+            }
+
+            var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
+            File.WriteAllText(file, "This file is to be deleted.");
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
+            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
+            Assert.That(new FileInfo(file), Does.Exist);
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_CleanButNotSpecifiedScreenshotsDirectory_NotCleanScreenshotsDirectory()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = ""; // empty
+            sut.cleanScreenshots = true;
+
+            Assume.That(sut.OutputRootPath, Is.EqualTo(sut.ScreenshotsPath));
+
+            if (!Directory.Exists(sut.ScreenshotsPath))
+            {
+                Directory.CreateDirectory(sut.ScreenshotsPath);
+            }
+
+            var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
+            File.WriteAllText(file, "This file is to be deleted.");
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
+            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
+            Assert.That(new FileInfo(file), Does.Exist);
         }
 
         [Test]
