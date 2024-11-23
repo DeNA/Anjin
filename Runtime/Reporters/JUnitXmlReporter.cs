@@ -85,9 +85,7 @@ namespace DeNA.Anjin.Reporters
             }
             else if (!string.IsNullOrEmpty(outputPathField))
             {
-                var outputRootPath = AutopilotState.Instance.settings != null
-                    ? AutopilotState.Instance.settings.OutputRootPath
-                    : string.Empty;
+                var outputRootPath = AutopilotState.Instance.settings!.OutputRootPath;
                 path = PathUtils.GetAbsolutePath(outputPathField, outputRootPath);
             }
             else

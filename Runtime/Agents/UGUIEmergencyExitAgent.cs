@@ -83,9 +83,7 @@ namespace DeNA.Anjin.Agents
             var message = new StringBuilder($"Click emergency exit button: {button.gameObject.name}");
             if (screenshot)
             {
-                var directory = AutopilotState.Instance.settings != null
-                    ? AutopilotState.Instance.settings.ScreenshotsPath
-                    : null;
+                var directory = AutopilotState.Instance.settings!.ScreenshotsPath;
                 var filename = _filenameStrategy.GetFilename();
                 await ScreenshotHelper.TakeScreenshot(directory, filename).ToUniTask(button);
                 message.Append($" ({filename})");

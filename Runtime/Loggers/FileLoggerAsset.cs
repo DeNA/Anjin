@@ -60,9 +60,7 @@ namespace DeNA.Anjin.Loggers
                 }
                 else if (!string.IsNullOrEmpty(outputPath))
                 {
-                    var outputRootPath = AutopilotState.Instance.settings != null
-                        ? AutopilotState.Instance.settings.OutputRootPath
-                        : string.Empty;
+                    var outputRootPath = AutopilotState.Instance.settings!.OutputRootPath;
                     path = PathUtils.GetAbsolutePath(outputPath, outputRootPath);
                 }
                 else

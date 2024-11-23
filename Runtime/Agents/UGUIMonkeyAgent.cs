@@ -128,9 +128,7 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
-                        Directory = AutopilotState.Instance.settings != null
-                            ? AutopilotState.Instance.settings.ScreenshotsPath
-                            : null,
+                        Directory = AutopilotState.Instance.settings!.ScreenshotsPath,
                         FilenameStrategy = new TwoTieredCounterStrategy(
                             defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),

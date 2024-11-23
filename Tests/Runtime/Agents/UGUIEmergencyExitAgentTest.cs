@@ -7,11 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using TestHelper.Attributes;
-using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -23,8 +23,6 @@ namespace DeNA.Anjin.Agents
     [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
     public class UGUIEmergencyExitAgentTest
     {
-        private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
-
         [Test]
         public async Task Run_CancelTask_StopAgent()
         {
@@ -118,9 +116,14 @@ namespace DeNA.Anjin.Agents
         [CreateScene]
         public async Task Run_EnableScreenshot_SaveScreenshotToFile()
         {
+            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath = outputDir;
+            AutopilotState.Instance.settings = settings;
+
             var agentName = TestContext.CurrentContext.Test.Name;
             var filename = $"{agentName}01_0001.png";
-            var path = Path.Combine(_defaultOutputDirectory, filename);
+            var path = Path.Combine(settings.ScreenshotsPath, filename);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -147,8 +150,10 @@ namespace DeNA.Anjin.Agents
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Pending), "Keep agent running");
                 Assert.That(path, Does.Exist, "Save screenshot to file");
 
+                // teardown
                 cancellationTokenSource.Cancel();
                 await UniTask.NextFrame();
+                AutopilotState.Instance.Reset();
             }
         }
     }

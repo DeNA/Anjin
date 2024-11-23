@@ -17,17 +17,24 @@ namespace DeNA.Anjin.Reporters
     public class JUnitXmlReporterTest
     {
         [Test]
-        [Category("IgnoreCI")]
         public void GetOutputPath_WithoutArg_ReturnsFieldValue()
         {
+            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath = outputDir;
+            AutopilotState.Instance.settings = settings;
+
             var arguments = new StubArguments
             {
                 _jUnitReportPath = new StubArgument<string>() // Not captured
             };
 
-            var actual = JUnitXmlReporter.GetOutputPath("/Path/By/Field", arguments);
-            var expected = Path.GetFullPath("/Path/By/Field");
+            var actual = JUnitXmlReporter.GetOutputPath("Path/By/Field", arguments);
+            var expected = Path.Combine(outputDir, "Path/By/Field");
             Assert.That(actual, Is.EqualTo(expected));
+
+            // teardown
+            AutopilotState.Instance.Reset();
         }
 
         [Test]
