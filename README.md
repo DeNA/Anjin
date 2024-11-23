@@ -264,7 +264,6 @@ An instance of this Agent (.asset file) can contain the following.
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
-  <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, `Application.persistentDataPath` + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
   <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is Agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
   <dt>Super Size</dt><dd>The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified</dd>
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
@@ -291,10 +290,6 @@ The recording file (.json) is saved under the Assets/Recordings/ folder and can 
 
 Note that the Recorded Playback function in Automated QA can record operations across Scene transitions, but in Anjin, when the Scene is switched, the Agent is also forcibly switched, so playback is also interrupted.
 Therefore, please be careful to record in units of Scenes.
-
-A screenshot of the operation by Automated QA is stored under `Application.persistentDataPath/Anjin`.
-The `Application.persistentDataPath` for each platform can be found in the Unity manual at
-[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html).
 
 > [!WARNING]  
 > The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.

@@ -357,26 +357,6 @@ msgstr "有効"
 msgid "Whether screenshot is enabled or not"
 msgstr "スクリーンショット撮影を有効にします"
 
-# screenshot directory
-msgid "Directory"
-msgstr "ディレクトリ"
-
-# screenshot directory path
-msgid "Path"
-msgstr "パス"
-
-# screenshot directory path tooltip
-msgid "Directory path to save screenshots"
-msgstr "スクリーンショットの保存先ディレクトリのパス"
-
-# screenshot directory use default
-msgid "Use Default"
-msgstr "デフォルト値を使用"
-
-# screenshot directory use default tooltip
-msgid "Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument \"-testHelperScreenshotDirectory\". If the command line argument is also omitted, Application.persistentDataPath + \"/TestHelper/Screenshots/\" is used."
-msgstr "スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 \"-testHelperScreenshotDirectory\" で指定します。コマンドライン引数も省略した場合は、Application.persistentDataPath + \"/TestHelper/Screenshots/\" が使用されます。"
-
 # screenshot filename
 msgid "Filename"
 msgstr "ファイル名"

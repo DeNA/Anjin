@@ -267,7 +267,6 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 
 <dl>
   <dt>有効</dt><dd>スクリーンショット撮影を有効にします</dd>
-  <dt>ディレクトリ</dt><dd><b>デフォルト値を使用: </b>スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 "-testHelperScreenshotDirectory" で指定します。コマンドライン引数も省略した場合は、`Application.persistentDataPath` + "/TestHelper/Screenshots/" が使用されます<br><b>パス: </b>スクリーンショットの保存先ディレクトリのパス</dd>
   <dt>ファイル名</dt><dd><b>デフォルト値を使用: </b>スクリーンショットのファイル名のプレフィックスにデフォルト値を使用します。デフォルト値はAgentの名前です<br><b>プレフィックス: </b>スクリーンショットのファイル名のプレフィックスを指定します</dd>
   <dt>拡大係数</dt><dd>解像度をあげるための係数。ステレオキャプチャモードと同時には設定できません</dd>
   <dt>ステレオキャプチャモード</dt><dd>ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません</dd>
@@ -295,11 +294,6 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 なお、Automated QAのRecorded Playback機能ではScene遷移をまたがって操作を記録ができますが、AnjinではSceneが切り替わったところでAgentも強制的に切り替わるため、再生も中断されてしまいます。
 従って、レコーディングはScene単位に区切って行なうようご注意ください。
-
-また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
-各プラットフォームの `Application.persistentDataPath` はUnityマニュアルの
-[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
-を参照してください。
 
 > [!WARNING]  
 > Automated QAパッケージは、再生に失敗（対象のボタンが見つからないなど）したときコンソールに `LogType.Error` を出力します。これを検知してオートパイロットを停止するには、次の設定が必要です。

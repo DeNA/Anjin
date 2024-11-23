@@ -7,8 +7,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
-using DeNA.Anjin.Utilities;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
 using TestHelper.Monkey.Operators;
@@ -68,6 +68,7 @@ namespace DeNA.Anjin.Agents
         /// <summary>
         /// Whether using a default directory or specifying manually
         /// </summary>
+        [Obsolete("Uses AutopilotSettings.ScreenshotsPath")]
         public bool defaultScreenshotDirectory = true;
 
         /// <summary>
@@ -75,6 +76,7 @@ namespace DeNA.Anjin.Agents
         /// If omitted, the directory specified by command line argument "-testHelperScreenshotDirectory" is used.
         /// If the command line argument is also omitted, <c>Application.persistentDataPath</c> + "/TestHelper/Screenshots/" is used.
         /// </summary>
+        [Obsolete("Uses AutopilotSettings.ScreenshotsPath")]
         public string screenshotDirectory;
 
         /// <summary>
@@ -126,7 +128,9 @@ namespace DeNA.Anjin.Agents
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
                     {
-                        Directory = defaultScreenshotDirectory ? null : PathUtils.GetAbsolutePath(screenshotDirectory),
+                        Directory = AutopilotState.Instance.settings != null
+                            ? AutopilotState.Instance.settings.ScreenshotsPath
+                            : null,
                         FilenameStrategy = new TwoTieredCounterStrategy(
                             defaultScreenshotFilenamePrefix ? this.name : screenshotFilenamePrefix
                         ),
