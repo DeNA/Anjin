@@ -157,12 +157,35 @@ namespace DeNA.Anjin.Settings
 
             var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
             File.WriteAllText(file, "This file is to be deleted.");
+            Assume.That(new FileInfo(file), Does.Exist);
 
             sut.InitializeOutputDirectories();
 
-            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
-            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
             Assert.That(new FileInfo(file), Does.Not.Exist); //cleaned
+        }
+
+        [Test]
+        public void InitializeOutputDirectories_CleanButNotSpecifiedScreenshotsDirectory_NotCleanScreenshotsDirectory()
+        {
+            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
+            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
+            sut.screenshotsPath = string.Empty;
+            sut.cleanScreenshots = true;
+
+            Assume.That(sut.OutputRootPath, Is.EqualTo(sut.ScreenshotsPath));
+
+            if (!Directory.Exists(sut.ScreenshotsPath))
+            {
+                Directory.CreateDirectory(sut.ScreenshotsPath); // same to outputRootPath
+            }
+
+            var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
+            File.WriteAllText(file, "This file is not delete.");
+            Assume.That(new FileInfo(file), Does.Exist);
+
+            sut.InitializeOutputDirectories();
+
+            Assert.That(new FileInfo(file), Does.Exist);
         }
 
         [Test]
@@ -179,37 +202,10 @@ namespace DeNA.Anjin.Settings
             }
 
             var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
-            File.WriteAllText(file, "This file is to be deleted.");
+            File.WriteAllText(file, "This file is not delete.");
 
             sut.InitializeOutputDirectories();
 
-            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
-            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
-            Assert.That(new FileInfo(file), Does.Exist);
-        }
-
-        [Test]
-        public void InitializeOutputDirectories_CleanButNotSpecifiedScreenshotsDirectory_NotCleanScreenshotsDirectory()
-        {
-            var sut = ScriptableObject.CreateInstance<AutopilotSettings>();
-            sut.outputRootPath = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.Name);
-            sut.screenshotsPath = ""; // empty
-            sut.cleanScreenshots = true;
-
-            Assume.That(sut.OutputRootPath, Is.EqualTo(sut.ScreenshotsPath));
-
-            if (!Directory.Exists(sut.ScreenshotsPath))
-            {
-                Directory.CreateDirectory(sut.ScreenshotsPath);
-            }
-
-            var file = Path.Combine(sut.ScreenshotsPath, "file.txt");
-            File.WriteAllText(file, "This file is to be deleted.");
-
-            sut.InitializeOutputDirectories();
-
-            Assert.That(new DirectoryInfo(sut.OutputRootPath), Does.Exist);
-            Assert.That(new DirectoryInfo(sut.ScreenshotsPath), Does.Exist);
             Assert.That(new FileInfo(file), Does.Exist);
         }
 
