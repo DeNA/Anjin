@@ -45,12 +45,12 @@ namespace DeNA.Anjin.Editor.UI.Settings
         private static readonly string s_randomSeedTooltip = L10n.Tr("Random using the specified seed value");
         private static readonly string s_timeScale = L10n.Tr("Time Scale");
         private static readonly string s_timeScaleTooltip = L10n.Tr("Time.timeScale on running Autopilot");
-        private static readonly string s_outputRootDirectory = L10n.Tr("Output Root Directory");
-        private static readonly string s_outputRootDirectoryTooltip = L10n.Tr("Output files root directory used by Agents, Loggers, and Reporters. When a relative path is specified: In editor, relative to the root of the project. On player, relative to the Application.persistentDataPath.");
-        private static readonly string s_screenshotsDirectory = L10n.Tr("Screenshots Directory");
-        private static readonly string s_screenshotsDirectoryTooltip = L10n.Tr("Screenshots output directory used by Agents. When a relative path is specified, relative to the outputRootDirectory.");
-        private static readonly string s_cleanScreenshotsDirectory = L10n.Tr("Clean Screenshots Directory");
-        private static readonly string s_cleanScreenshotsDirectoryTooltip = L10n.Tr("Clean screenshots output directory when launch Autopilot.");
+        private static readonly string s_outputRootPath = L10n.Tr("Output Root Path");
+        private static readonly string s_outputRootPathTooltip = L10n.Tr("Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player.");
+        private static readonly string s_screenshotsPath = L10n.Tr("Screenshots Path");
+        private static readonly string s_screenshotsPathTooltip = L10n.Tr("Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath.");
+        private static readonly string s_cleanScreenshots = L10n.Tr("Clean Screenshots");
+        private static readonly string s_cleanScreenshotsTooltip = L10n.Tr("Clean screenshots under screenshotsPath when launching Autopilot.");
 
         private static readonly string s_loggers = L10n.Tr("Loggers");
         private static readonly string s_loggersTooltip = L10n.Tr("List of Loggers used for this autopilot settings. If omitted, Debug.unityLogger will be used as default.");
@@ -99,14 +99,13 @@ namespace DeNA.Anjin.Editor.UI.Settings
                 new GUIContent(s_randomSeed, s_randomSeedTooltip));
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.timeScale)),
                 new GUIContent(s_timeScale, s_timeScaleTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.outputRootDirectory)),
-                new GUIContent(s_outputRootDirectory, s_outputRootDirectoryTooltip));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.screenshotsDirectory)),
-                new GUIContent(s_screenshotsDirectory, s_screenshotsDirectoryTooltip));
-            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(((AutopilotSettings)target).screenshotsDirectory));
-            EditorGUILayout.PropertyField(
-                serializedObject.FindProperty(nameof(AutopilotSettings.cleanScreenshotsDirectory)),
-                new GUIContent(s_cleanScreenshotsDirectory, s_cleanScreenshotsDirectoryTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.outputRootPath)),
+                new GUIContent(s_outputRootPath, s_outputRootPathTooltip));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.screenshotsPath)),
+                new GUIContent(s_screenshotsPath, s_screenshotsPathTooltip));
+            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(((AutopilotSettings)target).screenshotsPath));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.cleanScreenshots)),
+                new GUIContent(s_cleanScreenshots, s_cleanScreenshotsTooltip));
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(AutopilotSettings.loggerAssets)),

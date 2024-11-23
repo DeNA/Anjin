@@ -45,14 +45,14 @@ namespace DeNA.Anjin.Settings
         public virtual IArgument<float> TimeScale => new Argument<float>("TIME_SCALE", 1.0f);
 
         /// <summary>
-        /// Output files root directory used by Agents, Loggers, and Reporters (optional).
+        /// Output files root directory path used by Agents, Loggers, and Reporters (optional).
         /// </summary>
-        public virtual IArgument<string> OutputRootDirectory => new Argument<string>("OUTPUT_ROOT_DIRECTORY");
+        public virtual IArgument<string> OutputRootPath => new Argument<string>("OUTPUT_ROOT_DIRECTORY_PATH");
 
         /// <summary>
-        /// Screenshots output directory used by Agents (optional).
+        /// Screenshots output directory path used by Agents (optional).
         /// </summary>
-        public virtual IArgument<string> ScreenshotsDirectory => new Argument<string>("SCREENSHOTS_DIRECTORY");
+        public virtual IArgument<string> ScreenshotsPath => new Argument<string>("SCREENSHOTS_DIRECTORY_PATH");
 
         /// <summary>
         /// Specifies the JUnit format report file output path (optional).

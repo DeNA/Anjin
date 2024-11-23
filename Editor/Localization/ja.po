@@ -115,6 +115,30 @@ msgstr "タイムスケール"
 msgid "Time.timeScale on running Autopilot"
 msgstr "Time.timeScaleを指定します"
 
+# outputRootPath
+msgid "Output Root Path"
+msgstr "出力ルートパス"
+
+# outputRootPath tooltip
+msgid "Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player."
+msgstr "Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します。相対パスが指定されたときの起点は、エディターではプロジェクトルート、プレーヤーでは Application.persistentDataPath になります。"
+
+# screenshotsPath
+msgid "Screenshots Path"
+msgstr "スクリーンショット出力パス"
+
+# screenshotsPath tooltip
+msgid "Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath."
+msgstr "Agent が撮影するスクリーンショットの出力ディレクトリパスを指定します。相対パスが指定されたとき、outputRootPath が起点となります。"
+
+# cleanScreenshots
+msgid "Clean Screenshots"
+msgstr "スクリーンショットを消去"
+
+# cleanScreenshots tooltip
+msgid "Clean screenshots under screenshotsPath when launching Autopilot."
+msgstr "オートパイロットを起動するとき、screenshotsPath 下のスクリーンショットを消去します"
+
 # logger
 msgid "Loggers"
 msgstr "Loggers"

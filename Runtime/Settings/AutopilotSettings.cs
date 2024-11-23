@@ -159,48 +159,37 @@ namespace DeNA.Anjin.Settings
         public float timeScale = 1.0f;
 
         /// <summary>
-        /// Output files root directory used by Agents, Loggers, and Reporters.
-        /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY".
-        /// When a relative path is specified:
-        ///     - In editor, relative to the root of the project.
-        ///     - On player, relative to the <c>Application.persistentDataPath</c>.
-        /// When using it from within code, use the <code>OutputRootDirectory</code> property.
+        /// Output files root directory path used by Agents, Loggers, and Reporters.
+        /// When a relative path is specified, the origin is the project root in the Editor, and <c>Application.persistentDataPath</c> on the Player.
+        /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY_PATH".
+        /// When using it from within code, use the <code>OutputRootPath</code> property.
         /// </summary>
-        public string outputRootDirectory;
+        public string outputRootPath;
 
         /// <summary>
-        /// Output files root directory used by Agents, Loggers, and Reporters.
+        /// Output files root directory path used by Agents, Loggers, and Reporters.
         /// This property is returns absolute path.
         /// </summary>
-        public string OutputRootDirectory { get; }
-        // TODO:
+        public string OutputRootPath { get; } // TODO:
 
         /// <summary>
-        /// Screenshots output directory used by Agents.
-        /// This item can be overridden by the command line argument "-SCREENSHOTS_DIRECTORY".
-        /// When a relative path is specified, relative to the <c>outputRootDirectory</c>.
-        /// When using it from within code, use the <code>ScreenshotsDirectory</code> property.
+        /// Screenshots output directory path used by Agents.
+        /// When a relative path is specified, relative to the <c>outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-SCREENSHOTS_DIRECTORY_PATH".
+        /// When using it from within code, use the <code>ScreenshotsPath</code> property.
         /// </summary>
-        public string screenshotsDirectory = "Screenshots";
+        public string screenshotsPath = "Screenshots";
 
         /// <summary>
-        /// Screenshots output directory used by Agents.
+        /// Screenshots output directory path used by Agents.
         /// This property is returns absolute path.
         /// </summary>
-        public string ScreenshotsDirectory { get; }
-        // TODO:
+        public string ScreenshotsPath { get; } // TODO:
 
         /// <summary>
-        /// Clean screenshots output directory when launch Autopilot.
-        /// When using it from within code, use the <code>CleanScreenshotsDirectory</code> property.
+        /// Clean screenshots under <c>screenshotsPath</c> when launching Autopilot.
         /// </summary>
-        public bool cleanScreenshotsDirectory;
-
-        /// <summary>
-        /// Clean screenshots output directory when launch Autopilot.
-        /// </summary>
-        public bool CleanScreenshotsDirectory =>
-            cleanScreenshotsDirectory && !string.IsNullOrEmpty(screenshotsDirectory);
+        public bool cleanScreenshots;
 
         /// <summary>
         /// JUnit report output path

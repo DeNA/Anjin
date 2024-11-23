@@ -130,6 +130,11 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
         This item can also be overridden from the commandline (see below).</dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0.
         This item can also be overridden from the commandline (see below).</dd>
+  <dt>Output Root Path</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player.
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Screenshots Path</dt><dd>Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath.
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Clean Screenshots</dt><dd>Clean screenshots under screenshotsPath when launching Autopilot.</dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
@@ -200,6 +205,8 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>LIFESPAN_SEC</dt><dd>Specifies the execution time limit in seconds</dd>
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
+  <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters.</dd>
+  <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Screenshots output directory path used by Agents.</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.

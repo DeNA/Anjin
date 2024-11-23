@@ -124,10 +124,15 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
 #### オートパイロット実行設定
 
 <dl>
-  <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。
+  <dt>擬似乱数シード</dt><dd>疑似乱数発生器に与えるシード値を固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。
         この項目は、コマンドラインから上書きもできます（後述）。</dd>
-  <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0。
+  <dt>タイムスケール</dt><dd>Time.timeScaleを指定します。デフォルトは1.0。
         この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>出力ルートパス</dt><dd>Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します。相対パスが指定されたときの起点は、エディターではプロジェクトルート、プレーヤーでは Application.persistentDataPath になります。
+        この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>スクリーンショット出力パス</dt><dd>Agent が撮影するスクリーンショットの出力ディレクトリ パスを指定します。相対パスが指定されたとき、outputRootPath が起点となります。
+        この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>スクリーンショットを消去</dt><dd>オートパイロットを起動するとき、screenshotsPath 下のスクリーンショットを消去します</dd>
   <dt>Loggers</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
   <dt>Reporters</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
@@ -192,7 +197,7 @@ $(UNITY) \
 なお、
 
 - `UNITY`にはUnityエディタへのパス、`PROJECT_HOME`には自動実行対象プロジェクトのルートを指定します
-- `-AUTOPILOT_SETTINGS` には、実行したい設定ファイル（AutopilotSettings）のパスを指定します
+- `-AUTOPILOT_SETTINGS` に続けて、実行したい設定ファイル（AutopilotSettings）のパスを指定します
 - `-quit` は指定しないでください（Play modeに入らず終了してしまいます）
 - `-nographics` は指定しないでください（GameViewウィンドウを表示できません）
 
@@ -201,8 +206,10 @@ $(UNITY) \
 
 <dl>
   <dt>LIFESPAN_SEC</dt><dd>実行時間上限を秒で指定します</dd>
-  <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
+  <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシード値を固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
+  <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します</dd>
+  <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Agent が撮影するスクリーンショットの出力ディレクトリパスを指定します</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
