@@ -217,15 +217,15 @@ $(UNITY) \
 
 ### 3. Play Modeテスト内で実行
 
-非同期メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+静的メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
 引数には `AutopilotSettings` ファイルパスを指定します。
 
 ```
 [Test]
 public async Task LaunchAutopilotInTest()
 {
-  // 最初のSceneをロード
-  await SceneManager.LoadSceneAsync(0);
+  // 最初のSceneをロード（"Scenes in Build" に含まれている必要があります）
+  await SceneManager.LoadSceneAsync("Title");
 
   // オートパイロットを起動
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
@@ -237,9 +237,13 @@ public async Task LaunchAutopilotInTest()
 
 > [!WARNING]  
 > テストをプレイヤーで実行するときは、必要な設定ファイルを `Resources` フォルダに置き、ビルドに含まれるようにしてください。テストのプレイヤービルドに処理を挟むには `IPrebuildSetup` および `IPostBuildCleanup` が利用できます。
+> ファイルパスは `Resources` フォルダからの相対パスを拡張子（".asset"）なしで指定します。
 
 > [!NOTE]  
 > テストランナーに `LogException` または `LogError` 出力を検知されると、そのテストは失敗と判定されます。エラーハンドリングをAnjinで行なう前提で `LogAssert.ignoreFailingMessages` で抑止してもいいでしょう。
+
+> [!NOTE]  
+> 複数のシナリオを連続実行する場合、`AutopilotSettings.outputRootPath` に個別のパスを指定することで出力ファイルを保全できます。
 
 
 

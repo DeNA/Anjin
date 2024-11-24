@@ -214,15 +214,15 @@ In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_S
 
 ### 3. Run in Play Mode test
 
-Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
+Autopilot works within your test code using the static method `Launcher.LaunchAutopilotAsync(string)`.
 Specify the `AutopilotSettings` file path via the argument.
 
 ```
 [Test]
 public async Task LaunchAutopilotInTest()
 {
-  // Load the first scene
-  await SceneManager.LoadSceneAsync(0);
+  // Load the first scene (required scene in "Scenes in Build")
+  await SceneManager.LoadSceneAsync("Title");
 
   // Launch autopilot
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
@@ -234,9 +234,13 @@ public async Task LaunchAutopilotInTest()
 
 > [!WARNING]  
 > When running tests on a player, any necessary configuration files must be placed in the `Resources` folder to be included in the player build. It can use `IPrebuildSetup` and `IPostBuildCleanup` to insert processing into the test player build.
+> The file path is specified relative to the `Resources` folder without the extension (".asset").
 
 > [!NOTE]  
 > The test will fail if the test-runner detects a `LogException` or  `LogError` output. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
+
+> [!NOTE]  
+> If running multiple scenarios in succession, you can preserve the output files by specifying different paths in `AutopilotSettings.outputRootPath`.
 
 
 
