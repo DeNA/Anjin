@@ -4,8 +4,8 @@
     "references": [
         "UniTask",
         "DeNA.Anjin",
-        "TestHelper.Monkey.Annotations",
-        "TestHelper.Monkey"
+        "TestHelper.RuntimeInternals",
+        "TestHelper.Monkey.Annotations"
     ],
     "includePlatforms": [
         "Editor"

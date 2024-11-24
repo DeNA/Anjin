@@ -207,6 +207,8 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
   <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters.</dd>
   <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Screenshots output directory path used by Agents.</dd>
+  <dt>GAME_VIEW_WIDTH</dt><dd>Set GameView width. This argument is only used to launch in editor from command line. Default is 640.</dd>
+  <dt>GAME_VIEW_HEIGHT</dt><dd>Set GameView height. This argument is only used to launch in editor from command line. Default is 480.</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.

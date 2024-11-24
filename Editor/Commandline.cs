@@ -1,8 +1,8 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Reflection;
 using DeNA.Anjin.Settings;
+using TestHelper.RuntimeInternals;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -49,11 +49,11 @@ namespace DeNA.Anjin.Editor
                 return;
             }
 
-            // Show GameView window even in batchmode. It can bypass batchmode limitations. e.g., WaitForEndOfFrame.
-            FocusGameView();
-
             // Set first open Scene
             EditorSceneManager.playModeStartScene = myWantedStartScene;
+
+            // GameView resolution set and show window even in batchmode. It can bypass batchmode limitations. e.g., WaitForEndOfFrame.
+            SetGameViewResolution();
 
             // Activate autopilot and enter play mode
             var state = AutopilotState.Instance;
@@ -85,14 +85,13 @@ namespace DeNA.Anjin.Editor
             return args.AutopilotSettings.Value();
         }
 
-        private static void FocusGameView()
+        private static void SetGameViewResolution()
         {
-            var assembly = Assembly.Load("UnityEditor.dll");
-            var viewClass = Application.isBatchMode
-                ? "UnityEditor.GameView"
-                : "UnityEditor.PlayModeView";
-            var gameView = assembly.GetType(viewClass);
-            EditorWindow.GetWindow(gameView, false, null, true);
+            var args = new Arguments();
+            var width = (uint)args.GameViewWidth.Value();
+            var height = (uint)args.GameViewHeight.Value();
+            var name = $"{width}x{height}";
+            GameViewControlHelper.SetResolution(width, height, name);
         }
     }
 }
