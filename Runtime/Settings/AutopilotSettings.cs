@@ -168,7 +168,7 @@ namespace DeNA.Anjin.Settings
         /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY_PATH".
         /// When using it from within code, use the <code>OutputRootPath</code> property.
         /// </summary>
-        public string outputRootPath;
+        public string outputRootPath = "Logs";
 
         /// <summary>
         /// Output files root directory path used by Agents, Loggers, and Reporters.

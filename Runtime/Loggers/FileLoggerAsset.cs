@@ -27,7 +27,7 @@ namespace DeNA.Anjin.Loggers
         /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
         /// This item can be overridden by the command line argument "-FILE_LOGGER_OUTPUT_PATH".
         /// </summary>
-        public string outputPath;
+        public string outputPath = "autopilot.log";
 
         /// <summary>
         /// To selective enable debug log message.

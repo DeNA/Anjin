@@ -25,7 +25,7 @@ namespace DeNA.Anjin.Reporters
         /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
         /// This item can be overridden by the command line argument "-JUNIT_REPORT_PATH".
         /// </summary>
-        public string outputPath;
+        public string outputPath = "autopilot-result.xml";
 
         private static DateTime s_startDatetime;
         private static float s_startTime;
