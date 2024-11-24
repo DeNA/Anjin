@@ -1,6 +1,9 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.IO;
+using DeNA.Anjin.Settings;
+using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -53,6 +56,54 @@ namespace DeNA.Anjin.Utilities
 
             var actual = PathUtils.GetAbsolutePath(Path, null);
             Assert.That(actual, Is.EqualTo(Path));
+        }
+
+        [Test]
+        public void GetOutputPath_WithoutArg_ReturnsFieldValue()
+        {
+            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath = outputDir;
+            AutopilotState.Instance.settings = settings;
+
+            var arguments = new StubArguments
+            {
+                _jUnitReportPath = new StubArgument<string>() // Not captured
+            };
+
+            var actual = PathUtils.GetOutputPath("Path/By/Field", arguments.JUnitReportPath);
+            var expected = Path.Combine(outputDir, "Path/By/Field");
+            Assert.That(actual, Is.EqualTo(expected));
+
+            // teardown
+            AutopilotState.Instance.Reset();
+        }
+
+        [Test]
+        public void GetOutputPath_WithArg_ReturnsArgValue()
+        {
+            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            var expected = Path.Combine(outputDir, "Path/By/Arg"); // absolute path
+
+            var arguments = new StubArguments
+            {
+                _jUnitReportPath = new StubArgument<string>(true, expected) // Captured
+            };
+
+            var actual = PathUtils.GetOutputPath("Path/By/Field", arguments.JUnitReportPath);
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GetOutputPath_WithoutArgAndField_ReturnsNull()
+        {
+            var arguments = new StubArguments
+            {
+                _jUnitReportPath = new StubArgument<string>() // Not captured
+            };
+
+            var actual = PathUtils.GetOutputPath(null, arguments.JUnitReportPath);
+            Assert.That(actual, Is.Null);
         }
     }
 }

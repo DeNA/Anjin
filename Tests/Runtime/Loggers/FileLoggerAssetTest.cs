@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 // ReSharper disable MethodHasAsyncOverload
 
@@ -92,15 +93,15 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public void GetLogger_OutputPathIsEmpty_ThrowsException()
+        public void GetLogger_OutputPathIsEmpty_ReturnsNull()
         {
             var path = string.Empty;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            Assert.That(() => sut.Logger, Throws.TypeOf<InvalidOperationException>()
-                .And.Message.EqualTo("outputPath is not set."));
+            Assert.That(sut.Logger, Is.Null);
+            LogAssert.Expect(LogType.Warning, "File Logger output path is not set.");
         }
 
         [Test]

@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DeNA.Anjin.Settings;
-using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using TestHelper.Comparers;
 using UnityEngine;
@@ -16,39 +15,6 @@ namespace DeNA.Anjin.Reporters
     [TestFixture]
     public class JUnitXmlReporterTest
     {
-        [Test]
-        public void GetOutputPath_WithoutArg_ReturnsFieldValue()
-        {
-            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
-            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            settings.outputRootPath = outputDir;
-            AutopilotState.Instance.settings = settings;
-
-            var arguments = new StubArguments
-            {
-                _jUnitReportPath = new StubArgument<string>() // Not captured
-            };
-
-            var actual = JUnitXmlReporter.GetOutputPath("Path/By/Field", arguments);
-            var expected = Path.Combine(outputDir, "Path/By/Field");
-            Assert.That(actual, Is.EqualTo(expected));
-
-            // teardown
-            AutopilotState.Instance.Reset();
-        }
-
-        [Test]
-        public void GetOutputPath_WithArg_ReturnsArgValue()
-        {
-            var arguments = new StubArguments
-            {
-                _jUnitReportPath = new StubArgument<string>(true, "/Path/By/Arg") // Captured
-            };
-
-            var actual = JUnitXmlReporter.GetOutputPath("Path/By/Field", arguments);
-            Assert.That(actual, Is.EqualTo("/Path/By/Arg")); // absolute path
-        }
-
         [Test]
         public void CreateTestCase_Passed()
         {

@@ -2,6 +2,8 @@
 // This software is released under the MIT License.
 
 using System.IO;
+using DeNA.Anjin.Settings;
+using DeNA.Anjin.Settings.ArgumentCapture;
 
 namespace DeNA.Anjin.Utilities
 {
@@ -28,6 +30,39 @@ namespace DeNA.Anjin.Utilities
 #endif
 
             return Path.Combine(basePath, path);
+        }
+
+        /// <summary>
+        /// Constructs the output file path and creates directories.
+        /// </summary>
+        /// <param name="outputPathField">outputPath field</param>
+        /// <param name="arg">Commandline argument</param>
+        /// <returns>Output file absolute path or null if not specified.</returns>
+        public static string GetOutputPath(string outputPathField, IArgument<string> arg)
+        {
+            string path;
+            if (arg.IsCaptured())
+            {
+                path = arg.Value();
+            }
+            else if (!string.IsNullOrEmpty(outputPathField))
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                var outputRootPath = AutopilotState.Instance.settings.OutputRootPath;
+                path = GetAbsolutePath(outputPathField, outputRootPath);
+            }
+            else
+            {
+                return null;
+            }
+
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            return path;
         }
     }
 }
