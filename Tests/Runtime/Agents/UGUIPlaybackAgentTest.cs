@@ -1,9 +1,12 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.TestUtils.Build;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
@@ -21,20 +24,36 @@ namespace DeNA.Anjin.Agents
     [UnityPlatform(exclude = new[] { RuntimePlatform.LinuxPlayer })] // Infinity loops inside the Automated QA package.
     [PrebuildSetup(typeof(CopyAssetsToResources))]
     [PostBuildCleanup(typeof(CleanupResources))]
+    [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
     public class UGUIPlaybackAgentTest
     {
         private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
 
+        [SetUp]
+        public void SetUp()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath =
+                Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            AutopilotState.Instance.settings = settings;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            AutopilotState.Instance.Reset();
+        }
+
         [Test]
         [LoadScene(TestScene)]
-        public async Task Run_cancelTask_stopAgent()
+        public async Task Run_CancelTask_StopAgent()
         {
             var jsonPath = CopyAssetsToResources.GetAssetPath("TapButton1x4.json");
 
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = nameof(Run_cancelTask_stopAgent);
+            agent.name = TestContext.CurrentContext.Test.Name;
 #if UNITY_EDITOR
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(jsonPath);
 #else
@@ -57,14 +76,15 @@ namespace DeNA.Anjin.Agents
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task Run_playbackFinished_stopAgent()
+        public async Task Run_PlaybackFinished_StopAgent()
         {
             var jsonPath = CopyAssetsToResources.GetAssetPath("TapButton1x1.json");
 
             var agent = ScriptableObject.CreateInstance<UGUIPlaybackAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = nameof(Run_playbackFinished_stopAgent);
+            agent.name = TestContext.CurrentContext.Test.Name;
+            ;
 #if UNITY_EDITOR
             agent.recordedJson = AssetDatabase.LoadAssetAtPath<TextAsset>(jsonPath);
 #else
@@ -96,7 +116,7 @@ namespace DeNA.Anjin.Agents
 #endif
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = nameof(Run_WithAssetFile);
+            agent.name = TestContext.CurrentContext.Test.Name;
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {

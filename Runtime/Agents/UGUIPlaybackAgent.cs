@@ -8,7 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Utilities;
+using DeNA.Anjin.Settings;
+using DeNA.Anjin.Strategies;
 using Unity.RecordedPlayback;
 using UnityEngine;
 
@@ -30,16 +31,15 @@ namespace DeNA.Anjin.Agents
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
         {
-            Logger.Log($"Enter {this.name}.Run()");
-
-            if (recordedJson == null)
-            {
-                throw new NullReferenceException("recordingJson is null");
-            }
-
-            var screenshotStorePath = ScreenshotStore.CreateDirectory(this.name);
             try
             {
+                Logger.Log($"Enter {this.name}.Run()");
+
+                if (recordedJson == null)
+                {
+                    throw new NullReferenceException("recordingJson is null");
+                }
+
                 await Play(recordedJson, token);
                 // Note: If playback is not possible, AQA will output a LogError and exit. You must handle LogError with the ErrorHandlerAgent.
             }
@@ -47,6 +47,14 @@ namespace DeNA.Anjin.Agents
             {
                 try
                 {
+                    var screenshotStorePath = Path.Combine(
+                        AutopilotState.Instance.settings!.ScreenshotsPath,
+                        new TwoTieredCounterStrategy(this.name).GetFilename().Replace(".png", ""));
+                    if (!Directory.Exists(screenshotStorePath))
+                    {
+                        Directory.CreateDirectory(screenshotStorePath);
+                    }
+
                     StoreScreenshots(screenshotStorePath);
                     Logger.Log($"Stored screenshots to {screenshotStorePath}");
                 }

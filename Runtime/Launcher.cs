@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
-using DeNA.Anjin.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_INCLUDE_TESTS
@@ -114,8 +113,6 @@ namespace DeNA.Anjin
             {
                 return; // Normally play mode (not run autopilot)
             }
-
-            ScreenshotStore.CleanDirectories(); // Note: Scheduled to change soon.
 
             try
             {
