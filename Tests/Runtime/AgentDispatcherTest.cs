@@ -95,7 +95,7 @@ namespace DeNA.Anjin
 
             await SceneManagerHelper.LoadSceneAsync(TestScenePath);
 
-            LogAssert.Expect(LogType.Warning, "Agent not found by scene: Buttons");
+            LogAssert.Expect(LogType.Warning, "Agent not specified for Scene: Buttons");
             Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(0));
         }
 

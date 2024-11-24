@@ -39,7 +39,7 @@ namespace DeNA.Anjin
         private readonly RandomFactory _randomFactory;
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="logger"></param>
@@ -57,7 +57,7 @@ namespace DeNA.Anjin
         {
             foreach (var inspector in AgentInspector.Instances)
             {
-                _logger.Log($"Destroy running agent: {inspector.gameObject.name}");
+                _logger.Log($"Destroy running Agent: {inspector.gameObject.name}");
                 Object.Destroy(inspector.gameObject);
             }
 
@@ -87,12 +87,12 @@ namespace DeNA.Anjin
             {
                 if (_settings.fallbackAgent && fallback)
                 {
-                    _logger.Log($"Use fallback agent. scene: {scene.path}");
+                    _logger.Log($"Use fallback Agent. Scene: {scene.name}");
                     agent = _settings.fallbackAgent;
                 }
                 else
                 {
-                    _logger.Log(LogType.Warning, $"Agent not found by scene: {scene.name}");
+                    _logger.Log(LogType.Warning, $"Agent not specified for Scene: {scene.name}");
                 }
             }
 
@@ -127,7 +127,7 @@ namespace DeNA.Anjin
             }
 
             var token = inspector.gameObject.GetCancellationTokenOnDestroy();
-            _logger.Log($"Dispatch agent: {agentName}");
+            _logger.Log($"Dispatch Agent: {agentName}");
             agent.Run(token).Forget(); // Agent also dies when GameObject is destroyed
         }
     }
