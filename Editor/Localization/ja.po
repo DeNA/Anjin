@@ -20,7 +20,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this setting instance"
+msgid "Description about this settings instance."
 msgstr "このAutopilotSettingsインスタンスの説明"
 
 # name
@@ -178,7 +178,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this agent instance"
+msgid "Description about this Agent instance."
 msgstr "このAgentインスタンスの説明"
 
 
@@ -400,14 +400,14 @@ msgstr "操作を記録したJSONファイル"
 
 # recordedJson tooltip
 msgid "JSON file recorded by AutomatedQA package"
-msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したjsonファイルを設定します"
+msgstr "Automated QAパッケージのRecorded Playbackウィンドウで記録したJSONファイルを設定します"
 
 
 #: Editor/UI/Agents/ErrorHandlerAgent.cs
 
 # handleException
 msgid "Handle Exception"
-msgstr "例外を捕捉"
+msgstr "例外を検知"
 
 # handleException tooltip
 msgid "Specify an Autopilot terminates or only reports when an Exception is detected in the log"
@@ -480,7 +480,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this Logger instance"
+msgid "Description about this Logger instance."
 msgstr "このLoggerインスタンスの説明"
 
 
@@ -532,7 +532,7 @@ msgid "Description"
 msgstr "説明"
 
 # description tooltip
-msgid "Description about this Reporter instance"
+msgid "Description about this Reporter instance."
 msgstr "このReporterインスタンスの説明"
 
 

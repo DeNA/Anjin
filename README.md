@@ -125,7 +125,7 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 
 <dl>
   <dt>Lifespan</dt><dd>Specifies the execution time limit in seconds. Defaults to 300 seconds, 0 specifies unlimited operation.
-        This item can also be overridden from the commandline (see below).</dd>
+        This item can also be overridden from the command line (see below).</dd>
   <dt>Exit Code</dt><dd>Select the exit code used when Autopilot lifespan expires.</dd>
   <dt>Custom Exit Code</dt><dd>Specify the exit code as an integer value.</dd>
   <dt>Message</dt><dd>Message sent by the Reporter when Autopilot lifespan expires.</dd>
@@ -135,13 +135,13 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
 
 <dl>
   <dt>Random Seed</dt><dd>Specify when you want to fix the seed given to the pseudo-random number generator (optional). This is a setting related to the pseudo-random number generator used by the autopilot. To fix the seed of the pseudo-random number generator in the game itself, it is necessary to implement this setting on the game title side. 
-        This item can also be overridden from the commandline (see below).</dd>
+        This item can also be overridden from the command line (see below).</dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0.
-        This item can also be overridden from the commandline (see below).</dd>
+        This item can also be overridden from the command line (see below).</dd>
   <dt>Output Root Path</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player.
-        This item can also be overridden from the commandline (see below).</dd>
+        This item can also be overridden from the command line (see below).</dd>
   <dt>Screenshots Path</dt><dd>Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath.
-        This item can also be overridden from the commandline (see below).</dd>
+        This item can also be overridden from the command line (see below).</dd>
   <dt>Clean Screenshots</dt><dd>Clean screenshots under screenshotsPath when launching Autopilot.</dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
@@ -193,9 +193,9 @@ After the set run time has elapsed, or as in normal play mode, clicking the Play
 > If you start the Autopilot in Play Mode, Play Mode will continue even after the autopilot is terminated.
 
 
-### 2. Launch from commandline
+### 2. Launch from command line
 
-To launch from the commandline, specify the following arguments.
+To launch from the command line, specify the following arguments.
 
 ```bash
 $(UNITY) \
@@ -303,7 +303,7 @@ This is an Agent that playback uGUI operations with the Recorded Playback featur
 The following can be set in an instance (.asset file) of this Agent.
 
 <dl>
-  <dt>Recorded Json</dt><dd>Specify the recording file (.json) to play</dd>
+  <dt>Recorded JSON file</dt><dd>JSON file recorded by AutomatedQA package.</dd>
 </dl>
 
 Use the Recorded Playback window for recording operations with Automated QA. The window is opened via the Unity editor menu
@@ -819,7 +819,7 @@ Be grateful if you could label the pull request as `enhancement`, `bug`, `chore`
 The general policy for accepting new features is as follows:
 
 - All built-in features can be easily configured in the Unity Editor's Inspector window.
-- Avoid adding features to the `Autopilot` class as much as possible, and consider expanding it with Agents, etc.
+- Avoid adding features to the Autopilot class as much as possible, and consider expanding it with Agents, etc.
 - Refrain from adding non-general-purpose Agents, Loggers, and Reporters. Consider publishing them on your blog or Gist or placing them in Samples.
 
 

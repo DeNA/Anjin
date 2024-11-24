@@ -19,7 +19,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
         // @formatter:off
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Reporter instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Reporter instance.");
         private SerializedProperty _descriptionProp;
         private GUIContent _descriptionGUIContent;
 

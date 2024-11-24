@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
     public class TimeBombAgentEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this agent instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Agent instance.");
         private static readonly string s_agent = L10n.Tr("Agent");
 
         private static readonly string s_agentTooltip =

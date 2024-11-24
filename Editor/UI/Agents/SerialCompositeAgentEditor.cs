@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
     public class SerialCompositeAgentEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this agent instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Agent instance.");
         private static readonly string s_agents = L10n.Tr("Agents");
         private static readonly string s_agentsTooltip = L10n.Tr("Agents to serial execution");
 

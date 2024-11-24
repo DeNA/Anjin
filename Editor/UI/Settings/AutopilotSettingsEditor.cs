@@ -16,7 +16,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
     {
         // @formatter:off
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this setting instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this settings instance.");
 
         private static readonly string s_name = L10n.Tr("Name");
         private static readonly string s_nameTooltip = L10n.Tr("Custom name of this setting used by Reporter. If omitted, the asset file name is used.");
