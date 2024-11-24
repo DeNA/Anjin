@@ -60,10 +60,18 @@ openupm add com.dena.anjin
 ### Recommended .gitignore
 
 The following files are automatically generated when you start Anjin.
-There is no need to track it, so we recommend adding it to your project's .gitignore file.
+There is no need to track it, so we recommend adding it to your project's .gitignore file (or ignore settings of using VCS).
 
 ```
-/Assets/AutopilotState.asset*
+/[Aa]ssets/[Aa]utopilot[Ss]tate.asset*
+```
+
+And, the following files will be generated if you use the Automated QA package.
+We recommend ignoring these as well.
+
+```
+/[Aa]ssets/[Aa]utomated[Qq][Aa]*
+/[Aa]ssets/[Rr]ecordings*
 ```
 
 
@@ -177,13 +185,17 @@ Autopilot can be run in the Unity editor in three ways.
 
 ### 1. Run on play mode in Unity editor (GUI)
 
-Open the AutopilotSettings file you wish to run in the inspector and click the **Run** button to enter play mode with Autopilot enabled.
+Open the AutopilotSettings file you wish to run in the inspector and click the **Run** button to launch Autopilot.
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
+
+> [!TIPS]  
+> If you start the Autopilot in Edit Mode, so return to Edit Mode when the Autopilot is terminated.
+> If you start the Autopilot in Play Mode, Play Mode will continue even after the autopilot is terminated.
 
 
 ### 2. Launch from commandline
 
-To execute from the commandline, specify the following arguments.
+To launch from the commandline, specify the following arguments.
 
 ```bash
 $(UNITY) \
@@ -212,6 +224,10 @@ For details on each argument, see the entry of the same name in the "Generate an
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
+
+> [!IMPORTANT]  
+> Shown GameView window even in batchmode.
+> We have confirmed that it works with Xvfb, but since Unity does not officially support it, it may not be available in the future.
 
 
 ### 3. Run in Play Mode test
@@ -266,7 +282,7 @@ An instance of this Agent (.asset file) can contain the following.
   <dt>Enable Gizmos</dt><dd>Show Gizmos on GameView during running monkey test if true</dd>
 </dl>
 
-#### *Screenshot Options:*
+***Screenshot Options:***
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
@@ -297,12 +313,12 @@ The recording file (.json) is saved under the Assets/Recordings/ folder and can 
 Note that the Recorded Playback function in Automated QA can record operations across Scene transitions, but in Anjin, when the Scene is switched, the Agent is also forcibly switched, so playback is also interrupted.
 Therefore, please be careful to record in units of Scenes.
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.
 > 1. Add [ErrorHandlerAgent](#ErrorHandlerAgent) and set `Handle Error` to `Terminate Autopilot`.
 > 2. Add [ConsoleLogger](#ConsoleLogger) and set `Filter LogType` to `Error` or higher.
 
-> [!NOTE]  
+> [!IMPORTANT]  
 > The Automated QA package is in the preview stage. Please note that destructive changes may occur, and the package itself may be discontinued or withdrawn.
 
 
@@ -419,7 +435,7 @@ This Agent instance (.asset file) can contain the following.
   <dt>Ignore Messages</dt><dd>Log messages containing the specified strings will be ignored from the stop condition. Regex is also available; escape is a single backslash (`\`).</dd>
 </dl>
 
-> [!NOTE]  
+> [!TIP]  
 > Recommend enabling a `Handle Exception` to interrupt Autopilot if an exception occurs during execution.
 
 
@@ -537,6 +553,37 @@ This asmdef and its storage folder can be created by opening the context menu an
 **Create > Anjin > Game Title Specific Assembly Folder**.
 
 
+### Game-title-specific initialization process
+
+If your game title requires its specific initialization process, add the `InitializeOnLaunchAutopilot` attribute to the static method that does the initialization.
+An added method is called from the autopilot launch process.
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static void InitializeOnLaunchAutopilotMethod()
+{
+    // initialize code for your game.
+}
+```
+
+Async methods are also supported.
+
+```csharp
+[InitializeOnLaunchAutopilot]
+private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
+{
+    // initialize code for your game.
+}
+```
+
+> [!NOTE]  
+> You can specify callback order with argument. Callbacks with lower values are called before ones with higher values.
+
+> [!NOTE]  
+> The autopilot launch process is performed with `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)` (default for `RuntimeInitializeOnLoadMethod`).
+> Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)` implements the initialization process for Configurable Enter Play Mode.
+
+
 ### Custom Agents
 
 A custom Agent is created by inheriting from `Anjin.Agents.AbstractAgent`.
@@ -566,37 +613,6 @@ Simply implement the method `UniTask PostReportAsync()`.
 Note that it is convenient to set the `[CreateAssetMenu]` attribute to create an instance from the context menu.
 
 
-### Game-title-specific initialization process
-
-If your game title requires its specific initialization process, add the `InitializeOnLaunchAutopilot` attribute to the `static` method that does the initialization.
-An added method is called from the autopilot launch process.
-
-```csharp
-[InitializeOnLaunchAutopilot]
-public static void InitializeOnLaunchAutopilotMethod()
-{
-    // initialize code for your game.
-}
-```
-
-Async methods are also supported.
-
-```csharp
-[InitializeOnLaunchAutopilot]
-private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
-{
-    // initialize code for your game.
-}
-```
-
-> [!NOTE]  
-> You can specify callback order with argument. Callbacks with lower values are called before ones with higher values.
-
-> [!NOTE]  
-> The autopilot launch process is performed with `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)` (default for `RuntimeInitializeOnLoadMethod`).
-> Also, `RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)` implements the initialization process for Configurable Enter Play Mode.
-
-
 
 ## Anjin Annotations
 
@@ -619,6 +635,42 @@ The `GameObject` to which this component is attached avoids manipulation by the 
 
 When a `Button` to which this component is attached appears, the `UGUIEmergencyExitAgent` will immediately attempt to click on it.
 It is intended to be attached to buttons that are irregular in the execution of the test scenario, such as the "return to title screen" button due to a communication error or a daybreak.
+
+
+
+## Using with Multiplayer Play Mode package
+
+It is now easy to check the operation of multiplayer games by using the [Multiplayer Play Mode](https://docs.unity3d.com/Packages/com.unity.multiplayer.playmode@latest) (MPPM) package, which is available in Unity 6 and later.
+
+Below are some points to note when using Anjin with the MPPM package.
+This has been checked with MPPM package v1.3.1.
+
+
+### Run on Virtual Players
+
+When running in [Virtual Players](https://docs-multiplayer.unity3d.com/mppm/current/virtual-players/), clicking the **Run** button in the AutopilotSettings file in Edit Mode will launch the Autopilot in all Virtual Players.
+
+Launching in Play Mode or using different AutopilotSettings for different players is impossible.
+To specify different behaviors for different players, you will need to implement a custom Agent that branches based on [tags](https://docs-multiplayer.unity3d.com/mppm/current/player-tags/).
+
+When you specify a relative path for the "Output Root Path" of AutopilotSettings, the base will be the directory of each Virtual Player.
+Therefore, each Virtual Player's output of Agents, Loggers, and Reporters will be preserved.
+
+> [!CAUTION]  
+> The Automated QA package that `UGUIPlaybackAgent` depends on writes its output files to `Application.persistentDataPath`.
+> Because all the Virtual Players try to write to the same file, an error is printed to the console.
+
+
+### Run on Play Mode Scenarios
+
+To run in [Play Mode Scenarios](https://docs-multiplayer.unity3d.com/mppm/current/play-mode-scenario/play-mode-scenario-about/), you will need a player build that includes Anjin.
+For instructions on how to build it, see [Run on player build](#run-on-player-build-experimental).
+
+Play Mode Scenarios can be launched with command line arguments for each player, allowing them to use different AutopilotSettings files.
+
+> [!CAUTION]  
+> The Automated QA package that `UGUIPlaybackAgent` depends on writes its output files to `Application.persistentDataPath`.
+> Because all the Virtual Players try to write to the same file, an error is printed to the console.
 
 
 
