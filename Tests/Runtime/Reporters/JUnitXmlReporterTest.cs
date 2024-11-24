@@ -274,8 +274,9 @@ namespace DeNA.Anjin.Reporters
         [Test]
         public async Task PostReportAsync_Error()
         {
-            AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            AutopilotState.Instance.settings!.name = TestContext.CurrentContext.Test.Name;
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.name = TestContext.CurrentContext.Test.Name;
+            AutopilotState.Instance.settings = settings;
 
             JUnitXmlReporter.Initialize();
             var startDatetime = DateTime.Now; // Note: same as the value that JUnitXmlReporter has, maybe.

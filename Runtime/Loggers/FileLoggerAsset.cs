@@ -60,7 +60,8 @@ namespace DeNA.Anjin.Loggers
                 }
                 else if (!string.IsNullOrEmpty(outputPath))
                 {
-                    var outputRootPath = AutopilotState.Instance.settings!.OutputRootPath;
+                    // ReSharper disable once PossibleNullReferenceException
+                    var outputRootPath = AutopilotState.Instance.settings.OutputRootPath;
                     path = PathUtils.GetAbsolutePath(outputPath, outputRootPath);
                 }
                 else

@@ -85,7 +85,8 @@ namespace DeNA.Anjin.Reporters
             }
             else if (!string.IsNullOrEmpty(outputPathField))
             {
-                var outputRootPath = AutopilotState.Instance.settings!.OutputRootPath;
+                // ReSharper disable once PossibleNullReferenceException
+                var outputRootPath = AutopilotState.Instance.settings.OutputRootPath;
                 path = PathUtils.GetAbsolutePath(outputPathField, outputRootPath);
             }
             else

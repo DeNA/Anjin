@@ -48,7 +48,8 @@ namespace DeNA.Anjin.Agents
                 try
                 {
                     var screenshotStorePath = Path.Combine(
-                        AutopilotState.Instance.settings!.ScreenshotsPath,
+                        // ReSharper disable once PossibleNullReferenceException
+                        AutopilotState.Instance.settings.ScreenshotsPath,
                         new TwoTieredCounterStrategy(this.name).GetFilename().Replace(".png", ""));
                     if (!Directory.Exists(screenshotStorePath))
                     {
