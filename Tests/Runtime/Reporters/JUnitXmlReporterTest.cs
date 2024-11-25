@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DeNA.Anjin.Settings;
-using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using TestHelper.Comparers;
 using UnityEngine;
@@ -16,32 +15,6 @@ namespace DeNA.Anjin.Reporters
     [TestFixture]
     public class JUnitXmlReporterTest
     {
-        [Test]
-        [Category("IgnoreCI")]
-        public void GetOutputPath_WithoutArg_ReturnsFieldValue()
-        {
-            var arguments = new StubArguments
-            {
-                _jUnitReportPath = new StubArgument<string>() // Not captured
-            };
-
-            var actual = JUnitXmlReporter.GetOutputPath("Path/By/Field", arguments);
-            var expected = Path.GetFullPath("Path/By/Field");
-            Assert.That(actual, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void GetOutputPath_WithArg_ReturnsArgValue()
-        {
-            var arguments = new StubArguments
-            {
-                _jUnitReportPath = new StubArgument<string>(true, "/Path/By/Arg") // Captured
-            };
-
-            var actual = JUnitXmlReporter.GetOutputPath("Path/By/Field", arguments);
-            Assert.That(actual, Is.EqualTo("/Path/By/Arg")); // absolute path
-        }
-
         [Test]
         public void CreateTestCase_Passed()
         {
@@ -267,20 +240,26 @@ namespace DeNA.Anjin.Reporters
         [Test]
         public async Task PostReportAsync_Error()
         {
-            AutopilotState.Instance.settings = ScriptableObject.CreateInstance<AutopilotSettings>();
-            AutopilotState.Instance.settings.name = TestContext.CurrentContext.Test.Name;
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.name = TestContext.CurrentContext.Test.Name;
+            AutopilotState.Instance.settings = settings;
 
             JUnitXmlReporter.Initialize();
             var startDatetime = DateTime.Now; // Note: same as the value that JUnitXmlReporter has, maybe.
 
-            var outputPath = CreateTestOutputPath();
+            var path = Path.Combine(Application.temporaryCachePath, $"{TestContext.CurrentContext.Test.Name}.xml");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+
             var sut = ScriptableObject.CreateInstance<JUnitXmlReporter>();
-            sut.outputPath = outputPath;
+            sut.outputPath = path;
 
             await sut.PostReportAsync("MESSAGE", "STACK TRACE", ExitCode.UnCatchExceptions);
-            Assert.That(outputPath, Does.Exist);
+            Assert.That(path, Does.Exist);
 
-            var actual = File.ReadAllText(outputPath);
+            var actual = File.ReadAllText(path);
             var expected = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <testsuites name=""DeNA.Anjin""
             disabled=""0""
@@ -320,23 +299,6 @@ namespace DeNA.Anjin.Reporters
 
             // teardown
             AutopilotState.Instance.Reset();
-        }
-
-        private static string CreateTestOutputPath()
-        {
-            var dir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
-
-            var path = Path.Combine(dir, $"{TestContext.CurrentContext.Test.Name}.xml");
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            return path;
         }
     }
 }

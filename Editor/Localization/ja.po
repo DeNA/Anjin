@@ -115,6 +115,30 @@ msgstr "タイムスケール"
 msgid "Time.timeScale on running Autopilot"
 msgstr "Time.timeScaleを指定します"
 
+# outputRootPath
+msgid "Output Root Path"
+msgstr "出力ルートパス"
+
+# outputRootPath tooltip
+msgid "Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player."
+msgstr "Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します。相対パスが指定されたときの起点は、エディターではプロジェクトルート、プレーヤーでは Application.persistentDataPath になります。"
+
+# screenshotsPath
+msgid "Screenshots Path"
+msgstr "スクリーンショット出力パス"
+
+# screenshotsPath tooltip
+msgid "Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath."
+msgstr "Agent が撮影するスクリーンショットの出力ディレクトリパスを指定します。相対パスが指定されたとき、outputRootPath が起点となります。"
+
+# cleanScreenshots
+msgid "Clean Screenshots"
+msgstr "スクリーンショットを消去"
+
+# cleanScreenshots tooltip
+msgid "Clean screenshots under screenshotsPath when launching Autopilot."
+msgstr "オートパイロットを起動するとき、screenshotsPath 下のスクリーンショットを消去します"
+
 # logger
 msgid "Loggers"
 msgstr "Loggers"
@@ -333,26 +357,6 @@ msgstr "有効"
 msgid "Whether screenshot is enabled or not"
 msgstr "スクリーンショット撮影を有効にします"
 
-# screenshot directory
-msgid "Directory"
-msgstr "ディレクトリ"
-
-# screenshot directory path
-msgid "Path"
-msgstr "パス"
-
-# screenshot directory path tooltip
-msgid "Directory path to save screenshots"
-msgstr "スクリーンショットの保存先ディレクトリのパス"
-
-# screenshot directory use default
-msgid "Use Default"
-msgstr "デフォルト値を使用"
-
-# screenshot directory use default tooltip
-msgid "Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument \"-testHelperScreenshotDirectory\". If the command line argument is also omitted, Application.persistentDataPath + \"/TestHelper/Screenshots/\" is used."
-msgstr "スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 \"-testHelperScreenshotDirectory\" で指定します。コマンドライン引数も省略した場合は、Application.persistentDataPath + \"/TestHelper/Screenshots/\" が使用されます。"
-
 # screenshot filename
 msgid "Filename"
 msgstr "ファイル名"
@@ -509,8 +513,8 @@ msgid "Output File Path"
 msgstr "出力ファイルパス"
 
 # Output Path tooltip
-msgid "Log output file path. Specify relative path from project root or absolute path."
-msgstr "ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します"
+msgid "Output path for log file path. When a relative path is specified, relative to the AutopilotSettings.outputRootPath."
+msgstr "ログファイルの出力先パスを指定します。相対パスが指定されたとき、AutopilotSettings.outputRootPath が起点となります"
 
 # Timestamp
 msgid "Timestamp"
@@ -544,8 +548,8 @@ msgid "Output File Path"
 msgstr "出力ファイルパス"
 
 # outputPath tooltip
-msgid "Relative path from the project root directory. When run on player, it will be the Application.persistentDataPath."
-msgstr "プロジェクトルートからの相対パスを指定します。プレイヤー実行の際は Application.persistentDataPath が起点となります"
+msgid "Output path for JUnit XML format file. When a relative path is specified, relative to the AutopilotSettings.outputRootPath."
+msgstr "JUnit XML形式ファイルの出力先パスを指定します。相対パスが指定されたとき、AutopilotSettings.outputRootPath が起点となります"
 
 
 #: Editor/UI/Reporters/SlackReporterEditor.cs

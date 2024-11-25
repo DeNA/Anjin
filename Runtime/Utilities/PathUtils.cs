@@ -2,7 +2,8 @@
 // This software is released under the MIT License.
 
 using System.IO;
-using UnityEngine;
+using DeNA.Anjin.Settings;
+using DeNA.Anjin.Settings.ArgumentCapture;
 
 namespace DeNA.Anjin.Utilities
 {
@@ -10,11 +11,11 @@ namespace DeNA.Anjin.Utilities
     {
         /// <summary>
         /// Returns the absolute path.
-        /// In the Editor, it returns a path from the project's root.
-        /// In the Player, it returns a path from the <c>Application.persistentDataPath</c>.
         /// </summary>
-        /// <param name="path">The file or directory for which to obtain absolute path information.</param>
-        public static string GetAbsolutePath(string path)
+        /// <param name="path">The file or directory for which to obtain the absolute path.</param>
+        /// <param name="basePath">The base path to use when a relative path is specified in path.</param>
+        /// <returns>Absolute path.</returns>
+        public static string GetAbsolutePath(string path, string basePath)
         {
 #if UNITY_2021_2_OR_NEWER
             if (Path.IsPathFullyQualified(path))
@@ -28,9 +29,40 @@ namespace DeNA.Anjin.Utilities
             }
 #endif
 
-            return Application.isEditor
-                ? Path.GetFullPath(path)
-                : Path.Combine(Application.persistentDataPath, path);
+            return Path.Combine(basePath, path);
+        }
+
+        /// <summary>
+        /// Constructs the output file path and creates directories.
+        /// </summary>
+        /// <param name="outputPathField">outputPath field</param>
+        /// <param name="arg">Commandline argument</param>
+        /// <returns>Output file absolute path or null if not specified.</returns>
+        public static string GetOutputPath(string outputPathField, IArgument<string> arg)
+        {
+            string path;
+            if (arg.IsCaptured())
+            {
+                path = arg.Value();
+            }
+            else if (!string.IsNullOrEmpty(outputPathField))
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                var outputRootPath = AutopilotState.Instance.settings.OutputRootPath;
+                path = GetAbsolutePath(outputPathField, outputRootPath);
+            }
+            else
+            {
+                return null;
+            }
+
+            var directory = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            return path;
         }
     }
 }

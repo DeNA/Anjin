@@ -59,20 +59,6 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private SerializedProperty _screenshotEnabledProp;
         private GUIContent _screenshotEnabledGUIContent;
 
-        private static readonly string s_screenshotDirectory = L10n.Tr("Directory");
-        private static readonly string s_screenshotDefaultDirectory = L10n.Tr("Use Default");
-
-        private static readonly string s_screenshotDefaultDirectoryTooltip = L10n.Tr(
-            @"Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument ""-testHelperScreenshotDirectory"". If the command line argument is also omitted, Application.persistentDataPath + ""/TestHelper/Screenshots/"" is used."
-        );
-
-        private static readonly string s_screenshotDirectoryPath = L10n.Tr("Path");
-        private static readonly string s_screenshotDirectoryPathTooltip = L10n.Tr("Directory path to save screenshots");
-        private SerializedProperty _screenshotDefaultDirectoryProp;
-        private GUIContent _screenshotDefaultDirectoryGUIContent;
-        private SerializedProperty _screenshotDirectoryProp;
-        private GUIContent _screenshotDirectoryGUIContent;
-
         private static readonly string s_screenshotFilename = L10n.Tr("Filename");
         private static readonly string s_screenshotDefaultFilenamePrefix = L10n.Tr("Use Default");
 
@@ -170,18 +156,6 @@ namespace DeNA.Anjin.Editor.UI.Agents
             // Screenshot options
             _screenshotEnabledProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotEnabled));
             _screenshotEnabledGUIContent = new GUIContent(s_screenshotEnabled, s_screenshotEnabledTooltip);
-
-            _screenshotDefaultDirectoryProp =
-                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.defaultScreenshotDirectory));
-            _screenshotDefaultDirectoryGUIContent = new GUIContent(
-                s_screenshotDefaultDirectory,
-                s_screenshotDefaultDirectoryTooltip
-            );
-            _screenshotDirectoryProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.screenshotDirectory));
-            _screenshotDirectoryGUIContent = new GUIContent(
-                s_screenshotDirectoryPath,
-                s_screenshotDirectoryPathTooltip
-            );
 
             _screenshotDefaultFilenamePrefixProp =
                 serializedObject.FindProperty(nameof(UGUIMonkeyAgent.defaultScreenshotFilenamePrefix));
@@ -300,19 +274,6 @@ namespace DeNA.Anjin.Editor.UI.Agents
                 EditorGUILayout.PropertyField(_screenshotEnabledProp, _screenshotEnabledGUIContent);
                 if (_screenshotEnabledProp.boolValue)
                 {
-                    EditorGUILayout.LabelField(s_screenshotDirectory, EditorStyles.boldLabel);
-                    using (new EditorGUI.IndentLevelScope())
-                    {
-                        EditorGUILayout.PropertyField(
-                            _screenshotDefaultDirectoryProp,
-                            _screenshotDefaultDirectoryGUIContent
-                        );
-                        if (!_screenshotDefaultDirectoryProp.boolValue)
-                        {
-                            EditorGUILayout.PropertyField(_screenshotDirectoryProp, _screenshotDirectoryGUIContent);
-                        }
-                    }
-
                     EditorGUILayout.LabelField(s_screenshotFilename, EditorStyles.boldLabel);
                     using (new EditorGUI.IndentLevelScope())
                     {

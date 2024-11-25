@@ -12,6 +12,8 @@ namespace DeNA.Anjin.TestDoubles
         internal IArgument<int> _lifespanSec;
         internal IArgument<string> _randomSeed;
         internal IArgument<float> _timeScale;
+        internal IArgument<string> _outputRootPath;
+        internal IArgument<string> _screenshotsPath;
         internal IArgument<string> _jUnitReportPath;
         internal IArgument<bool> _handleException;
         internal IArgument<bool> _handleError;
@@ -51,6 +53,9 @@ namespace DeNA.Anjin.TestDoubles
                 return _timeScale;
             }
         }
+
+        public override IArgument<string> OutputRootPath => _outputRootPath;
+        public override IArgument<string> ScreenshotsPath => _screenshotsPath;
 
         public override IArgument<string> JUnitReportPath
         {

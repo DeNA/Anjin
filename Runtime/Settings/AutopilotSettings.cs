@@ -3,12 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using DeNA.Anjin.Agents;
 using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Loggers;
 using DeNA.Anjin.Reporters;
+using DeNA.Anjin.Utilities;
 using UnityEngine;
 using Object = UnityEngine.Object;
 #if UNITY_EDITOR
@@ -84,6 +86,7 @@ namespace DeNA.Anjin.Settings
         /// Name of this setting used by Reporter.
         /// If omitted, the asset file name is used.
         /// </summary>
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
         public string Name => string.IsNullOrEmpty(this.name) ? base.name : this.name;
 
         /// <summary>
@@ -126,6 +129,7 @@ namespace DeNA.Anjin.Settings
         /// </summary>
         public string customExitCode;
 
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
         public ExitCode ExitCode
         {
             get
@@ -157,6 +161,49 @@ namespace DeNA.Anjin.Settings
         /// Time.timeScale.
         /// </summary>
         public float timeScale = 1.0f;
+
+        /// <summary>
+        /// Output files root directory path used by Agents, Loggers, and Reporters.
+        /// When a relative path is specified, the origin is the project root in the Editor, and <c>Application.persistentDataPath</c> on the Player.
+        /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY_PATH".
+        /// When using it from within code, use the <code>OutputRootPath</code> property.
+        /// </summary>
+        public string outputRootPath = "Logs";
+
+        /// <summary>
+        /// Output files root directory path used by Agents, Loggers, and Reporters.
+        /// This property is returns absolute path.
+        /// </summary>
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
+        public string OutputRootPath => Application.isEditor
+            ? Path.GetFullPath(!string.IsNullOrEmpty(this.outputRootPath) ? this.outputRootPath : ".")
+            : PathUtils.GetAbsolutePath(this.outputRootPath, Application.persistentDataPath);
+
+        /// <summary>
+        /// Screenshots output directory path used by Agents.
+        /// When a relative path is specified, relative to the <c>outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-SCREENSHOTS_DIRECTORY_PATH".
+        /// When using it from within code, use the <code>ScreenshotsPath</code> property.
+        /// </summary>
+        public string screenshotsPath = "Screenshots";
+
+        /// <summary>
+        /// Screenshots output directory path used by Agents.
+        /// This property is returns absolute path.
+        /// </summary>
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
+        public string ScreenshotsPath => PathUtils.GetAbsolutePath(this.screenshotsPath, this.OutputRootPath);
+
+        /// <summary>
+        /// Returns whether the <c>screenshotsPath</c> is specified.
+        /// </summary>
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
+        public bool IsSpecifiedScreenshotsPath => !string.IsNullOrEmpty(this.screenshotsPath);
+
+        /// <summary>
+        /// Clean screenshots under <c>screenshotsPath</c> when launching Autopilot.
+        /// </summary>
+        public bool cleanScreenshots;
 
         /// <summary>
         /// JUnit report output path
@@ -283,6 +330,7 @@ namespace DeNA.Anjin.Settings
         /// <summary>
         /// Overwrites specified values in the command line arguments
         /// </summary>
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
         internal void OverwriteByCommandLineArguments(Arguments args)
         {
             if (args.RandomSeed.IsCaptured())
@@ -299,6 +347,36 @@ namespace DeNA.Anjin.Settings
             {
                 timeScale = args.TimeScale.Value();
             }
+
+            if (args.OutputRootPath.IsCaptured())
+            {
+                outputRootPath = args.OutputRootPath.Value();
+            }
+
+            if (args.ScreenshotsPath.IsCaptured())
+            {
+                screenshotsPath = args.ScreenshotsPath.Value();
+            }
+        }
+
+        internal void InitializeOutputDirectories()
+        {
+            var outputRootDirectory = this.OutputRootPath;
+            if (!Directory.Exists(outputRootDirectory))
+            {
+                Directory.CreateDirectory(outputRootDirectory);
+            }
+
+            var screenshotsDirectory = this.ScreenshotsPath;
+            if (this.cleanScreenshots && IsSpecifiedScreenshotsPath && Directory.Exists(screenshotsDirectory))
+            {
+                Directory.Delete(screenshotsDirectory, true);
+            }
+
+            if (!Directory.Exists(screenshotsDirectory))
+            {
+                Directory.CreateDirectory(screenshotsDirectory);
+            }
         }
 
         [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeSettings)]
@@ -311,6 +389,7 @@ namespace DeNA.Anjin.Settings
             }
 
             settings.OverwriteByCommandLineArguments(new Arguments());
+            settings.InitializeOutputDirectories();
 
             settings.ConvertLoggersFromObsoleteLogger(); // Note: before create default logger.
             settings.CreateDefaultLoggerIfNeeded();

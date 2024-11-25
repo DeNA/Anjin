@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Attributes;
@@ -49,6 +50,7 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public string customExitCode;
 
+        [SuppressMessage("ApiDesign", "RS0030:Do not use banned APIs")]
         public ExitCode ExitCode
         {
             get

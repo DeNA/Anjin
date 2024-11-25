@@ -6,12 +6,12 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
 using DeNA.Anjin.TestDoubles;
 using DeNA.Anjin.Utilities;
 using NUnit.Framework;
 using TestHelper.Attributes;
-using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
@@ -22,16 +22,15 @@ namespace DeNA.Anjin.Agents
     public class UGUIMonkeyAgentTest
     {
         private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
-        private readonly string _defaultOutputDirectory = CommandLineArgs.GetScreenshotDirectory();
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task Run_cancelTask_stopAgent()
+        public async Task Run_CancelTask_StopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = nameof(Run_cancelTask_stopAgent);
+            agent.name = TestContext.CurrentContext.Test.Name;
             agent.lifespanSec = 0; // Expect indefinite execution
             agent.delayMillis = 100;
 
@@ -51,12 +50,12 @@ namespace DeNA.Anjin.Agents
 
         [Test]
         [LoadScene(TestScene)]
-        public async Task Run_lifespanPassed_stopAgent()
+        public async Task Run_LifespanPassed_StopAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = nameof(Run_lifespanPassed_stopAgent);
+            agent.name = TestContext.CurrentContext.Test.Name;
             agent.lifespanSec = 1;
             agent.delayMillis = 100;
 
@@ -78,9 +77,14 @@ namespace DeNA.Anjin.Agents
         [LoadScene(TestScene)]
         public async Task Run_DefaultScreenshotFilenamePrefix_UseAgentName()
         {
-            const string AgentName = "MyMonkeyAgent";
-            var filename = $"{AgentName}01_0001.png";
-            var path = Path.Combine(_defaultOutputDirectory, filename);
+            var outputDir = Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath = outputDir;
+            AutopilotState.Instance.settings = settings;
+
+            var agentName = TestContext.CurrentContext.Test.Name;
+            var filename = $"{agentName}01_0001.png";
+            var path = Path.Combine(settings.ScreenshotsPath, filename);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -91,7 +95,7 @@ namespace DeNA.Anjin.Agents
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = AgentName;
+            agent.name = agentName;
             agent.lifespanSec = 1;
             agent.delayMillis = 100;
             agent.touchAndHoldDelayMillis = 100;
@@ -107,6 +111,9 @@ namespace DeNA.Anjin.Agents
             }
 
             Assert.That(path, Does.Exist);
+
+            // teardown
+            AutopilotState.Instance.Reset();
         }
 
         [Test]

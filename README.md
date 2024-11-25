@@ -130,6 +130,11 @@ for specifying, e.g., `ErrorHandlerAgent` and `UGUIEmergencyExitAgent`.
         This item can also be overridden from the commandline (see below).</dd>
   <dt>Time Scale</dt><dd>Time.timeScale. Default is 1.0.
         This item can also be overridden from the commandline (see below).</dd>
+  <dt>Output Root Path</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters. When a relative path is specified, the origin is the project root in the Editor, and Application.persistentDataPath on the Player.
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Screenshots Path</dt><dd>Screenshots output directory path used by Agents. When a relative path is specified, relative to the outputRootPath.
+        This item can also be overridden from the commandline (see below).</dd>
+  <dt>Clean Screenshots</dt><dd>Clean screenshots under screenshotsPath when launching Autopilot.</dd>
   <dt>Loggers</dt><dd>Logger used for this autopilot settings. If omitted, <code>Debug.unityLogger</code> will be used as default.</dd>
   <dt>Reporters</dt><dd>Reporter to be called on Autopilot terminate.</dd>
 </dl>
@@ -200,6 +205,8 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>LIFESPAN_SEC</dt><dd>Specifies the execution time limit in seconds</dd>
   <dt>RANDOM_SEED</dt><dd>Specifies when you want to fix the seed given to the pseudo-random number generator</dd>
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
+  <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters.</dd>
+  <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Screenshots output directory path used by Agents.</dd>
 </dl>
 
 In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
@@ -207,15 +214,15 @@ In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_S
 
 ### 3. Run in Play Mode test
 
-Autopilot works within your test code using the async method `Launcher.LaunchAutopilotAsync(string)`.
+Autopilot works within your test code using the static method `Launcher.LaunchAutopilotAsync(string)`.
 Specify the `AutopilotSettings` file path via the argument.
 
 ```
 [Test]
 public async Task LaunchAutopilotInTest()
 {
-  // Load the first scene
-  await SceneManager.LoadSceneAsync(0);
+  // Load the first scene (required scene in "Scenes in Build")
+  await SceneManager.LoadSceneAsync("Title");
 
   // Launch autopilot
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
@@ -227,9 +234,13 @@ public async Task LaunchAutopilotInTest()
 
 > [!WARNING]  
 > When running tests on a player, any necessary configuration files must be placed in the `Resources` folder to be included in the player build. It can use `IPrebuildSetup` and `IPostBuildCleanup` to insert processing into the test player build.
+> The file path is specified relative to the `Resources` folder without the extension (".asset").
 
 > [!NOTE]  
 > The test will fail if the test-runner detects a `LogException` or  `LogError` output. You can suppress this by using `LogAssert.ignoreFailingMessages` assuming that you will use Anjin for error handling.
+
+> [!NOTE]  
+> If running multiple scenarios in succession, you can preserve the output files by specifying different paths in `AutopilotSettings.outputRootPath`.
 
 
 
@@ -257,7 +268,6 @@ An instance of this Agent (.asset file) can contain the following.
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
-  <dt>Directory</dt><dd><b>Use Default: </b>Whether using a default directory path to save screenshots or specifying it manually. Default value is specified by command line argument "-testHelperScreenshotDirectory". If the command line argument is also omitted, `Application.persistentDataPath` + "/TestHelper/Screenshots/" is used.<br><b>Path: </b>Directory path to save screenshots</dd>
   <dt>Filename</dt><dd><b>Use Default: </b>Whether using a default prefix of screenshots filename or specifying it manually. Default value is Agent name<br><b>Prefix: </b>Prefix of screenshots filename</dd>
   <dt>Super Size</dt><dd>The factor to increase resolution with. Neither this nor Stereo Capture Mode can be specified</dd>
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
@@ -284,10 +294,6 @@ The recording file (.json) is saved under the Assets/Recordings/ folder and can 
 
 Note that the Recorded Playback function in Automated QA can record operations across Scene transitions, but in Anjin, when the Scene is switched, the Agent is also forcibly switched, so playback is also interrupted.
 Therefore, please be careful to record in units of Scenes.
-
-A screenshot of the operation by Automated QA is stored under `Application.persistentDataPath/Anjin`.
-The `Application.persistentDataPath` for each platform can be found in the Unity manual at
-[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html).
 
 > [!WARNING]  
 > The Automated QA package outputs `LogType.Error` to the console when playback fails (e.g., the target Button cannot be found). The following setting is required to detect this and terminate the autopilot.
@@ -456,7 +462,7 @@ A Logger that outputs to a specified file.
 The instance of this Logger (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>Log output file path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+  <dt>Output File Path</dt><dd>Output path for log file path. When a relative path is specified, relative to the <code>AutopilotSettings.outputRootPath</code>.
         It can be overwritten with the command line argument <code>-FILE_LOGGER_OUTPUT_PATH</code>, but be careful if multiple FileLoggers are defined, they will all be overwritten with the same value.</dd>
   <dt>Filter LogType</dt><dd>To selective enable debug log message</dd>
   <dt>Timestamp</dt><dd>Output timestamp to log entities</dd>
@@ -477,7 +483,7 @@ If there are zero errors and zero failures, the autopilot run is considered to h
 The instance of this Reporter (.asset file) can have the following settings.
 
 <dl>
-  <dt>Output File Path</dt><dd>JUnit XML report file output path. Specify relative path from project root or absolute path. When run on player, it will be the <code>Application.persistentDataPath</code>.
+  <dt>Output File Path</dt><dd>Output path for JUnit XML format file. When a relative path is specified, relative to the <code>AutopilotSettings.outputRootPath</code>.
         It can be overwritten with the command line argument <code>-JUNIT_REPORT_PATH</code>, but be careful if multiple JUnitXmlReporters are defined, they will all be overwritten with the same value.</dd>
 </dl>
 

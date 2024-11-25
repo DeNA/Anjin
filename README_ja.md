@@ -124,10 +124,15 @@ Sceneごとに自動実行を行なうAgent設定ファイル（.asset）の対�
 #### オートパイロット実行設定
 
 <dl>
-  <dt>Random Seed</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。
+  <dt>擬似乱数シード</dt><dd>疑似乱数発生器に与えるシード値を固定したいときに指定します（省略可）。なお、これはオートパイロットの使用する疑似乱数発生器に関する設定であり、ゲーム本体の疑似乱数発生器シードを固定するにはゲームタイトル側での実装が必要です。
         この項目は、コマンドラインから上書きもできます（後述）。</dd>
-  <dt>Time Scale</dt><dd>Time.timeScaleを指定します。デフォルトは1.0。
+  <dt>タイムスケール</dt><dd>Time.timeScaleを指定します。デフォルトは1.0。
         この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>出力ルートパス</dt><dd>Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します。相対パスが指定されたときの起点は、エディターではプロジェクトルート、プレーヤーでは Application.persistentDataPath になります。
+        この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>スクリーンショット出力パス</dt><dd>Agent が撮影するスクリーンショットの出力ディレクトリ パスを指定します。相対パスが指定されたとき、outputRootPath が起点となります。
+        この項目は、コマンドラインから上書きもできます（後述）。</dd>
+  <dt>スクリーンショットを消去</dt><dd>オートパイロットを起動するとき、screenshotsPath 下のスクリーンショットを消去します</dd>
   <dt>Loggers</dt><dd>オートパイロットが使用するLogger指定します。省略時は <code>Debug.unityLogger</code> がデフォルトとして使用されます</dd>
   <dt>Reporters</dt><dd>オートパイロット終了時に通知を行なうReporterを指定します</dd>
 </dl>
@@ -192,7 +197,7 @@ $(UNITY) \
 なお、
 
 - `UNITY`にはUnityエディタへのパス、`PROJECT_HOME`には自動実行対象プロジェクトのルートを指定します
-- `-AUTOPILOT_SETTINGS` には、実行したい設定ファイル（AutopilotSettings）のパスを指定します
+- `-AUTOPILOT_SETTINGS` に続けて、実行したい設定ファイル（AutopilotSettings）のパスを指定します
 - `-quit` は指定しないでください（Play modeに入らず終了してしまいます）
 - `-nographics` は指定しないでください（GameViewウィンドウを表示できません）
 
@@ -201,8 +206,10 @@ $(UNITY) \
 
 <dl>
   <dt>LIFESPAN_SEC</dt><dd>実行時間上限を秒で指定します</dd>
-  <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシードを固定したいときに指定します</dd>
+  <dt>RANDOM_SEED</dt><dd>疑似乱数発生器に与えるシード値を固定したいときに指定します</dd>
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
+  <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します</dd>
+  <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Agent が撮影するスクリーンショットの出力ディレクトリパスを指定します</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
@@ -210,15 +217,15 @@ $(UNITY) \
 
 ### 3. Play Modeテスト内で実行
 
-非同期メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
+静的メソッド `Launcher.LaunchAutopilotAsync(string)` を使用することで、テストコード内でオートパイロットが動作します。
 引数には `AutopilotSettings` ファイルパスを指定します。
 
 ```
 [Test]
 public async Task LaunchAutopilotInTest()
 {
-  // 最初のSceneをロード
-  await SceneManager.LoadSceneAsync(0);
+  // 最初のSceneをロード（"Scenes in Build" に含まれている必要があります）
+  await SceneManager.LoadSceneAsync("Title");
 
   // オートパイロットを起動
   await Launcher.LaunchAutopilotAsync("Assets/Path/To/AutopilotSettings.asset");
@@ -230,9 +237,13 @@ public async Task LaunchAutopilotInTest()
 
 > [!WARNING]  
 > テストをプレイヤーで実行するときは、必要な設定ファイルを `Resources` フォルダに置き、ビルドに含まれるようにしてください。テストのプレイヤービルドに処理を挟むには `IPrebuildSetup` および `IPostBuildCleanup` が利用できます。
+> ファイルパスは `Resources` フォルダからの相対パスを拡張子（".asset"）なしで指定します。
 
 > [!NOTE]  
 > テストランナーに `LogException` または `LogError` 出力を検知されると、そのテストは失敗と判定されます。エラーハンドリングをAnjinで行なう前提で `LogAssert.ignoreFailingMessages` で抑止してもいいでしょう。
+
+> [!NOTE]  
+> 複数のシナリオを連続実行する場合、`AutopilotSettings.outputRootPath` に個別のパスを指定することで出力ファイルを保全できます。
 
 
 
@@ -260,7 +271,6 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 
 <dl>
   <dt>有効</dt><dd>スクリーンショット撮影を有効にします</dd>
-  <dt>ディレクトリ</dt><dd><b>デフォルト値を使用: </b>スクリーンショットの保存先のディレクトリ名にデフォルト値を使用します。デフォルト値はコマンドライン引数 "-testHelperScreenshotDirectory" で指定します。コマンドライン引数も省略した場合は、`Application.persistentDataPath` + "/TestHelper/Screenshots/" が使用されます<br><b>パス: </b>スクリーンショットの保存先ディレクトリのパス</dd>
   <dt>ファイル名</dt><dd><b>デフォルト値を使用: </b>スクリーンショットのファイル名のプレフィックスにデフォルト値を使用します。デフォルト値はAgentの名前です<br><b>プレフィックス: </b>スクリーンショットのファイル名のプレフィックスを指定します</dd>
   <dt>拡大係数</dt><dd>解像度をあげるための係数。ステレオキャプチャモードと同時には設定できません</dd>
   <dt>ステレオキャプチャモード</dt><dd>ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません</dd>
@@ -288,11 +298,6 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 なお、Automated QAのRecorded Playback機能ではScene遷移をまたがって操作を記録ができますが、AnjinではSceneが切り替わったところでAgentも強制的に切り替わるため、再生も中断されてしまいます。
 従って、レコーディングはScene単位に区切って行なうようご注意ください。
-
-また、Automated QAによる操作のスクリーンショットを`Application.persistentDataPath/Anjin`下に保存しています。
-各プラットフォームの `Application.persistentDataPath` はUnityマニュアルの
-[Scripting API: Application.persistentDataPath](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)
-を参照してください。
 
 > [!WARNING]  
 > Automated QAパッケージは、再生に失敗（対象のボタンが見つからないなど）したときコンソールに `LogType.Error` を出力します。これを検知してオートパイロットを停止するには、次の設定が必要です。
@@ -461,7 +466,7 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
 このLoggerのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>出力ファイルパス</dt><dd>ログ出力ファイルのパス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+  <dt>出力ファイルパス</dt><dd>ログファイルの出力先パスを指定します。相対パスが指定されたとき、<code>AutopilotSettings.outputRootPath</code>が起点となります。
         コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
   <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
@@ -482,7 +487,7 @@ JUnit XMLフォーマットのレポートファイルを出力するReporterで
 このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>出力ファイルパス</dt><dd>JUnit XMLレポートファイルの出力パス。プロジェクトルートからの相対パスまたは絶対パスを指定します。プレイヤー実行では相対パスの起点は <code>Application.persistentDataPath</code> になります。
+  <dt>出力ファイルパス</dt><dd>JUnit XML形式ファイルの出力先パスを指定します。相対パスが指定されたとき、<code>AutopilotSettings.outputRootPath</code>が起点となります。
         コマンドライン引数 <code>-JUNIT_REPORT_PATH</code> で上書きできますが、複数のJUnitXmlReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
 </dl>
 

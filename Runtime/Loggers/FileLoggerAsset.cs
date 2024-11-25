@@ -23,10 +23,11 @@ namespace DeNA.Anjin.Loggers
     public class FileLoggerAsset : AbstractLoggerAsset
     {
         /// <summary>
-        /// Log output file path.
-        /// Note: relative path from the project root directory. When run on player, it will be the Application.persistentDataPath.
+        /// Output path for log file path.
+        /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-FILE_LOGGER_OUTPUT_PATH".
         /// </summary>
-        public string outputPath;
+        public string outputPath = "autopilot.log";
 
         /// <summary>
         /// To selective enable debug log message.
@@ -51,27 +52,14 @@ namespace DeNA.Anjin.Loggers
                     return _logger;
                 }
 
-                var args = new Arguments();
-                string path;
-                if (args.FileLoggerOutputPath.IsCaptured())
+                var path = PathUtils.GetOutputPath(this.outputPath, new Arguments().FileLoggerOutputPath);
+                if (string.IsNullOrEmpty(path))
                 {
-                    path = args.FileLoggerOutputPath.Value();
-                }
-                else if (!string.IsNullOrEmpty(outputPath))
-                {
-                    path = PathUtils.GetAbsolutePath(outputPath);
-                }
-                else
-                {
-                    throw new InvalidOperationException("outputPath is not set.");
+                    Debug.LogWarning("File Logger output path is not set.");
+                    return null;
                 }
 
-                var directory = Path.GetDirectoryName(path);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
+                _handler?.Dispose();
                 _handler = new FileLogHandler(path, timestamp);
                 _logger = new Logger(_handler) { filterLogType = filterLogType };
                 return _logger;
@@ -101,7 +89,7 @@ namespace DeNA.Anjin.Loggers
             }
         }
 
-        private class FileLogHandler : ILogHandler, IDisposable
+        private sealed class FileLogHandler : ILogHandler, IDisposable
         {
             private readonly StreamWriter _writer;
             private readonly bool _timestamp;

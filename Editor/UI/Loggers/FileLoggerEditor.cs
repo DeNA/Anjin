@@ -13,17 +13,19 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     [CustomEditor(typeof(FileLoggerAsset))]
     public class FileLoggerEditor : UnityEditor.Editor
     {
+        // @formatter:off
         private static readonly string s_description = L10n.Tr("Description");
         private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance");
 
         private static readonly string s_outputPath = L10n.Tr("Output File Path");
-        private static readonly string s_outputPathTooltip = L10n.Tr("Log output file path. Specify relative path from project root or absolute path.");
+        private static readonly string s_outputPathTooltip = L10n.Tr("Output path for log file path. When a relative path is specified, relative to the AutopilotSettings.outputRootPath.");
 
         private static readonly string s_filterLogType = L10n.Tr("Filter LogType");
         private static readonly string s_filterLogTypeTooltip = L10n.Tr("To selective enable debug log message");
 
         private static readonly string s_timestamp = L10n.Tr("Timestamp");
         private static readonly string s_timestampTooltip = L10n.Tr("Output timestamp to log entities");
+        // @formatter:on
 
         /// <inheritdoc/>
         public override void OnInspectorGUI()

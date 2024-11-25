@@ -5,12 +5,10 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Settings;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 // ReSharper disable MethodHasAsyncOverload
 
@@ -19,18 +17,13 @@ namespace DeNA.Anjin.Loggers
     [TestFixture]
     public class FileLoggerAssetTest
     {
-        private const string LogsDirectoryPath = "Logs/FileLoggerTest";
-        private const string TimestampRegex = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
+        private static string OutputDirectory =>
+            Path.Combine(Application.temporaryCachePath, TestContext.CurrentContext.Test.ClassName);
 
-        private static string GetOutputPath()
-        {
-#if UNITY_EDITOR
-            return Path.Combine(LogsDirectoryPath, $"{TestContext.CurrentContext.Test.Name}.log");
-#else
-            return Path.Combine(Application.persistentDataPath, LogsDirectoryPath,
-                $"{TestContext.CurrentContext.Test.Name}.log");
-#endif
-        }
+        private static string LogFilePath =>
+            Path.Combine(OutputDirectory, $"{TestContext.CurrentContext.Test.Name}.log");
+
+        private const string TimestampRegex = @"\[\d{2}:\d{2}:\d{2}\.\d{3}\] ";
 
         private static Exception CreateExceptionWithStacktrace(string message)
         {
@@ -44,16 +37,30 @@ namespace DeNA.Anjin.Loggers
             }
         }
 
+        [SetUp]
+        public void SetUp()
+        {
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.outputRootPath = OutputDirectory;
+            AutopilotState.Instance.settings = settings;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            AutopilotState.Instance.Reset();
+        }
+
         [Test, Order(0)]
         public async Task GetLogger_DirectoryDoesNotExist_CreateDirectoryAndWriteToFile()
         {
-            if (Directory.Exists(LogsDirectoryPath))
+            if (Directory.Exists(OutputDirectory))
             {
-                Directory.Delete(LogsDirectoryPath, true);
+                Directory.Delete(OutputDirectory, true);
             }
 
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -70,7 +77,7 @@ namespace DeNA.Anjin.Loggers
         public async Task GetLogger_FileExists_OverwrittenToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             File.WriteAllText(path, "Existing content");
 
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
@@ -86,23 +93,22 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public void GetLogger_OutputPathIsEmpty_ThrowsException()
+        public void GetLogger_OutputPathIsEmpty_ReturnsNull()
         {
-            var message = TestContext.CurrentContext.Test.Name;
             var path = string.Empty;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
 
-            Assert.That(() => sut.Logger, Throws.TypeOf<InvalidOperationException>()
-                .And.Message.EqualTo("outputPath is not set."));
+            Assert.That(sut.Logger, Is.Null);
+            LogAssert.Expect(LogType.Warning, "File Logger output path is not set.");
         }
 
         [Test]
-        public async Task GetLogger_OutputPathWithoutDirectory_WriteToFile()
+        public async Task GetLogger_OutputPathIsAbsolutePath_WriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = $"{TestContext.CurrentContext.Test.Name}.log"; // without directory
+            var path = Path.Combine(Application.temporaryCachePath, $"{TestContext.CurrentContext.Test.Name}.log");
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -111,11 +117,7 @@ namespace DeNA.Anjin.Loggers
             sut.Dispose();
             await Task.Yield();
 
-#if UNITY_EDITOR
             var actual = File.ReadAllText(path);
-#else
-            var actual = File.ReadAllText(Path.Combine(Application.persistentDataPath, path));
-#endif
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
 
             // teardown
@@ -126,7 +128,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogFormat_WriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -144,7 +146,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogFormat_Disposed_NotWriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -165,7 +167,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogFormat_WithTimestamp_WriteTimestamp()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = true;
@@ -190,7 +192,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogException_WriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -208,7 +210,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogException_Disposed_NotWriteToFile()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = false;
@@ -229,7 +231,7 @@ namespace DeNA.Anjin.Loggers
         public async Task LogException_WithTimestamp_WriteTimestamp()
         {
             var message = TestContext.CurrentContext.Test.Name;
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.timestamp = true;
@@ -246,7 +248,7 @@ namespace DeNA.Anjin.Loggers
         [Test]
         public async Task ResetLoggers_ResetLoggerAsset()
         {
-            var path = GetOutputPath();
+            var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
             sut.Logger.Log("Before reset");

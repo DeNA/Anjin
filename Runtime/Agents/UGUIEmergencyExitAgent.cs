@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
+using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
 using TestHelper.Monkey.Operators;
 using TestHelper.Monkey.ScreenshotFilenameStrategies;
@@ -82,8 +83,10 @@ namespace DeNA.Anjin.Agents
             var message = new StringBuilder($"Click emergency exit button: {button.gameObject.name}");
             if (screenshot)
             {
+                // ReSharper disable once PossibleNullReferenceException
+                var directory = AutopilotState.Instance.settings.ScreenshotsPath;
                 var filename = _filenameStrategy.GetFilename();
-                await ScreenshotHelper.TakeScreenshot(filename: filename).ToUniTask(button);
+                await ScreenshotHelper.TakeScreenshot(directory, filename).ToUniTask(button);
                 message.Append($" ({filename})");
             }
 

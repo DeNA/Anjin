@@ -2,7 +2,6 @@
 // This software is released under the MIT License.
 
 using System;
-using System.IO;
 using System.Threading;
 using System.Xml.Linq;
 using Cysharp.Threading.Tasks;
@@ -22,9 +21,10 @@ namespace DeNA.Anjin.Reporters
     {
         /// <summary>
         /// Output path for JUnit XML format file.
-        /// Note: relative path from the project root directory. When run on player, it will be the <c>Application.persistentDataPath</c>.
+        /// When a relative path is specified, relative to the <c>AutopilotSettings.outputRootPath</c>.
+        /// This item can be overridden by the command line argument "-JUNIT_REPORT_PATH".
         /// </summary>
-        public string outputPath;
+        public string outputPath = "autopilot-result.xml";
 
         private static DateTime s_startDatetime;
         private static float s_startTime;
@@ -47,17 +47,11 @@ namespace DeNA.Anjin.Reporters
                 throw new InvalidOperationException("Autopilot is not running");
             }
 
-            var path = GetOutputPath(this.outputPath, new Arguments());
+            var path = PathUtils.GetOutputPath(this.outputPath, new Arguments().JUnitReportPath);
             if (string.IsNullOrEmpty(path))
             {
-                Debug.LogWarning("JUnit XML report output path is not set.");
+                Debug.LogWarning("JUnit XML Reporter output path is not set.");
                 return;
-            }
-
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
             }
 
             var testCaseName = settings.Name;
@@ -68,30 +62,6 @@ namespace DeNA.Anjin.Reporters
             new XDocument(new XDeclaration("1.0", "utf-8", null), testSuites).Save(path);
 
             await UniTask.CompletedTask;
-        }
-
-        internal static string GetOutputPath(string outputPathField, Arguments args = null)
-        {
-            if (args == null)
-            {
-                args = new Arguments();
-            }
-
-            string path;
-            if (args.JUnitReportPath.IsCaptured())
-            {
-                path = args.JUnitReportPath.Value();
-            }
-            else if (!string.IsNullOrEmpty(outputPathField))
-            {
-                path = PathUtils.GetAbsolutePath(outputPathField);
-            }
-            else
-            {
-                return null;
-            }
-
-            return path;
         }
 
         internal static XElement CreateTestCase(string name, float time, string message, string stackTrace,
