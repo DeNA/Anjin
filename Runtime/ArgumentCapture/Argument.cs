@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-namespace DeNA.Anjin.Settings.ArgumentCapture
+namespace DeNA.Anjin.ArgumentCapture
 {
     /// <summary>
     /// Capture commandline arguments or environment variables
@@ -13,7 +13,7 @@ namespace DeNA.Anjin.Settings.ArgumentCapture
     ///  - IsCaptured() returns false if type cast failures
     /// </remarks>
     /// <typeparam name="T">Argument type</typeparam>
-    internal class Argument<T> : IArgument<T>
+    public class Argument<T> : IArgument<T>
     {
         private readonly T _defaultValue;
         private readonly (bool, T) _captured;

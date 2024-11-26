@@ -2,8 +2,8 @@
 // This software is released under the MIT License.
 
 using System.IO;
+using DeNA.Anjin.ArgumentCapture;
 using DeNA.Anjin.Settings;
-using DeNA.Anjin.Settings.ArgumentCapture;
 
 namespace DeNA.Anjin.Utilities
 {
