@@ -161,6 +161,7 @@ namespace DeNA.Anjin.Editor.UI.Settings
             {
                 state.launchFrom = LaunchType.EditMode;
 #if UNITY_2020_3_OR_NEWER
+                EditorUtility.SetDirty(state);
                 AssetDatabase.SaveAssetIfDirty(state); // Note: Sync with virtual players of MPPM package
 #endif
                 EditorApplication.isPlaying = true;
