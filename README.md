@@ -660,6 +660,10 @@ Therefore, each Virtual Player's output of Agents, Loggers, and Reporters will b
 > The Automated QA package that `UGUIPlaybackAgent` depends on writes its output files to `Application.persistentDataPath`.
 > Because all the Virtual Players try to write to the same file, an error is printed to the console.
 
+> [!WARNING]  
+> Files under Assets are shared with Virtual Players via symbolic links.
+> Therefore, when you change settings in the Inspector, you must save them using the menu item **File > Save (command + S)** before re-running Autopilot.
+
 
 ### Run on Play Mode Scenarios
 

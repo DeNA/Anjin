@@ -665,6 +665,10 @@ AutopilotSettingsの「出力ルートパス」に相対パスを指定したと
 > `UGUIPlaybackAgent` が依存しているAutomated QAパッケージは、出力ファイルを `Application.persistentDataPath` に書き出します。
 > すべてのVirtual Playerが同じファイルに書き込もうとするため、コンソールにエラーが出力されます。
 
+> [!WARNING]  
+> Virtual PlayersにはAssets下のファイルがシンボリックリンクで共有されます。
+> そのため、インスペクタで設定を変更したときは、再実行する前にメニューの **File > Save (command + S)** で保存する必要があります。
+
 
 ### Play Mode Scenariosで実行する
 
