@@ -11,8 +11,6 @@ namespace DeNA.Anjin.TestDoubles
 {
     public class SpyLoggerAsset : AbstractLoggerAsset
     {
-        public bool Disposed { get; private set; }
-
         private SpyLogHandler _handler;
         private ILogger _logger;
 
@@ -32,11 +30,6 @@ namespace DeNA.Anjin.TestDoubles
         }
 
         public List<(LogType logType, string message)> Logs => _handler.Logs;
-
-        public override void Dispose()
-        {
-            Disposed = true;
-        }
 
         private class SpyLogHandler : ILogHandler
         {

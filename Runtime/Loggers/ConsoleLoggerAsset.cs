@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using DeNA.Anjin.Attributes;
 using UnityEngine;
 
 namespace DeNA.Anjin.Loggers
@@ -32,23 +31,6 @@ namespace DeNA.Anjin.Loggers
 
                 _logger = new Logger(Debug.unityLogger.logHandler) { filterLogType = filterLogType };
                 return _logger;
-            }
-        }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            // Nothing to dispose.
-        }
-
-        [InitializeOnLaunchAutopilot(InitializeOnLaunchAutopilotAttribute.InitializeLoggerOrder)]
-        public static void ResetLoggers()
-        {
-            // Reset runtime instances
-            var loggerAssets = FindObjectsOfType<ConsoleLoggerAsset>();
-            foreach (var current in loggerAssets)
-            {
-                current._logger = null;
             }
         }
     }

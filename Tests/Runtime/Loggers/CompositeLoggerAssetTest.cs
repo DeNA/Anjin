@@ -113,52 +113,5 @@ namespace DeNA.Anjin.Loggers
 
             Assert.That(logger2.Logs, Does.Contain((LogType.Exception, exception.ToString())));
         }
-
-        [Test]
-        public void Dispose_CompositeMultipleLoggers_DisposeAllLoggers()
-        {
-            var logger1 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
-            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
-            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
-            sut.loggerAssets.Add(logger1);
-            sut.loggerAssets.Add(logger2);
-
-            var message = TestContext.CurrentContext.Test.Name;
-            sut.Logger.Log(message);
-            sut.Dispose();
-
-            Assert.That(logger1.Disposed, Is.True);
-            Assert.That(logger2.Disposed, Is.True);
-        }
-
-        [Test]
-        public void Dispose_LoggersIncludesNull_IgnoreNull()
-        {
-            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
-            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
-            sut.loggerAssets.Add(null);
-            sut.loggerAssets.Add(logger2);
-
-            var message = TestContext.CurrentContext.Test.Name;
-            sut.Logger.Log(message);
-            sut.Dispose();
-
-            Assert.That(logger2.Disposed, Is.True);
-        }
-
-        [Test]
-        public void Dispose_NestingLogger_IgnoreNested()
-        {
-            var logger2 = ScriptableObject.CreateInstance<SpyLoggerAsset>();
-            var sut = ScriptableObject.CreateInstance<CompositeLoggerAsset>();
-            sut.loggerAssets.Add(sut); // nesting
-            sut.loggerAssets.Add(logger2);
-
-            var message = TestContext.CurrentContext.Test.Name;
-            sut.Logger.Log(message);
-            sut.Dispose();
-
-            Assert.That(logger2.Disposed, Is.True);
-        }
     }
 }

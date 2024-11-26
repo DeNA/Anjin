@@ -39,13 +39,7 @@ namespace DeNA.Anjin.Loggers
             }
         }
 
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            _handler?.Dispose();
-        }
-
-        private class CompositeLogHandler : ILogHandler, IDisposable
+        private class CompositeLogHandler : ILogHandler
         {
             private readonly List<AbstractLoggerAsset> _loggerAssets;
             private readonly AbstractLoggerAsset _owner;
@@ -71,15 +65,6 @@ namespace DeNA.Anjin.Loggers
                 foreach (var loggerAsset in _loggerAssets.Where(x => x != null && x != _owner))
                 {
                     loggerAsset.Logger.LogException(exception, context);
-                }
-            }
-
-            /// <inheritdoc />
-            public void Dispose()
-            {
-                foreach (var loggerAsset in _loggerAssets.Where(x => x != null && x != _owner))
-                {
-                    loggerAsset.Dispose();
                 }
             }
         }
