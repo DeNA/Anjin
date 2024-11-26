@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using DeNA.Anjin.Settings.ArgumentCapture;
+using DeNA.Anjin.ArgumentCapture;
 
 namespace DeNA.Anjin.TestDoubles
 {
