@@ -14,7 +14,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     public class ConsoleLoggerEditor : UnityEditor.Editor
     {
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance.");
 
         private static readonly string s_filterLogType = L10n.Tr("Filter LogType");
         private static readonly string s_filterLogTypeTooltip = L10n.Tr("To selective enable debug log message");

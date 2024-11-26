@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
     {
         // @formatter:off
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this agent instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Agent instance.");
 
         private static readonly string s_exitCode = L10n.Tr("Exit Code");
         private static readonly string s_exitCodeTooltip = L10n.Tr("Select the exit code used when this agent terminates the Autopilot.");

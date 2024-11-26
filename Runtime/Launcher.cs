@@ -124,7 +124,7 @@ namespace DeNA.Anjin
 
                 var logger = Debug.unityLogger; // Note: Logger is not initialized yet.
                 const ExitCode ExitCode = ExitCode.AutopilotLaunchingFailed;
-                const string Caller = "Autopilot launcher";
+                const string Caller = "Launcher";
                 Debug.Log("Cancel launching Autopilot");
                 TeardownLaunchAutopilotAsync(state, logger, ExitCode, Caller).Forget();
                 return;

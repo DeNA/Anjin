@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Editor.UI.Loggers
     {
         // @formatter:off
         private static readonly string s_description = L10n.Tr("Description");
-        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance");
+        private static readonly string s_descriptionTooltip = L10n.Tr("Description about this Logger instance.");
 
         private static readonly string s_outputPath = L10n.Tr("Output File Path");
         private static readonly string s_outputPathTooltip = L10n.Tr("Output path for log file path. When a relative path is specified, relative to the AutopilotSettings.outputRootPath.");

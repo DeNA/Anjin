@@ -59,10 +59,18 @@ Assembly Definition FileのDefine Constraintsに `UNITY_INCLUDE_TESTS || DENA_AU
 ### 推奨.gitignore
 
 Anjinを起動すると、次のファイルが自動生成されます。
-トラッキングする必要はありませんので、プロジェクトの.gitignoreファイルに追加することを推奨します。
+トラッキングする必要はありませんので、プロジェクトの.gitignoreファイル（もしくはお使いのVCSの無視設定）に追加することを推奨します。
 
 ```
-/Assets/AutopilotState.asset*
+/[Aa]ssets/[Aa]utopilot[Ss]tate.asset*
+```
+
+また、Automated QAパッケージの機能を使用すると、次のファイルが生成されます。
+これらも同様に無視設定することを推奨します。
+
+```
+/[Aa]ssets/[Aa]utomated[Qq][Aa]*
+/[Aa]ssets/[Rr]ecordings*
 ```
 
 
@@ -178,13 +186,17 @@ Reporterインスタンスは、UnityエディタのProjectウィンドウで右
 
 ### 1. Unityエディタ（GUI）の再生モードで実行
 
-実行したい設定ファイル（AutopilotSettings）をインスペクタで開き、**実行**ボタンをクリックするとオートパイロットが有効な状態で再生モードに入ります。
-設定された実行時間が経過するか、通常の再生モードと同じく再生ボタンクリックで停止します。
+実行したい設定ファイル（AutopilotSettings）をインスペクタで開き、**実行**ボタンをクリックすると、オートパイロットが起動します。
+設定された実行時間が経過するか、**停止**ボタンクリックで停止します。
+
+> [!TIPS]  
+> 編集モードからオートパイロットを起動したとき、オートパイロットが停止すると編集モードに戻ります。
+> 再生モードの状態でオートパイロットを起動すると、オートパイロットを停止しても再生モードは継続されます。
 
 
-### 2. コマンドラインから実行
+### 2. コマンドラインから起動
 
-コマンドラインから実行する場合、以下の引数を指定します。
+コマンドラインから起動する場合、以下の引数を指定します。
 
 ```bash
 $(UNITY) \
@@ -215,6 +227,10 @@ $(UNITY) \
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
+
+> [!IMPORTANT]  
+> バッチモードでも GameView ウィンドウが表示されます。
+> Xvfbでも動作することを確認していますが、Unityの正式なサポートではないため、将来利用できなくなる恐れはあります。
 
 
 ### 3. Play Modeテスト内で実行
@@ -266,10 +282,10 @@ uGUIのコンポーネントをランダムに操作するAgentです。
   <dt>操作間隔</dt><dd>ランダム操作間のウェイト間隔をミリ秒で指定します</dd>
   <dt>コンポーネント探索時間</dt><dd>インタラクティブな要素を探索する秒数を指定します。探索時間がこれを超えるとエラーを発生させます</dd>
   <dt>タッチ&ホールド時間</dt><dd>タッチ&ホールドの継続時間をミリ秒で指定します</dd>
-  <dt>Gizmo</dt><dd>もし有効ならモンキー操作中の GameView に Gizmo を表示します。もし無効なら GameView に Gizmo を表示しません</dd>
+  <dt>Gizmo を有効</dt><dd>もし有効ならモンキー操作中の GameView に Gizmo を表示します。もし無効なら GameView に Gizmo を表示しません</dd>
 </dl>
 
-#### *スクリーンショット設定:*
+***スクリーンショット設定:***
 
 <dl>
   <dt>有効</dt><dd>スクリーンショット撮影を有効にします</dd>
@@ -290,7 +306,7 @@ uGUIのコンポーネントをランダムに操作するAgentです。
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Recorded Json</dt><dd>再生するレコーディングファイル (.json) を指定します</dd>
+  <dt>操作を記録したJSONファイル</dt><dd>Automated QAパッケージのRecorded Playbackウィンドウで記録したJSONファイルを設定します</dd>
 </dl>
 
 Automated QAによる操作のレコーディングは、Unityエディターのメニューから
@@ -301,12 +317,12 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 なお、Automated QAのRecorded Playback機能ではScene遷移をまたがって操作を記録ができますが、AnjinではSceneが切り替わったところでAgentも強制的に切り替わるため、再生も中断されてしまいます。
 従って、レコーディングはScene単位に区切って行なうようご注意ください。
 
-> [!WARNING]  
+> [!IMPORTANT]  
 > Automated QAパッケージは、再生に失敗（対象のボタンが見つからないなど）したときコンソールに `LogType.Error` を出力します。これを検知してオートパイロットを停止するには、次の設定が必要です。
 > 1. [ErrorHandlerAgent](#ErrorHandlerAgent) を追加し、`Handle Error` を `Terminate Autopilot` に設定します
 > 2. [ConsoleLogger](#ConsoleLogger) を追加し、`Filter LogType` に `Error` 以上を設定します
 
-> [!NOTE]  
+> [!IMPORTANT]  
 > Automated QAパッケージはプレビュー段階のため、破壊的変更や、パッケージ自体の開発中止・廃止もありえる点、ご注意ください。
 
 
@@ -358,7 +374,7 @@ Automated QAによる操作のレコーディングは、Unityエディターの
 
 ### OneTimeAgent
 
-1つの子Agentを登録し、それをAutopilot実行期間を通じて1回だけ実行できるAgentです。
+1つの子Agentを登録し、それをオートパイロット実行期間を通じて1回だけ実行できるAgentです。
 2回目以降の実行はスキップされます。
 
 たとえば、タイトル画面で初回だけ導線が異なる、ホーム画面で初回だけログインボーナス受け取りがあるといったゲームにおいて、 通信エラーなどによるタイトル画面戻しが発生してもそのまま実行するテストシナリオを構築できます。
@@ -412,19 +428,19 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Handle Exception</dt><dd>例外ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
+  <dt>例外を検知</dt><dd>例外ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_EXCEPTION</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Error</dt><dd>エラーログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
+  <dt>エラーを検知</dt><dd>エラーログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_ERROR</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Assert</dt><dd>アサートログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
+  <dt>アサートを検知</dt><dd>アサートログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_ASSERT</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Handle Warning</dt><dd>警告ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
+  <dt>警告を検知</dt><dd>警告ログを検知したとき、オートパイロットを停止するか、レポート送信のみ行なうかを指定します。
         コマンドライン引数 <code>-HANDLE_WARNING</code> で上書きできますが、複数のErrorHandlerAgentを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Ignore Messages</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です。</dd>
+  <dt>無視するメッセージ</dt><dd>指定された文字列を含むログメッセージは停止条件から無視されます。正規表現も使用できます。エスケープは単一のバックスラッシュ (`\`) です。</dd>
 </dl>
 
-> [!NOTE]  
-> 実行中に例外が発生した時点でオートパイロットを中断するために、`Handle Exception` の有効化をお勧めします。
+> [!TIP]  
+> 実行中に例外が発生した時点でオートパイロットを中断するために「例外を検知」を停止に設定することを推奨します。
 
 
 ### UGUIEmergencyExitAgent
@@ -471,7 +487,7 @@ Sceneごとに設定を変えたい場合は、`ParallelCompositeAgent` と合�
   <dt>出力ファイルパス</dt><dd>ログファイルの出力先パスを指定します。相対パスが指定されたとき、<code>AutopilotSettings.outputRootPath</code>が起点となります。
         コマンドライン引数 <code>-FILE_LOGGER_OUTPUT_PATH</code> で上書きできますが、複数のFileLoggerを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>フィルタリングLogType</dt><dd>選択したLogType以上のログ出力のみを有効にします</dd>
-  <dt>タイムスタンプを出力</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
+  <dt>タイムスタンプを追加</dt><dd>ログエンティティにタイムスタンプを出力します</dd>
 </dl>
 
 
@@ -501,18 +517,18 @@ Slackにレポート送信するReporterです。
 このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Slack Token</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
+  <dt>Slackトークン</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
         コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Slack Channels</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
+  <dt>Slackチャンネル</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
         なお、チャンネルにはBotを招待しておく必要があります。
         コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Mention Sub Team IDs</dt><dd>エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します</dd>
-  <dt>Add @here</dt><dd>エラー終了時に送信する通知に@hereを付けます</dd>
-  <dt>Lead Text</dt><dd>エラー終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます</dd>
-  <dt>Message</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
-  <dt>Color</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色（デフォルト：Slackの "danger" と同じ赤色）</dd>
-  <dt>Screenshot</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
-  <dt>Normally terminated report</dt><dd>正常終了時にもレポートを送信します（デフォルト: off）</dd>
+  <dt>メンション宛先チームID</dt><dd>エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します</dd>
+  <dt>@hereをつける</dt><dd>エラー終了時に送信する通知に@hereを付けます</dd>
+  <dt>リード文</dt><dd>エラー終了時に送信する通知のリード文。OSの通知に使用されます。"{message}" のようなプレースホルダーを指定できます</dd>
+  <dt>メッセージ</dt><dd>エラー終了時に送信するメッセージ本文のテンプレート。"{message}" のようなプレースホルダーを指定できます</dd>
+  <dt>色</dt><dd>エラー終了時に送信するメッセージのアタッチメントに指定する色（デフォルト：Slackの "danger" と同じ赤色）</dd>
+  <dt>スクリーンショット</dt><dd>エラー終了時にスクリーンショットを撮影します（デフォルト: on）</dd>
+  <dt>正常終了時にも送信</dt><dd>正常終了時にもレポートを送信します（デフォルト: off）</dd>
 </dl>
 
 Slack Botは次のページで作成できます。  
@@ -540,6 +556,37 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 このasmdef及び格納フォルダは、Projectウィンドウの任意の場所でコンテキストメニューを開き
 **Create > Anjin > Game Title Specific Assembly Folder**
 を選択することで生成できます。
+
+
+### ゲームタイトル固有の初期化処理
+
+ゲームタイトル固有の初期化処理が必要な場合、初期化を行なう静的メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
+オートパイロットの起動処理の中でメソッドを呼び出します。
+
+```csharp
+[InitializeOnLaunchAutopilot]
+public static void InitializeOnLaunchAutopilotMethod()
+{
+    // ゲームタイトル固有の初期化処理
+}
+```
+
+非同期メソッドにも対応しています。
+
+```csharp
+[InitializeOnLaunchAutopilot]
+private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
+{
+    // ゲームタイトル固有の初期化処理
+}
+```
+
+> [!NOTE]  
+> 引数に呼び出し順序を指定できます。値の低いメソッドから順に呼び出されます。
+
+> [!NOTE]  
+> オートパイロットの起動処理は、`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)`（`RuntimeInitializeOnLoadMethod`のデフォルト）で実行しています。
+> また`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)`で、Configurable Enter Play Modeのための初期化処理を実装しています。
 
 
 ### カスタムAgent
@@ -571,37 +618,6 @@ Assembly Definition File (asmdef) のAuto Referencedをoff、Define Constraints�
 なお、`[CreateAssetMenu]`アトリビュートを設定しておくとコンテキストメニューからインスタンス生成ができて便利です。
 
 
-### ゲームタイトル固有の初期化処理
-
-ゲームタイトル固有の初期化処理が必要な場合、初期化を行なう `static` メソッドに `InitializeOnLaunchAutopilot` 属性を付与してください。
-オートパイロットの起動処理の中でメソッドを呼び出します。
-
-```csharp
-[InitializeOnLaunchAutopilot]
-public static void InitializeOnLaunchAutopilotMethod()
-{
-    // ゲームタイトル固有の初期化処理
-}
-```
-
-非同期メソッドにも対応しています。
-
-```csharp
-[InitializeOnLaunchAutopilot]
-private static async UniTask InitializeOnLaunchAutopilotMethodAsync()
-{
-    // ゲームタイトル固有の初期化処理
-}
-```
-
-> [!NOTE]  
-> 引数に呼び出し順序を指定できます。値の低いメソッドから順に呼び出されます。
-
-> [!NOTE]  
-> オートパイロットの起動処理は、`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)`（`RuntimeInitializeOnLoadMethod`のデフォルト）で実行しています。
-> また`RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)`で、Configurable Enter Play Modeのための初期化処理を実装しています。
-
-
 
 ## Anjin Annotations
 
@@ -624,6 +640,46 @@ Anjinの操作を制御するためのアノテーションを定義していま
 
 このコンポーネントがアタッチされた`Button`が表示されると、`UGUIEmergencyExitAgent`はすぐにクリックを試みます。
 通信エラーや日またぎで「タイトル画面に戻る」ボタンのような、テストシナリオ遂行上イレギュラーとなるボタンに付けることを想定しています。
+
+
+
+## Multiplayer Play Mode パッケージと使用する
+
+Unity 6以降で利用できる [Multiplayer Play Mode](https://docs.unity3d.com/Packages/com.unity.multiplayer.playmode@latest)（以下MPPM）パッケージを使用することで、マルチプレイ対応ゲームの動作確認を簡単に行えるようになりました。
+
+AnjinをMPPMパッケージと使用するときの注意点を以下に示します。
+MPPMパッケージ v1.3.1で確認しています。
+
+
+### Virtual Playersで実行する
+
+[Virtual Players](https://docs-multiplayer.unity3d.com/mppm/current/virtual-players/) で実行する場合、編集モードからAutopilotSettingsファイルの **実行** ボタンをクリックすると、すべてのVirtual Playerでオートパイロットが起動します。
+
+再生モードからの起動および、プレイヤーによって異なるAutopilotSettingsを使用することはできません。
+プレイヤーごとに異なる振る舞いを指示するには、[タグ](https://docs-multiplayer.unity3d.com/mppm/current/player-tags/) によって分岐するカスタムAgentを実装する必要があります。
+
+AutopilotSettingsの「出力ルートパス」に相対パスを指定したとき、起点は各Virtual Playerのディレクトリになります。
+従って、FileLoggerやスクリーンショットはVirtual Playerごとに保全されます。
+
+> [!CAUTION]  
+> `UGUIPlaybackAgent` が依存しているAutomated QAパッケージは、出力ファイルを `Application.persistentDataPath` に書き出します。
+> すべてのVirtual Playerが同じファイルに書き込もうとするため、コンソールにエラーが出力されます。
+
+> [!WARNING]  
+> Virtual PlayersにはAssets下のファイルがシンボリックリンクで共有されます。
+> そのため、インスペクタで設定を変更したときは、再実行する前にメニューの **File > Save (command + S)** で保存する必要があります。
+
+
+### Play Mode Scenariosで実行する
+
+[Play Mode Scenarios](https://docs-multiplayer.unity3d.com/mppm/current/play-mode-scenario/play-mode-scenario-about/) で実行する場合、Anjinを組み込んだプレイヤービルドが必要になります。
+ビルド方法については [プレイヤービルドでの実行](#プレイヤービルドでの実行実験的機能) を参照してください。
+
+Play Mode Scenariosではプレイヤーごとにコマンドライン引数を指定して起動することができるため、異なるAutopilotSettingsファイルを使用できます。
+
+> [!CAUTION]  
+> `UGUIPlaybackAgent` が依存しているAutomated QAパッケージは、出力ファイルを `Application.persistentDataPath` に書き出します。
+> すべてのVirtual Playerが同じファイルに書き込もうとするため、コンソールにエラーが出力されます。
 
 
 
@@ -777,7 +833,7 @@ Pull requestには `enhancement`, `bug`, `chore`, `documentation` といった�
 おおまかな機能追加の受け入れ方針は次のとおりです。
 
 - すべてのビルトイン機能は、Unityエディタのインスペクタウィンドウで設定を完結して使用できること
-- `Autopilot` 本体への機能追加は極力避け、Agentなどによる拡張を検討する
+- Autopilot本体への機能追加は極力避け、Agentなどによる拡張を検討する
 - 汎用的でないAgentの追加は控える。ブログやGistでの公開、もしくはSamplesに置くことを検討する
 
 
