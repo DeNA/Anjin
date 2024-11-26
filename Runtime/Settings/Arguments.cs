@@ -104,5 +104,17 @@ namespace DeNA.Anjin.Settings
         /// <see href="https://api.slack.com/web"/>
         /// </summary>
         public virtual IArgument<string> SlackChannels => new Argument<string>("SLACK_CHANNELS");
+
+        /// <summary>
+        /// <c>GameView</c> width.
+        /// This argument is only used to launch in editor from command line.
+        /// </summary>
+        public virtual IArgument<int> GameViewWidth => new Argument<int>("GAME_VIEW_WIDTH", 640);
+
+        /// <summary>
+        /// <c>GameView</c> height.
+        /// This argument is only used to launch in editor from command line.
+        /// </summary>
+        public virtual IArgument<int> GameViewHeight => new Argument<int>("GAME_VIEW_HEIGHT", 480);
     }
 }

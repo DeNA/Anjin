@@ -210,6 +210,8 @@ $(UNITY) \
   <dt>TIME_SCALE</dt><dd>Time.timeScaleを指定します。デフォルトは1.0</dd>
   <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Agent、Logger、および Reporter が出力するファイルのルートディレクトリパスを指定します</dd>
   <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Agent が撮影するスクリーンショットの出力ディレクトリパスを指定します</dd>
+  <dt>GAME_VIEW_WIDTH</dt><dd>GameView の幅を設定します。この引数は、コマンド ラインからエディターを起動する場合にのみ使用されます。デフォルト値は 640 です</dd>
+  <dt>GAME_VIEW_HEIGHT</dt><dd>GameView の高さを設定します。この引数は、コマンド ラインからエディターを起動する場合にのみ使用されます。デフォルト値は 480 です</dd>
 </dl>
 
 いずれも、キーの先頭に`-`を付けて`-LIFESPAN_SEC 60`のように指定してください。
