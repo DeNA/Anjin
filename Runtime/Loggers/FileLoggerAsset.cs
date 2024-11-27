@@ -144,7 +144,7 @@ namespace DeNA.Anjin.Loggers
         public static void ResetLoggers()
         {
             // Reset runtime instances
-            var loggerAssets = FindObjectsOfType<FileLoggerAsset>();
+            var loggerAssets = Resources.FindObjectsOfTypeAll<FileLoggerAsset>();
             foreach (var current in loggerAssets)
             {
                 current._handler?.Dispose();
