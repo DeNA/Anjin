@@ -148,7 +148,6 @@ namespace DeNA.Anjin
 
             _logger?.Log("Destroy Autopilot object");
             _dispatcher?.Dispose();
-            _settings.LoggerAsset?.Dispose();
         }
 
         /// <inheritdoc/>

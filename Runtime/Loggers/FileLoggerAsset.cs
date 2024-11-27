@@ -39,7 +39,9 @@ namespace DeNA.Anjin.Loggers
         /// </summary>
         public bool timestamp = true;
 
-        private FileLogHandler _handler;
+#pragma warning disable IDISP006
+        private FileLogHandler _handler; // Note: dispose in ResetLoggers
+#pragma warning restore IDISP006
         private ILogger _logger;
 
         /// <inheritdoc />
@@ -64,12 +66,6 @@ namespace DeNA.Anjin.Loggers
                 _logger = new Logger(_handler) { filterLogType = filterLogType };
                 return _logger;
             }
-        }
-
-        /// <inheritdoc />
-        public override void Dispose()
-        {
-            _handler?.Dispose();
         }
 
         private class TimestampCache
@@ -148,7 +144,7 @@ namespace DeNA.Anjin.Loggers
         public static void ResetLoggers()
         {
             // Reset runtime instances
-            var loggerAssets = FindObjectsOfType<FileLoggerAsset>();
+            var loggerAssets = Resources.FindObjectsOfTypeAll<FileLoggerAsset>();
             foreach (var current in loggerAssets)
             {
                 current._handler?.Dispose();

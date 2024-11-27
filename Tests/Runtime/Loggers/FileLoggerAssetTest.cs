@@ -66,7 +66,6 @@ namespace DeNA.Anjin.Loggers
             sut.timestamp = false;
 
             sut.Logger.Log(message);
-            sut.Dispose();
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -85,7 +84,6 @@ namespace DeNA.Anjin.Loggers
             sut.timestamp = false;
 
             sut.Logger.Log(message);
-            sut.Dispose();
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -114,7 +112,6 @@ namespace DeNA.Anjin.Loggers
             sut.timestamp = false;
 
             sut.Logger.Log(message);
-            sut.Dispose();
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -135,28 +132,6 @@ namespace DeNA.Anjin.Loggers
 
             sut.Logger.Log(message);
             sut.Logger.Log(message);
-            sut.Dispose();
-            await Task.Yield();
-
-            var actual = File.ReadAllText(path);
-            Assert.That(actual, Is.EqualTo(message + Environment.NewLine + message + Environment.NewLine));
-        }
-
-        [Test]
-        public async Task LogFormat_Disposed_NotWriteToFile()
-        {
-            var message = TestContext.CurrentContext.Test.Name;
-            var path = LogFilePath;
-            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
-            sut.outputPath = path;
-            sut.timestamp = false;
-
-            sut.Logger.Log(message);
-            sut.Logger.Log(message);
-            sut.Dispose();
-            await Task.Yield();
-
-            sut.Logger.Log(message); // write after disposed
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -176,7 +151,6 @@ namespace DeNA.Anjin.Loggers
             await UniTask.NextFrame();
             sut.Logger.Log(message);
             sut.Logger.Log(message); // using cache
-            sut.Dispose();
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -199,28 +173,6 @@ namespace DeNA.Anjin.Loggers
 
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
-            sut.Dispose();
-            await Task.Yield();
-
-            var actual = File.ReadAllText(path);
-            Assert.That(actual, Is.EqualTo(exception + Environment.NewLine));
-        }
-
-        [Test]
-        public async Task LogException_Disposed_NotWriteToFile()
-        {
-            var message = TestContext.CurrentContext.Test.Name;
-            var path = LogFilePath;
-            var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
-            sut.outputPath = path;
-            sut.timestamp = false;
-
-            var exception = CreateExceptionWithStacktrace(message);
-            sut.Logger.LogException(exception);
-            sut.Dispose();
-            await Task.Yield();
-
-            sut.Logger.LogException(exception); // write after disposed
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -238,7 +190,6 @@ namespace DeNA.Anjin.Loggers
 
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
-            sut.Dispose();
             await Task.Yield();
 
             var actual = File.ReadAllText(path);
@@ -246,23 +197,23 @@ namespace DeNA.Anjin.Loggers
         }
 
         [Test]
-        public async Task ResetLoggers_ResetLoggerAsset()
+        public async Task ResetLoggers_ResetLogHandler()
         {
             var path = LogFilePath;
             var sut = ScriptableObject.CreateInstance<FileLoggerAsset>();
             sut.outputPath = path;
+            sut.timestamp = false;
             sut.Logger.Log("Before reset");
-            sut.Dispose();
             await Task.Yield();
             Assume.That(path, Does.Exist);
 
-            File.Delete(path);
             FileLoggerAsset.ResetLoggers(); // Called when on launch autopilot
 
             sut.Logger.Log("After reset");
-            sut.Dispose();
             await Task.Yield();
-            Assert.That(path, Does.Exist);
+
+            var actual = File.ReadAllText(path);
+            Assert.That(actual, Is.EqualTo("After reset" + Environment.NewLine));
         }
     }
 }

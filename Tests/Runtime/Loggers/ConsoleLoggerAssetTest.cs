@@ -4,9 +4,6 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace DeNA.Anjin.Loggers
 {
@@ -39,23 +36,6 @@ namespace DeNA.Anjin.Loggers
 
             LogAssert.Expect(logType, message);
             LogAssert.NoUnexpectedReceived();
-        }
-
-        [Test]
-        public void ResetLoggers_ResetLoggerAsset()
-        {
-            var sut = ScriptableObject.CreateInstance<ConsoleLoggerAsset>();
-            sut.filterLogType = LogType.Warning;
-            sut.Logger.Log("Before reset");
-            sut.Dispose();
-            Assume.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Warning));
-
-            ConsoleLoggerAsset.ResetLoggers(); // Called when on launch autopilot
-
-            sut.filterLogType = LogType.Error;
-            sut.Logger.Log("After reset");
-            sut.Dispose();
-            Assert.That(sut.Logger.filterLogType, Is.EqualTo(LogType.Error));
         }
     }
 }
