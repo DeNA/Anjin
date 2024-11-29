@@ -188,7 +188,7 @@ Autopilot can be run in the Unity editor in three ways.
 Open the AutopilotSettings file you wish to run in the inspector and click the **Run** button to launch Autopilot.
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
-> [!TIPS]  
+> [!TIP]  
 > If you start the Autopilot in Edit Mode, so return to Edit Mode when the Autopilot is terminated.
 > If you start the Autopilot in Play Mode, Play Mode will continue even after the autopilot is terminated.
 
