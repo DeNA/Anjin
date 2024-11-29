@@ -627,7 +627,7 @@ msgid "Completion Report Settings"
 msgstr "正常終了レポート設定"
 
 # postOnNormally
-msgid "Post if completes"
+msgid "Post on Completion"
 msgstr "正常終了時にも送信"
 
 # postOnNormally tooltip

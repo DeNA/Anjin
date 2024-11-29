@@ -67,7 +67,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
         private static readonly string s_normallyHeader = L10n.Tr("Completion Report Settings");
 
-        private static readonly string s_postOnNormally = L10n.Tr("Post if completes");
+        private static readonly string s_postOnNormally = L10n.Tr("Post on Completion");
         private static readonly string s_postOnNormallyTooltip = L10n.Tr("Also post a report if completed autopilot normally.");
         private SerializedProperty _postOnNormallyProp;
         private GUIContent _postOnNormallyGUIContent;

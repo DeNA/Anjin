@@ -524,7 +524,7 @@ The instance of this Reporter (.asset file) can have the following settings.
   <dt>Message</dt><dd>Message body template for error reports. You can specify placeholders like a "{message}".</dd>
   <dt>Color</dt><dd>Attachments color for error reports. Default color is same as Slack's "danger" red.</dd>
   <dt>Screenshot</dt><dd>Take a screenshot for error reports. Default is on.</dd>
-  <dt>Post if completes</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
+  <dt>Post on Completion</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
 </dl>
 
 You can create a Slack Bot on the following page:  
