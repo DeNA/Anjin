@@ -49,6 +49,18 @@ namespace DeNA.Anjin.Utilities
         }
 
         [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.OSXPlayer, RuntimePlatform.LinuxEditor,
+            RuntimePlatform.LinuxPlayer)]
+        public void GetAbsolutePath_Null_ReturnsBasePath()
+        {
+            const string Path = null;
+            const string BasePath = "/Base/Path";
+
+            var actual = PathUtils.GetAbsolutePath(Path, BasePath);
+            Assert.That(actual, Is.EqualTo(BasePath));
+        }
+
+        [Test]
         [UnityPlatform(RuntimePlatform.WindowsEditor, RuntimePlatform.WindowsPlayer)]
         public void GetAbsolutePath_WindowsAbsolutePath_ReturnsPath()
         {
