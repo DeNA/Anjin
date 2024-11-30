@@ -97,7 +97,7 @@ namespace DeNA.Anjin.Agents
             var monkeyAgent = CreateMonkeyAgent(1);
             var agent = CreateTimeBombAgent(monkeyAgent, "^Never match!$");
             var spyTerminatable = new SpyTerminatable();
-            agent._autopilot = spyTerminatable;
+            agent.AutopilotInstance = spyTerminatable;
 
             using (var cts = new CancellationTokenSource())
             {

@@ -32,8 +32,9 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public string defuseMessage;
 
-        internal ITerminatable _autopilot; // can inject for testing
-        private CancellationTokenSource _cts;
+#pragma warning disable IDISP006
+        private CancellationTokenSource _agentCts; // dispose in using block
+#pragma warning restore IDISP006
         private Regex _defuseMessageRegex;
 
         private Regex DefuseMessageRegex
@@ -57,8 +58,8 @@ namespace DeNA.Anjin.Agents
             var agents = Resources.FindObjectsOfTypeAll<TimeBombAgent>();
             foreach (var agent in agents)
             {
-                agent._autopilot = null;
-                agent._cts = null;
+                agent._agentCts?.Dispose();
+                agent._agentCts = null;
                 agent.DefuseMessageRegex = null;
             }
         }
@@ -79,7 +80,7 @@ namespace DeNA.Anjin.Agents
             {
                 try
                 {
-                    _cts?.Cancel();
+                    _agentCts?.Cancel();
                 }
                 catch (ObjectDisposedException)
                 {
@@ -95,28 +96,26 @@ namespace DeNA.Anjin.Agents
 
             try
             {
-                using (var agentCts = new CancellationTokenSource()) // To cancel only the Working Agent.
+                using (_agentCts = new CancellationTokenSource()) // To cancel only the Working Agent.
                 {
-                    _cts = agentCts;
-
-                    using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, agentCts.Token))
+                    using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _agentCts.Token))
                     {
                         try
                         {
                             agent.Logger = Logger;
                             agent.Random = Random;
                             // Note: This Agent does not consume pseudo-random numbers, so passed on as is.
+
                             await agent.Run(linkedCts.Token);
 
                             // If the working Agent exits first, the TimeBombAgent will fail.
                             var message =
                                 $"Could not receive defuse message `{defuseMessage}` before the {agent.name} terminated.";
                             Logger.Log(message);
-                            _autopilot = _autopilot ?? Autopilot.Instance;
-                            // ReSharper disable once MethodSupportsCancellation
-                            _autopilot.TerminateAsync(ExitCode.AutopilotFailed, message,
-                                    new StackTrace(true).ToString())
-                                .Forget(); // Note: Do not use this Agent's CancellationToken.
+
+                            // ReSharper disable once MethodSupportsCancellation; Do not use this Agent's CancellationToken.
+                            AutopilotInstance.TerminateAsync(ExitCode.AutopilotFailed, message,
+                                new StackTrace(true).ToString()).Forget();
                         }
                         catch (OperationCanceledException)
                         {

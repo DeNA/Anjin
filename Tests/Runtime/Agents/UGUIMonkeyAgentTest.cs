@@ -131,7 +131,7 @@ namespace DeNA.Anjin.Agents
             agent.secondsToErrorForNoInteractiveComponent = 1; // TimeoutException occurred after 1 second
 
             var spyTerminatable = new SpyTerminatable();
-            agent._autopilot = spyTerminatable;
+            agent.AutopilotInstance = spyTerminatable;
 
             using (var cts = new CancellationTokenSource())
             {
