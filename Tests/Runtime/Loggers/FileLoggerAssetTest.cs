@@ -68,6 +68,8 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log(message);
             await Task.Yield();
 
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
+
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
         }
@@ -85,6 +87,8 @@ namespace DeNA.Anjin.Loggers
 
             sut.Logger.Log(message);
             await Task.Yield();
+
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
@@ -114,6 +118,8 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log(message);
             await Task.Yield();
 
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
+
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine));
 
@@ -134,6 +140,8 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log(message);
             await Task.Yield();
 
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
+
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(message + Environment.NewLine + message + Environment.NewLine));
         }
@@ -152,6 +160,8 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.Log(message);
             sut.Logger.Log(message); // using cache
             await Task.Yield();
+
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Does.Match(
@@ -175,6 +185,8 @@ namespace DeNA.Anjin.Loggers
             sut.Logger.LogException(exception);
             await Task.Yield();
 
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
+
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo(exception + Environment.NewLine));
         }
@@ -191,6 +203,8 @@ namespace DeNA.Anjin.Loggers
             var exception = CreateExceptionWithStacktrace(message);
             sut.Logger.LogException(exception);
             await Task.Yield();
+
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Does.Match("^" + TimestampRegex + ".*"));
@@ -211,6 +225,8 @@ namespace DeNA.Anjin.Loggers
 
             sut.Logger.Log("After reset");
             await Task.Yield();
+
+            FileLoggerAsset.ResetLoggers(); // Need dispose log handler in Unity 2020 or older.
 
             var actual = File.ReadAllText(path);
             Assert.That(actual, Is.EqualTo("After reset" + Environment.NewLine));
