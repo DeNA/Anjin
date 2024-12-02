@@ -116,7 +116,6 @@ namespace DeNA.Anjin.Agents
 #endif
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = TestContext.CurrentContext.Test.Name;
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {

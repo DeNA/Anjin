@@ -18,6 +18,11 @@ namespace DeNA.Anjin
         /// Returns the running Agent instance array.
         /// No caching.
         /// </summary>
+#if UNITY_2022_3_OR_NEWER
+        public static AgentInspector[] Instances => FindObjectsByType<AgentInspector>(FindObjectsSortMode.None);
+        // Note: Supported in Unity 2020.3.4, 2021.3.18, 2022.2.5 or later.
+#else
         public static AgentInspector[] Instances => FindObjectsOfType<AgentInspector>();
+#endif
     }
 }

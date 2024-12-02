@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d429d6926ea8c4f688c2bfed7e53d7cf, type: 3}
-  m_Name: Run_WithAssetFile
+  m_Name: PlaybackAgent
   m_EditorClassIdentifier: 
   description: 
   recordedJson: {fileID: 4900000, guid: 7847549ddc204e628dbc7746afd8f03f, type: 3}

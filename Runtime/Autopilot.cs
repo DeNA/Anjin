@@ -55,7 +55,12 @@ namespace DeNA.Anjin
         {
             get
             {
+#if UNITY_2022_3_OR_NEWER
+                var autopilot = FindAnyObjectByType<Autopilot>();
+                // Note: Supported in Unity 2020.3.4, 2021.3.18, 2022.2.5 or later.
+#else
                 var autopilot = FindObjectOfType<Autopilot>();
+#endif
                 if (autopilot == null)
                 {
                     throw new InvalidOperationException("Autopilot instance not found");
