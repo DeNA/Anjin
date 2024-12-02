@@ -55,7 +55,7 @@ namespace DeNA.Anjin.Agents
             agent.exitMessage = "Terminated!";
 
             var spyTerminatable = new SpyTerminatable();
-            agent._autopilot = spyTerminatable;
+            agent.AutopilotInstance = spyTerminatable;
 
             using (var cts = new CancellationTokenSource())
             {

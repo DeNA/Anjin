@@ -1,9 +1,9 @@
-﻿// Copyright (c) 2023 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Threading;
-using DeNA.Anjin.Utilities;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Utilities;
 using UnityEngine;
 
 namespace DeNA.Anjin.Agents
@@ -29,6 +29,24 @@ namespace DeNA.Anjin.Agents
         /// Random instance used by this agent
         /// </summary>
         public virtual IRandom Random { get; set; }
+
+        private ITerminatable _autopilotInstance;
+
+        /// <summary>
+        /// Running Autopilot instance.
+        /// Can inject a spy object for testing.
+        /// </summary>
+        public ITerminatable AutopilotInstance
+        {
+            get
+            {
+                return _autopilotInstance ?? Autopilot.Instance;
+            }
+            set
+            {
+                _autopilotInstance = value;
+            }
+        }
 
         /// <summary>
         /// Run agent

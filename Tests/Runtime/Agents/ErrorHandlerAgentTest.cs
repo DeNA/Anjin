@@ -31,7 +31,7 @@ namespace DeNA.Anjin.Agents
             _spyLoggerAsset = ScriptableObject.CreateInstance<SpyLoggerAsset>();
 
             _sut = ScriptableObject.CreateInstance<ErrorHandlerAgent>();
-            _sut._autopilot = _spyTerminatable;
+            _sut.AutopilotInstance = _spyTerminatable;
             _sut.Logger = _spyLoggerAsset.Logger;
 
             _spyReporter = ScriptableObject.CreateInstance<SpyReporter>();
