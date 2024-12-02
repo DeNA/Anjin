@@ -188,7 +188,7 @@ Autopilot can be run in the Unity editor in three ways.
 Open the AutopilotSettings file you wish to run in the inspector and click the **Run** button to launch Autopilot.
 After the set run time has elapsed, or as in normal play mode, clicking the Play button will stop the program.
 
-> [!TIPS]  
+> [!TIP]  
 > If you start the Autopilot in Edit Mode, so return to Edit Mode when the Autopilot is terminated.
 > If you start the Autopilot in Play Mode, Play Mode will continue even after the autopilot is terminated.
 
@@ -524,7 +524,7 @@ The instance of this Reporter (.asset file) can have the following settings.
   <dt>Message</dt><dd>Message body template for error reports. You can specify placeholders like a "{message}".</dd>
   <dt>Color</dt><dd>Attachments color for error reports. Default color is same as Slack's "danger" red.</dd>
   <dt>Screenshot</dt><dd>Take a screenshot for error reports. Default is on.</dd>
-  <dt>Post if completes</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
+  <dt>Post on Completion</dt><dd>Also post a report if completed autopilot normally. Default is off.</dd>
 </dl>
 
 You can create a Slack Bot on the following page:  
