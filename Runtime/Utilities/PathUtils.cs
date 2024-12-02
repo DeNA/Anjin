@@ -17,6 +17,11 @@ namespace DeNA.Anjin.Utilities
         /// <returns>Absolute path.</returns>
         public static string GetAbsolutePath(string path, string basePath)
         {
+            if (string.IsNullOrEmpty(path))
+            {
+                return basePath;
+            }
+
 #if UNITY_2021_2_OR_NEWER
             if (Path.IsPathFullyQualified(path))
             {

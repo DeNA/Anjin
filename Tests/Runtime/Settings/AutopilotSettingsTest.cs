@@ -8,6 +8,7 @@ using DeNA.Anjin.Reporters;
 using DeNA.Anjin.TestDoubles;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace DeNA.Anjin.Settings
 {
@@ -65,6 +66,56 @@ namespace DeNA.Anjin.Settings
             settings.customExitCode = "not valid";
 
             Assert.That(settings.ExitCode, Is.EqualTo((ExitCode)ExitCodeWhenLifespanExpired.Custom));
+        }
+
+        [Test]
+        public void OutputDataPath_AbsolutePath_ReturnsAbsolutePath()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.outputRootPath = "/OutputRootPath";
+
+            Assert.That(settings.OutputRootPath, Is.EqualTo("/OutputRootPath"));
+        }
+
+        [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public void OutputDataPath_RelativePathInEditor_ReturnsAbsolutePathBasedOnProjectRoot()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.outputRootPath = "OutputRootPath";
+
+            Assert.That(settings.OutputRootPath, Is.EqualTo(Path.GetFullPath("OutputRootPath")));
+        }
+
+        [Test]
+        [UnityPlatform(RuntimePlatform.OSXPlayer, RuntimePlatform.WindowsPlayer, RuntimePlatform.LinuxPlayer)]
+        public void OutputDataPath_RelativePathOnPlayer_ReturnsAbsolutePathBasedOnPersistentDataPath()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.outputRootPath = "OutputRootPath";
+
+            Assert.That(settings.OutputRootPath,
+                Is.EqualTo(Path.Combine(Application.persistentDataPath, "OutputRootPath")));
+        }
+
+        [Test]
+        [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+        public void OutputDataPath_NullInEditor_ReturnsProjectRootPath()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.outputRootPath = null;
+
+            Assert.That(settings.OutputRootPath, Is.EqualTo(Path.GetFullPath(".")));
+        }
+
+        [Test]
+        [UnityPlatform(RuntimePlatform.OSXPlayer, RuntimePlatform.WindowsPlayer, RuntimePlatform.LinuxPlayer)]
+        public void OutputDataPath_NullOnPlayer_ReturnsPersistentDataPath()
+        {
+            var settings = CreateAutopilotSettings();
+            settings.outputRootPath = null;
+
+            Assert.That(settings.OutputRootPath, Is.EqualTo(Application.persistentDataPath));
         }
 
         [Test]
