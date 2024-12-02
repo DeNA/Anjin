@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -80,6 +81,10 @@ namespace DeNA.Anjin.Settings
         /// Custom name of this setting used by Reporter.
         /// When using it from within code, use the <code>Name</code> property.
         /// </summary>
+        /// <remarks>
+        /// I want to deny access (e.g., internal accessor), but it is inconvenient for testing, so still public.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public new string name;
 
         /// <summary>
@@ -121,6 +126,10 @@ namespace DeNA.Anjin.Settings
         /// Autopilot exit code options when lifespan expired.
         /// When using it from within code, use the <code>ExitCode</code> property.
         /// </summary>
+        /// <remarks>
+        /// I want to deny access (e.g., internal accessor), but it is inconvenient for testing, so still public.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public ExitCodeWhenLifespanExpired exitCode = ExitCodeWhenLifespanExpired.Normally;
 
         /// <summary>
@@ -168,6 +177,10 @@ namespace DeNA.Anjin.Settings
         /// This item can be overridden by the command line argument "-OUTPUT_ROOT_DIRECTORY_PATH".
         /// When using it from within code, use the <code>OutputRootPath</code> property.
         /// </summary>
+        /// <remarks>
+        /// I want to deny access (e.g., internal accessor), but it is inconvenient for testing, so still public.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string outputRootPath = "Logs";
 
         /// <summary>
@@ -185,6 +198,10 @@ namespace DeNA.Anjin.Settings
         /// This item can be overridden by the command line argument "-SCREENSHOTS_DIRECTORY_PATH".
         /// When using it from within code, use the <code>ScreenshotsPath</code> property.
         /// </summary>
+        /// <remarks>
+        /// I want to deny access (e.g., internal accessor), but it is inconvenient for testing, so still public.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string screenshotsPath = "Screenshots";
 
         /// <summary>

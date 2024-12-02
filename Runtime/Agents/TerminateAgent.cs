@@ -1,6 +1,7 @@
 // Copyright (c) 2023-2024 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -42,6 +43,10 @@ namespace DeNA.Anjin.Agents
         /// Exit Code when terminated by this Agent.
         /// When using it from within code, use the <code>ExitCode</code> property.
         /// </summary>
+        /// <remarks>
+        /// I want to deny access (e.g., internal accessor), but it is inconvenient for testing, so still public.
+        /// </remarks>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public ExitCodeByTerminateAgent exitCode = ExitCodeByTerminateAgent.Normally;
 
         /// <summary>
