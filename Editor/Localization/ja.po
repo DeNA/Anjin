@@ -163,8 +163,9 @@ msgstr "実行"
 msgid "Stop"
 msgstr "停止"
 
-
-#: Editor/UI/Settings/AutopilotStateEditor.cs
+# requireReset HelpBox message
+msgid "Autopilot has an invalid running state. Please click the \"Reset\" button."
+msgstr "オートパイロットの実行状態が不正です。「リセット」ボタンをクリックしてください。"
 
 # リセットボタン
 msgid "Reset"
