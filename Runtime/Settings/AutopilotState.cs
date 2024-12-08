@@ -39,6 +39,13 @@ namespace DeNA.Anjin.Settings
         public ExitCode exitCode;
 
         /// <summary>
+        /// Exit message.
+        /// </summary>
+        [HideInInspector]
+        [CanBeNull]
+        public string exitMessage;
+
+        /// <summary>
         /// Reset run state
         /// </summary>
         public void Reset()
@@ -46,6 +53,7 @@ namespace DeNA.Anjin.Settings
             launchFrom = LaunchType.NotSet;
             settings = null;
             exitCode = ExitCode.Normally;
+            exitMessage = null;
 #if UNITY_EDITOR && UNITY_2020_3_OR_NEWER
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssetIfDirty(this); // Note: Sync with virtual players of MPPM package
