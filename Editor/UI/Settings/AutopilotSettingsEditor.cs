@@ -60,6 +60,10 @@ namespace DeNA.Anjin.Editor.UI.Settings
 
         private static readonly string s_runButton = L10n.Tr("Run");
         private static readonly string s_stopButton = L10n.Tr("Stop");
+
+        private static readonly string s_requireReset = L10n.Tr("Autopilot has an invalid running state. Please click the \"Reset\" button.");
+        private static readonly string s_resetButton = L10n.Tr("Reset");
+
         private const float SpacerPixels = 10f;
         private const float SpacerPixelsUnderHeader = 4f;
         // @formatter:on
@@ -118,7 +122,15 @@ namespace DeNA.Anjin.Editor.UI.Settings
             GUILayout.Space(SpacerPixels);
 
             var state = AutopilotState.Instance;
-            if (state.IsRunning)
+            if (state.IsInvalidState)
+            {
+                EditorGUILayout.HelpBox(s_requireReset, MessageType.Error);
+                if (GUILayout.Button(s_resetButton))
+                {
+                    state.Reset();
+                }
+            }
+            else if (state.IsRunning)
             {
                 if (GUILayout.Button(s_stopButton))
                 {

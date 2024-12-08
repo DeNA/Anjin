@@ -67,6 +67,12 @@ namespace DeNA.Anjin.Settings
             }
         }
 
+        /// <summary>
+        /// This state Is invalid (read-only).
+        /// True if Autopilot is running and in Edit Mode, it is required to reset.
+        /// </summary>
+        internal bool IsInvalidState => IsRunning && !EditorApplication.isPlayingOrWillChangePlaymode;
+
         [NonSerialized]
         private static AutopilotState s_instance;
 
