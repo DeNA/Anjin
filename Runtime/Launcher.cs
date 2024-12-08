@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -56,7 +57,14 @@ namespace DeNA.Anjin
             // Launch from Play Mode tests
             if (TestContext.CurrentContext != null && state.exitCode != ExitCode.Normally)
             {
-                throw new AssertionException($"  Autopilot run failed with exit code \"{state.exitCode}\".");
+                var message = new StringBuilder();
+                message.AppendLine($"  Autopilot run failed with exit code \"{state.exitCode}\".");
+                if (!string.IsNullOrEmpty(state.exitMessage))
+                {
+                    message.AppendLine($"  Message: {state.exitMessage}");
+                }
+
+                throw new AssertionException(message.ToString());
             }
 #endif
         }
@@ -131,10 +139,8 @@ namespace DeNA.Anjin
                 Debug.LogException(e);
 
                 var logger = Debug.unityLogger; // Note: Logger is not initialized yet.
-                const ExitCode ExitCode = ExitCode.AutopilotLaunchingFailed;
-                const string Caller = "Launcher";
                 Debug.Log("Cancel launching Autopilot");
-                TeardownLaunchAutopilotAsync(state, logger, ExitCode, Caller).Forget();
+                TeardownLaunchAutopilotAsync(state, logger, ExitCode.AutopilotLaunchingFailed).Forget();
                 return;
             }
 
@@ -225,10 +231,11 @@ namespace DeNA.Anjin
         }
 
         internal static async UniTaskVoid TeardownLaunchAutopilotAsync(AutopilotState state, ILogger logger,
-            ExitCode exitCode, string caller)
+            ExitCode exitCode, string message = null)
         {
             state.settings = null;
             state.exitCode = exitCode;
+            state.exitMessage = message;
 #if UNITY_EDITOR && UNITY_2020_3_OR_NEWER
             EditorUtility.SetDirty(state);
             AssetDatabase.SaveAssetIfDirty(state); // Note: Sync with virtual players of MPPM package
@@ -242,7 +249,7 @@ namespace DeNA.Anjin
             if (Application.isEditor)
             {
                 // Terminate when launch from edit mode (including launch from commandline)
-                logger.Log($"Stop playing by {caller}");
+                logger.Log($"Stop playing with exit code: {(int)exitCode} ({exitCode})");
 
                 // XXX: Avoid a problem that Editor stay playing despite isPlaying get assigned false.
                 // SEE: https://github.com/DeNA/Anjin/issues/20
@@ -255,7 +262,7 @@ namespace DeNA.Anjin
             else
             {
                 // Player build launch from commandline
-                logger.Log($"Exit Unity-player by {caller}, exit code: {(int)exitCode}");
+                logger.Log($"Exit Unity-player with exit code: {(int)exitCode} ({exitCode})");
                 Application.Quit((int)exitCode);
             }
         }

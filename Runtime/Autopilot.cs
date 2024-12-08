@@ -181,7 +181,7 @@ namespace DeNA.Anjin
             Destroy(this.gameObject);
 
             _logger.Log("Terminate Autopilot");
-            Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, "Autopilot").Forget();
+            Launcher.TeardownLaunchAutopilotAsync(_state, _logger, exitCode, message).Forget();
         }
 
         [Obsolete("Use " + nameof(TerminateAsync))]
