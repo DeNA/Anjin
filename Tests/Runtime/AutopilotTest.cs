@@ -67,14 +67,21 @@ namespace DeNA.Anjin
             settings.customExitCode = "100";
             settings.exitMessage = "Lifespan expired";
 
-            await Launcher.LaunchAutopilotAsync(settings);
+            try
+            {
+                await Launcher.LaunchAutopilotAsync(settings);
+                Assert.Fail("No AssertionException was thrown");
+            }
+            catch (AssertionException)
+            {
+                // expected behavior
+            }
+
             await UniTask.NextFrame(); // wait reporter
 
             Assert.That(spyReporter.IsCalled, Is.True);
             Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo("100"));
             Assert.That(spyReporter.Arguments["message"], Is.EqualTo("Lifespan expired"));
-
-            LogAssert.Expect(LogType.Exception, "AssertionException: Autopilot failed with exit code 100");
         }
 
         [Test]

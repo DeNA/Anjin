@@ -51,6 +51,14 @@ namespace DeNA.Anjin
             LaunchAutopilot().Forget();
 
             await UniTask.WaitUntil(() => !state.IsRunning, cancellationToken: token);
+
+#if UNITY_INCLUDE_TESTS
+            // Launch from Play Mode tests
+            if (TestContext.CurrentContext != null && state.exitCode != ExitCode.Normally)
+            {
+                throw new AssertionException($"  Autopilot run failed with exit code \"{state.exitCode}\".");
+            }
+#endif
         }
 
         /// <summary>
@@ -228,13 +236,6 @@ namespace DeNA.Anjin
 
             if (state.launchFrom == LaunchType.PlayMode) // Note: Editor play mode, Play mode tests, and Player build
             {
-#if UNITY_INCLUDE_TESTS
-                // Play mode tests
-                if (TestContext.CurrentContext != null && exitCode != ExitCode.Normally)
-                {
-                    throw new AssertionException($"{caller} failed with exit code {(int)exitCode}");
-                }
-#endif
                 return; // Only terminate autopilot run if starting from play mode.
             }
 
