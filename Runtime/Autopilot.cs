@@ -22,7 +22,7 @@ namespace DeNA.Anjin
     public interface ITerminatable
     {
         /// <summary>
-        /// Terminate autopilot
+        /// Terminate Autopilot
         /// </summary>
         /// <param name="exitCode">Exit code for Unity Editor/ Player-build</param>
         /// <param name="message">Log message string or terminate message</param>
@@ -92,6 +92,7 @@ namespace DeNA.Anjin
 
             _logger = _settings.LoggerAsset.Logger;
             // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.
+            _logger.Log("Launching Autopilot…");
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {
@@ -122,7 +123,7 @@ namespace DeNA.Anjin
                 Time.timeScale = _settings.timeScale;
             }
 
-            _logger.Log("Launched autopilot");
+            _logger.Log("Launched Autopilot");
         }
 
         private void DispatchByLoadedScenes()
@@ -192,7 +193,7 @@ namespace DeNA.Anjin
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Stop autopilot on play mode exit event when run on Unity editor.
+        /// Stop Autopilot on play mode exit event when run on Unity editor.
         /// Not called when invoked from play mode (not registered in event listener).
         /// </summary>
         private static void OnExitPlayModeToTerminateEditor(PlayModeStateChange playModeStateChange)
