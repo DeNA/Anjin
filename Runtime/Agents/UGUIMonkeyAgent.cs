@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using DeNA.Anjin.Attributes;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
 using TestHelper.Monkey;
@@ -98,19 +97,6 @@ namespace DeNA.Anjin.Agents
         public ScreenCapture.StereoScreenCaptureMode screenshotStereoCaptureMode =
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
-        internal ITerminatable _autopilot; // can inject for testing
-
-        [InitializeOnLaunchAutopilot]
-        private static void ResetInstances()
-        {
-            // Reset runtime instances
-            var agents = Resources.FindObjectsOfTypeAll<UGUIMonkeyAgent>();
-            foreach (var agent in agents)
-            {
-                agent._autopilot = null;
-            }
-        }
-
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken token)
         {
@@ -155,10 +141,9 @@ namespace DeNA.Anjin.Agents
             {
                 var message = $"{e.GetType().Name}: {e.Message}";
                 Logger.Log(message);
-                _autopilot = _autopilot ?? Autopilot.Instance;
-                // ReSharper disable once MethodSupportsCancellation
-                _autopilot.TerminateAsync(ExitCode.AutopilotFailed, message, e.StackTrace)
-                    .Forget(); // Note: Do not use this Agent's CancellationToken.
+
+                // ReSharper disable once MethodSupportsCancellation; Do not use this Agent's CancellationToken.
+                AutopilotInstance.TerminateAsync(ExitCode.AutopilotFailed, message, e.StackTrace).Forget();
             }
             finally
             {

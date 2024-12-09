@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -62,9 +63,7 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public string[] ignoreMessages = new string[] { };
 
-        internal ITerminatable _autopilot; // can inject for testing
         private List<Regex> _ignoreMessagesRegexes;
-        private CancellationToken _token;
 
         [InitializeOnLaunchAutopilot]
         private static void ResetInstances()
@@ -73,16 +72,12 @@ namespace DeNA.Anjin.Agents
             var agents = Resources.FindObjectsOfTypeAll<ErrorHandlerAgent>();
             foreach (var agent in agents)
             {
-                agent._autopilot = null;
                 agent._ignoreMessagesRegexes = null;
-                agent._token = default;
             }
         }
 
         public override async UniTask Run(CancellationToken token)
         {
-            this._token = token;
-
             try
             {
                 Logger.Log($"Enter {this.name}.Run()");
@@ -106,6 +101,7 @@ namespace DeNA.Anjin.Agents
         /// <param name="logString">Log message string</param>
         /// <param name="stackTrace">Stack trace</param>
         /// <param name="type">Log message type</param>
+        [SuppressMessage("ReSharper", "AsyncVoidMethod")] // Called by Application.logMessageReceivedThreaded
         internal async void HandleLog(string logString, string stackTrace, LogType type)
         {
             var handlingBehavior = JudgeHandlingBehavior(logString, stackTrace, type);
@@ -128,12 +124,13 @@ namespace DeNA.Anjin.Agents
                     throw new InvalidOperationException("Autopilot is not running");
                 }
 
-                await settings.Reporter.PostReportAsync(logString, stackTrace, exitCode, this._token);
+                // ReSharper disable once MethodSupportsCancellation; Do not use this Agent's CancellationToken.
+                settings.Reporter.PostReportAsync(logString, stackTrace, exitCode).Forget();
             }
             else
             {
-                _autopilot = _autopilot ?? Autopilot.Instance;
-                await _autopilot.TerminateAsync(exitCode, logString, stackTrace, token: this._token);
+                // ReSharper disable once MethodSupportsCancellation; Do not use this Agent's CancellationToken.
+                AutopilotInstance.TerminateAsync(exitCode, logString, stackTrace).Forget();
             }
         }
 
