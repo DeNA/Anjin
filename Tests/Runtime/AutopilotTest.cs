@@ -170,7 +170,7 @@ namespace DeNA.Anjin
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
             await UniTask.NextFrame(); // wait flushing log for subsequence tests
 
-            LogAssert.Expect(LogType.Log, "Launched autopilot"); // using console logger
+            LogAssert.Expect(LogType.Log, "Launched Autopilot"); // using console logger
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace DeNA.Anjin
 
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
-            Assert.That(spyLogger.Logs, Does.Contain((LogType.Log, "Launched autopilot"))); // using spy logger
+            Assert.That(spyLogger.Logs, Does.Contain((LogType.Log, "Launched Autopilot"))); // using spy logger
             LogAssert.NoUnexpectedReceived(); // not write to console
         }
 
