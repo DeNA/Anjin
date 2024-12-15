@@ -27,7 +27,7 @@ msgstr "このAutopilotSettingsインスタンスの説明"
 msgid "Name"
 msgstr "名前"
 
-# description tooltip
+# name tooltip
 msgid "Custom name of this setting used by Reporter. If omitted, the asset file name is used."
 msgstr "このAutopilotSettingsインスタンスの名前。Reporterで使用されます。省略時はアセットファイル名がデフォルトとして使用されます"
 
