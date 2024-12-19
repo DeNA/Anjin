@@ -277,7 +277,7 @@ An instance of this Agent (.asset file) can contain the following.
 <dl>
   <dt>Lifespan</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
   <dt>Delay</dt><dd>Wait interval [milliseconds] between random operations</dd>
-  <dt>Secs Searching Components</dt><dd>Seconds to determine that an error has occurred when an object that can be interacted with does not exist</dd>
+  <dt>No-Element Timeout</dt><dd>Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds</dd>
   <dt>Touch and Hold Millis</dt><dd>Delay time for touch-and-hold [ms]</dd>
   <dt>Enable Gizmos</dt><dd>Show Gizmos on GameView during running monkey test if true</dd>
 </dl>

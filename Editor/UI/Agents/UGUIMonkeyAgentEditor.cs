@@ -35,10 +35,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private GUIContent _delayMillisGUIContent;
 
         private static readonly string s_timeout =
-            L10n.Tr("Secs Searching Components");
+            L10n.Tr("No-Element Timeout [sec]");
 
         private static readonly string s_timeoutToolTip = L10n.Tr(
-            "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
+            "Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds."
         );
 
         private SerializedProperty _timeoutProp;

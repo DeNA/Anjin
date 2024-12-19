@@ -295,12 +295,12 @@ msgid "Delay time between random operations [ms]"
 msgstr "ランダム操作ごとの遅延時間［ミリ秒］"
 
 # timeout
-msgid "Secs Searching Components"
-msgstr "コンポーネント探索時間［秒］"
+msgid "No-Element Timeout [sec]"
+msgstr "要素なしタイムアウト［秒］"
 
 # timeout tooltip
-msgid "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
-msgstr "インタラクティブな要素を探索する秒数を指定します。探索時間がこれを超えるとエラーを発生させます"
+msgid "Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds."
+msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、Agentの実行を中断します"
 
 # uGUI click and hold operator options
 msgid "Touch and Hold Operator Options"
