@@ -36,7 +36,7 @@ namespace DeNA.Anjin.Agents
 
         /// <summary>
         /// No-Element Timeout [sec].
-        /// Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds.
+        /// Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds.
         /// </summary>
         public int secondsToErrorForNoInteractiveComponent = 5;
 

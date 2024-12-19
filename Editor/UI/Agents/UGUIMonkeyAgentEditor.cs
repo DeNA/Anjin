@@ -38,7 +38,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
             L10n.Tr("No-Element Timeout [sec]");
 
         private static readonly string s_timeoutToolTip = L10n.Tr(
-            "Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds."
+            "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
         );
 
         private SerializedProperty _timeoutProp;

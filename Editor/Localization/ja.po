@@ -299,8 +299,8 @@ msgid "No-Element Timeout [sec]"
 msgstr "要素なしタイムアウト［秒］"
 
 # timeout tooltip
-msgid "Abort this Agent when the interactable UI/2D/3D element does not appear for the specified seconds."
-msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、Agentの実行を中断します"
+msgid "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
+msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、オートパイロットの実行を中断します"
 
 # uGUI click and hold operator options
 msgid "Click and Hold Operator Options"
