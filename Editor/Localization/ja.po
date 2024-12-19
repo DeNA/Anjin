@@ -303,16 +303,16 @@ msgid "Abort this Agent when the interactable UI/2D/3D element does not appear f
 msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、Agentの実行を中断します"
 
 # uGUI click and hold operator options
-msgid "Touch and Hold Operator Options"
-msgstr "タッチ&ホールド・オペレーター設定"
+msgid "Click and Hold Operator Options"
+msgstr "クリック＆ホールド オペレーター設定"
 
 # touchAndHoldDelayMillis
-msgid "Touch and Hold Millis"
-msgstr "タッチ&ホールド時間［ミリ秒］"
+msgid "Click and Hold Millis"
+msgstr "クリック＆ホールド時間［ミリ秒］"
 
 # touchAndHoldDelayMillis tooltip
-msgid "Delay time for touch-and-hold [ms]"
-msgstr "タッチ&ホールドの継続時間［ミリ秒］"
+msgid "Delay time for click-and-hold [ms]"
+msgstr "クリック＆ホールドの継続時間［ミリ秒］"
 
 # gizmos
 msgid "Enable Gizmos"

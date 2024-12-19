@@ -41,7 +41,7 @@ namespace DeNA.Anjin.Agents
         public int secondsToErrorForNoInteractiveComponent = 5;
 
         /// <summary>
-        /// Delay time for touch-and-hold
+        /// Delay time for click-and-hold
         /// </summary>
         public int touchAndHoldDelayMillis = 1000;
 

@@ -100,9 +100,9 @@ namespace DeNA.Anjin.Editor.UI.Agents
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
         // uGUI click and hold operator options
-        private static readonly string s_uGUIClickAndHoldOperatorOptions = L10n.Tr("Touch and Hold Operator Options");
-        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Touch and Hold Millis");
-        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for touch-and-hold [ms]");
+        private static readonly string s_uGUIClickAndHoldOperatorOptions = L10n.Tr("Click and Hold Operator Options");
+        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Click and Hold Millis");
+        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for click-and-hold [ms]");
         private SerializedProperty _touchAndHoldDelayMillisProp;
         private GUIContent _touchAndHoldDelayMillisGUIContent;
 
