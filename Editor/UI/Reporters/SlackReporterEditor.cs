@@ -24,7 +24,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private GUIContent _descriptionGUIContent;
 
         private static readonly string s_slackToken = L10n.Tr("Slack Token");
-        private static readonly string s_slackTokenTooltip = L10n.Tr("Slack API token. If omitted, it will not be sent.");
+        private static readonly string s_slackTokenTooltip = L10n.Tr("Slack Bot OAuth token. If omitted, it will not be sent.");
         private SerializedProperty _slackTokenProp;
         private GUIContent _slackTokenGUIContent;
 

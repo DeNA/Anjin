@@ -560,8 +560,8 @@ msgid "Slack Token"
 msgstr "Slackトークン"
 
 # slackToken tooltip
-msgid "Slack API token. If omitted, it will not be sent."
-msgstr "Slack通知に使用するWeb APIトークン（省略時は送信されません）"
+msgid "Slack Bot OAuth token. If omitted, it will not be sent."
+msgstr "Slack通知に使用するBotのOAuthトークン（省略時は送信されません）"
 
 # slackChannels
 msgid "Slack Channels"

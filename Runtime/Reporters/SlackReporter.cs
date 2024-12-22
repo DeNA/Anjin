@@ -16,7 +16,7 @@ namespace DeNA.Anjin.Reporters
     public class SlackReporter : AbstractReporter
     {
         /// <summary>
-        /// Slack API token.
+        /// Slack Bot OAuth token.
         /// </summary>
         public string slackToken;
 
