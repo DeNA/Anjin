@@ -26,7 +26,7 @@ namespace DeNA.Anjin.Reporters
         public string slackChannels;
 
         /// <summary>
-        /// Comma-separated sub team IDs to mention when posting error reports.
+        /// Comma-separated user group IDs to mention when posting error reports.
         /// </summary>
         public string mentionSubTeamIDs;
 
@@ -63,7 +63,7 @@ namespace DeNA.Anjin.Reporters
         public bool postOnNormally;
 
         /// <summary>
-        /// Comma-separated sub team IDs to mention when posting completion reports.
+        /// Comma-separated user group IDs to mention when posting completion reports.
         /// </summary>
         public string mentionSubTeamIDsOnNormally;
 

@@ -576,12 +576,12 @@ msgid "Error Report Settings"
 msgstr "エラーレポート設定"
 
 # mentionSubTeamIDs
-msgid "Mention Sub Team IDs"
-msgstr "メンション宛先チームID"
+msgid "Mention user group IDs"
+msgstr "メンション宛先ユーザーグループID"
 
 # mentionSubTeamIDs tooltip
-msgid "Comma-separated sub team IDs to mention when posting error reports."
-msgstr "エラー終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します"
+msgid "Comma-separated user group IDs to mention when posting error reports."
+msgstr "エラー終了時に送信する通知をメンションするユーザーグループのIDをカンマ区切りで指定します"
 
 # addHereInSlackMessage
 msgid "Add @here"
@@ -636,12 +636,12 @@ msgid "Also post a report if completed autopilot normally."
 msgstr "正常終了時にもレポートを送信します"
 
 # mentionSubTeamIDs (same as mentionSubTeamIDsOnError)
-msgid "Mention Sub Team IDs"
-msgstr "メンション宛先チームID"
+msgid "Mention User Group IDs"
+msgstr "メンション宛先ユーザーグループID"
 
 # mentionSubTeamIDs tooltip
-msgid "Comma-separated sub team IDs to mention when posting completion reports."
-msgstr "正常終了時に送信する通知をメンションするチームのIDをカンマ区切りで指定します"
+msgid "Comma-separated user group IDs to mention when posting completion reports."
+msgstr "正常終了時に送信する通知をメンションするユーザーグループのIDをカンマ区切りで指定します"
 
 # addHereInSlackMessage (same as addHereInSlackMessageOnError)
 msgid "Add @here"
