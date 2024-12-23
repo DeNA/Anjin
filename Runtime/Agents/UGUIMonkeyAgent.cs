@@ -35,12 +35,13 @@ namespace DeNA.Anjin.Agents
         public int delayMillis = 200;
 
         /// <summary>
-        /// Seconds to determine that an error has occurred when an object that can be interacted with does not exist
+        /// No-Element Timeout [sec].
+        /// Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds.
         /// </summary>
         public int secondsToErrorForNoInteractiveComponent = 5;
 
         /// <summary>
-        /// Delay time for touch-and-hold
+        /// Delay time for click-and-hold
         /// </summary>
         public int touchAndHoldDelayMillis = 1000;
 

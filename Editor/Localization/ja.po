@@ -27,7 +27,7 @@ msgstr "このAutopilotSettingsインスタンスの説明"
 msgid "Name"
 msgstr "名前"
 
-# description tooltip
+# name tooltip
 msgid "Custom name of this setting used by Reporter. If omitted, the asset file name is used."
 msgstr "このAutopilotSettingsインスタンスの名前。Reporterで使用されます。省略時はアセットファイル名がデフォルトとして使用されます"
 
@@ -295,24 +295,24 @@ msgid "Delay time between random operations [ms]"
 msgstr "ランダム操作ごとの遅延時間［ミリ秒］"
 
 # timeout
-msgid "Secs Searching Components"
-msgstr "コンポーネント探索時間［秒］"
+msgid "No-Element Timeout [sec]"
+msgstr "要素なしタイムアウト［秒］"
 
 # timeout tooltip
-msgid "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
-msgstr "インタラクティブな要素を探索する秒数を指定します。探索時間がこれを超えるとエラーを発生させます"
+msgid "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
+msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、オートパイロットの実行を中断します"
 
 # uGUI click and hold operator options
-msgid "Touch and Hold Operator Options"
-msgstr "タッチ&ホールド・オペレーター設定"
+msgid "Click and Hold Operator Options"
+msgstr "クリック＆ホールド オペレーター設定"
 
 # touchAndHoldDelayMillis
-msgid "Touch and Hold Millis"
-msgstr "タッチ&ホールド時間［ミリ秒］"
+msgid "Click and Hold Millis"
+msgstr "クリック＆ホールド時間［ミリ秒］"
 
 # touchAndHoldDelayMillis tooltip
-msgid "Delay time for touch-and-hold [ms]"
-msgstr "タッチ&ホールドの継続時間［ミリ秒］"
+msgid "Delay time for click-and-hold [ms]"
+msgstr "クリック＆ホールドの継続時間［ミリ秒］"
 
 # gizmos
 msgid "Enable Gizmos"

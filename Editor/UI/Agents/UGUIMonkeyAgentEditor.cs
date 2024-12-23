@@ -35,10 +35,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
         private GUIContent _delayMillisGUIContent;
 
         private static readonly string s_timeout =
-            L10n.Tr("Secs Searching Components");
+            L10n.Tr("No-Element Timeout [sec]");
 
         private static readonly string s_timeoutToolTip = L10n.Tr(
-            "Seconds to determine that an error has occurred when an object that can be interacted with does not exist"
+            "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
         );
 
         private SerializedProperty _timeoutProp;
@@ -100,9 +100,9 @@ namespace DeNA.Anjin.Editor.UI.Agents
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
         // uGUI click and hold operator options
-        private static readonly string s_uGUIClickAndHoldOperatorOptions = L10n.Tr("Touch and Hold Operator Options");
-        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Touch and Hold Millis");
-        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for touch-and-hold [ms]");
+        private static readonly string s_uGUIClickAndHoldOperatorOptions = L10n.Tr("Click and Hold Operator Options");
+        private static readonly string s_touchAndHoldDelayMillis = L10n.Tr("Click and Hold Millis");
+        private static readonly string s_touchAndHoldDelayMillisTooltip = L10n.Tr("Delay time for click-and-hold [ms]");
         private SerializedProperty _touchAndHoldDelayMillisProp;
         private GUIContent _touchAndHoldDelayMillisGUIContent;
 
