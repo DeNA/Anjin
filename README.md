@@ -518,7 +518,7 @@ The instance of this Reporter (.asset file) can have the following settings.
   <dt>Slack Channels</dt><dd>Channels to send notifications. If omitted, not notified. Multiple channels can be specified by separating them with commas.
         Note that the bot must be invited to the channel.
         It can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>, but be careful if multiple SlackReporters are defined, they will all be overwritten with the same value.</dd>
-  <dt>Mention Sub Team IDs</dt><dd>Comma-separated sub team IDs to mention when posting error reports.</dd>
+  <dt>Mention User Group IDs</dt><dd>Comma-separated user group IDs to mention when posting error reports.</dd>
   <dt>Add @here</dt><dd>Add @here to the post when posting error reports.</dd>
   <dt>Lead Text</dt><dd>Lead text for error reports. It is used in OS notifications. You can specify placeholders like a "{message}".</dd>
   <dt>Message</dt><dd>Message body template for error reports. You can specify placeholders like a "{message}".</dd>

@@ -24,7 +24,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private GUIContent _descriptionGUIContent;
 
         private static readonly string s_slackToken = L10n.Tr("Slack Token");
-        private static readonly string s_slackTokenTooltip = L10n.Tr("Slack API token. If omitted, it will not be sent.");
+        private static readonly string s_slackTokenTooltip = L10n.Tr("Slack Bot OAuth token. If omitted, it will not be sent.");
         private SerializedProperty _slackTokenProp;
         private GUIContent _slackTokenGUIContent;
 
@@ -35,8 +35,8 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
         private static readonly string s_errorSettingsHeader = L10n.Tr("Error Report Settings");
 
-        private static readonly string s_mentionSubTeamIDs = L10n.Tr("Mention Sub Team IDs");
-        private static readonly string s_mentionSubTeamIDsTooltip = L10n.Tr("Comma-separated sub team IDs to mention when posting error reports.");
+        private static readonly string s_mentionSubTeamIDs = L10n.Tr("Mention User Group IDs");
+        private static readonly string s_mentionSubTeamIDsTooltip = L10n.Tr("Comma-separated user group IDs to mention when posting error reports.");
         private SerializedProperty _mentionSubTeamIDsProp;
         private GUIContent _mentionSubTeamIDsGUIContent;
 
@@ -72,8 +72,8 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private SerializedProperty _postOnNormallyProp;
         private GUIContent _postOnNormallyGUIContent;
 
-        private static readonly string s_mentionSubTeamIDsOnNormally = L10n.Tr("Mention Sub Team IDs");
-        private static readonly string s_mentionSubTeamIDsOnNormallyTooltip = L10n.Tr("Comma-separated sub team IDs to mention when posting completion reports.");
+        private static readonly string s_mentionSubTeamIDsOnNormally = L10n.Tr("Mention User Group IDs");
+        private static readonly string s_mentionSubTeamIDsOnNormallyTooltip = L10n.Tr("Comma-separated user group IDs to mention when posting completion reports.");
         private SerializedProperty _mentionSubTeamIDsOnNormallyProp;
         private GUIContent _mentionSubTeamIDsOnNormallyGUIContent;
 
