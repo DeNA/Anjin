@@ -1,7 +1,6 @@
-// Copyright (c) 2023-2024 DeNA Co., Ltd.
+// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace DeNA.Anjin.TestDoubles
@@ -14,8 +13,8 @@ namespace DeNA.Anjin.TestDoubles
         public string CapturedStackTrace { get; private set; }
         public bool CapturedReporting { get; private set; }
 
-        public async UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
-            bool reporting = true, CancellationToken token = default)
+        public async UniTaskVoid TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
+            bool reporting = true)
         {
             IsCalled = true;
             CapturedExitCode = exitCode;

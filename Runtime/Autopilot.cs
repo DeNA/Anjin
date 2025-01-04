@@ -1,9 +1,8 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
 using System.Collections;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Utilities;
@@ -28,10 +27,9 @@ namespace DeNA.Anjin
         /// <param name="message">Log message string or terminate message</param>
         /// <param name="stackTrace">Stack trace when terminate by the log message</param>
         /// <param name="reporting">Call Reporter if true</param>
-        /// <param name="token">Cancellation token</param>
         /// <returns>A task awaits termination get completed</returns>
-        UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
-            bool reporting = true, CancellationToken token = default);
+        UniTaskVoid TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
+            bool reporting = true);
     }
 
     /// <summary>
@@ -144,7 +142,7 @@ namespace DeNA.Anjin
         private IEnumerator Lifespan(int timeoutSec, ExitCode exitCode, string message)
         {
             yield return new WaitForSecondsRealtime(timeoutSec);
-            yield return UniTask.ToCoroutine(() => TerminateAsync(exitCode, message));
+            TerminateAsync(exitCode, message).Forget();
         }
 
         private void OnDestroy()
@@ -157,8 +155,8 @@ namespace DeNA.Anjin
         }
 
         /// <inheritdoc/>
-        public async UniTask TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
-            bool reporting = true, CancellationToken token = default)
+        public async UniTaskVoid TerminateAsync(ExitCode exitCode, string message = null, string stackTrace = null,
+            bool reporting = true)
         {
             if (_isTerminating)
             {
@@ -176,7 +174,7 @@ namespace DeNA.Anjin
 
             if (reporting && _state.IsRunning && _settings.Reporter != null)
             {
-                await _settings.Reporter.PostReportAsync(message, stackTrace, exitCode, token);
+                await _settings.Reporter.PostReportAsync(message, stackTrace, exitCode);
             }
 
             Destroy(this.gameObject);
