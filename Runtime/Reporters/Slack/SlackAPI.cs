@@ -1,7 +1,6 @@
-// Copyright (c) 2023-2024 DeNA Co., Ltd.
+// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System;
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack.Payloads.Text;
@@ -11,38 +10,13 @@ using UnityEngine.Networking;
 namespace DeNA.Anjin.Reporters.Slack
 {
     /// <summary>
-    /// Slack post message API response
-    /// </summary>
-    public struct SlackResponse
-    {
-        /// <summary>
-        /// Success/failure
-        /// </summary>
-        public bool Success { get; }
-
-        /// <summary>
-        /// Thread timestamp
-        /// </summary>
-        public string Ts { get; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="success">Post was success</param>
-        /// <param name="ts">Thread timestamp</param>
-        public SlackResponse(bool success, string ts)
-        {
-            Success = success;
-            Ts = ts;
-        }
-    }
-
-    /// <summary>
     /// Slack API interface
     /// </summary>
     public class SlackAPI
     {
         private const string URLBase = "https://slack.com/api/";
+        private static bool IsSuccess(string text) => text.Contains("\"ok\":true");
+        private static Match TsMatch(string text) => new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(text);
 
         /// <summary>
         /// Post text message
@@ -191,14 +165,14 @@ namespace DeNA.Anjin.Reporters.Slack
                 }
 #endif
 
-                if (www.downloadHandler.text.Contains("\"ok\":false"))
+                if (!IsSuccess(www.downloadHandler.text))
                 {
                     Debug.LogWarning($"{www.downloadHandler.text}");
                     return new SlackResponse(false, null);
                 }
 
                 string ts = null;
-                var tsMatch = new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(www.downloadHandler.text);
+                var tsMatch = TsMatch(www.downloadHandler.text);
                 if (tsMatch.Success && tsMatch.Length > 0)
                 {
                     ts = tsMatch.Groups[1].Value;
