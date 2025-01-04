@@ -29,7 +29,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
         private GUIContent _slackTokenGUIContent;
 
         private static readonly string s_slackChannels = L10n.Tr("Slack Channels");
-        private static readonly string s_slackChannelsTooltip = L10n.Tr("Comma-separated Slack channels to post. If omitted, it will not be sent.");
+        private static readonly string s_slackChannelsTooltip = L10n.Tr("Comma-separated Slack channel's IDs (e.g., \"C123456\") to post. If omitted, it will not be sent.");
         private SerializedProperty _slackChannelsProp;
         private GUIContent _slackChannelsGUIContent;
 
