@@ -34,7 +34,7 @@ namespace DeNA.Anjin.Agents
         }
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             if (WasExecuted)
             {
@@ -50,7 +50,7 @@ namespace DeNA.Anjin.Agents
             agent.Random = Random; // This Agent does not consume pseudo-random numbers, so passed on as is.
             try
             {
-                await agent.Run(token);
+                await agent.Run(cancellationToken);
             }
             finally
             {

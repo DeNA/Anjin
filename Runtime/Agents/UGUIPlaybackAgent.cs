@@ -29,7 +29,7 @@ namespace DeNA.Anjin.Agents
         public TextAsset recordedJson;
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace DeNA.Anjin.Agents
                     throw new NullReferenceException("recordingJson is null");
                 }
 
-                await Play(recordedJson, token);
+                await Play(recordedJson, cancellationToken);
                 // Note: If playback is not possible, AQA will output a LogError and exit. You must handle LogError with the ErrorHandlerAgent.
             }
             finally
@@ -85,7 +85,7 @@ namespace DeNA.Anjin.Agents
             }
         }
 
-        private static IEnumerator Play(TextAsset recordingJson, CancellationToken token)
+        private static IEnumerator Play(TextAsset recordingJson, CancellationToken cancellationToken)
         {
             if (RecordedPlaybackController.Exists())
             {
@@ -100,7 +100,7 @@ namespace DeNA.Anjin.Agents
                 // Use the fact that RecordedPlaybackController._instance becomes null when playback is finished.
                 // This behavior is from Automated QA v0.8.1. May change in the future
             {
-                token.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
                 yield return null;
             }
             // Note: Driver.Perform.PlayRecording()を使わない理由は以下

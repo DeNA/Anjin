@@ -77,7 +77,7 @@ namespace DeNA.Anjin.Agents
         public string exitMessage = "Terminated by TerminateAgent";
 
         /// <inheritdoc/>
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             try
             {

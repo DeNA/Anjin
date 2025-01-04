@@ -90,7 +90,7 @@ namespace DeNA.Anjin.Agents
         }
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -98,7 +98,8 @@ namespace DeNA.Anjin.Agents
             {
                 using (_agentCts = new CancellationTokenSource()) // To cancel only the Working Agent.
                 {
-                    using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, _agentCts.Token))
+                    using (var linkedCts =
+                           CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _agentCts.Token))
                     {
                         try
                         {
@@ -119,7 +120,7 @@ namespace DeNA.Anjin.Agents
                         }
                         catch (OperationCanceledException)
                         {
-                            if (token.IsCancellationRequested) // The parent was cancelled.
+                            if (cancellationToken.IsCancellationRequested) // The parent was cancelled.
                             {
                                 throw;
                             }
