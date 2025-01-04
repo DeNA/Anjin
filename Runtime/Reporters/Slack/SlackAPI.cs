@@ -3,6 +3,7 @@
 
 using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
+using DeNA.Anjin.Reporters.Slack.Payloads.CompleteUploadExternal;
 using DeNA.Anjin.Reporters.Slack.Payloads.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -16,7 +17,6 @@ namespace DeNA.Anjin.Reporters.Slack
     {
         private const string URLBase = "https://slack.com/api/";
         private static bool IsSuccess(string text) => text.Contains("\"ok\":true");
-        private static Match TsMatch(string text) => new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(text);
 
         /// <summary>
         /// Post text message
@@ -84,58 +84,23 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <param name="image">Image (screenshot)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image,
-            string ts = null)
+        public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image, string ts = null)
         {
-            const string URL = URLBase + "files.upload";
-            var form = new WWWForm();
-            form.AddField("token", token);
-            form.AddField("channels", channel);
-            form.AddBinaryData("file", image, "image.png", "image/png");
-            if (ts != null)
+            const string Filename = "screenshot.png";
+
+            var uploadURLExternalResponse = await GetUploadURLExternal(token, Filename, image.Length);
+            if (!uploadURLExternalResponse.Success)
             {
-                form.AddField("thread_ts", ts);
+                return new SlackResponse(false);
             }
 
-            return await Post(URL, form);
-        }
-
-        [Obsolete]
-        private static async UniTask<SlackResponse> Post(string url, WWWForm form)
-        {
-            using (var www = UnityWebRequest.Post(url, form))
+            var uploadResponse = await UploadImage(uploadURLExternalResponse.UploadUrl, Filename, image);
+            if (!uploadResponse.Success)
             {
-                await www.SendWebRequest();
-
-#if UNITY_2020_2_OR_NEWER
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false, null);
-                }
-#else
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false, null);
-                }
-#endif
-
-                if (www.downloadHandler.text.Contains("\"ok\":false"))
-                {
-                    Debug.LogWarning($"{www.downloadHandler.text}");
-                    return new SlackResponse(false, null);
-                }
-
-                string ts = null;
-                var tsMatch = new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(www.downloadHandler.text);
-                if (tsMatch.Success && tsMatch.Length > 0)
-                {
-                    ts = tsMatch.Groups[1].Value;
-                }
-
-                return new SlackResponse(true, ts);
+                return new SlackResponse(false);
             }
+
+            return await CompleteUploadExternal(token, uploadURLExternalResponse.FileId, channel, ts);
         }
 
         private static async UniTask<SlackResponse> Post(string url, string token, Payload payload)
@@ -155,30 +120,132 @@ namespace DeNA.Anjin.Reporters.Slack
                 if (www.result != UnityWebRequest.Result.Success)
                 {
                     Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false, null);
+                    return new SlackResponse(false);
                 }
 #else
                 if (www.isNetworkError || www.isHttpError)
                 {
                     Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false, null);
+                    return new SlackResponse(false);
                 }
 #endif
 
                 if (!IsSuccess(www.downloadHandler.text))
                 {
                     Debug.LogWarning($"{www.downloadHandler.text}");
-                    return new SlackResponse(false, null);
+                    return new SlackResponse(false);
                 }
 
                 string ts = null;
-                var tsMatch = TsMatch(www.downloadHandler.text);
+                var tsMatch = new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(www.downloadHandler.text);
                 if (tsMatch.Success && tsMatch.Length > 0)
                 {
                     ts = tsMatch.Groups[1].Value;
                 }
 
                 return new SlackResponse(true, ts);
+            }
+        }
+
+        private static async UniTask<GetUploadURLExternalResponse> GetUploadURLExternal(string token, string filename,
+            int length)
+        {
+            var url = $"{URLBase}/files.getUploadURLExternal?filename={filename}&length={length}";
+
+            using (var www = UnityWebRequest.Get(url))
+            {
+                www.SetRequestHeader("Authorization", $"Bearer {token}");
+                await www.SendWebRequest();
+#if UNITY_2020_2_OR_NEWER
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new GetUploadURLExternalResponse(false);
+                }
+#else
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new GetUploadURLExternalResponse(false);
+                }
+#endif
+
+                var response = new GetUploadURLExternalResponse();
+                if (!response.ParseResponse(www.downloadHandler.text))
+                {
+                    Debug.LogWarning($"{www.downloadHandler.text}");
+                }
+
+                return response;
+            }
+        }
+
+        private static async UniTask<SlackResponse> UploadImage(string url, string filename, byte[] image)
+        {
+            var form = new WWWForm();
+            form.AddBinaryData("file", image, filename, "image/png");
+
+            using (var www = UnityWebRequest.Post(url, form))
+            {
+                await www.SendWebRequest();
+
+#if UNITY_2020_2_OR_NEWER
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false);
+                }
+#else
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false);
+                }
+#endif
+
+                return new SlackResponse(true);
+                // Note: Slack will return HTTP 200 if the upload is successful; a non-200 response indicates a failure.
+            }
+        }
+
+        private static async UniTask<SlackResponse> CompleteUploadExternal(string token, string fileId,
+            string channelId, string threadTs)
+        {
+            var url = $"{URLBase}/files.completeUploadExternal";
+            var arguments = new CompleteUploadExternalArguments(fileId, channelId, threadTs);
+
+#if UNITY_2022_2_OR_NEWER
+            using (var www = UnityWebRequest.Post(url, arguments.ToJson(), "application/json; charset=utf-8"))
+            {
+#else
+            using (var www = UnityWebRequest.Post(url, arguments.ToJson()))
+            {
+                www.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
+#endif
+                www.SetRequestHeader("Authorization", $"Bearer {token}");
+                await www.SendWebRequest();
+
+#if UNITY_2020_2_OR_NEWER
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false);
+                }
+#else
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    Debug.LogWarning($"{www.responseCode}");
+                    return new SlackResponse(false);
+                }
+#endif
+
+                if (!IsSuccess(www.downloadHandler.text))
+                {
+                    Debug.LogWarning($"{www.downloadHandler.text}");
+                    return new SlackResponse(false);
+                }
+
+                return new SlackResponse(true);
             }
         }
     }

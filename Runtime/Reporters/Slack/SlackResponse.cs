@@ -23,7 +23,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// </summary>
         /// <param name="success">Post was success</param>
         /// <param name="ts">Thread timestamp</param>
-        public SlackResponse(bool success, string ts)
+        public SlackResponse(bool success, string ts = null)
         {
             Success = success;
             Ts = ts;

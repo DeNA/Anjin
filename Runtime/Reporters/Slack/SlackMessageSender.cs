@@ -110,16 +110,13 @@ namespace DeNA.Anjin.Reporters.Slack
                 withoutAlpha.SetPixels(screenshot.GetPixels());
                 withoutAlpha.Apply();
 
-                var postScreenshotTask = await _slackAPI.Post(
+                await _slackAPI.Post(
                     slackToken,
                     slackChannel,
                     withoutAlpha.EncodeToPNG(),
                     postTitleTask.Ts
                 );
-                if (!postScreenshotTask.Success)
-                {
-                    return;
-                }
+                // Note: Continue if screenshot submission fails.
             }
 
             if (!string.IsNullOrEmpty(stackTrace))

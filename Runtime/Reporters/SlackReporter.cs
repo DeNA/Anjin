@@ -155,8 +155,8 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, mention, here, lead, messageBody, stackTrace, color, withScreenshot,
-                    cancellationToken);
+                await PostReportAsync(slackChannel.Trim(), mention, here, lead, messageBody, stackTrace, color,
+                    withScreenshot, cancellationToken);
             }
         }
 
