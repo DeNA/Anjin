@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -101,7 +101,7 @@ namespace DeNA.Anjin
                 return false;
             }
 
-            DispatchAgent(agent);
+            DispatchAgent(agent, scene);
             return true;
         }
 
@@ -110,11 +110,11 @@ namespace DeNA.Anjin
         {
             _settings.sceneCrossingAgents.ForEach(agent =>
             {
-                DispatchAgent(agent, true);
+                DispatchAgent(agent, dontDestroyOnLoad: true);
             });
         }
 
-        private void DispatchAgent(AbstractAgent agent, bool dontDestroyOnLoad = false)
+        private void DispatchAgent(AbstractAgent agent, Scene scene = default, bool dontDestroyOnLoad = false)
         {
             var agentName = agent.name;
             agent.Logger = _logger;
@@ -124,6 +124,10 @@ namespace DeNA.Anjin
             if (dontDestroyOnLoad)
             {
                 Object.DontDestroyOnLoad(inspector.gameObject);
+            }
+            else if (scene != default)
+            {
+                SceneManager.MoveGameObjectToScene(inspector.gameObject, scene);
             }
 
             var token = inspector.gameObject.GetCancellationTokenOnDestroy();
