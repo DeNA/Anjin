@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 DeNA Co., Ltd.
+// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -195,9 +195,13 @@ namespace DeNA.Anjin
             const string MappedScenePath = TestScenePath;
             const string ActiveScenePath = TestScenePath2;
 
+            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
+            await SceneManagerHelper.LoadSceneAsync(MappedScenePath, LoadSceneMode.Additive);
+            // Note: Workaround for destroy ScriptableObject after await twice bug.
+            Assume.That(SceneManager.GetActiveScene().path, Is.EqualTo(ActiveScenePath), "Mapped scene is not active");
+
             var spyMappedAgent = ScriptableObject.CreateInstance<SpyAgent>();
             var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
-
             var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
             autopilotSettings.sceneAgentMaps = new List<SceneAgentMap>
             {
@@ -205,10 +209,6 @@ namespace DeNA.Anjin
             };
             autopilotSettings.fallbackAgent = spyFallbackAgent;
             autopilotSettings.lifespanSec = 1;
-
-            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
-            await SceneManagerHelper.LoadSceneAsync(MappedScenePath, LoadSceneMode.Additive);
-            Assume.That(SceneManager.GetActiveScene().path, Is.EqualTo(ActiveScenePath), "Mapped scene is not active");
 
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
@@ -224,14 +224,14 @@ namespace DeNA.Anjin
             const string AdditiveScenePath = TestScenePath;
             const string ActiveScenePath = TestScenePath2;
 
-            var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
+            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
+            await SceneManagerHelper.LoadSceneAsync(AdditiveScenePath, LoadSceneMode.Additive);
+            // Note: Workaround for destroy ScriptableObject after await twice bug.
 
+            var spyFallbackAgent = ScriptableObject.CreateInstance<SpyAgent>();
             var autopilotSettings = ScriptableObject.CreateInstance<AutopilotSettings>();
             autopilotSettings.fallbackAgent = spyFallbackAgent;
             autopilotSettings.lifespanSec = 1;
-
-            await SceneManagerHelper.LoadSceneAsync(ActiveScenePath);
-            await SceneManagerHelper.LoadSceneAsync(AdditiveScenePath, LoadSceneMode.Additive);
 
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
