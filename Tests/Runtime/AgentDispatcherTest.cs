@@ -56,7 +56,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
             const string AgentName = "Mapped Agent";
@@ -75,7 +75,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_DispatchFallbackAgent()
         {
             const string AgentName = "Fallback Agent";
@@ -91,7 +91,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
@@ -104,7 +104,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_ReActivateScene_NotCreateDuplicateAgents()
         {
             const string AgentName = "Mapped Agent";
@@ -150,7 +150,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public void DispatchSceneCrossingAgents_DispatchAgent()
         {
             const string AgentName = "Scene Crossing Agent";
@@ -166,6 +166,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        [CreateScene(unloadOthers: true)]
         public async Task Dispose_DestroyAllRunningAgents()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
