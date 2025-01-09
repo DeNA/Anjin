@@ -151,6 +151,29 @@ namespace DeNA.Anjin
 
         [Test]
         [CreateScene(unloadOthers: true)]
+        public async Task DispatchByScene_AnotherAgentMappedSameScene_DispatchTwoAgents()
+        {
+            const string AgentName = "Mapped Agent";
+            const string AnotherAgentName = "Another Agent";
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
+            });
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, // Mapped same scene
+                agent = CreateSpyAliveCountAgent(AnotherAgentName)
+            });
+            SetUpDispatcher(settings);
+
+            await SceneManagerHelper.LoadSceneAsync(TestScenePath);
+
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(2));
+        }
+
+        [Test]
+        [CreateScene(unloadOthers: true)]
         public void DispatchSceneCrossingAgents_DispatchAgent()
         {
             const string AgentName = "Scene Crossing Agent";

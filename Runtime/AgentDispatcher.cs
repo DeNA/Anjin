@@ -13,16 +13,16 @@ using Object = UnityEngine.Object;
 namespace DeNA.Anjin
 {
     /// <summary>
-    /// Agent dispatcher interface
+    /// Agent dispatcher interface.
     /// </summary>
     public interface IAgentDispatcher : IDisposable
     {
         /// <summary>
-        /// Agent dispatch by current scene
+        /// Agent dispatch by current scene.
         /// </summary>
         /// <param name="scene">Current scene</param>
         /// <param name="fallback">Use fallback agent if true</param>
-        /// <returns>True: Agent dispatched</returns>
+        /// <returns>True: Agent(s) dispatched</returns>
         bool DispatchByScene(Scene scene, bool fallback = true);
 
         /// <summary>
@@ -72,23 +72,23 @@ namespace DeNA.Anjin
         /// <inheritdoc/>
         public bool DispatchByScene(Scene scene, bool fallback = true)
         {
-            AbstractAgent agent = null;
+            var dispatched = false;
 
             foreach (var sceneAgentMap in _settings.sceneAgentMaps)
             {
                 if (sceneAgentMap.scenePath.Equals(scene.path))
                 {
-                    agent = sceneAgentMap.agent;
-                    break;
+                    DispatchAgent(sceneAgentMap.agent, scene);
+                    dispatched = true;
                 }
             }
 
-            if (!agent)
+            if (!dispatched)
             {
                 if (_settings.fallbackAgent && fallback)
                 {
                     _logger.Log($"Use fallback Agent. Scene: {scene.name}");
-                    agent = _settings.fallbackAgent;
+                    DispatchAgent(_settings.fallbackAgent, scene);
                 }
                 else
                 {
@@ -96,13 +96,7 @@ namespace DeNA.Anjin
                 }
             }
 
-            if (!agent)
-            {
-                return false;
-            }
-
-            DispatchAgent(agent, scene);
-            return true;
+            return dispatched;
         }
 
         /// <inheritdoc/>
