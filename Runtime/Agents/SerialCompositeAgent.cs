@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Agents
     public class SerialCompositeAgent : AbstractCompositeAgent
     {
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -25,7 +25,7 @@ namespace DeNA.Anjin.Agents
                 {
                     agent.Logger = Logger;
                     agent.Random = RandomFactory.CreateRandom();
-                    await agent.Run(token);
+                    await agent.Run(cancellationToken);
                 }
             }
             finally

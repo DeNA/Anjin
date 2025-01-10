@@ -20,7 +20,7 @@ namespace DeNA.Anjin.Agents
         public long lifespanSec;
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -29,11 +29,11 @@ namespace DeNA.Anjin.Agents
                 if (lifespanSec > 0)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(lifespanSec), ignoreTimeScale: true,
-                        cancellationToken: token);
+                        cancellationToken: cancellationToken);
                 }
                 else
                 {
-                    await UniTask.WaitWhile(() => true, cancellationToken: token); // Wait indefinitely
+                    await UniTask.WaitWhile(() => true, cancellationToken: cancellationToken); // Wait indefinitely
                 }
             }
             finally

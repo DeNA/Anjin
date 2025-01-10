@@ -22,7 +22,7 @@ namespace DeNA.Anjin.Agents
         /// <inheritdoc />
         [SuppressMessage("Blocker Bug", "S2190:Recursion should not be infinite")]
         [SuppressMessage("ReSharper", "FunctionNeverReturns")]
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -32,7 +32,7 @@ namespace DeNA.Anjin.Agents
             {
                 while (true) // Note: This agent is not terminate myself
                 {
-                    await agent.Run(token);
+                    await agent.Run(cancellationToken);
                 }
             }
             finally

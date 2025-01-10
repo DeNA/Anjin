@@ -16,7 +16,7 @@ namespace DeNA.Anjin.Agents
     public class ParallelCompositeAgent : AbstractCompositeAgent
     {
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -26,7 +26,7 @@ namespace DeNA.Anjin.Agents
             {
                 agent.Logger = Logger;
                 agent.Random = RandomFactory.CreateRandom();
-                tasks.Add(agent.Run(token));
+                tasks.Add(agent.Run(cancellationToken));
             }
 
             try

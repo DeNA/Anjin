@@ -76,7 +76,7 @@ namespace DeNA.Anjin.Agents
             }
         }
 
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace DeNA.Anjin.Agents
 
                 Application.logMessageReceivedThreaded += this.HandleLog;
 
-                await UniTask.WaitWhile(() => true, cancellationToken: token);
+                await UniTask.WaitWhile(() => true, cancellationToken: cancellationToken);
             }
             finally
             {

@@ -51,8 +51,8 @@ namespace DeNA.Anjin.Agents
         /// <summary>
         /// Run agent
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public abstract UniTask Run(CancellationToken token);
+        public abstract UniTask Run(CancellationToken cancellationToken);
     }
 }

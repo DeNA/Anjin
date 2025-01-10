@@ -32,8 +32,9 @@ namespace DeNA.Anjin
         /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
         /// <param name="settings">Autopilot settings</param>
-        /// <param name="token">Task cancellation token</param>
-        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings, CancellationToken token = default)
+        /// <param name="cancellationToken">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(AutopilotSettings settings,
+            CancellationToken cancellationToken = default)
         {
 #if UNITY_EDITOR
             if (!EditorApplication.isPlaying)
@@ -51,7 +52,7 @@ namespace DeNA.Anjin
             state.settings = settings;
             LaunchAutopilot().Forget();
 
-            await UniTask.WaitUntil(() => !state.IsRunning, cancellationToken: token);
+            await UniTask.WaitUntil(() => !state.IsRunning, cancellationToken: cancellationToken);
 
 #if UNITY_INCLUDE_TESTS
             // Launch from Play Mode tests
@@ -73,8 +74,9 @@ namespace DeNA.Anjin
         /// Launch autopilot from Play Mode tests or runtime (e.g., debug menu).
         /// </summary>
         /// <param name="settingsPath">Asset file path for autopilot settings. When running the player, it reads from <c>Resources</c></param>
-        /// <param name="token">Task cancellation token</param>
-        public static async UniTask LaunchAutopilotAsync(string settingsPath, CancellationToken token = default)
+        /// <param name="cancellationToken">Task cancellation token</param>
+        public static async UniTask LaunchAutopilotAsync(string settingsPath,
+            CancellationToken cancellationToken = default)
         {
 #if UNITY_EDITOR
             var settings = AssetDatabase.LoadAssetAtPath<AutopilotSettings>(settingsPath);
@@ -86,7 +88,7 @@ namespace DeNA.Anjin
                 throw new ArgumentException($"Autopilot settings not found: {settingsPath}");
             }
 
-            await LaunchAutopilotAsync(settings, token);
+            await LaunchAutopilotAsync(settings, cancellationToken);
         }
 
         /// <summary>

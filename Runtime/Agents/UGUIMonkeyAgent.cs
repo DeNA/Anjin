@@ -99,7 +99,7 @@ namespace DeNA.Anjin.Agents
             ScreenCapture.StereoScreenCaptureMode.LeftEye;
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
@@ -136,7 +136,7 @@ namespace DeNA.Anjin.Agents
 
             try
             {
-                await Monkey.Run(config, token);
+                await Monkey.Run(config, cancellationToken);
             }
             catch (TimeoutException e)
             {

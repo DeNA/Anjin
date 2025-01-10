@@ -92,7 +92,7 @@ namespace DeNA.Anjin
 
             _logger = _settings.LoggerAsset.Logger;
             // Note: Set a default logger if no logger settings. see: AutopilotSettings.Initialize method.
-            _logger.Log("Launching Autopilot…");
+            _logger.Log("Launching Autopilot...");
 
             if (!int.TryParse(_settings.randomSeed, out var seed))
             {

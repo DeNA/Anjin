@@ -35,8 +35,8 @@ namespace DeNA.Anjin.Agents
             agent.delayMillis = 100;
 
             var gameObject = new GameObject();
-            var token = gameObject.GetCancellationTokenOnDestroy();
-            var task = agent.Run(token);
+            var cancellationToken = gameObject.GetCancellationTokenOnDestroy();
+            var task = agent.Run(cancellationToken);
             await UniTask.NextFrame();
 
             Object.DestroyImmediate(gameObject);
@@ -61,8 +61,8 @@ namespace DeNA.Anjin.Agents
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
-                var token = cancellationTokenSource.Token;
-                var task = agent.Run(token);
+                var cancellationToken = cancellationTokenSource.Token;
+                var task = agent.Run(cancellationToken);
                 await UniTask.Delay(2000); // Consider overhead
 
                 Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
@@ -106,8 +106,8 @@ namespace DeNA.Anjin.Agents
 
             using (var cancellationTokenSource = new CancellationTokenSource())
             {
-                var token = cancellationTokenSource.Token;
-                await agent.Run(token);
+                var cancellationToken = cancellationTokenSource.Token;
+                await agent.Run(cancellationToken);
             }
 
             Assert.That(path, Does.Exist);

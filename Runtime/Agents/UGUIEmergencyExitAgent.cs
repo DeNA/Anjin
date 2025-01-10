@@ -36,7 +36,7 @@ namespace DeNA.Anjin.Agents
         private IScreenshotFilenameStrategy _filenameStrategy;
 
         /// <inheritdoc />
-        public override async UniTask Run(CancellationToken token)
+        public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
             this._filenameStrategy = new TwoTieredCounterStrategy(this.name);
@@ -58,11 +58,11 @@ namespace DeNA.Anjin.Agents
                     {
                         if (selectables[i].TryGetComponent<EmergencyExitAnnotation>(out var emergencyExit))
                         {
-                            await ClickEmergencyExitButton(emergencyExit, token);
+                            await ClickEmergencyExitButton(emergencyExit, cancellationToken);
                         }
                     }
 
-                    await UniTask.Delay(intervalMillis, ignoreTimeScale: true, cancellationToken: token);
+                    await UniTask.Delay(intervalMillis, ignoreTimeScale: true, cancellationToken: cancellationToken);
                 }
             }
             finally
