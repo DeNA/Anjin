@@ -1,6 +1,7 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -16,7 +17,10 @@ using UnityEngine.TestTools;
 
 namespace DeNA.Anjin
 {
+    [TestFixture]
     [UnityPlatform(RuntimePlatform.OSXEditor, RuntimePlatform.WindowsEditor, RuntimePlatform.LinuxEditor)]
+    [SuppressMessage("IDisposableAnalyzers.Correctness", "IDISP003:Dispose previous before re-assigning")]
+    [SuppressMessage("IDisposableAnalyzers.Correctness", "IDISP006:Implement IDisposable")]
     public class AgentDispatcherTest
     {
         private const string TestScenePath = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
@@ -52,7 +56,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_DispatchAgentBySceneAgentMaps()
         {
             const string AgentName = "Mapped Agent";
@@ -71,7 +75,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_DispatchFallbackAgent()
         {
             const string AgentName = "Fallback Agent";
@@ -87,7 +91,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_NoSceneAgentMapsAndFallbackAgent_AgentIsNotDispatch()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
@@ -100,7 +104,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
         public async Task DispatchByScene_ReActivateScene_NotCreateDuplicateAgents()
         {
             const string AgentName = "Mapped Agent";
@@ -125,7 +129,28 @@ namespace DeNA.Anjin
         }
 
         [Test]
-        [CreateScene]
+        [CreateScene(unloadOthers: true)]
+        public async Task DispatchByScene_SceneUnloadWithoutBecomingActive_DisposeAgent()
+        {
+            const string AgentName = "Mapped Agent";
+            var settings = ScriptableObject.CreateInstance<AutopilotSettings>();
+            settings.sceneAgentMaps.Add(new SceneAgentMap
+            {
+                scenePath = TestScenePath, agent = CreateSpyAliveCountAgent(AgentName)
+            });
+            SetUpDispatcher(settings);
+
+            await SceneManagerHelper.LoadSceneAsync(TestScenePath, LoadSceneMode.Additive);
+            Assume.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(1));
+
+            await SceneManager.UnloadSceneAsync(GetSceneName(TestScenePath));
+            await UniTask.NextFrame(); // Wait for destroy
+
+            Assert.That(SpyAliveCountAgent.AliveInstances, Is.EqualTo(0));
+        }
+
+        [Test]
+        [CreateScene(unloadOthers: true)]
         public void DispatchSceneCrossingAgents_DispatchAgent()
         {
             const string AgentName = "Scene Crossing Agent";
@@ -141,6 +166,7 @@ namespace DeNA.Anjin
         }
 
         [Test]
+        [CreateScene(unloadOthers: true)]
         public async Task Dispose_DestroyAllRunningAgents()
         {
             var settings = ScriptableObject.CreateInstance<AutopilotSettings>();

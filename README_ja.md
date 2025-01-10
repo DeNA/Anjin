@@ -856,7 +856,7 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 > [!WARNING]  
 > Anjinパッケージ内のテストを実行するためには、次のパッケージのインストールが必要です。
 > - [Unity Test Framework](https://docs.unity3d.com/Packages/com.unity.test-framework@latest) package v1.3.4 or later
-> - [Test Helper](https://github.com/nowsprinting/test-helper) package v0.7.2 or later
+> - [Test Helper](https://github.com/nowsprinting/test-helper) package v1.1.1 or later
 
 テスト専用のUnityプロジェクトを生成し、Unityバージョンを指定してテストを実行するには、次のコマンドを実行します。
 
