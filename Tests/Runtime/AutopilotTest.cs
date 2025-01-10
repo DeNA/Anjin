@@ -97,7 +97,9 @@ namespace DeNA.Anjin
             var agents = AgentInspector.Instances;
             Assume.That(agents, Is.Not.Empty, "Agents are running");
 
-            await autopilot.TerminateAsync(ExitCode.Normally, reporting: false);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            autopilot.TerminateAsync(ExitCode.Normally, reporting: false);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             await UniTask.NextFrame(); // wait for destroy
 
             autopilot = Object.FindObjectOfType<Autopilot>(); // re-find after terminated
@@ -138,7 +140,9 @@ namespace DeNA.Anjin
             await UniTask.Delay(500); // wait for launch
 
             var autopilot = Autopilot.Instance;
-            await autopilot.TerminateAsync(ExitCode.Normally, null, null, false);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            autopilot.TerminateAsync(ExitCode.Normally, null, null, false);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
             Assert.That(spyReporter.IsCalled, Is.False);
         }
@@ -153,7 +157,9 @@ namespace DeNA.Anjin
             await UniTask.Delay(500); // wait for launch
 
             var autopilot = Autopilot.Instance;
-            await autopilot.TerminateAsync(ExitCode.Normally, "message", "stack trace", true);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            autopilot.TerminateAsync(ExitCode.Normally, "message", "stack trace", true);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
             Assert.That(spyReporter.IsCalled, Is.True);
             Assert.That(spyReporter.Arguments["exitCode"], Is.EqualTo("Normally"));
