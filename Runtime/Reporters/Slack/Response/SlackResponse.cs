@@ -3,6 +3,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace DeNA.Anjin.Reporters.Slack.Response
 {
@@ -46,6 +47,44 @@ namespace DeNA.Anjin.Reporters.Slack.Response
             this.error = null;
             this.warning = null;
             this.ts = ts;
+        }
+
+        /// <summary>
+        /// Create instance from <c>GetUploadURLExternalResponse</c>.
+        /// </summary>
+        /// <param name="source">Source response instance</param>
+        /// <returns></returns>
+        public static SlackResponse FromGetUploadURLExternalResponse(GetUploadURLExternalResponse source)
+        {
+            return new SlackResponse() { ok = source.ok, error = source.error, warning = source.warning, ts = null };
+        }
+
+        /// <summary>
+        /// Create instance from <c>UnityWebRequest</c>.
+        /// </summary>
+        /// <param name="www">UnityWebRequest with response</param>
+        /// <param name="parseBody">Parse web-response body. if false, always returns success response</param>
+        /// <returns></returns>
+        public static SlackResponse FromWebResponse(UnityWebRequest www, bool parseBody = true)
+        {
+#if UNITY_2020_2_OR_NEWER
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                return new SlackResponse() { ok = false };
+            }
+#else
+            if (www.isNetworkError || www.isHttpError)
+            {
+                return new SlackResponse() { ok = false };
+            }
+#endif
+
+            if (parseBody)
+            {
+                return FromJson(www.downloadHandler.text);
+            }
+
+            return new SlackResponse() { ok = true };
         }
 
         public static SlackResponse FromJson(string json)

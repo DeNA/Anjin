@@ -11,20 +11,18 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         [Test]
         public void ParseResponse_okIsFalse_NotSuccess()
         {
-            const string Body = "\"ok\":false";
+            const string Body = "{\"ok\":false}";
 
-            var sut = new GetUploadURLExternalResponse();
-            sut.ParseResponse(Body);
+            var sut = GetUploadURLExternalResponse.FromJson(Body);
             Assert.That(sut.ok, Is.False);
         }
 
         [Test]
         public void ParseResponse_okIsTrue_Success()
         {
-            const string Body = "\"ok\":true";
+            const string Body = "{\"ok\":true}";
 
-            var sut = new GetUploadURLExternalResponse();
-            sut.ParseResponse(Body);
+            var sut = GetUploadURLExternalResponse.FromJson(Body);
             Assert.That(sut.ok, Is.True);
         }
 
@@ -33,10 +31,9 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         {
             const string UploadUrl = @"https:\/\/files.slack.com\/upload\/v1\/ABC123-abc123_abc123";
             const string FileId = "F123ABC456";
-            var body = $"\"ok\":true,\"upload_url\":\"{UploadUrl}\",\"file_id\":\"{FileId}\"";
+            var body = "{" + $"\"ok\":true,\"upload_url\":\"{UploadUrl}\",\"file_id\":\"{FileId}\"" + "}";
 
-            var sut = new GetUploadURLExternalResponse();
-            sut.ParseResponse(body);
+            var sut = GetUploadURLExternalResponse.FromJson(body);
             Assert.That(sut.upload_url, Is.EqualTo(UploadUrl.Replace(@"\/", "/")));
         }
 
@@ -45,10 +42,9 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         {
             const string UploadUrl = @"https:\/\/files.slack.com\/upload\/v1\/ABC123-abc123_abc123";
             const string FileId = "F123ABC456";
-            var body = $"\"ok\":true,\"upload_url\":\"{UploadUrl}\",\"file_id\":\"{FileId}\"";
+            var body = "{" + $"\"ok\":true,\"upload_url\":\"{UploadUrl}\",\"file_id\":\"{FileId}\"" + "}";
 
-            var sut = new GetUploadURLExternalResponse();
-            sut.ParseResponse(body);
+            var sut = GetUploadURLExternalResponse.FromJson(body);
             Assert.That(sut.file_id, Is.EqualTo(FileId));
         }
     }

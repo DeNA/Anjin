@@ -2,8 +2,8 @@
 // This software is released under the MIT License.
 
 using System;
-using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace DeNA.Anjin.Reporters.Slack.Response
 {
@@ -23,57 +23,25 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         public string file_id;
         // ReSharper restore InconsistentNaming
 
-        private static readonly Regex s_successRegex = new Regex("\"ok\":true");
-        private static readonly Regex s_urlUploadRegex = new Regex("\"upload_url\":\"(https?://[\\w\\./-]+)\"");
-        private static readonly Regex s_fileIdRegex = new Regex("\"file_id\":\"(\\w+)\"");
-
         /// <summary>
-        /// Constructor.
+        /// Create instance from UnityWebRequest.
         /// </summary>
-        [Obsolete]
-        public GetUploadURLExternalResponse(bool success = false)
+        /// <param name="www">UnityWebRequest with response</param>
+        /// <returns></returns>
+        public static GetUploadURLExternalResponse FromWebResponse(UnityWebRequest www)
         {
-            ok = success;
-            error = null;
-            warning = null;
-            upload_url = null;
-            file_id = null;
-        }
-
-        /// <summary>
-        /// Parse REST API response body and set properties.
-        /// </summary>
-        /// <param name="text">REST API response body</param>
-        [Obsolete]
-        public bool ParseResponse(string text)
-        {
-            ok = s_successRegex.Match(text).Success;
-            if (!ok)
+#if UNITY_2020_2_OR_NEWER
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                return false;
+                return new GetUploadURLExternalResponse() { ok = false };
             }
-
-            var uploadUrlMatch = s_urlUploadRegex.Match(text.Replace(@"\/", "/"));
-            if (uploadUrlMatch.Success)
+#else
+            if (www.isNetworkError || www.isHttpError)
             {
-                upload_url = uploadUrlMatch.Groups[1].Value;
+                return new GetUploadURLExternalResponse() { ok = false };
             }
-            else
-            {
-                return false;
-            }
-
-            var fileIdMatch = s_fileIdRegex.Match(text);
-            if (fileIdMatch.Success)
-            {
-                file_id = fileIdMatch.Groups[1].Value;
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
+#endif
+            return FromJson(www.downloadHandler.text);
         }
 
         public static GetUploadURLExternalResponse FromJson(string json)

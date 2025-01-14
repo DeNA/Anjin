@@ -1,7 +1,6 @@
 // Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack.Payloads.CompleteUploadExternal;
 using DeNA.Anjin.Reporters.Slack.Payloads.Text;
@@ -17,7 +16,6 @@ namespace DeNA.Anjin.Reporters.Slack
     public class SlackAPI
     {
         private const string URLBase = "https://slack.com/api/";
-        private static bool IsSuccess(string text) => text.Contains("\"ok\":true");
 
         /// <summary>
         /// Post text message
@@ -95,13 +93,13 @@ namespace DeNA.Anjin.Reporters.Slack
             var uploadURLExternalResponse = await GetUploadURLExternal(token, Filename, image.Length);
             if (!uploadURLExternalResponse.ok)
             {
-                return new SlackResponse(false);
+                return SlackResponse.FromGetUploadURLExternalResponse(uploadURLExternalResponse);
             }
 
             var uploadResponse = await UploadImage(uploadURLExternalResponse.upload_url, Filename, image);
             if (!uploadResponse.ok)
             {
-                return new SlackResponse(false);
+                return uploadResponse;
             }
 
             return await CompleteUploadExternal(token, uploadURLExternalResponse.file_id, channel, ts);
@@ -120,34 +118,13 @@ namespace DeNA.Anjin.Reporters.Slack
                 www.SetRequestHeader("Authorization", $"Bearer {token}");
                 await www.SendWebRequest();
 
-#if UNITY_2020_2_OR_NEWER
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#else
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#endif
-
-                if (!IsSuccess(www.downloadHandler.text))
+                var response = SlackResponse.FromWebResponse(www);
+                if (!response.ok)
                 {
                     Debug.LogWarning($"{www.downloadHandler.text}");
-                    return new SlackResponse(false);
                 }
 
-                string ts = null;
-                var tsMatch = new Regex("\"ts\":\"(\\d+\\.\\d+)\"").Match(www.downloadHandler.text);
-                if (tsMatch.Success && tsMatch.Length > 0)
-                {
-                    ts = tsMatch.Groups[1].Value;
-                }
-
-                return new SlackResponse(true, ts);
+                return response;
             }
         }
 
@@ -160,22 +137,9 @@ namespace DeNA.Anjin.Reporters.Slack
             {
                 www.SetRequestHeader("Authorization", $"Bearer {token}");
                 await www.SendWebRequest();
-#if UNITY_2020_2_OR_NEWER
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new GetUploadURLExternalResponse(false);
-                }
-#else
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new GetUploadURLExternalResponse(false);
-                }
-#endif
 
-                var response = new GetUploadURLExternalResponse();
-                if (!response.ParseResponse(www.downloadHandler.text))
+                var response = GetUploadURLExternalResponse.FromWebResponse(www);
+                if (!response.ok)
                 {
                     Debug.LogWarning($"{www.downloadHandler.text}");
                 }
@@ -193,22 +157,14 @@ namespace DeNA.Anjin.Reporters.Slack
             {
                 await www.SendWebRequest();
 
-#if UNITY_2020_2_OR_NEWER
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#else
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#endif
-
-                return new SlackResponse(true);
+                var response = SlackResponse.FromWebResponse(www, parseBody: false);
                 // Note: Slack will return HTTP 200 if the upload is successful; a non-200 response indicates a failure.
+                if (!response.ok)
+                {
+                    Debug.LogWarning($"{www.downloadHandler.text}");
+                }
+
+                return response;
             }
         }
 
@@ -229,27 +185,13 @@ namespace DeNA.Anjin.Reporters.Slack
                 www.SetRequestHeader("Authorization", $"Bearer {token}");
                 await www.SendWebRequest();
 
-#if UNITY_2020_2_OR_NEWER
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#else
-                if (www.isNetworkError || www.isHttpError)
-                {
-                    Debug.LogWarning($"{www.responseCode}");
-                    return new SlackResponse(false);
-                }
-#endif
-
-                if (!IsSuccess(www.downloadHandler.text))
+                var response = SlackResponse.FromWebResponse(www);
+                if (!response.ok)
                 {
                     Debug.LogWarning($"{www.downloadHandler.text}");
-                    return new SlackResponse(false);
                 }
 
-                return new SlackResponse(true);
+                return response;
             }
         }
     }

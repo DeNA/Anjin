@@ -13,6 +13,8 @@ namespace DeNA.Anjin.TestDoubles
     {
         public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
 
+        private readonly SlackResponse _successResponse = SlackResponse.FromJson("{\"ok\":true,\"ts\":\"1\"}");
+
         public override async UniTask<SlackResponse> Post(string token, string channel, string text, string message,
             Color color, string ts = null)
         {
@@ -27,7 +29,7 @@ namespace DeNA.Anjin.TestDoubles
 
             await UniTask.NextFrame();
 
-            return new SlackResponse(true, "1");
+            return _successResponse;
         }
 
         public override async UniTask<SlackResponse> PostWithoutAttachments(string token, string channel, string text,
@@ -42,7 +44,7 @@ namespace DeNA.Anjin.TestDoubles
 
             await UniTask.NextFrame();
 
-            return new SlackResponse(true, "1");
+            return _successResponse;
         }
 
         public override async UniTask<SlackResponse> Post(string token, string channel, byte[] image,
