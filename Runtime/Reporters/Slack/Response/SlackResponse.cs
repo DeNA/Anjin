@@ -36,20 +36,6 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         public string ts;
 
         /// <summary>
-        /// Constructor for tests.
-        /// </summary>
-        /// <param name="ok">Post was success</param>
-        /// <param name="ts">Thread timestamp</param>
-        [Obsolete]
-        public SlackResponse(bool ok, string ts = null)
-        {
-            this.ok = ok;
-            this.error = null;
-            this.warning = null;
-            this.ts = ts;
-        }
-
-        /// <summary>
         /// Create instance from <c>GetUploadURLExternalResponse</c>.
         /// </summary>
         /// <param name="source">Source response instance</param>
