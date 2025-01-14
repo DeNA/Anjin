@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack;
+using DeNA.Anjin.Reporters.Slack.Response;
 using UnityEngine;
 
 namespace DeNA.Anjin.TestDoubles

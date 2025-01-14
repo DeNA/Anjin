@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Reporters.Slack.Payloads.CompleteUploadExternal;
 using DeNA.Anjin.Reporters.Slack.Payloads.Text;
+using DeNA.Anjin.Reporters.Slack.Response;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -28,7 +29,8 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <param name="color">Attachment color</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, string text, string message,
+        public virtual async UniTask<SlackResponse> Post(string token, string channel, string text,
+            string message,
             Color color, string ts = null)
         {
             const string URL = URLBase + "chat.postMessage";
@@ -62,7 +64,8 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <param name="text">Text (out of attachment)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> PostWithoutAttachments(string token, string channel, string text,
+        public virtual async UniTask<SlackResponse> PostWithoutAttachments(string token, string channel,
+            string text,
             string ts = null)
         {
             const string URL = URLBase + "chat.postMessage";
@@ -84,23 +87,24 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <param name="image">Image (screenshot)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image, string ts = null)
+        public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image,
+            string ts = null)
         {
             const string Filename = "screenshot.png";
 
             var uploadURLExternalResponse = await GetUploadURLExternal(token, Filename, image.Length);
-            if (!uploadURLExternalResponse.Success)
+            if (!uploadURLExternalResponse.ok)
             {
                 return new SlackResponse(false);
             }
 
-            var uploadResponse = await UploadImage(uploadURLExternalResponse.UploadUrl, Filename, image);
-            if (!uploadResponse.Success)
+            var uploadResponse = await UploadImage(uploadURLExternalResponse.upload_url, Filename, image);
+            if (!uploadResponse.ok)
             {
                 return new SlackResponse(false);
             }
 
-            return await CompleteUploadExternal(token, uploadURLExternalResponse.FileId, channel, ts);
+            return await CompleteUploadExternal(token, uploadURLExternalResponse.file_id, channel, ts);
         }
 
         private static async UniTask<SlackResponse> Post(string url, string token, Payload payload)

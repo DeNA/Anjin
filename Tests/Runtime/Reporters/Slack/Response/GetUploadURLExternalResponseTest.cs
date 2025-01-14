@@ -3,7 +3,7 @@
 
 using NUnit.Framework;
 
-namespace DeNA.Anjin.Reporters.Slack
+namespace DeNA.Anjin.Reporters.Slack.Response
 {
     [TestFixture]
     public class GetUploadURLExternalResponseTest
@@ -15,7 +15,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
             var sut = new GetUploadURLExternalResponse();
             sut.ParseResponse(Body);
-            Assert.That(sut.Success, Is.False);
+            Assert.That(sut.ok, Is.False);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
             var sut = new GetUploadURLExternalResponse();
             sut.ParseResponse(Body);
-            Assert.That(sut.Success, Is.True);
+            Assert.That(sut.ok, Is.True);
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
             var sut = new GetUploadURLExternalResponse();
             sut.ParseResponse(body);
-            Assert.That(sut.UploadUrl, Is.EqualTo(UploadUrl.Replace(@"\/", "/")));
+            Assert.That(sut.upload_url, Is.EqualTo(UploadUrl.Replace(@"\/", "/")));
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
             var sut = new GetUploadURLExternalResponse();
             sut.ParseResponse(body);
-            Assert.That(sut.FileId, Is.EqualTo(FileId));
+            Assert.That(sut.file_id, Is.EqualTo(FileId));
         }
     }
 }

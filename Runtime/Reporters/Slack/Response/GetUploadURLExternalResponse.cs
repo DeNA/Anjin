@@ -1,21 +1,27 @@
 // Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
+using System;
 using System.Text.RegularExpressions;
+using UnityEngine;
 
-namespace DeNA.Anjin.Reporters.Slack
+namespace DeNA.Anjin.Reporters.Slack.Response
 {
     /// <summary>
     /// Response of files.getUploadURLExternal.
     /// </summary>
     /// <see href="https://api.slack.com/methods/files.getUploadURLExternal"/>
+    [Serializable]
     public struct GetUploadURLExternalResponse
     {
-        public bool Success { get; private set; }
+        public bool ok;
+        public string error;
+        public string warning;
 
-        public string UploadUrl { get; private set; }
-
-        public string FileId { get; private set; }
+        // ReSharper disable InconsistentNaming
+        public string upload_url;
+        public string file_id;
+        // ReSharper restore InconsistentNaming
 
         private static readonly Regex s_successRegex = new Regex("\"ok\":true");
         private static readonly Regex s_urlUploadRegex = new Regex("\"upload_url\":\"(https?://[\\w\\./-]+)\"");
@@ -24,21 +30,25 @@ namespace DeNA.Anjin.Reporters.Slack
         /// <summary>
         /// Constructor.
         /// </summary>
+        [Obsolete]
         public GetUploadURLExternalResponse(bool success = false)
         {
-            Success = success;
-            UploadUrl = null;
-            FileId = null;
+            ok = success;
+            error = null;
+            warning = null;
+            upload_url = null;
+            file_id = null;
         }
 
         /// <summary>
         /// Parse REST API response body and set properties.
         /// </summary>
         /// <param name="text">REST API response body</param>
+        [Obsolete]
         public bool ParseResponse(string text)
         {
-            Success = s_successRegex.Match(text).Success;
-            if (!Success)
+            ok = s_successRegex.Match(text).Success;
+            if (!ok)
             {
                 return false;
             }
@@ -46,7 +56,7 @@ namespace DeNA.Anjin.Reporters.Slack
             var uploadUrlMatch = s_urlUploadRegex.Match(text.Replace(@"\/", "/"));
             if (uploadUrlMatch.Success)
             {
-                UploadUrl = uploadUrlMatch.Groups[1].Value;
+                upload_url = uploadUrlMatch.Groups[1].Value;
             }
             else
             {
@@ -56,7 +66,7 @@ namespace DeNA.Anjin.Reporters.Slack
             var fileIdMatch = s_fileIdRegex.Match(text);
             if (fileIdMatch.Success)
             {
-                FileId = fileIdMatch.Groups[1].Value;
+                file_id = fileIdMatch.Groups[1].Value;
             }
             else
             {
@@ -64,6 +74,16 @@ namespace DeNA.Anjin.Reporters.Slack
             }
 
             return true;
+        }
+
+        public static GetUploadURLExternalResponse FromJson(string json)
+        {
+            return JsonUtility.FromJson<GetUploadURLExternalResponse>(json);
+        }
+
+        public string ToJson(bool prettyPrint = false)
+        {
+            return JsonUtility.ToJson(this, prettyPrint);
         }
     }
 }

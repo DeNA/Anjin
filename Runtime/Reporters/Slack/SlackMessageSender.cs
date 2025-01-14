@@ -94,7 +94,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 message,
                 color
             );
-            if (!postTitleTask.Success)
+            if (!postTitleTask.ok)
             {
                 return;
             }
@@ -114,14 +114,14 @@ namespace DeNA.Anjin.Reporters.Slack
                     slackToken,
                     slackChannel,
                     withoutAlpha.EncodeToPNG(),
-                    postTitleTask.Ts
+                    postTitleTask.ts
                 );
                 // Note: Continue if screenshot submission fails.
             }
 
             if (!string.IsNullOrEmpty(stackTrace))
             {
-                await _slackAPI.PostWithoutAttachments(slackToken, slackChannel, stackTrace, postTitleTask.Ts);
+                await _slackAPI.PostWithoutAttachments(slackToken, slackChannel, stackTrace, postTitleTask.ts);
             }
         }
 
