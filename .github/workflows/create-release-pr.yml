@@ -42,7 +42,7 @@ jobs:
           npm version --no-git-tag-version ${{ steps.next-version.outputs.version }}
           git add .
           git commit -m"Bump version to v${{ steps.next-version.outputs.version }}"
-          git push origin HEAD
+          git push -u origin HEAD
           gh pr create --title "Release v${{ steps.next-version.outputs.version }}" --body-file ".github/release-pr-template.md" --reviewer ${{ github.actor }} --label "skip-changelog"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
