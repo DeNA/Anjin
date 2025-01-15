@@ -517,10 +517,10 @@ Slackにレポート送信するReporterです。
 このReporterのインスタンス（.assetファイル）には以下を設定できます。
 
 <dl>
-  <dt>Slackトークン</dt><dd>通知に使用するSlack BotのOAuthトークン（省略時は通知されない）。
+  <dt>Slackトークン</dt><dd>Slack通知に使用するBotのOAuthトークン。省略時は送信されません。
         コマンドライン引数 <code>-SLACK_TOKEN</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
-  <dt>Slackチャンネル</dt><dd>通知を送るチャンネル（省略時は通知されない）。カンマ区切りで複数指定できます。
-        なお、チャンネルにはBotを招待しておく必要があります。
+  <dt>Slackチャンネル</dt><dd>Slack通知を送るチャンネルID（例: \"C123456\"）をカンマ区切りで指定します。省略時は送信されません。
+        チャンネルにはBotを招待しておく必要があります。
         コマンドライン引数 <code>-SLACK_CHANNELS</code> で上書きできますが、複数のSlackReporterを定義しているとき、すべて同じ値で上書きされますので注意してください。</dd>
   <dt>メンション宛先ユーザーグループID</dt><dd>エラー終了時に送信する通知をメンションするユーザーグループのIDをカンマ区切りで指定します</dd>
   <dt>@hereをつける</dt><dd>エラー終了時に送信する通知に@hereを付けます</dd>
@@ -815,6 +815,11 @@ Now, automatically converted it to SlackReporter asset file. Check it out and co
 
 これは、廃止された設定項目を新しい設定方法（上例では `SlackReporter` ）に自動変換したことを示しています。
 設定ファイルが更新されていますので、確認してVCS（Gitなど）にコミットしてください。
+
+
+### スクリーンショットがSlackに投稿されない
+
+Anjin v1.8.3 以降、`SlackReporter`にはチャンネル名（例: "#channel"）ではなくチャンネルID（例: "C123456"）を指定してください。
 
 
 

@@ -21,7 +21,9 @@ namespace DeNA.Anjin.Reporters
         public string slackToken;
 
         /// <summary>
-        /// Comma-separated Slack channels to post. If omitted, it will not be sent.
+        /// Comma-separated Slack channel's IDs (e.g., "C123456") to post. If omitted, it will not be sent.
+        /// In Slack API v1, could specify a channel name.
+        /// However, in v2, can't upload screenshots by channel name.
         /// </summary>
         public string slackChannels;
 
@@ -155,8 +157,8 @@ namespace DeNA.Anjin.Reporters
                     return;
                 }
 
-                await PostReportAsync(slackChannel, mention, here, lead, messageBody, stackTrace, color, withScreenshot,
-                    cancellationToken);
+                await PostReportAsync(slackChannel.Trim(), mention, here, lead, messageBody, stackTrace, color,
+                    withScreenshot, cancellationToken);
             }
         }
 

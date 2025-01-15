@@ -561,15 +561,15 @@ msgstr "Slackトークン"
 
 # slackToken tooltip
 msgid "Slack Bot OAuth token. If omitted, it will not be sent."
-msgstr "Slack通知に使用するBotのOAuthトークン（省略時は送信されません）"
+msgstr "Slack通知に使用するBotのOAuthトークン。省略時は送信されません"
 
 # slackChannels
 msgid "Slack Channels"
 msgstr "Slackチャンネル"
 
 # slackChannels tooltip
-msgid "Comma-separated Slack channels to post. If omitted, it will not be sent."
-msgstr "Slack通知を送るチャンネルをカンマ区切りで指定します（省略時は送信されません）"
+msgid "Comma-separated Slack channel's IDs (e.g., \"C123456\") to post. If omitted, it will not be sent."
+msgstr "Slack通知を送るチャンネルID（例: \"C123456\"）をカンマ区切りで指定します。省略時は送信されません"
 
 # Header: Error Report Settings
 msgid "Error Report Settings"
