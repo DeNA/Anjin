@@ -57,7 +57,7 @@ define cover
   $(UNITY) \
     $(call base_arguments) \
     $(call test_arguments) \
-    -burst-disable-compilation \
+    --burst-disable-compilation \
     -debugCodeOptimization \
     -enableCodeCoverage \
     -coverageResultsPath $(LOG_DIR) \
