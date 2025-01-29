@@ -2,7 +2,7 @@
 coverage:
   if: true
   paths:
-    - ./Logs/Report/lcov.info # Warning: This path is replace by regex in test.yml
+    - UnityProject~/Logs/Report/lcov.info # Warning: This path is to be replaced by regex in test.yml
 
 codeToTestRatio:
   code:
