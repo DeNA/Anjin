@@ -1,0 +1,152 @@
+# Copyright (c) 2023-2025 DeNA Co., Ltd.
+# This software is released under the MIT License.
+
+name: Test
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      checks: write
+    strategy:
+      fail-fast: false
+      matrix:
+        unityVersion: # Available versions see: https://game.ci/docs/docker/versions
+          - 2019.4.40f1
+          - 2020.3.48f1
+          - 2021.3.45f1
+          - 2022.3.58f1
+          - 2023.2.20f1
+          - 6000.0.38f1
+        depends:
+          - min # use required version of dependencies
+        testMode:
+          - All # run tests in editor
+        include:
+          - unityVersion: 6000.0.38f1
+            depends: latest # use latest version of dependencies
+            testMode: All
+            octocov: true
+          - unityVersion: 6000.0.38f1
+            depends: min
+            testMode: Standalone  # run tests on player
+
+    steps:
+      - name: Crete project for tests
+        uses: nowsprinting/create-unity-project-action@v3
+        with:
+          project-path: UnityProject~
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.CREATED_PROJECT_PATH }}/Library
+          key: Library-linux-${{ matrix.unityVersion }}-${{ github.ref }}-${{ matrix.depends }}
+          restore-keys: |
+            Library-linux-${{ matrix.unityVersion }}-${{ github.ref }}
+            Library-linux-${{ matrix.unityVersion }}
+            Library-linux
+            Library
+
+      - name: Get package checkout path
+        run: |
+          name=com.dena.anjin
+          echo "PACKAGE_PATH=$CREATED_PROJECT_PATH/Packages/$name" >> "$GITHUB_ENV"
+
+      - name: Checkout repository as embedded package
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+          lfs: false
+          path: ${{ env.PACKAGE_PATH }}
+          # In Linux editor, there is a problem that assets in local packages cannot be found with `AssetDatabase.FindAssets`.
+          # As a workaround, I have made it into an embedded package.
+
+      - name: Set package name
+        run: |
+          echo "PACKAGE_NAME=com.dena.anjin" >> "$GITHUB_ENV"
+
+      - name: Install dependencies (min version)
+        run: |
+          npm install -g openupm-cli
+          openupm add -f com.unity.test-framework@1.4.1
+          openupm add -f com.unity.testtools.codecoverage@1.2.0
+          openupm add -f com.cysharp.unitask@2.3.3
+          openupm add -f com.nowsprinting.test-helper@1.1.1
+          openupm add -f com.nowsprinting.test-helper.monkey@0.13.2
+          openupm add -f com.nowsprinting.test-helper.random@0.3.0
+          openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.depends == 'min' }}
+
+      - name: Install dependencies (latest version)
+        run: |
+          npm install -g openupm-cli
+          openupm add -f com.unity.test-framework@stable
+          openupm add -f com.unity.testtools.codecoverage
+          openupm add -f com.cysharp.unitask
+          openupm add -f com.nowsprinting.test-helper
+          openupm add -f com.nowsprinting.test-helper.monkey
+          openupm add -f com.nowsprinting.test-helper.random
+          openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
+        working-directory: ${{ env.CREATED_PROJECT_PATH }}
+        if: ${{ matrix.depends == 'latest' }}
+
+      - name: Set coverage assembly filters
+        run: |
+          assemblies=$(find ${{ env.PACKAGE_PATH }} -name "*.asmdef" | sed -e s/.*\\//\+/ | sed -e s/\\.asmdef// | sed -e s/^.*\\.Tests//)
+          # shellcheck disable=SC2001,SC2048,SC2086
+          echo "assembly_filters=$(echo ${assemblies[*]} | sed -e s/\ /,/g),+<assets>,-*.Tests" >> "$GITHUB_ENV"
+
+      - name: Set license secret key
+        run: echo "secret_key=UNITY_LICENSE_$(echo ${{ matrix.unityVersion }} | cut -c 1-4)" >> "$GITHUB_ENV"
+
+      - name: Run tests
+        uses: game-ci/unity-test-runner@v4
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          unityVersion: ${{ matrix.unityVersion }}  # Default is `auto`
+          checkName: test-anjin result (${{ matrix.unityVersion }}, ${{ matrix.depends }}, ${{ matrix.testMode }})
+          projectPath: ${{ env.CREATED_PROJECT_PATH }}
+          customParameters: -testCategory "!IgnoreCI" -testHelperScreenshotDirectory /github/workspace/artifacts/Screenshots
+          coverageOptions: generateAdditionalMetrics;generateTestReferences;generateHtmlReport;generateAdditionalReports;dontClear;assemblyFilters:${{ env.assembly_filters }}
+          # see: https://docs.unity3d.com/Packages/com.unity.testtools.codecoverage@1.2/manual/CoverageBatchmode.html
+          testMode: ${{ matrix.testMode }}
+        env:
+          UNITY_LICENSE: ${{ secrets[env.secret_key] }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        id: test
+
+      - name: Set coverage path for octocov
+        run: |
+          mv ${{ env.PACKAGE_PATH }}/.octocov.yml .
+          sed -i -r 's/UnityProject~\/Logs/${{ steps.test.outputs.coveragePath }}/' .octocov.yml
+        if: ${{ matrix.octocov }}
+
+      - name: Run octocov
+        uses: k1LoW/octocov-action@v1
+        if: ${{ matrix.octocov }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-Unity${{ matrix.unityVersion }}-${{ matrix.depends }}-${{ matrix.testMode }}
+          path: |
+            ${{ steps.test.outputs.artifactsPath }}
+            ${{ steps.test.outputs.coveragePath }}
+        if: always()
