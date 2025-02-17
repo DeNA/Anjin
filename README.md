@@ -270,7 +270,7 @@ The following Agent types are provided. These can be used as they are, or game-t
 ### UGUIMonkeyAgent
 
 This is an Agent that randomly manipulates uGUI components.
-This Agent implementation uses open source [test-helper.monkey](https://github.com/nowsprinting/test-helper.monkey) package.
+This Agent implementation uses open source [Monkey Test Helper](https://github.com/nowsprinting/test-helper.monkey) package.
 
 An instance of this Agent (.asset file) can contain the following.
 
@@ -278,7 +278,6 @@ An instance of this Agent (.asset file) can contain the following.
   <dt>Lifespan</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
   <dt>Delay</dt><dd>Wait interval [milliseconds] between random operations</dd>
   <dt>No-Element Timeout</dt><dd>Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds</dd>
-  <dt>Click and Hold Millis</dt><dd>Delay time for click-and-hold [ms]</dd>
   <dt>Enable Gizmos</dt><dd>Show Gizmos on GameView during running monkey test if true</dd>
 </dl>
 
@@ -291,9 +290,24 @@ An instance of this Agent (.asset file) can contain the following.
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
 </dl>
 
-If you have a `GameObject` that you want to avoid manipulation by the `UGUIMonkeyAgent`,
-attach the `IgnoreAnnotation` component in the `TestHelper.Monkey.Annotations` assembly.
-See **Anjin Annotations** below for more information.
+***Click and Hold Operator Options:***
+
+<dl>
+  <dt>Click and Hold Millis</dt><dd>Delay time for click-and-hold [ms]</dd>
+</dl>
+
+***Text Input Operator Options:***
+
+<dl>
+  <dt>GameObject Name</dt><dd>Target GameObject name. If it is difficult to identify the GameObject by name, you can also use InputFieldAnnotation, which will be described later.</dd>
+  <dt>Characters Kind</dt><dd>Type of characters to be entered in the InputField. The options are "Printable", "Alphanumeric", and "Digits".</dd>
+  <dt>Minimum Length</dt><dd>Minimum number of characters that can be entered into the InputField.</dd>
+  <dt>Maximum Length</dt><dd>Maximum number of characters that can be entered into the InputField.</dd>
+</dl>
+
+> [!TIP]  
+> If you have a `GameObject` that you want to avoid manipulation by the `UGUIMonkeyAgent`, attach the `IgnoreAnnotation` component in the `TestHelper.Monkey.Annotations` assembly.
+> See **Anjin Annotations** below for more information.
 
 
 ### UGUIPlaybackAgent

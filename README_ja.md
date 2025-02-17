@@ -273,7 +273,7 @@ public async Task LaunchAutopilotInTest()
 ### UGUIMonkeyAgent
 
 uGUIのコンポーネントをランダムに操作するAgentです。
-実装にはオープンソースの[test-helper.monkey](https://github.com/nowsprinting/test-helper.monkey)パッケージを使用しています。
+実装にはオープンソースの [Monkey Test Helper](https://github.com/nowsprinting/test-helper.monkey) パッケージを使用しています。
 
 このAgentのインスタンス（.assetファイル）には以下を設定できます。
 
@@ -281,7 +281,6 @@ uGUIのコンポーネントをランダムに操作するAgentです。
   <dt>実行時間</dt><dd>ランダム操作の実行時間を秒で指定します。0を指定するとほぼ無制限（TimeSpan.MaxValue）に動作します。この設定でAgentが終了してもオートパイロットおよびアプリ自体は終了しません。次にSceneが切り替わるまでなにもしない状態になります</dd>
   <dt>操作間隔</dt><dd>ランダム操作間のウェイト間隔をミリ秒で指定します</dd>
   <dt>要素なしタイムアウト</dt><dd>指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、オートパイロットの実行を中断します</dd>
-  <dt>クリック＆ホールド時間</dt><dd>クリック＆ホールドの継続時間をミリ秒で指定します</dd>
   <dt>Gizmos を有効</dt><dd>もし有効ならモンキー操作中の GameView に Gizmo を表示します。もし無効なら GameView に Gizmo を表示しません</dd>
 </dl>
 
@@ -294,9 +293,24 @@ uGUIのコンポーネントをランダムに操作するAgentです。
   <dt>ステレオキャプチャモード</dt><dd>ステレオレンダリングが有効な場合にどちらのカメラを使用するかを指定できます。拡大係数と同時には設定できません</dd>
 </dl>
 
-`UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、
-`TestHelper.Monkey.Annotations` アセンブリに含まれる `IgnoreAnnotation` コンポーネントをアタッチしておくことで操作を回避できます。
-詳しくは後述の**Anjin Annotations**を参照してください。
+***クリック＆ホールド オペレーター設定:***
+
+<dl>
+  <dt>クリック＆ホールド時間</dt><dd>クリック＆ホールドの継続時間をミリ秒で指定します</dd>
+</dl>
+
+***テキスト入力オペレーター設定:***
+
+<dl>
+  <dt>GameObjectの名前</dt><dd>対象のGameObject名を指定します。名前による特定が難しい場合は後述のInputFieldAnnotationも利用できます</dd>
+  <dt>文字種</dt><dd>InputFieldに入力される文字種を指定します。選択肢は「印刷可能文字」「英数字」「数字」です</dd>
+  <dt>最小文字列長</dt><dd>InputFieldに入力される文字数の最小値を指定します</dd>
+  <dt>最大文字列長</dt><dd>InputFieldに入力される文字数の最大値を指定します</dd>
+</dl>
+
+> [!TIP]  
+> `UGUIMonkeyAgent` によって操作されたくない `GameObject` がある場合、`TestHelper.Monkey.Annotations` アセンブリに含まれる `IgnoreAnnotation` コンポーネントをアタッチしておくことで操作を回避できます。
+> 詳しくは後述の**Anjin Annotations**を参照してください。
 
 
 ### UGUIPlaybackAgent
