@@ -212,6 +212,7 @@ $(UNITY) \
 
 In addition, some settings can be overridden by adding the following arguments.
 For details on each argument, see the entry of the same name in the "Generate and configure the AutopilotSettings.asset file" mentioned above.
+In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
 
 <dl>
   <dt>LIFESPAN_SEC</dt><dd>Specifies the execution time limit in seconds</dd>
@@ -219,18 +220,21 @@ For details on each argument, see the entry of the same name in the "Generate an
   <dt>TIME_SCALE</dt><dd>Specifies the Time.timeScale. Default is 1.0</dd>
   <dt>OUTPUT_ROOT_DIRECTORY_PATH</dt><dd>Output files root directory path used by Agents, Loggers, and Reporters.</dd>
   <dt>SCREENSHOTS_DIRECTORY_PATH</dt><dd>Screenshots output directory path used by Agents.</dd>
+</dl>
+
+The following arguments are only valid when launching the Unity Editor and Anjin from the command line.
+
+<dl>
   <dt>GAME_VIEW_WIDTH</dt><dd>Set GameView width. This argument is only used to launch in editor from command line. Default is 640.</dd>
   <dt>GAME_VIEW_HEIGHT</dt><dd>Set GameView height. This argument is only used to launch in editor from command line. Default is 480.</dd>
 </dl>
-
-In both cases, the key should be prefixed with `-` and specified as `-LIFESPAN_SEC 60`.
 
 > [!IMPORTANT]  
 > Shown GameView window even in batchmode.
 > We have confirmed that it works with Xvfb, but since Unity does not officially support it, it may not be available in the future.
 
 
-### 3. Run in Play Mode test
+### 3. Run in Play Mode tests
 
 Autopilot works within your test code using the static method `Launcher.LaunchAutopilotAsync(string)`.
 Specify the `AutopilotSettings` file path via the argument.
