@@ -37,8 +37,8 @@ You can choose from two typical installation methods.
 
 **Figure 2.** Select registries drop-down list in Package Manager window.
 
-![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
-![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
+![](Documentation~/PackageManager_Dark.png#gh-dark-mode-only)
+![](Documentation~/PackageManager_Light.png#gh-light-mode-only)
 
 > [!NOTE]  
 > Do not forget to add `com.cysharp` and `com.nowsprinting` into scopes. These are used within Anjin.
@@ -859,6 +859,9 @@ Generate a temporary project and run tests on each Unity version from the comman
 make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
+
+> [!WARNING]  
+> You must select "Input Manager (Old)" or "Both" in the **Project Settings > Player > Active Input Handling** for running tests.
 
 
 ## Release workflow

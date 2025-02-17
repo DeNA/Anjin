@@ -37,8 +37,8 @@ Agentとは、UI操作のプレイバックやモンキーテストなど、特�
 
 **図 2.** Package Manager ウィンドウのレジストリ選択ドロップダウン
 
-![](Documentation~/PackageManager_Dark.png/#gh-dark-mode-only)
-![](Documentation~/PackageManager_Light.png/#gh-light-mode-only)
+![](Documentation~/PackageManager_Dark.png#gh-dark-mode-only)
+![](Documentation~/PackageManager_Light.png#gh-light-mode-only)
 
 > [!NOTE]  
 > scopesに `com.cysharp` と `com.nowsprinting` を忘れず追加してください。Anjin内で使用しています。
@@ -869,6 +869,9 @@ git submodule add https://github.com/dena/Anjin.git Packages/com.dena.anjin
 make create_project
 UNITY_VERSION=2019.4.40f1 make -k test
 ```
+
+> [!WARNING]  
+> テストを実行するには、**Project Settings > Player > Active Input Handling** を "Input Manager (Old)" または "Both" に設定する必要があります。
 
 
 ## リリースワークフロー
