@@ -11,8 +11,8 @@ namespace DeNA.Anjin.Reporters.Slack
 {
     /// <summary>
     /// An interface for Slack message senders. The derived class of this interface must define message format, and
-    /// delegate touching Slack API to <c cref="SlackAPI" />.
-    /// Purpose of introducing this interface is making <c cref="SlackReporter" /> be a humble object.
+    /// delegate touching Slack API to <c cref="SlackAPI">SlackAPI</c>.
+    /// Purpose of introducing this interface is making <c cref="SlackReporter">SlackReporter</c> be a humble object.
     /// </summary>
     public interface ISlackMessageSender
     {
@@ -20,8 +20,8 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post report log message, stacktrace and screenshot
         /// </summary>
         /// <param name="slackToken">Slack API token</param>
-        /// <param name="slackChannel">Slack Channel to send notification</param>
-        /// <param name="mentionSubTeamIDs">Sub team IDs to mention</param>
+        /// <param name="slackChannel">Slack channel ID or name to send notification</param>
+        /// <param name="mentionSubTeamIDs">Subteam IDs to mention</param>
         /// <param name="addHereInSlackMessage">Whether adding @here or not</param>
         /// <param name="lead">Lead text (out of attachment)</param>
         /// <param name="message">Message body text (into attachment)</param>
@@ -46,23 +46,21 @@ namespace DeNA.Anjin.Reporters.Slack
 
     /// <summary>
     /// A class for Slack message senders. This class defines a message format and delegates touching Slack API to
-    /// <c cref="SlackAPI" />.
+    /// <c cref="SlackAPI">SlackAPI</c>.
     /// </summary>
     public class SlackMessageSender : ISlackMessageSender
     {
         private readonly SlackAPI _slackAPI;
         private readonly string _slackToken;
 
-
         /// <summary>
-        /// Creates a new instance for <c cref="SlackMessageSender" />.
+        /// Creates a new instance for <c cref="SlackMessageSender">SlackMessageSender</c>.
         /// </summary>
         /// <param name="api">Slack API client</param>
         public SlackMessageSender(SlackAPI api)
         {
             _slackAPI = api;
         }
-
 
         /// <inheritdoc />
         public async UniTask Send(
@@ -112,7 +110,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
                 await _slackAPI.Post(
                     slackToken,
-                    postTitleTask.channel,
+                    postTitleTask.channel, // channel ID
                     withoutAlpha.EncodeToPNG(),
                     postTitleTask.ts
                 );
