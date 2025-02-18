@@ -21,7 +21,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post text message
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channel">Send target channels</param>
+        /// <param name="channel">Send target channel ID or name</param>
         /// <param name="text">Lead text (out of attachment)</param>
         /// <param name="message">Message body text (into attachment)</param>
         /// <param name="color">Attachment color</param>
@@ -58,7 +58,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Without attachments.
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channel">Send target channels</param>
+        /// <param name="channel">Send target channel ID or name</param>
         /// <param name="text">Text (out of attachment)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
@@ -81,11 +81,11 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post image
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channel">Send target channels</param>
+        /// <param name="channelId">Send target channel ID (Not allow name)</param>
         /// <param name="image">Image (screenshot)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
-        public virtual async UniTask<SlackResponse> Post(string token, string channel, byte[] image,
+        public virtual async UniTask<SlackResponse> Post(string token, string channelId, byte[] image,
             string ts = null)
         {
             const string Filename = "screenshot.png";
@@ -102,7 +102,7 @@ namespace DeNA.Anjin.Reporters.Slack
                 return uploadResponse;
             }
 
-            return await CompleteUploadExternal(token, uploadURLExternalResponse.file_id, channel, ts);
+            return await CompleteUploadExternal(token, uploadURLExternalResponse.file_id, channelId, ts);
         }
 
         private static async UniTask<SlackResponse> Post(string url, string token, Payload payload)

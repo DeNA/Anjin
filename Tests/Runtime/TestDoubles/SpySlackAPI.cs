@@ -1,4 +1,4 @@
-// Copyright (c) 2023 DeNA Co., Ltd.
+// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -13,7 +13,8 @@ namespace DeNA.Anjin.TestDoubles
     {
         public List<Dictionary<string, string>> Arguments { get; } = new List<Dictionary<string, string>>();
 
-        private readonly SlackResponse _successResponse = SlackResponse.FromJson("{\"ok\":true,\"ts\":\"1\"}");
+        private readonly SlackResponse _successResponse =
+            SlackResponse.FromJson("{\"ok\":true,\"channel\":\"CHANNEL\",\"ts\":\"1\"}");
 
         public override async UniTask<SlackResponse> Post(string token, string channel, string text, string message,
             Color color, string ts = null)

@@ -515,7 +515,7 @@ The instance of this Reporter (.asset file) can have the following settings.
 <dl>
   <dt>Slack Token</dt><dd>Slack Bot OAuth token. If omitted, it will not be sent.
         It can be overwritten with the command line argument <code>-SLACK_TOKEN</code>, but be careful if multiple SlackReporters are defined, they will all be overwritten with the same value.</dd>
-  <dt>Slack Channels</dt><dd>Comma-separated Slack channel's IDs (e.g., "C123456") to post. If omitted, it will not be sent.
+  <dt>Slack Channels</dt><dd>Comma-separated Slack channel name (e.g., "#test") or ID (e.g., "C123456") to post. If omitted, it will not be sent.
         Note that the bot must be invited to the channel.
         It can be overwritten with the command line argument <code>-SLACK_CHANNELS</code>, but be careful if multiple SlackReporters are defined, they will all be overwritten with the same value.</dd>
   <dt>Mention User Group IDs</dt><dd>Comma-separated user group IDs to mention when posting error reports.</dd>
@@ -806,11 +806,6 @@ Now, automatically converted it to SlackReporter asset file. Check it out and co
 
 This message that the obsolete setting item has been automatically converted to the new setting method (`SlackReporter` in the above example).
 The settings file has been updated, so please check it out and commit it to your VCS (e.g., Git).
-
-
-### Screenshot was not posted to Slack
-
-Since Anjin v1.8.3 or newer, please specify the channel ID (e.g., "C123456") instead of the channel name (e.g., "#channel") in `SlackReporter`.
 
 
 
