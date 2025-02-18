@@ -31,7 +31,12 @@ namespace DeNA.Anjin.Reporters.Slack.Response
         public string warning;
 
         /// <summary>
-        /// Thread timestamp.
+        /// Channel ID.
+        /// </summary>
+        public string channel;
+
+        /// <summary>
+        /// Thread timestamp ID.
         /// </summary>
         public string ts;
 
@@ -65,12 +70,12 @@ namespace DeNA.Anjin.Reporters.Slack.Response
             }
 #endif
 
-            if (parseBody)
+            if (!parseBody)
             {
-                return FromJson(www.downloadHandler.text);
+                return new SlackResponse() { ok = true };
             }
 
-            return new SlackResponse() { ok = true };
+            return FromJson(www.downloadHandler.text);
         }
 
         public static SlackResponse FromJson(string json)

@@ -1,4 +1,4 @@
-// Copyright (c) 2023-2024 DeNA Co., Ltd.
+// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Collections.Generic;
@@ -112,7 +112,7 @@ namespace DeNA.Anjin.Reporters.Slack
 
                 await _slackAPI.Post(
                     slackToken,
-                    slackChannel,
+                    postTitleTask.channel,
                     withoutAlpha.EncodeToPNG(),
                     postTitleTask.ts
                 );
@@ -124,7 +124,6 @@ namespace DeNA.Anjin.Reporters.Slack
                 await _slackAPI.PostWithoutAttachments(slackToken, slackChannel, stackTrace, postTitleTask.ts);
             }
         }
-
 
         private static string CreateLead(string lead, IEnumerable<string> mentionSubTeamIDs, bool withHere)
         {
