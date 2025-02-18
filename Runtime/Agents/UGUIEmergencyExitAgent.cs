@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Text;
@@ -32,14 +32,16 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public bool screenshot;
 
-        private static IClickOperator ClickOperator => new UGUIClickOperator();
+        private IClickOperator _clickOperator;
         private IScreenshotFilenameStrategy _filenameStrategy;
 
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
-            this._filenameStrategy = new TwoTieredCounterStrategy(this.name);
+
+            _clickOperator = new UGUIClickOperator();
+            _filenameStrategy = new TwoTieredCounterStrategy(this.name);
 
             try
             {
@@ -56,7 +58,8 @@ namespace DeNA.Anjin.Agents
                     Selectable.AllSelectablesNoAlloc(selectables);
                     for (var i = 0; i < allSelectableCount; i++)
                     {
-                        if (selectables[i].TryGetComponent<EmergencyExitAnnotation>(out var emergencyExit))
+                        if (selectables[i].TryGetComponent<EmergencyExitAnnotation>(out var emergencyExit)
+                            && emergencyExit.isActiveAndEnabled)
                         {
                             await ClickEmergencyExitButton(emergencyExit, cancellationToken);
                         }
@@ -75,7 +78,7 @@ namespace DeNA.Anjin.Agents
             CancellationToken cancellationToken = default)
         {
             var button = emergencyExit.gameObject.GetComponent<Button>();
-            if (!ClickOperator.CanOperate(button))
+            if (!_clickOperator.CanOperate(button))
             {
                 return;
             }
@@ -92,7 +95,7 @@ namespace DeNA.Anjin.Agents
 
             Logger.Log(message.ToString());
 
-            await ClickOperator.OperateAsync(button, cancellationToken);
+            await _clickOperator.OperateAsync(button, cancellationToken);
         }
     }
 }
