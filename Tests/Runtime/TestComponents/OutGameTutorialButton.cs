@@ -7,7 +7,7 @@ using Button = UnityEngine.UI.Button;
 namespace DeNA.Anjin.TestComponents
 {
     [RequireComponent(typeof(Button))]
-    [AddComponentMenu("")] // Hide from "Add Component" picker
+    [AddComponentMenu("/")] // Hide from "Add Component" picker
     public class OutGameTutorialButton : MonoBehaviour
     {
         private static bool s_tutorialCompleted;
