@@ -20,7 +20,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post report log message, stacktrace and screenshot
         /// </summary>
         /// <param name="slackToken">Slack API token</param>
-        /// <param name="slackChannel">Slack channel ID or name to send notification</param>
+        /// <param name="slackChannel">Slack channel ID or name to post</param>
         /// <param name="mentionSubTeamIDs">Subteam IDs to mention</param>
         /// <param name="addHereInSlackMessage">Whether adding @here or not</param>
         /// <param name="lead">Lead text (out of attachment)</param>

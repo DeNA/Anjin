@@ -21,7 +21,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post text message
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channel">Send target channel ID or name</param>
+        /// <param name="channel">Slack channel ID or name to post</param>
         /// <param name="text">Lead text (out of attachment)</param>
         /// <param name="message">Message body text (into attachment)</param>
         /// <param name="color">Attachment color</param>
@@ -58,7 +58,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Without attachments.
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channel">Send target channel ID or name</param>
+        /// <param name="channel">Slack channel ID or name to post</param>
         /// <param name="text">Text (out of attachment)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
@@ -81,7 +81,7 @@ namespace DeNA.Anjin.Reporters.Slack
         /// Post image
         /// </summary>
         /// <param name="token">Slack token</param>
-        /// <param name="channelId">Send target channel ID (Not allow name)</param>
+        /// <param name="channelId">Slack channel ID to post (a channel name is not allowed)</param>
         /// <param name="image">Image (screenshot)</param>
         /// <param name="ts">Thread timestamp</param>
         /// <returns></returns>
