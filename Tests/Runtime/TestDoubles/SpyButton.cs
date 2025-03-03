@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace DeNA.Anjin.TestDoubles
 {
     [RequireComponent(typeof(Button))]
-    [AddComponentMenu("")]
+    [AddComponentMenu("/")] // Hide from "Add Component" picker
     public class SpyButton : MonoBehaviour
     {
         public bool IsClicked { get; private set; }

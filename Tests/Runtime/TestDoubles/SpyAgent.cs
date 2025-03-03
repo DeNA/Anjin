@@ -5,14 +5,12 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Agents;
-using UnityEngine;
 
 namespace DeNA.Anjin.TestDoubles
 {
     /// <summary>
     /// Spy agent that count the number of called times
     /// </summary>
-    [AddComponentMenu("")]
     // ReSharper disable once RequiredBaseTypesIsNotInherited
     public class SpyAgent : AbstractAgent
     {

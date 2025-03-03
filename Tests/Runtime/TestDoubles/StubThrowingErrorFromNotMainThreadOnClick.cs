@@ -12,7 +12,7 @@ namespace DeNA.Anjin.TestDoubles
     /// <summary>
     /// A test stub throw errors when clicked
     /// </summary>
-    [AddComponentMenu("")]
+    [AddComponentMenu("/")] // Hide from "Add Component" picker
     public class StubThrowingErrorFromNotMainThreadOnClick : MonoBehaviour, IPointerClickHandler
     {
         public void OnPointerClick(PointerEventData eventData)
