@@ -568,8 +568,8 @@ msgid "Slack Channels"
 msgstr "Slackチャンネル"
 
 # slackChannels tooltip
-msgid "Comma-separated Slack channel's IDs (e.g., \"C123456\") to post. If omitted, it will not be sent."
-msgstr "Slack通知を送るチャンネルID（例: \"C123456\"）をカンマ区切りで指定します。省略時は送信されません"
+msgid "Comma-separated Slack channel name (e.g., \"#test\") or ID (e.g., \"C123456\") to post. If omitted, it will not be sent."
+msgstr "Slack通知を送るチャンネルの名前（例: \"#test\"）またはID（例: \"C123456\"）をカンマ区切りで指定します。省略時は送信されません"
 
 # Header: Error Report Settings
 msgid "Error Report Settings"

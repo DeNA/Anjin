@@ -21,9 +21,7 @@ namespace DeNA.Anjin.Reporters
         public string slackToken;
 
         /// <summary>
-        /// Comma-separated Slack channel's IDs (e.g., "C123456") to post. If omitted, it will not be sent.
-        /// In Slack API v1, could specify a channel name.
-        /// However, in v2, can't upload screenshots by channel name.
+        /// Comma-separated Slack channel name (e.g., "#test") or ID (e.g., "C123456") to post. If omitted, it will not be sent.
         /// </summary>
         public string slackChannels;
 
