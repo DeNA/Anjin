@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -44,11 +44,16 @@ namespace DeNA.Anjin.Agents
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
 
-        private static SpyButton CreateButtonWithEmergencyExitAnnotation(bool interactable = true)
+        private static SpyButton CreateButtonWithEmergencyExitAnnotation(
+            bool buttonInteractable = true,
+            bool annotationEnabled = true)
         {
             var button = new GameObject().AddComponent<SpyButton>();
-            button.GetComponent<Selectable>().interactable = interactable;
-            button.gameObject.AddComponent<EmergencyExitAnnotation>();
+            button.GetComponent<Selectable>().interactable = buttonInteractable;
+
+            var annotation = button.gameObject.AddComponent<EmergencyExitAnnotation>();
+            annotation.enabled = annotationEnabled;
+
             return button;
         }
 
@@ -83,6 +88,35 @@ namespace DeNA.Anjin.Agents
 
         [Test]
         [CreateScene]
+        public async Task Run_ExistDisabledEmergencyExitAnnotation_DoesNotClickEmergencyExitButton()
+        {
+            var agent = ScriptableObject.CreateInstance<UGUIEmergencyExitAgent>();
+            agent.Logger = Debug.unityLogger;
+            agent.name = TestContext.CurrentContext.Test.Name;
+            agent.intervalMillis = 100;
+
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var token = cancellationTokenSource.Token;
+                var task = agent.Run(token);
+                await UniTask.NextFrame();
+
+                var emergencyButton = CreateButtonWithEmergencyExitAnnotation(annotationEnabled: false);
+                await UniTask.Delay(200);
+
+                Assert.That(emergencyButton.IsClicked, Is.False, "Does not click button with EmergencyExit annotation");
+                Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Pending), "Keep agent running");
+
+                cancellationTokenSource.Cancel();
+                await UniTask.NextFrame();
+            }
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
+        }
+
+        [Test]
+        [CreateScene]
         public async Task Run_ExistNotInteractableEmergencyExitButton_DoesNotClickEmergencyExitButton()
         {
             var agent = ScriptableObject.CreateInstance<UGUIEmergencyExitAgent>();
@@ -97,7 +131,7 @@ namespace DeNA.Anjin.Agents
                 var task = agent.Run(token);
                 await UniTask.NextFrame();
 
-                var emergencyButton = CreateButtonWithEmergencyExitAnnotation(false);
+                var emergencyButton = CreateButtonWithEmergencyExitAnnotation(buttonInteractable: false);
                 await UniTask.Delay(200);
 
                 Assert.That(emergencyButton.IsClicked, Is.False, "Does not click button with EmergencyExit annotation");
