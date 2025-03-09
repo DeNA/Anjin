@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -14,35 +14,45 @@ using NUnit.Framework;
 using TestHelper.Attributes;
 using UnityEngine;
 using UnityEngine.TestTools;
-using Object = UnityEngine.Object;
 
 namespace DeNA.Anjin.Agents
 {
-    [SuppressMessage("ApiDesign", "RS0030")]
     public class UGUIMonkeyAgentTest
     {
         private const string TestScene = "Packages/com.dena.anjin/Tests/TestScenes/Buttons.unity";
 
-        [Test]
-        [LoadScene(TestScene)]
-        public async Task Run_CancelTask_StopAgent()
+        private static UGUIMonkeyAgent CreateAgent()
         {
             var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
+            agent.name = TestContext.CurrentContext.Test.Name;
             agent.Logger = Debug.unityLogger;
             agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = TestContext.CurrentContext.Test.Name;
-            agent.lifespanSec = 0; // Expect indefinite execution
             agent.delayMillis = 100;
+            agent.bufferLengthForDetectLooping = 0; // Disable loop detection
+            agent.touchAndHoldDelayMillis = 100;
+            return agent;
+        }
 
-            var gameObject = new GameObject();
-            var cancellationToken = gameObject.GetCancellationTokenOnDestroy();
-            var task = agent.Run(cancellationToken);
-            await UniTask.NextFrame();
+        [Test]
+        [LoadScene(TestScene)]
+        [Timeout(5000)]
+        [SuppressMessage("ReSharper", "MethodSupportsCancellation")]
+        public async Task Run_CancelTask_StopAgent()
+        {
+            var agent = CreateAgent();
+            agent.lifespanSec = 0; // Expect indefinite execution
 
-            Object.DestroyImmediate(gameObject);
-            await UniTask.NextFrame();
+            using (var cts = new CancellationTokenSource())
+            {
+                var cancellationToken = cts.Token;
+                var task = agent.Run(cancellationToken);
+                await UniTask.NextFrame();
 
-            Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+                cts.Cancel();
+                await UniTask.NextFrame();
+
+                Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Canceled));
+            }
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
@@ -52,21 +62,13 @@ namespace DeNA.Anjin.Agents
         [LoadScene(TestScene)]
         public async Task Run_LifespanPassed_StopAgent()
         {
-            var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = TestContext.CurrentContext.Test.Name;
+            var agent = CreateAgent();
             agent.lifespanSec = 1;
-            agent.delayMillis = 100;
 
-            using (var cancellationTokenSource = new CancellationTokenSource())
-            {
-                var cancellationToken = cancellationTokenSource.Token;
-                var task = agent.Run(cancellationToken);
-                await UniTask.Delay(2000); // Consider overhead
+            var task = agent.Run(CancellationToken.None);
+            await UniTask.Delay(2000); // Consider overhead
 
-                Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
-            }
+            Assert.That(task.Status, Is.EqualTo(UniTaskStatus.Succeeded));
 
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
@@ -92,23 +94,14 @@ namespace DeNA.Anjin.Agents
 
             Assume.That(path, Does.Not.Exist);
 
-            var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = agentName;
+            var agent = CreateAgent();
             agent.lifespanSec = 1;
-            agent.delayMillis = 100;
-            agent.touchAndHoldDelayMillis = 100;
             agent.screenshotEnabled = true;
             agent.defaultScreenshotFilenamePrefix = true; // Use default prefix
 
             TwoTieredCounterStrategy.ResetPrefixCounters();
 
-            using (var cancellationTokenSource = new CancellationTokenSource())
-            {
-                var cancellationToken = cancellationTokenSource.Token;
-                await agent.Run(cancellationToken);
-            }
+            await agent.Run(CancellationToken.None);
 
             Assert.That(path, Does.Exist);
 
@@ -117,27 +110,19 @@ namespace DeNA.Anjin.Agents
         }
 
         [Test]
-        [FocusGameView]
         [LoadScene("Packages/com.dena.anjin/Tests/TestScenes/Empty.unity")]
+        [Timeout(5000)]
         public async Task Run_TimeoutExceptionOccurred_AutopilotFailed()
         {
-            var agent = ScriptableObject.CreateInstance<UGUIMonkeyAgent>();
-            agent.Logger = Debug.unityLogger;
-            agent.Random = new RandomFactory(0).CreateRandom();
-            agent.name = TestContext.CurrentContext.Test.Name;
-            agent.lifespanSec = 5;
-            agent.delayMillis = 100;
-            agent.touchAndHoldDelayMillis = 100;
+            var agent = CreateAgent();
+            agent.lifespanSec = 0; // Expect indefinite execution
             agent.secondsToErrorForNoInteractiveComponent = 1; // TimeoutException occurred after 1 second
 
             var spyTerminatable = new SpyTerminatable();
             agent.AutopilotInstance = spyTerminatable;
 
-            using (var cts = new CancellationTokenSource())
-            {
-                await agent.Run(cts.Token);
-                await UniTask.NextFrame();
-            }
+            await agent.Run(CancellationToken.None);
+            await UniTask.NextFrame();
 
             Assert.That(spyTerminatable.IsCalled, Is.True);
             Assert.That(spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));

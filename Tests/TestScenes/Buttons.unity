@@ -998,11 +998,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1085114496}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 0
-  ignoreLongPress: 1
 --- !u!1 &1168193429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1134,11 +1132,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1168193429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 1
-  ignoreLongPress: 1
 --- !u!1 &1214569669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1270,11 +1266,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1214569669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 1
-  ignoreLongPress: 1
 --- !u!1 &1236238311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1564,11 +1558,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1297532254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 1
-  ignoreLongPress: 1
 --- !u!1 &1584693787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1779,11 +1771,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1598507193}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 1
-  ignoreLongPress: 0
 --- !u!1 &1690339410
 GameObject:
   m_ObjectHideFlags: 0
@@ -2091,11 +2081,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1862254216}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e21e7fabe0d1418882a72438b601878, type: 3}
+  m_Script: {fileID: 11500000, guid: 5cf09fa0fd1545dd9d62fe58ebbeb76d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreTap: 1
-  ignoreLongPress: 1
 --- !u!1 &1929521105
 GameObject:
   m_ObjectHideFlags: 0
