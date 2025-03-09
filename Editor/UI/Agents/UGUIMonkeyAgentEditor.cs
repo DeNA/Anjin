@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System.Diagnostics.CodeAnalysis;
@@ -38,11 +38,19 @@ namespace DeNA.Anjin.Editor.UI.Agents
             L10n.Tr("No-Element Timeout [sec]");
 
         private static readonly string s_timeoutToolTip = L10n.Tr(
-            "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
+            "Abort Autopilot when the interactable UI/ 2D/ 3D element does not appear for the specified seconds. Disable detection if set to 0."
         );
 
         private SerializedProperty _timeoutProp;
         private GUIContent _timeoutGUIContent;
+
+        private static readonly string s_repeatDetectionBuffer = L10n.Tr("Repeating Operation Detection Buffer Length");
+
+        private static readonly string s_repeatDetectionBufferToolTip = L10n.Tr(
+            "Abort Autopilot when repeating operation is detected within the specified buffer length. For example, if the buffer length is 10, repeating 5-step sequences can be detected. Disable detection if set to 0.");
+
+        private SerializedProperty _repeatDetectionBufferProp;
+        private GUIContent _repeatDetectionBufferGUIContent;
 
         private static readonly string s_gizmos = L10n.Tr("Enable Gizmos");
 
@@ -149,6 +157,10 @@ namespace DeNA.Anjin.Editor.UI.Agents
             _timeoutProp =
                 serializedObject.FindProperty(nameof(UGUIMonkeyAgent.secondsToErrorForNoInteractiveComponent));
             _timeoutGUIContent = new GUIContent(s_timeout, s_timeoutToolTip);
+
+            _repeatDetectionBufferProp =
+                serializedObject.FindProperty(nameof(UGUIMonkeyAgent.bufferLengthForDetectLooping));
+            _repeatDetectionBufferGUIContent = new GUIContent(s_repeatDetectionBuffer, s_repeatDetectionBufferToolTip);
 
             _gizmosProp = serializedObject.FindProperty(nameof(UGUIMonkeyAgent.gizmos));
             _gizmosGUIContent = new GUIContent(s_gizmos, s_gizmosTooltip);
@@ -265,6 +277,7 @@ namespace DeNA.Anjin.Editor.UI.Agents
             EditorGUILayout.PropertyField(_lifespanProp, _lifespanGUIContent);
             EditorGUILayout.PropertyField(_delayMillisProp, _delayMillisGUIContent);
             EditorGUILayout.PropertyField(_timeoutProp, _timeoutGUIContent);
+            EditorGUILayout.PropertyField(_repeatDetectionBufferProp, _repeatDetectionBufferGUIContent);
             EditorGUILayout.PropertyField(_gizmosProp, _gizmosGUIContent);
 
             // Screenshot options

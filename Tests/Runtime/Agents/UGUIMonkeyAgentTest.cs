@@ -135,5 +135,33 @@ namespace DeNA.Anjin.Agents
             LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
             LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
         }
+
+        [Test]
+        [LoadScene(TestScene)]
+        [Timeout(10000)]
+        public async Task Run_InfiniteLoopExceptionOccurred_AutopilotFailed()
+        {
+            var agent = CreateAgent();
+            agent.lifespanSec = 0; // Expect indefinite execution
+            agent.bufferLengthForDetectLooping = 5; // Enable infinite loop detection
+            // Note: The loop is detected immediately because there are only two active buttons on the test scene.
+
+            var spyTerminatable = new SpyTerminatable();
+            agent.AutopilotInstance = spyTerminatable;
+
+            await agent.Run(CancellationToken.None);
+            await UniTask.NextFrame();
+
+            Assert.That(spyTerminatable.IsCalled, Is.True);
+            Assert.That(spyTerminatable.CapturedExitCode, Is.EqualTo(ExitCode.AutopilotFailed));
+            Assert.That(spyTerminatable.CapturedMessage, Does.StartWith(
+                "InfiniteLoopException: Found loop in the operation sequence"));
+            Assert.That(spyTerminatable.CapturedStackTrace, Does.StartWith(
+                "  at TestHelper.Monkey.Monkey"));
+            Assert.That(spyTerminatable.CapturedReporting, Is.True);
+
+            LogAssert.Expect(LogType.Log, $"Enter {agent.name}.Run()");
+            LogAssert.Expect(LogType.Log, $"Exit {agent.name}.Run()");
+        }
     }
 }

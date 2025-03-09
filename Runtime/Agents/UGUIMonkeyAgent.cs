@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023-2024 DeNA Co., Ltd.
+﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
 using System;
@@ -10,6 +10,7 @@ using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
 using TestHelper.Monkey;
 using TestHelper.Monkey.Annotations.Enums;
+using TestHelper.Monkey.Exceptions;
 using TestHelper.Monkey.Operators;
 using TestHelper.Monkey.Random;
 using TestHelper.Random;
@@ -35,10 +36,19 @@ namespace DeNA.Anjin.Agents
         public int delayMillis = 200;
 
         /// <summary>
-        /// No-Element Timeout [sec].
-        /// Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds.
+        /// No-element timeout [sec].
+        /// Abort Autopilot when the interactable UI/ 2D/ 3D element does not appear for the specified seconds.
+        /// Disable detection if set to 0.
         /// </summary>
         public int secondsToErrorForNoInteractiveComponent = 5;
+
+        /// <summary>
+        /// Repeating operation detection buffer length.
+        /// Abort Autopilot when repeating operation is detected within the specified buffer length.
+        /// For example, if the buffer length is 10, repeating 5-step sequences can be detected.
+        /// Disable detection if set to 0.
+        /// </summary>
+        public int bufferLengthForDetectLooping = 10;
 
         /// <summary>
         /// Delay time for click-and-hold
@@ -111,6 +121,7 @@ namespace DeNA.Anjin.Agents
                 Random = random,
                 Logger = Logger,
                 SecondsToErrorForNoInteractiveComponent = secondsToErrorForNoInteractiveComponent,
+                BufferLengthForDetectLooping = bufferLengthForDetectLooping,
                 Gizmos = gizmos,
                 Screenshots = screenshotEnabled
                     ? new ScreenshotOptions
@@ -139,6 +150,14 @@ namespace DeNA.Anjin.Agents
                 await Monkey.Run(config, cancellationToken);
             }
             catch (TimeoutException e)
+            {
+                var message = $"{e.GetType().Name}: {e.Message}";
+                Logger.Log(message);
+
+                // ReSharper disable once MethodSupportsCancellation; Do not use this Agent's CancellationToken.
+                AutopilotInstance.TerminateAsync(ExitCode.AutopilotFailed, message, e.StackTrace).Forget();
+            }
+            catch (InfiniteLoopException e)
             {
                 var message = $"{e.GetType().Name}: {e.Message}";
                 Logger.Log(message);
