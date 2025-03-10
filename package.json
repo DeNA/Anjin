@@ -6,7 +6,7 @@
   "changelogUrl": "https://github.com/DeNA/Anjin/releases",
   "dependencies": {
     "com.cysharp.unitask": "2.3.3",
-    "com.nowsprinting.test-helper.monkey": "0.14.0",
+    "com.nowsprinting.test-helper.monkey": "0.15.1",
     "com.unity.automated-testing": "0.8.1-preview.2"
   },
   "displayName": "Anjin",
