@@ -30,19 +30,19 @@ jobs:
           - 2019.4.40f1
           - 2020.3.48f1
           - 2021.3.45f1
-          - 2022.3.58f1
+          - 2022.3.59f1
           - 2023.2.20f1
-          - 6000.0.38f1
+          - 6000.0.41f1
         depends:
           - min # use required version of dependencies
         testMode:
           - All # run tests in editor
         include:
-          - unityVersion: 6000.0.38f1
+          - unityVersion: 6000.0.41f1
             depends: latest # use latest version of dependencies
             testMode: All
             octocov: true
-          - unityVersion: 6000.0.38f1
+          - unityVersion: 6000.0.41f1
             depends: min
             testMode: Standalone  # run tests on player
 
@@ -84,10 +84,10 @@ jobs:
         run: |
           npm install -g openupm-cli
           openupm add -f com.unity.test-framework@1.4.1
-          openupm add -f com.unity.testtools.codecoverage@1.2.0
+          openupm add -f com.unity.testtools.codecoverage
           openupm add -f com.cysharp.unitask@2.3.3
           openupm add -f com.nowsprinting.test-helper@1.1.1
-          openupm add -f com.nowsprinting.test-helper.monkey@0.13.2
+          openupm add -f com.nowsprinting.test-helper.monkey@0.14.0
           openupm add -f com.nowsprinting.test-helper.random@0.3.0
           openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
