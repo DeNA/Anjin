@@ -299,8 +299,16 @@ msgid "No-Element Timeout [sec]"
 msgstr "要素なしタイムアウト［秒］"
 
 # timeout tooltip
-msgid "Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds."
-msgstr "指定した秒数の間、対話可能なUI/2D/3D要素が出現しなければ、オートパイロットの実行を中断します"
+msgid "Abort Autopilot when the interactable UI/ 2D/ 3D element does not appear for the specified seconds. Disable detection if set to 0."
+msgstr "指定した秒数の間、対話可能な UI/ 2D/ 3D 要素が出現しなければ、オートパイロットの実行を中断します。0 に設定すると検出が無効になります。"
+
+# repeating operation detection buffer length
+msgid "Repeating Operation Detection Buffer Length"
+msgstr "繰り返し操作検出バッファ長"
+
+# repeating operation detection buffer length tooltip
+msgid "Abort Autopilot when repeating operation is detected within the specified buffer length. For example, if the buffer length is 10, repeating 5-step sequences can be detected. Disable detection if set to 0."
+msgstr "指定されたバッファ長内で繰り返し操作が検出されると、オートパイロットの実行を中断します。たとえばバッファ長が 10 の場合、5 ステップまでの繰り返しシーケンスを検出できます。0 に設定すると検出が無効になります。"
 
 # uGUI click and hold operator options
 msgid "Click and Hold Operator Options"

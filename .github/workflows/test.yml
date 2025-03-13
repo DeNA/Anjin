@@ -87,8 +87,8 @@ jobs:
           openupm add -f com.unity.testtools.codecoverage
           openupm add -f com.cysharp.unitask@2.3.3
           openupm add -f com.nowsprinting.test-helper@1.1.1
-          openupm add -f com.nowsprinting.test-helper.monkey@0.14.0
-          openupm add -f com.nowsprinting.test-helper.random@0.3.0
+          openupm add -f com.nowsprinting.test-helper.monkey@0.15.1
+          openupm add -f com.nowsprinting.test-helper.random@0.3.1
           openupm add -ft "${{ env.PACKAGE_NAME }}"@file:../../
         working-directory: ${{ env.CREATED_PROJECT_PATH }}
         if: ${{ matrix.depends == 'min' }}

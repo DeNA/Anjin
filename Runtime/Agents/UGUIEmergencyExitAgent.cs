@@ -1,15 +1,14 @@
 ﻿// Copyright (c) 2023-2025 DeNA Co., Ltd.
 // This software is released under the MIT License.
 
-using System.Text;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DeNA.Anjin.Annotations;
 using DeNA.Anjin.Settings;
 using DeNA.Anjin.Strategies;
+using TestHelper.Monkey;
+using TestHelper.Monkey.DefaultStrategies;
 using TestHelper.Monkey.Operators;
-using TestHelper.Monkey.ScreenshotFilenameStrategies;
-using TestHelper.RuntimeInternals;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,16 +31,25 @@ namespace DeNA.Anjin.Agents
         /// </summary>
         public bool screenshot;
 
+        private IReachableStrategy _reachableStrategy;
         private IClickOperator _clickOperator;
-        private IScreenshotFilenameStrategy _filenameStrategy;
+        private ScreenshotOptions _screenshotOptions;
 
         /// <inheritdoc />
         public override async UniTask Run(CancellationToken cancellationToken)
         {
             Logger.Log($"Enter {this.name}.Run()");
 
+            _reachableStrategy = new DefaultReachableStrategy();
             _clickOperator = new UGUIClickOperator();
-            _filenameStrategy = new TwoTieredCounterStrategy(this.name);
+            _screenshotOptions = screenshot
+                ? new ScreenshotOptions
+                {
+                    // ReSharper disable once PossibleNullReferenceException
+                    Directory = AutopilotState.Instance.settings.ScreenshotsPath,
+                    FilenameStrategy = new TwoTieredCounterStrategy(this.name),
+                }
+                : null;
 
             try
             {
@@ -77,25 +85,22 @@ namespace DeNA.Anjin.Agents
         private async UniTask ClickEmergencyExitButton(EmergencyExitAnnotation emergencyExit,
             CancellationToken cancellationToken = default)
         {
-            var button = emergencyExit.gameObject.GetComponent<Button>();
+            var button = emergencyExit.gameObject;
             if (!_clickOperator.CanOperate(button))
             {
+                Logger.Log(LogType.Warning,
+                    $"EmergencyExitAnnotation attached {button.name}({button.GetInstanceID()}) appears but cannot be operated");
                 return;
             }
 
-            var message = new StringBuilder($"Click emergency exit button: {button.gameObject.name}");
-            if (screenshot)
+            if (!_reachableStrategy.IsReachable(button, out var raycastResult))
             {
-                // ReSharper disable once PossibleNullReferenceException
-                var directory = AutopilotState.Instance.settings.ScreenshotsPath;
-                var filename = _filenameStrategy.GetFilename();
-                await ScreenshotHelper.TakeScreenshot(directory, filename).ToUniTask(button);
-                message.Append($" ({filename})");
+                Logger.Log(LogType.Warning,
+                    $"EmergencyExitAnnotation attached {button.name}({button.GetInstanceID()}) appears but not reachable");
+                return;
             }
 
-            Logger.Log(message.ToString());
-
-            await _clickOperator.OperateAsync(button, cancellationToken);
+            await _clickOperator.OperateAsync(button, raycastResult, Logger, _screenshotOptions, cancellationToken);
         }
     }
 }

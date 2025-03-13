@@ -281,11 +281,12 @@ An instance of this Agent (.asset file) can contain the following.
 <dl>
   <dt>Lifespan</dt><dd>Duration of random operation execution time in secounds. If 0 is specified, the operation is almost unlimited (TimeSpan.MaxValue). With this setting, neither Autopilot nor the app itself will exit when the Agent exits. It will not do anything until the next Scene switch</dd>
   <dt>Delay</dt><dd>Wait interval [milliseconds] between random operations</dd>
-  <dt>No-Element Timeout</dt><dd>Abort Autopilot when the interactable UI/2D/3D element does not appear for the specified seconds</dd>
+  <dt>No-Element Timeout</dt><dd>Abort Autopilot when the interactable UI/ 2D/ 3D element does not appear for the specified seconds. Disable detection if set to 0.</dd>
+  <dt>Repeating Operation Detection Buffer Length</dt><dd>Abort Autopilot when repeating operation is detected within the specified buffer length. For example, if the buffer length is 10, repeating 5-step sequences can be detected. Disable detection if set to 0.</dd>
   <dt>Enable Gizmos</dt><dd>Show Gizmos on GameView during running monkey test if true</dd>
 </dl>
 
-***Screenshot Options:***
+#### Screenshot Options
 
 <dl>
   <dt>Enabled</dt><dd>Whether screenshot is enabled or not</dd>
@@ -294,13 +295,13 @@ An instance of this Agent (.asset file) can contain the following.
   <dt>Stereo Capture Mode</dt><dd>The eye texture to capture when stereo rendering is enabled. Neither this nor Resolution Factor can be specified</dd>
 </dl>
 
-***Click and Hold Operator Options:***
+#### Click and Hold Operator Options
 
 <dl>
   <dt>Click and Hold Millis</dt><dd>Delay time for click-and-hold [ms]</dd>
 </dl>
 
-***Text Input Operator Options:***
+#### Text Input Operator Options
 
 <dl>
   <dt>GameObject Name</dt><dd>Target GameObject name. If it is difficult to identify the GameObject by name, you can also use InputFieldAnnotation, which will be described later.</dd>
