@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Get draft release version
-        uses: cardinalby/git-get-release-action@v1
+        uses: cardinalby/git-get-release-action@cf4593dd18e51a1ecfbfb1c68abac9910a8b1e0c # v1
         with:
           latest: true
           draft: true
@@ -30,7 +30,7 @@ jobs:
           echo "version=$without_prefix" >> "$GITHUB_OUTPUT"
         id: next-version
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
         with:
           ref: master
 
