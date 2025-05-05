@@ -150,6 +150,26 @@ file_header_template = Copyright (c) 2023-${CurrentDate.Year} DeNA Co., Ltd.\nTh
 # RS0016: Only enable if API files are present
 dotnet_public_api_analyzer.require_api_files = true
 
+# IDE0055: Fix formatting
+# Workaround for https://github.com/dotnet/roslyn/issues/70570
+dotnet_diagnostic.IDE0055.severity = warning
+
+# https://github.com/dotnet/roslyn-analyzers/issues/7436 - False positives from valid GetDeclaredSymbol calls
+dotnet_diagnostic.RS1039.severity = none
+
+# These xUnit analyzers were disabled temporarily to let us move to the
+# new xUnit and get past several component governance issues. The
+# following issue tracks enabling them
+#
+# https://github.com/dotnet/roslyn/issues/75093
+dotnet_diagnostic.xUnit1012.severity = none
+dotnet_diagnostic.xUnit1030.severity = none
+dotnet_diagnostic.xUnit1031.severity = none
+dotnet_diagnostic.xUnit2005.severity = none
+dotnet_diagnostic.xUnit2020.severity = none
+dotnet_diagnostic.xUnit2023.severity = none
+dotnet_diagnostic.xUnit2029.severity = none
+
 # CSharp code style settings:
 [*.cs]
 # Newline settings
@@ -160,6 +180,9 @@ csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
+csharp_place_type_attribute_on_same_line = false
+csharp_place_method_attribute_on_same_line = false
+csharp_place_accessorholder_attribute_on_same_line = false
 csharp_place_field_attribute_on_same_line = false
 
 # Indentation preferences
@@ -232,12 +255,30 @@ csharp_preserve_single_line_statements = true
 # IDE0060: Remove unused parameter
 dotnet_diagnostic.IDE0060.severity = warning
 
+# ReSharper comment alignment
+resharper_csharp_int_align_comments = true
+
+# Some values of the enum are not processed inside 'switch' statement and are handled via default section
+resharper_switch_statement_handles_some_known_enum_values_with_default_highlighting = warning
+
+# BannedApiAnalyzers
+dotnet_diagnostic.RS0030.severity = error
+
 # Suppress C#8.0+ syntax sugar (for under Unity 2020.2 compatibility)
 # See: https://www.jetbrains.com/help/resharper/Reference__Code_Inspections_CSHARP.html
 resharper_convert_to_using_declaration_highlighting = none
 resharper_convert_to_null_coalescing_compound_assignment_highlighting = none
 resharper_merge_into_logical_pattern_highlighting = none
 resharper_use_negated_pattern_in_is_expression_highlighting = none
+
+# Unity Test Framework
+[**/Tests/**/*.cs]
+
+# Access to a static member of a type via a derived type (e.g., NUnit.Framework.Is)
+resharper_access_to_static_member_via_derived_type_highlighting = none
+
+# NUnit2045: Use Assert.Multiple
+dotnet_diagnostic.NUnit2045.severity = none
 
 [src/{Compilers,ExpressionEvaluator,Scripting}/**Test**/*.{cs,vb}]
 
@@ -291,3 +332,20 @@ dotnet_diagnostic.IDE2006.severity = warning
 # CA1822: Make member static
 # There is a risk of accidentally breaking an internal API that partners rely on though IVT.
 dotnet_code_quality.CA1822.api_surface = private
+
+[**/{ExternalAccess}/**/*.{cs,vb}]
+
+# RS0016: Only enable if API files are present
+dotnet_public_api_analyzer.require_api_files = true
+
+dotnet_diagnostic.RS0051.severity = error
+dotnet_diagnostic.RS0052.severity = error
+dotnet_diagnostic.RS0053.severity = error
+dotnet_diagnostic.RS0054.severity = error
+dotnet_diagnostic.RS0055.severity = error
+dotnet_diagnostic.RS0056.severity = error
+dotnet_diagnostic.RS0057.severity = error
+dotnet_diagnostic.RS0058.severity = error
+dotnet_diagnostic.RS0059.severity = error
+dotnet_diagnostic.RS0060.severity = error
+dotnet_diagnostic.RS0061.severity = error
