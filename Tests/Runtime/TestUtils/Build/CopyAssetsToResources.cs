@@ -13,7 +13,10 @@ namespace DeNA.Anjin.TestUtils.Build
     {
         private const string TestAssetsDirectory = "Packages/com.dena.anjin/Tests/TestAssets";
         internal const string ResourcesBaseDirectory = "Assets/com.dena.anjin";
-        private static readonly string s_resourcesTestsDirectory = Path.Combine(ResourcesBaseDirectory, "Resources/Tests");
+
+        private static readonly string s_resourcesTestsDirectory =
+            Path.Combine(ResourcesBaseDirectory, "Resources/Tests");
+
         private static readonly string s_resourcesDirectory = Path.Combine(s_resourcesTestsDirectory, "TestAssets");
 
         public static string GetAssetPath(string path)

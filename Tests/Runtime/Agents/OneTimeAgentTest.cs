@@ -139,7 +139,7 @@ namespace DeNA.Anjin.Agents
             await Launcher.LaunchAutopilotAsync(settings);
 
             sut = ScriptableObject.CreateInstance<OneTimeAgent>(); // Reload because domain reloaded
-            Assert.That(sut.WasExecuted, Is.False); // was reset
+            Assert.That(sut.WasExecuted, Is.False);                // was reset
         }
     }
 }

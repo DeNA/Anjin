@@ -137,7 +137,7 @@ namespace DeNA.Anjin.Agents
                     : null,
                 Operators = new IOperator[]
                 {
-                    new UGUIClickOperator(), //
+                    new UGUIClickOperator(),                                           //
                     new UGUIClickAndHoldOperator(holdMillis: touchAndHoldDelayMillis), //
                     new UGUITextInputOperator(
                         randomStringParams: GetRandomStringParameters,

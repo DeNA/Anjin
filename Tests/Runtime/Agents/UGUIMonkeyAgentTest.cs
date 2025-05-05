@@ -115,7 +115,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_TimeoutExceptionOccurred_AutopilotFailed()
         {
             var agent = CreateAgent();
-            agent.lifespanSec = 0; // Expect indefinite execution
+            agent.lifespanSec = 0;                             // Expect indefinite execution
             agent.secondsToErrorForNoInteractiveComponent = 1; // TimeoutException occurred after 1 second
 
             var spyTerminatable = new SpyTerminatable();
@@ -142,7 +142,7 @@ namespace DeNA.Anjin.Agents
         public async Task Run_InfiniteLoopExceptionOccurred_AutopilotFailed()
         {
             var agent = CreateAgent();
-            agent.lifespanSec = 0; // Expect indefinite execution
+            agent.lifespanSec = 0;                  // Expect indefinite execution
             agent.bufferLengthForDetectLooping = 5; // Enable infinite loop detection
             // Note: The loop is detected immediately because there are only two active buttons on the test scene.
 
