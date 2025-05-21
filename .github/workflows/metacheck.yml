@@ -23,7 +23,7 @@ jobs:
 
       - uses: DeNA/unity-meta-check@a2e35e2c0b652031facd143db6f0a438b49de38a # v4
 
-      - uses: 8398a7/action-slack@28ba43ae48961b90635b50953d216767a6bea486 # v3
+      - uses: 8398a7/action-slack@1750b5085f3ec60384090fb7c52965ef822e869e # v3
         with:
           status: ${{ job.status }}
           fields: repo,message,job,pullRequest
