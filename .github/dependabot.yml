@@ -4,3 +4,4 @@ updates:
     directory: /
     schedule:
       interval: daily
+    open-pull-requests-limit: 0   # security updates only. refs https://docs.github.com/ja/code-security/dependabot/dependabot-security-updates/configuring-dependabot-security-updates#overriding-the-default-behavior-with-a-configuration-file
