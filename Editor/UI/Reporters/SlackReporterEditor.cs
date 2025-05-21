@@ -190,7 +190,8 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
             EditorGUI.BeginDisabledGroup(!_postOnNormallyProp.boolValue);
             EditorGUILayout.PropertyField(_mentionSubTeamIDsOnNormallyProp, _mentionSubTeamIDsOnNormallyGUIContent);
-            EditorGUILayout.PropertyField(_addHereInSlackMessageOnNormallyProp, _addHereInSlackMessageOnNormallyGUIContent);
+            EditorGUILayout.PropertyField(_addHereInSlackMessageOnNormallyProp,
+                _addHereInSlackMessageOnNormallyGUIContent);
             EditorGUILayout.PropertyField(_leadTextOnNormallyProp, _leadTextOnNormallyGUIContent);
             EditorGUILayout.PropertyField(_messageBodyTemplateOnNormallyProp, _messageBodyTemplateOnNormallyGUIContent);
             EditorGUILayout.PropertyField(_colorOnNormallyProp, _colorOnNormallyGUIContent);

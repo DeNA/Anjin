@@ -96,7 +96,7 @@ namespace DeNA.Anjin.Reporters
             var expected = new XElement("testsuite",
                 new XAttribute("name", name),
                 new XAttribute("tests", 1),
-                new XAttribute("id", 0), // Note: fixed value
+                new XAttribute("id", 0),       // Note: fixed value
                 new XAttribute("disabled", 0), // Note: fixed value
                 new XAttribute("errors", 0),
                 new XAttribute("failures", 0),
@@ -123,7 +123,7 @@ namespace DeNA.Anjin.Reporters
             var expected = new XElement("testsuite",
                 new XAttribute("name", name),
                 new XAttribute("tests", 1),
-                new XAttribute("id", 0), // Note: fixed value
+                new XAttribute("id", 0),       // Note: fixed value
                 new XAttribute("disabled", 0), // Note: fixed value
                 new XAttribute("errors", 1),
                 new XAttribute("failures", 0),
@@ -150,7 +150,7 @@ namespace DeNA.Anjin.Reporters
             var expected = new XElement("testsuite",
                 new XAttribute("name", name),
                 new XAttribute("tests", 1),
-                new XAttribute("id", 0), // Note: fixed value
+                new XAttribute("id", 0),       // Note: fixed value
                 new XAttribute("disabled", 0), // Note: fixed value
                 new XAttribute("errors", 0),
                 new XAttribute("failures", 1),

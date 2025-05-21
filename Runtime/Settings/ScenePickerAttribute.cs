@@ -18,7 +18,8 @@ namespace DeNA.Anjin.Settings
         /// 
         /// Set If a label different from the field name is specified.
         /// </summary>
-        [CanBeNull] public readonly string Label;
+        [CanBeNull]
+        public readonly string Label;
 
         /// <summary>
         /// Constructor

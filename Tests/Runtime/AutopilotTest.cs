@@ -190,7 +190,7 @@ namespace DeNA.Anjin
             await Launcher.LaunchAutopilotAsync(autopilotSettings);
 
             Assert.That(spyLogger.Logs, Does.Contain((LogType.Log, "Launched Autopilot"))); // using spy logger
-            LogAssert.NoUnexpectedReceived(); // not write to console
+            LogAssert.NoUnexpectedReceived();                                               // not write to console
         }
 
         [Test]

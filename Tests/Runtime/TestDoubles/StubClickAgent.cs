@@ -18,7 +18,8 @@ namespace DeNA.Anjin.TestDoubles
         /// <summary>
         /// A name of game objects to click
         /// </summary>
-        [SerializeField] public string targetName;
+        [SerializeField]
+        public string targetName;
 
 
         /// <inheritdoc />

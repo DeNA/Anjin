@@ -29,10 +29,10 @@ namespace DeNA.Anjin.Settings
         {
             var arguments = new StubArguments
             {
-                _lifespanSec = new StubArgument<int>(), // Not captured
-                _randomSeed = new StubArgument<string>(), // Not captured
-                _timeScale = new StubArgument<float>(), // Not captured
-                _outputRootPath = new StubArgument<string>(), // Not captured
+                _lifespanSec = new StubArgument<int>(),        // Not captured
+                _randomSeed = new StubArgument<string>(),      // Not captured
+                _timeScale = new StubArgument<float>(),        // Not captured
+                _outputRootPath = new StubArgument<string>(),  // Not captured
                 _screenshotsPath = new StubArgument<string>(), // Not captured
             };
             return arguments;
