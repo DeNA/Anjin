@@ -17,8 +17,7 @@ namespace DeNA.Anjin.TestDoubles
     {
         public void OnPointerClick(PointerEventData eventData)
         {
-            Task.Run(
-                () => Debug.LogException(new Exception($"TEST on thread #{Thread.CurrentThread.ManagedThreadId}"))
+            Task.Run(() => Debug.LogException(new Exception($"TEST on thread #{Thread.CurrentThread.ManagedThreadId}"))
             );
         }
     }

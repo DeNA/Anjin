@@ -197,9 +197,9 @@ namespace DeNA.Anjin.Agents
             sut.OverwriteByCommandLineArguments(new StubArguments()
             {
                 _handleException = new StubArgument<bool>(), // Not captured
-                _handleError = new StubArgument<bool>(), // Not captured
-                _handleAssert = new StubArgument<bool>(), // Not captured
-                _handleWarning = new StubArgument<bool>(), // Not captured
+                _handleError = new StubArgument<bool>(),     // Not captured
+                _handleAssert = new StubArgument<bool>(),    // Not captured
+                _handleWarning = new StubArgument<bool>(),   // Not captured
             });
             Assert.That(sut.handleException, Is.EqualTo(HandlingBehavior.TerminateAutopilot));
             Assert.That(sut.handleError, Is.EqualTo(HandlingBehavior.TerminateAutopilot));

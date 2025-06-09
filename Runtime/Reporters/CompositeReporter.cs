@@ -31,8 +31,7 @@ namespace DeNA.Anjin.Reporters
             await UniTask.WhenAll(
                 reporters
                     .Where(r => r != this && r != null)
-                    .Select(
-                        r => r.PostReportAsync(message, stackTrace, exitCode, cancellationToken)
+                    .Select(r => r.PostReportAsync(message, stackTrace, exitCode, cancellationToken)
                     )
             );
         }

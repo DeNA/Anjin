@@ -17,12 +17,12 @@ namespace DeNA.Anjin.Editor.Definitions
     [SuppressMessage("ReSharper", "MissingXmlDoc")]
     public class AssemblyDefinition
     {
-        public bool allowUnsafeCode = false; //Optional. Defaults to false.
-        public bool autoReferenced = true; //Optional. Defaults to true.
-        public string[] defineConstraints; // Optional. The symbols that serve as constraints. Can be empty.
-        public string[] excludePlatforms; // Optional. The platform name strings to exclude or an empty array.
-        public string[] includePlatforms; // Optional. The platform name strings to exclude or an empty array.
-        public string name; // Required.
+        public bool allowUnsafeCode = false;    //Optional. Defaults to false.
+        public bool autoReferenced = true;      //Optional. Defaults to true.
+        public string[] defineConstraints;      // Optional. The symbols that serve as constraints. Can be empty.
+        public string[] excludePlatforms;       // Optional. The platform name strings to exclude or an empty array.
+        public string[] includePlatforms;       // Optional. The platform name strings to exclude or an empty array.
+        public string name;                     // Required.
         public bool noEngineReferences = false; // Optional. Defaults to false.
 
         public string[] optionalUnityReferences;

@@ -17,7 +17,8 @@ namespace DeNA.Anjin.Reporters
         /// <summary>
         /// Description about this agent instance.
         /// </summary>
-        [Multiline] public string description;
+        [Multiline]
+        public string description;
 #endif
 
         /// <summary>

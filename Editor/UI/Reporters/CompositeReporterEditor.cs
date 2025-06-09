@@ -48,7 +48,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
                 // XXX: Dont use discarded parameter to treat Unity 2019.x
                 // ReSharper disable UnusedParameter.Local
                 drawElementCallback = (rect, index, active, focused) =>
-                // ReSharper restore UnusedParameter.Local
+                    // ReSharper restore UnusedParameter.Local
                 {
                     var elemProp = _reportersProp.GetArrayElementAtIndex(index);
                     EditorGUI.PropertyField(rect, elemProp, _reporterGUIContent);
@@ -63,7 +63,7 @@ namespace DeNA.Anjin.Editor.UI.Reporters
 
             EditorGUILayout.PropertyField(_descriptionProp, _descriptionGUIContent);
             _reorderableList.DoLayoutList();
-            
+
             serializedObject.ApplyModifiedProperties();
         }
     }
