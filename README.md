@@ -1,4 +1,5 @@
-# Anjin
+![Anjin logo black](Documentation~/2_Anjin_Logo_white.png#gh-dark-mode-only)
+![Anjin logo white](Documentation~/1_Anjin_Logo_black.png#gh-light-mode-only)
 
 [![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
 [![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)
@@ -830,8 +831,8 @@ The settings file has been updated, so please check it out and commit it to your
 
 ## License
 
-MIT License
-
+- The Anjin logo is licensed under *CC BY-ND* (Copyright DeNA Co., Ltd.)
+- All other files are licensed under the *MIT License*.
 
 ## How to contribute
 
@@ -890,3 +891,7 @@ Do **NOT** manually operation the following operations:
 
 - Create release tag
 - Publish draft releases
+
+## Credit
+
+The Anjin logo creator: Tomoko Anzai (DeNA Co., Ltd.)
