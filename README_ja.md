@@ -839,8 +839,8 @@ Now, automatically converted it to SlackReporter asset file. Check it out and co
 
 ## ライセンス
 
-MIT License
-
+- Anjinロゴは *CC BY-ND* (Copyright DeNA Co., Ltd.)
+- その他のファイルは *MIT LICENSE*
 
 ## コントリビュート
 
@@ -900,3 +900,7 @@ tagが付与されると、OpenUPMがtagを収集して更新してくれます�
 
 - リリースタグの作成
 - ドラフトリリースの公開
+
+## クレジット
+
+Anjinロゴのクリエーター: 安齋 智子（DeNA Co., Ltd.）
