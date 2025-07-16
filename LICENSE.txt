@@ -28,6 +28,8 @@ The Anjin logo license
 (Documentation~/1_Anjin_Logo_black.svg)
 (Documentation~/2_Anjin_Logo_white.png)
 (Documentation~/2_Anjin_Logo_white.svg)
+(Documentation~/1_anjin_logopict_black.svg)
+(Documentation~/2_anjin_logopict_white.svg)
 
 Attribution-NoDerivatives 4.0 International
 
