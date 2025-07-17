@@ -1,5 +1,5 @@
-![Anjin logo black](Documentation~/2_Anjin_Logo_white.png#gh-dark-mode-only)
-![Anjin logo white](Documentation~/1_Anjin_Logo_black.png#gh-light-mode-only)
+![Anjin logo dark](Documentation~/Anjin_logo_light.png#gh-dark-mode-only)
+![Anjin logo light](Documentation~/Anjin_logo_dark.png#gh-light-mode-only)
 
 [![Meta file check](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml/badge.svg)](https://github.com/DeNA/Anjin/actions/workflows/metacheck.yml)
 [![openupm](https://img.shields.io/npm/v/com.dena.anjin?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.dena.anjin/)

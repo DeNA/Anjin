@@ -24,10 +24,12 @@ SOFTWARE.
 
 The Anjin logo license
 
-(Documentation~/1_Anjin_Logo_black.png)
-(Documentation~/1_Anjin_Logo_black.svg)
-(Documentation~/2_Anjin_Logo_white.png)
-(Documentation~/2_Anjin_Logo_white.svg)
+(Documentation~/Anjin_logo_dark.png)
+(Documentation~/Anjin_logo_dark.svg)
+(Documentation~/Anjin_logo_light.png)
+(Documentation~/Anjin_logo_light.svg)
+(Documentation~/Anjin_logopict_dark.svg)
+(Documentation~/Anjin_logopict_light.svg)
 
 Attribution-NoDerivatives 4.0 International
 
